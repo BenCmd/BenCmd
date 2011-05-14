@@ -443,6 +443,7 @@ public class BasicCommands implements Commands {
 		commands.add(new BCommand("/report <player> <reason>", "Reports a player to the admins.", "canReport"));
 		commands.add(new BCommand("/ticket", "Lists and changes existing reports. Type /ticket for more info...", "."));
 		commands.add(new BCommand("/kill <player>", "Kills the player listed.", "canKill"));
+		commands.add(new BCommand("/spawnmob <Mob Name> [Amount]", "Spawns a specific amount of a specific mob.", "canSpawnMobs"));
 		for(int i = 0; i < commands.size(); i++) {
 			if(!commands.get(i).canUse(user)) {
 				commands.remove(i);
