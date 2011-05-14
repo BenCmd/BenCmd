@@ -1,0 +1,172 @@
+name: BenCmd
+version: 0.41 build 26
+main: ben_dude56.plugins.bencmd.BenCmd
+commands:
+    slow:
+        usage:
+        description: Activates slow mode...
+    mute:
+        usage:
+        description: Mutes a player...
+    unmute:
+        usage:
+        description: Unmutes a player...
+    list:
+        usage:
+        description: Lists the players online...
+    spawn:
+        usage:
+        description: Sends you back to the spawn point...
+    time:
+        usage:
+        description: Sets the time of day...
+    item:
+        usage:
+        description: Spawns items.
+    i:
+        usage:
+        description: Spawns items.
+    god:
+        usage:
+        description: Turns on or off god mode.
+    heal:
+        usage:
+        description: Heals a player.
+    gentree:
+        usage:
+        description: Makes a tree!
+    bencmd:
+        usage:
+        description: Displays the version info for, or reloads, BenCmd.
+    user:
+        usage:
+        description: Changes the user permissions
+    group:
+        usage:
+        description: Changes the group permissions
+    warp:
+        usage:
+        description: Warps you to a pre-defined point
+    setwarp:
+        usage:
+        description: Sets a point for other players to warp to
+    delwarp:
+        usage:
+        description: Deletes an existing warp
+    back:
+        usage:
+        description: Takes you back to before your last warp
+    home:
+        usage:
+        description: Brings you to your own set of private warps
+    sethome:
+        usage:
+        description: Sets a warp that is private for only you
+    delhome:
+        usage:
+        description: Deletes an existing private home warp
+    clearinventory:
+        usage:
+        description: Clears your inventory
+    clrinv:
+        usage:
+        description: Clears your inventory
+    jail:
+        usage:
+        description: Sends a user to jail
+    unjail:
+        usage:
+        description: Releases a user from jail and sends them back to spawn
+    setjail:
+        usage:
+        description: Changes the location of the jail
+    unl:
+        usage:
+        description: Makes an unlimited dispenser
+    disp:
+        usage:
+        description: Makes a disposal chest
+    lot:
+        usage:
+        description: Edits lots
+    kit:
+        usage:
+        description: Gives the player a kit
+    poof:
+        usage:
+        description: Makes the player invisible
+    nopoof:
+        usage:
+        description: Makes the player able to see invisible players
+    protect:
+        usage:
+        description: Protects chests/doors/furnace
+    setspawn:
+        usage:
+        description: Sets the spawn point
+    me:
+        usage:
+        description: Shows a message with the contents "*<name> <message>"
+    tell:
+        usage:
+        description: PMs a player
+    storm:
+        usage:
+        description: Forces a storm to start/stop
+    strike:
+        usage:
+        description: Strikes lightning at any location
+    mod:
+        usage:
+        description: Mods a user in the chat
+    demod:
+        usage:
+        description: Demods a user in the chat
+    deafen:
+        usage:
+        description: Deafens a user in the chat
+    undeafen:
+        usage:
+        description: Undeafens a user in the chat
+    memod:
+        usage:
+        description: Makes you a mod in the chat
+    offline:
+        usage:
+        description: Makes you appear offline
+    online:
+        usage:
+        description: Makes you reappear online
+    report:
+        usage:
+        description: Reports a player
+    ticket:
+        usage:
+        description: Allows the management of tickets
+    help:
+        usage:
+        description: Shows help for the BenCmd commands
+    lemonpledge:
+        usage: 
+        description: DEMANDS MORE LEMON PLEDGE
+    lock:
+        usage:
+        description: Protects a chest
+    unlock:
+        usage:
+        description: Unlocks a chest
+    share:
+        usage:
+        description: Adds a guest to a block
+    unshare:
+        usage:
+        description: Removes a guest from a block
+    kill:
+        usage:
+        description: Kills a player
+    addguest:
+        usage:
+        description: adds a guest to a lot
+    removeguest:
+        usage:
+        description: removes a guest from a lot
