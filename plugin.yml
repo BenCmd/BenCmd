@@ -170,3 +170,6 @@ commands:
     removeguest:
         usage:
         description: removes a guest from a lot
+    spawnmob:
+        usage:
+        description: Spawns mobs

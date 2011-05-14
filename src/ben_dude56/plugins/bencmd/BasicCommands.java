@@ -11,6 +11,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.Material;
@@ -76,6 +77,9 @@ public class BasicCommands implements Commands {
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("kill") && user.hasPerm("canKill")) {
 			Kill(args, user);
+			return true;
+		} else if (commandLabel.equalsIgnoreCase("spawnmob") && user.hasPerm("canSpawnMobs")) {
+			SpawnMob(args, user);
 			return true;
 		}
 		return false;
@@ -362,6 +366,29 @@ public class BasicCommands implements Commands {
 			}
 			user.sendMessage(ChatColor.GREEN + commands.get(i).getName() + ChatColor.WHITE + " - " + ChatColor.GRAY + commands.get(i).getDescription());
 			i++;
+		}
+	}
+	
+	public void SpawnMob(String[] args, User user) {
+		if(user.isServer()) {
+			user.sendMessage(ChatColor.RED + "The server cannot do that!");
+			return;
+		}
+		if(args.length != 1 && args.length != 2) {
+			user.sendMessage(ChatColor.YELLOW + "Proper use is /spawnmob <Mob Name> [Amount]");
+			return;
+		}
+		int amount = 1;
+		if(args.length == 2) {
+			try {
+				amount = Integer.parseInt(args[1]);
+			} catch (NumberFormatException e) {
+				user.sendMessage(ChatColor.RED + args[1] + " cannot be converted into a number!");
+				return;
+			}
+		}
+		for(int i = 0; i < amount; i++) {
+			user.getHandle().getWorld().spawnCreature(user.getHandle().getLocation(), CreatureType.fromName(args[0]));
 		}
 	}
 	
