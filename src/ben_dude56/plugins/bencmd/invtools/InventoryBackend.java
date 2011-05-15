@@ -60,6 +60,27 @@ public class InventoryBackend {
 			return THROWABLE_STACK;
 		return FULL_STACK;
 	}
+	
+	public boolean canBind(Material mat) {
+		int id = mat.getId();
+		if(id >= 256 && id <= 289) {
+			return true;
+		} else if (id == 295 || id == 296) {
+			return true;
+		} else if (id >= 298 && id <= 318) {
+			return true;
+		} else if (id >= 336 && id <= 341) {
+			return true;
+		} else if (id >= 345 && id <= 348) {
+			return true;
+		} else if (id >= 351 && id <= 353) {
+			return true;
+		} else if (id == 2256 || id == 2257) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 
 	public BCItem checkAlias(String arg) {
 		int ItemID = -1;

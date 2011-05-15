@@ -72,12 +72,50 @@ public class WeatherCommands implements Commands {
 	}
 	
 	public void Strike(String[] args, User user) {
-		if(user.isServer()) {
-			user.sendMessage(ChatColor.RED + "The server cannot do that!");
-			return;
+		if(args.length > 1) {
+			user.sendMessage(ChatColor.YELLOW + "Proper use is /strike {bind|unbind|[Player]}");
 		}
 		Block targetBlock = user.getHandle().getTargetBlock(null, 100);
-		Location loc = targetBlock.getLocation();
+		Location loc = null;
+		if(args.length == 0) {
+			if(user.isServer()) {
+				user.sendMessage(ChatColor.RED + "The server cannot do that!");
+				return;
+			}
+			loc = targetBlock.getLocation();
+		} else {
+			if(args[0].equalsIgnoreCase("bind")) {
+				if(user.isServer()) {
+					user.sendMessage(ChatColor.RED + "The server cannot do that!");
+					return;
+				}
+				if(plugin.strikeBind.tryBind(user.getHandle())) {
+					user.sendMessage(ChatColor.GREEN + "That item has now been bound to strike lightning!");
+				} else {
+					user.sendMessage(ChatColor.RED + "You can't bind that item!");
+				}
+				return;
+			} else if (args[0].equalsIgnoreCase("unbind")) {
+				if(user.isServer()) {
+					user.sendMessage(ChatColor.RED + "The server cannot do that!");
+					return;
+				}
+				if(plugin.strikeBind.hasBoundItem(user.getHandle())) {
+					plugin.strikeBind.clearBinding(user.getHandle());
+					user.sendMessage(ChatColor.GREEN + "You no longer have an item bound to strike lightning.");
+				} else {
+					user.sendMessage(ChatColor.RED + "You don't have an item bound!");
+				}
+				return;
+			} else {
+				User user2;
+				if((user2 = User.matchUser(args[0], plugin)) == null) {
+					user.sendMessage(ChatColor.RED + "That user couldn't be found!");
+					return;
+				}
+				loc = user2.getHandle().getLocation();
+			}
+		}
 		user.getHandle().getWorld().strikeLightning(loc);
 	}
 }

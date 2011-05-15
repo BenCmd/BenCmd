@@ -61,6 +61,7 @@ public class BenCmd extends JavaPlugin {
 	private final EntityPermListen entListen = new EntityPermListen(this);
 	public final LotPlayerListener lotListener = new LotPlayerListener(this);
 	public final LotBlockListener lotBListener = new LotBlockListener(this);
+	private final WeatherPListener wpListen = new WeatherPListener(this);
 	private final HashMap<Player, Boolean> debugees = new HashMap<Player, Boolean>();
 	public final HashMap<Player, Boolean> godmode = new HashMap<Player, Boolean>();
 	public final List<Player> invisible = new ArrayList<Player>();
@@ -100,6 +101,7 @@ public class BenCmd extends JavaPlugin {
 	public ChatChannelController channels;
 	public ReportFile reports;
 	public FlyDetect flyDetect;
+	public WeatherBinding strikeBind;
 	public Logger log = Logger.getLogger("minecraft");
 
 	public boolean checkID(int id) {
@@ -222,6 +224,7 @@ public class BenCmd extends JavaPlugin {
 				mainProperties.getBoolean("indefActive", true));
 		reports = new ReportFile(this);
 		flyDetect = new FlyDetect(this);
+		strikeBind = new WeatherBinding(this);
 		for (Player player : this.getServer().getOnlinePlayers()) {
 			User user;
 			JoinType jt = maxPlayers.join(user = new User(this, player));
@@ -281,6 +284,8 @@ public class BenCmd extends JavaPlugin {
 		pm.registerEvent(Event.Type.PLAYER_KICK, this.chatListen,
 				Event.Priority.Highest, this);
 		pm.registerEvent(Event.Type.EXPLOSION_PRIME, this.entListen,
+				Event.Priority.Highest, this);
+		pm.registerEvent(Event.Type.PLAYER_INTERACT, this.wpListen,
 				Event.Priority.Highest, this);
 		PluginDescriptionFile pdfFile = this.getDescription();
 		FreezeTimer.schedule(new TimeFreeze(this), 0, 1);
