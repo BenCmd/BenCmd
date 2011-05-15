@@ -13,6 +13,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import ben_dude56.plugins.bencmd.BenCmd;
+import ben_dude56.plugins.bencmd.permissions.PermissionUser;
 
 public class LotFile extends Properties {
 
@@ -356,6 +357,28 @@ public class LotFile extends Properties {
 		}
 		else {
 			return true;
+		}
+	}
+	public String ownsHere(Player player, Location location) {
+		boolean inLot = false;
+		for (String LotID : lot.keySet()) {
+			if (plugin.lots.getLot(LotID).withinLot(location)) {
+				inLot = true;
+				PermissionUser user = PermissionUser.matchUser(player.getName(), plugin);
+				if (user == null) {
+					return "noUser";
+				}
+				if (plugin.lots.getLot(LotID).isOwner(player) || user.hasPerm("isLandlord")) {
+					return plugin.lots.getLot(LotID).getLotID();
+				}
+			}
+		}
+		if (inLot) {
+			return "false";
+		}
+		else
+		{
+			return "noLot";
 		}
 	}
 }

@@ -191,11 +191,17 @@ public class LotCommands implements Commands {
 						return;
 					}
 					Player player = user.getHandle();
-					LotID = String.valueOf(plugin.lots.isInLot(player
-							.getLocation()));
-					if (LotID == "-1") {
-						user.sendMessage(ChatColor.RED
-								+ "You need to specify a lot!");
+					LotID = plugin.lots.ownsHere(player, player.getLocation());
+					if (LotID.equalsIgnoreCase("false")) {
+						user.sendMessage(ChatColor.RED + "You do not own this lot!");
+						return;
+					}
+					if (LotID.equalsIgnoreCase("noLot")) {
+						user.sendMessage(ChatColor.RED + "You are not standing inside a lot!");
+						return;
+					}
+					if (LotID.equalsIgnoreCase("noUser")) {
+						user.sendMessage(ChatColor.RED + "Umm... you appear to not exist...");
 						return;
 					}
 				}
@@ -280,11 +286,17 @@ public class LotCommands implements Commands {
 				}
 				String LotID = "";
 				Player player = user.getHandle();
-				LotID = String
-						.valueOf(plugin.lots.isInLot(player.getLocation()));
-				if (LotID == "-1") {
-					user.sendMessage(ChatColor.RED
-							+ "You are not inside a lot!");
+				LotID = plugin.lots.ownsHere(player, player.getLocation());
+				if (LotID.equalsIgnoreCase("false")) {
+					user.sendMessage(ChatColor.RED + "You do not own this lot!");
+					return;
+				}
+				if (LotID.equalsIgnoreCase("noLot")) {
+					user.sendMessage(ChatColor.RED + "You are not standing inside a lot!");
+					return;
+				}
+				if (LotID.equalsIgnoreCase("noUser")) {
+					user.sendMessage(ChatColor.RED + "Umm... you appear to not exist...");
 					return;
 				}
 				Lot lot = plugin.lots.getLot(LotID);
@@ -725,18 +737,20 @@ public class LotCommands implements Commands {
 			}
 			if (args.length == 2) {
 				group = args[1];
-				LotID = String
-						.valueOf(plugin.lots.isInLot(player.getLocation()));
-				if (LotID == "-1") {
-					user.sendMessage(ChatColor.RED
-							+ "You are not inside a lot!");
+				LotID = plugin.lots.ownsHere(player, player.getLocation());
+				if (LotID.equalsIgnoreCase("false")) {
+					user.sendMessage(ChatColor.RED + "You do not own this lot!");
+					return;
+				}
+				if (LotID.equalsIgnoreCase("noLot")) {
+					user.sendMessage(ChatColor.RED + "You are not standing inside a lot!");
+					return;
+				}
+				if (LotID.equalsIgnoreCase("noUser")) {
+					user.sendMessage(ChatColor.RED + "Umm... you appear to not exist...");
 					return;
 				}
 				Lot lot = plugin.lots.getLot(LotID);
-				if (!user.hasPerm("isLandlord") && !lot.isOwner(player)) {
-					user.sendMessage(ChatColor.RED
-							+ "You do not have permission to do that!");
-				}
 				lot.setGroup(group);
 				user.sendMessage(ChatColor.GREEN
 						+ "Lot " + LotID.split(",")[0] + "'s group has been seet to '"
@@ -753,15 +767,20 @@ public class LotCommands implements Commands {
 								+ "The server cannot do that!");
 						return;
 					}
-					LotID = String.valueOf(plugin.lots.isInLot(player
-							.getLocation()));
-					if (LotID == "-1") {
-						user.sendMessage(ChatColor.RED
-								+ "You need to specify a lot!");
+					LotID = plugin.lots.ownsHere(player, player.getLocation());
+					if (LotID.equalsIgnoreCase("false")) {
+						user.sendMessage(ChatColor.RED + "You do not own this lot!");
+						return;
+					}
+					if (LotID.equalsIgnoreCase("noLot")) {
+						user.sendMessage(ChatColor.RED + "You are not standing inside a lot!");
+						return;
+					}
+					if (LotID.equalsIgnoreCase("noUser")) {
+						user.sendMessage(ChatColor.RED + "Umm... you appear to not exist...");
 						return;
 					}
 				} else {
-					LotID = LotID + ",0";
 					if (!plugin.lots.lotExists(LotID)) {
 						user.sendMessage(ChatColor.RED
 								+ "Lot does not exist!");
@@ -772,8 +791,10 @@ public class LotCommands implements Commands {
 				if (!user.hasPerm("isLandlord") && !lot.isOwner(player)) {
 					user.sendMessage(ChatColor.RED
 							+ "You do not have permission to do that!");
+					return;
 				}
 				lot.setGroup(group);
+				LotID = lot.getLotID();
 				user.sendMessage(ChatColor.GREEN
 						+ "Lot " + LotID + "'s group has been seet to '"
 						+ group + "'.");
@@ -1001,6 +1022,67 @@ public class LotCommands implements Commands {
 			}
 			return;
 		}
+		
+		if (args[0].equalsIgnoreCase("search")) {
+			
+			if (!user.hasPerm("isLandlord")) {
+				user.sendMessage(ChatColor.RED + "You cannot do that!");
+				return;
+			}
+			
+			if (args.length==1) {
+				user.sendMessage(ChatColor.YELLOW
+						+ "Possible searches: here (your location), owner,");
+				user.sendMessage(ChatColor.YELLOW + "guest, rights (aka build rights).");
+				return;
+			}
+			
+			if (args[1].equalsIgnoreCase("location") || args[1].equalsIgnoreCase("here")) {
+				
+				Player player = user.getHandle();
+				Location location = player.getLocation();
+				int total = 0;
+				
+				if (plugin.lots.isInLot(location).equalsIgnoreCase("-1")) {
+					user.sendMessage(ChatColor.RED + "You are not standing inside a lot");
+					return;
+				} else {
+					
+					for (String LotID : plugin.lots.lot.keySet()) {
+						if (plugin.lots.getLot(LotID).withinLot(location)) {
+							total++;
+						}
+					}
+					
+					user.sendMessage(ChatColor.YELLOW
+							+ "You are standing in the following lots: (" + total + ")");
+				}
+				
+				String list = "";
+				int i = 0, r = 0;
+				for (String LotID : plugin.lots.lot.keySet()) {
+					if (!plugin.lots.getLot(LotID).withinLot(location)) {
+						continue;
+					}
+					list += LotID;
+					i++;
+					r++;
+					if (r < total)
+						list += ",  ";
+					else
+						list += ".";
+					if (i >= 3) {
+						user.sendMessage(ChatColor.YELLOW + list);
+						i = 0;
+						list = "";
+					}
+				}
+				if (!list.equalsIgnoreCase("")) {
+					user.sendMessage(ChatColor.YELLOW + list);
+				}
+			}
+		}
+		
 		
 		/*
 		 * Alerts the user to an invalid command.
