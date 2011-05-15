@@ -120,7 +120,8 @@ public class ActionableUser extends WarpableUser {
 		if (plugin.isGod(player)) {
 			return false;
 		} else {
-			player.setHealth(0);
+			player.setHealth(1);
+			player.damage(1);
 			return true;
 		}
 	}

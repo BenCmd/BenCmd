@@ -37,6 +37,7 @@ import ben_dude56.plugins.bencmd.invtools.*;
 import ben_dude56.plugins.bencmd.invtools.kits.*;
 import ben_dude56.plugins.bencmd.lots.*;
 import ben_dude56.plugins.bencmd.nofly.*;
+import ben_dude56.plugins.bencmd.weather.*;
 
 /**
  * BenCmd for Bukkit
@@ -351,6 +352,9 @@ public class BenCmd extends JavaPlugin {
 		} else if (new ReportCommands(this).onCommand(sender, command,
 				commandLabel, args)) {
 			return true;
+		} else if (new WeatherCommands(this).onCommand(sender, command,
+				commandLabel, args)) {
+			return true;
 		} else {
 			User user;
 			try {
@@ -360,7 +364,7 @@ public class BenCmd extends JavaPlugin {
 			}
 			user.sendMessage(ChatColor.RED
 					+ "You don't have permission to do that!");
-			return false;
+			return true;
 		}
 	}
 

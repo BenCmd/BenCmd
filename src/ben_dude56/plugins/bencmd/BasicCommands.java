@@ -61,14 +61,6 @@ public class BasicCommands implements Commands {
 				&& user.hasPerm("canSetSpawn")) {
 			SetSpawn(user);
 			return true;
-		} else if (commandLabel.equalsIgnoreCase("storm")
-				&& user.hasPerm("canControlWeather")) {
-			Storm(args, user);
-			return true;
-		} else if (commandLabel.equalsIgnoreCase("strike")
-				&& user.hasPerm("canControlWeather")) {
-			Strike(user);
-			return true;
 		} else if (commandLabel.equalsIgnoreCase("help")) {
 			Help(args, user);
 			return true;
@@ -308,29 +300,6 @@ public class BasicCommands implements Commands {
 		user.sendMessage(ChatColor.GREEN + "The spawn location has been set!");
 		log.info(user.getName() + " has set the spawn location to (" + newSpawn.getBlockX() + ", " + newSpawn.getBlockY() + ", " + newSpawn.getBlockZ() + ")");
 		user.getHandle().getWorld().setSpawnLocation(newSpawn.getBlockX(), newSpawn.getBlockY(), newSpawn.getBlockZ());
-	}
-	
-	public void Storm(String[] args, User user) {
-		if(args.length != 1) {
-			user.sendMessage(ChatColor.YELLOW + "Proper use is /storm {off|rain|thunder}");
-			return;
-		}
-		if(args[0].equalsIgnoreCase("off")) {
-			user.getHandle().getWorld().setStorm(false);
-			user.getHandle().getWorld().setThundering(false);
-		} else if (args[0].equalsIgnoreCase("rain")) {
-			user.getHandle().getWorld().setStorm(true);
-			user.getHandle().getWorld().setThundering(false);
-		} else if (args[0].equalsIgnoreCase("thunder")) {
-			user.getHandle().getWorld().setStorm(true);
-			user.getHandle().getWorld().setThundering(true);
-		}
-	}
-	
-	public void Strike(User user) {
-		Block targetBlock = user.getHandle().getTargetBlock(null, 100);
-		Location loc = targetBlock.getLocation();
-		user.getHandle().getWorld().strikeLightning(loc);
 	}
 	
 	public void Help(String[] args, User user) {
