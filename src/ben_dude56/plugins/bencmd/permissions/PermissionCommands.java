@@ -10,6 +10,8 @@ import org.bukkit.entity.Player;
 import ben_dude56.plugins.bencmd.BenCmd;
 import ben_dude56.plugins.bencmd.Commands;
 import ben_dude56.plugins.bencmd.User;
+import ben_dude56.plugins.bencmd.reporting.Report;
+import ben_dude56.plugins.bencmd.reporting.Report.ReportStatus;
 
 public class PermissionCommands implements Commands {
 	BenCmd plugin;
@@ -34,6 +36,9 @@ public class PermissionCommands implements Commands {
 		} else if (commandLabel.equalsIgnoreCase("group")
 				&& user.hasPerm("canChangePerm")) {
 			Group(args, user);
+			return true;
+		} else if (commandLabel.equalsIgnoreCase("status")) {
+			Status(args, user);
 			return true;
 		}
 		return false;
@@ -358,6 +363,44 @@ public class PermissionCommands implements Commands {
 					}
 				}
 			}
+		}
+	}
+	
+	public void Status(String[] args, User user) {
+		PermissionUser user2 = user;
+		if(args.length == 1 && !user.hasPerm("canCheckOtherStatus")) {
+			user.sendMessage(ChatColor.RED + "You don't have enough permissions to check the status of others!");
+			return;
+		} else if (args.length == 1) {
+			if((user2 = PermissionUser.matchUserIgnoreCase(args[0], plugin)) == null) {
+				user.sendMessage(ChatColor.RED + "That user isn't in the database!");
+				return;
+			}
+		}
+		boolean jailed = user2.hasPerm("isJailed", false);
+		boolean muted = user2.hasPerm("isMuted", false);
+		boolean reported = false;
+		for (Report ticket : plugin.reports.getReports()) {
+			if(ticket.getAccused().getName().equalsIgnoreCase(user2.getName()) && ticket.getStatus() != ReportStatus.CLOSED && ticket.getStatus() != ReportStatus.LOCKED) {
+				reported = true;
+				break;
+			}
+		}
+		user.sendMessage(ChatColor.GRAY + "Status of " + user2.getName() + ":");
+		if(jailed) {
+			user.sendMessage(ChatColor.GRAY + "   -Jailed: YES");
+		} else {
+			user.sendMessage(ChatColor.GRAY + "   -Jailed: NO");
+		}
+		if(muted) {
+			user.sendMessage(ChatColor.GRAY + "   -Muted: YES");
+		} else {
+			user.sendMessage(ChatColor.GRAY + "   -Muted: NO");
+		}
+		if(reported) {
+			user.sendMessage(ChatColor.GRAY + "   -Reported: YES");
+		} else {
+			user.sendMessage(ChatColor.GRAY + "   -Reported: NO");
 		}
 	}
 }

@@ -173,3 +173,6 @@ commands:
     spawnmob:
         usage:
         description: Spawns mobs
+    status:
+        usage:
+        description: Gets someone's status (muted, jailed, reported)

@@ -87,17 +87,21 @@ public class FlyDetect {
 				case 0:
 					new User(plugin, player).Spawn();
 					plugin.checkpoints.RemovePreWarp(player);
+					plugin.getServer().broadcastMessage(ChatColor.RED + player.getName() + " was sent to spawn for flying!");
 					break;
 				case 1:
 					new User(plugin, player).Kick("You were auto-detected flying!");
+					plugin.getServer().broadcastMessage(ChatColor.RED + player.getName() + " was kicked for flying!");
 					break;
 				case 2:
 					if(!new User(plugin, player).hasPerm("isJailed", false)) {
 						new User(plugin, player).toggleJail();
+						plugin.getServer().broadcastMessage(ChatColor.RED + player.getName() + " was jailed for flying!");
 					}
 					break;
 				default:
 					new User(plugin, player).Kick("You were auto-detected flying!");
+					plugin.getServer().broadcastMessage(ChatColor.RED + player.getName() + " was kicked for flying!");
 					break;
 				}
 				log.warning("Action taken on " + player.getName() + " for flying!");
