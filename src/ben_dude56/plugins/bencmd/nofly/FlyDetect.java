@@ -20,7 +20,7 @@ public class FlyDetect {
 	public FlyDetect(BenCmd instance) {
 		plugin = instance;
 		flyTime = new Timer();
-		flyTime.schedule(new FlyTimer(this), 0, 500);
+		flyTime.schedule(new FlyTimer(this), 0, 2000);
 		players = new HashMap<Player, Integer>();
 		offenders = new HashMap<String, Integer>();
 	}
@@ -61,7 +61,7 @@ public class FlyDetect {
 		}
 		if(isDetected(player)) {
 			Integer time = players.get(player);
-			players.put(player, time + 250);
+			players.put(player, time + 1000);
 			if(time == 3000) {
 				switch(getOffences(player)) {
 				case 0:
