@@ -367,40 +367,76 @@ public class PermissionCommands implements Commands {
 	}
 	
 	public void Status(String[] args, User user) {
-		PermissionUser user2 = user;
+		PermissionUser puser2 = null;
+		User user2 = null;
 		if(args.length == 1 && !user.hasPerm("canCheckOtherStatus")) {
 			user.sendMessage(ChatColor.RED + "You don't have enough permissions to check the status of others!");
 			return;
 		} else if (args.length == 1) {
-			if((user2 = PermissionUser.matchUserIgnoreCase(args[0], plugin)) == null) {
+			if((puser2 = PermissionUser.matchUserIgnoreCase(args[0], plugin)) == null) {
 				user.sendMessage(ChatColor.RED + "That user isn't in the database!");
 				return;
 			}
+			user2 = User.matchUser(args[0], plugin);
+		} else if (args.length == 0) {
+			puser2 = user;
+			user2 = user;
+		} else {
+			user.sendMessage(ChatColor.YELLOW + "Proper use is: /status [player]");
+			return;
 		}
-		boolean jailed = user2.hasPerm("isJailed", false);
-		boolean muted = user2.hasPerm("isMuted", false);
+		boolean jailed = puser2.hasPerm("isJailed", false);
+		boolean muted = puser2.hasPerm("isMuted", false);
 		boolean reported = false;
 		for (Report ticket : plugin.reports.getReports()) {
-			if(ticket.getAccused().getName().equalsIgnoreCase(user2.getName()) && ticket.getStatus() != ReportStatus.CLOSED && ticket.getStatus() != ReportStatus.LOCKED) {
+			if(ticket.getAccused().getName().equalsIgnoreCase(puser2.getName()) && ticket.getStatus() != ReportStatus.CLOSED && ticket.getStatus() != ReportStatus.LOCKED) {
 				reported = true;
 				break;
 			}
 		}
-		user.sendMessage(ChatColor.GRAY + "Status of " + user2.getName() + ":");
+		user.sendMessage(ChatColor.GRAY + "Status of " + puser2.getName() + ":");
 		if(jailed) {
-			user.sendMessage(ChatColor.GRAY + "   -Jailed: YES");
+			user.sendMessage(ChatColor.RED + "   -Jailed: YES");
 		} else {
 			user.sendMessage(ChatColor.GRAY + "   -Jailed: NO");
 		}
 		if(muted) {
-			user.sendMessage(ChatColor.GRAY + "   -Muted: YES");
+			user.sendMessage(ChatColor.RED + "   -Muted: YES");
 		} else {
 			user.sendMessage(ChatColor.GRAY + "   -Muted: NO");
 		}
 		if(reported) {
-			user.sendMessage(ChatColor.GRAY + "   -Reported: YES");
+			user.sendMessage(ChatColor.RED + "   -Reported: YES");
 		} else {
 			user.sendMessage(ChatColor.GRAY + "   -Reported: NO");
+		}
+		if(user.hasPerm("canViewAdvStatus") && user2 != null) {
+			boolean godded = user2.isGod();
+			boolean poofed = user2.isPoofed();
+			boolean nopoofed = user2.isNoPoofed();
+			int health = user2.getHandle().getHealth();
+			if(godded) {
+				user.sendMessage(ChatColor.GREEN + "   -Godded: YES");
+			} else {
+				user.sendMessage(ChatColor.GRAY + "   -Godded: NO");
+			}
+			if(poofed) {
+				user.sendMessage(ChatColor.GREEN + "   -Invisible: YES");
+			} else {
+				user.sendMessage(ChatColor.GRAY + "   -Invisible: NO");
+			}
+			if(nopoofed) {
+				user.sendMessage(ChatColor.GREEN + "   -See-all: YES");
+			} else {
+				user.sendMessage(ChatColor.GRAY + "   -See-all: NO");
+			}
+			if(health >= 15) {
+				user.sendMessage(ChatColor.GREEN + "   -Health: " + (health / 2) + "/10");
+			} else if (health <= 5) {
+				user.sendMessage(ChatColor.RED + "   -Health: " + (health / 2) + "/10");
+			} else {
+				user.sendMessage(ChatColor.YELLOW + "   -Health: " + (health / 2) + "/10");
+			}
 		}
 	}
 }
