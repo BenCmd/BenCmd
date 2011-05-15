@@ -1,5 +1,7 @@
 package ben_dude56.plugins.bencmd.lots;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
@@ -1060,27 +1062,33 @@ public class LotCommands implements Commands {
 				
 				String list = "";
 				int i = 0, r = 0;
+				List<String> usedIDs = new ArrayList<String>();
 				for (String LotID : plugin.lots.lot.keySet()) {
 					if (!plugin.lots.getLot(LotID).withinLot(location)) {
 						continue;
 					}
-					list += LotID;
-					i++;
-					r++;
-					if (r < total)
-						list += ",  ";
-					else
-						list += ".";
-					if (i >= 3) {
-						user.sendMessage(ChatColor.YELLOW + list);
-						i = 0;
-						list = "";
+					LotID = LotID.split(",")[0];
+					if (!usedIDs.contains(LotID)) {
+						usedIDs.add(LotID);
+						list += LotID;
+						i++;
+						r++;
+						if (r < total)
+							list += ",  ";
+						else
+							list += ".";
+						if (i >= 3) {
+							user.sendMessage(ChatColor.GRAY + list);
+							i = 0;
+							list = "";
+						}
 					}
 				}
 				if (!list.equalsIgnoreCase("")) {
 					user.sendMessage(ChatColor.YELLOW + list);
 				}
 			}
+			return;
 		}
 		
 		
