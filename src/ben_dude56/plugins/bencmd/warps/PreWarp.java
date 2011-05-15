@@ -32,6 +32,13 @@ public class PreWarp {
 			return false;
 		}
 	}
+	
+	public void RemovePreWarp(Player player) {
+		String name = player.getName() + "_check";
+		if(prewarps.containsKey(name)) {
+			prewarps.remove(name);
+		}
+	}
 
 	public void SetPreWarp(Player player) {
 		try {

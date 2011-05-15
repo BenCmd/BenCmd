@@ -36,6 +36,7 @@ import ben_dude56.plugins.bencmd.invisible.*;
 import ben_dude56.plugins.bencmd.invtools.*;
 import ben_dude56.plugins.bencmd.invtools.kits.*;
 import ben_dude56.plugins.bencmd.lots.*;
+import ben_dude56.plugins.bencmd.nofly.*;
 
 /**
  * BenCmd for Bukkit
@@ -97,6 +98,7 @@ public class BenCmd extends JavaPlugin {
 	public MaxPlayers maxPlayers;
 	public ChatChannelController channels;
 	public ReportFile reports;
+	public FlyDetect flyDetect;
 	public Logger log = Logger.getLogger("minecraft");
 
 	public boolean checkID(int id) {
@@ -215,6 +217,7 @@ public class BenCmd extends JavaPlugin {
 				mainProperties.getBoolean("reserveActive", true),
 				mainProperties.getBoolean("indefActive", true));
 		reports = new ReportFile(this);
+		flyDetect = new FlyDetect(this);
 		for (Player player : this.getServer().getOnlinePlayers()) {
 			User user;
 			JoinType jt = maxPlayers.join(user = new User(this, player));
