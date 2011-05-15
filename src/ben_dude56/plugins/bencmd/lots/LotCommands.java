@@ -673,11 +673,13 @@ public class LotCommands implements Commands {
 		 * lots database
 		 */
 		if (args[0].equalsIgnoreCase("list")) {
+
+			
 			if (!user.hasPerm("isLandlord")) {
-				user.sendMessage(ChatColor.RED
-						+ "You do not have permission to do that!");
+				user.sendMessage(ChatColor.RED + "You cannot do that!");
 				return;
 			}
+			
 			if (args.length == 1) {
 				int size = 0;
 				for (String key : plugin.lots.lot.keySet()) {
@@ -718,7 +720,65 @@ public class LotCommands implements Commands {
 				if (!list.equalsIgnoreCase("")) {
 					user.sendMessage(ChatColor.GRAY + list);
 				}
+				return;
 			}
+			
+			//Only passes if args.length >= 2
+			
+			//Lists lots by USER'S LOCATION
+			
+			if (args[1].equalsIgnoreCase("location") || args[1].equalsIgnoreCase("here")) {
+				
+				Player player = user.getHandle();
+				Location location = player.getLocation();
+				int total = 0;
+				
+				if (plugin.lots.isInLot(location).equalsIgnoreCase("-1")) {
+					user.sendMessage(ChatColor.RED + "You are not standing inside a lot");
+					return;
+				} else {
+					
+					for (String LotID : plugin.lots.lot.keySet()) {
+						if (plugin.lots.getLot(LotID).withinLot(location)) {
+							total++;
+						}
+					}
+					
+					user.sendMessage(ChatColor.YELLOW
+							+ "You are standing in the following lots: (" + total + ")");
+				}
+				
+				String list = "";
+				int i = 0, r = 0;
+				List<String> usedIDs = new ArrayList<String>();
+				for (String LotID : plugin.lots.lot.keySet()) {
+					if (!plugin.lots.getLot(LotID).withinLot(location)) {
+						continue;
+					}
+					LotID = LotID.split(",")[0];
+					if (!usedIDs.contains(LotID)) {
+						usedIDs.add(LotID);
+						list += LotID;
+						i++;
+						r++;
+						if (r < total)
+							list += ",  ";
+						else
+							list += ".";
+						if (i >= 3) {
+							user.sendMessage(ChatColor.GRAY + list);
+							i = 0;
+							list = "";
+						}
+					}
+				}
+				if (!list.equalsIgnoreCase("")) {
+					user.sendMessage(ChatColor.YELLOW + list);
+				}
+				return;
+			}
+			
+			
 			return;
 		}
 		
@@ -1025,76 +1085,11 @@ public class LotCommands implements Commands {
 			return;
 		}
 		
-		if (args[0].equalsIgnoreCase("search")) {
-			
-			if (!user.hasPerm("isLandlord")) {
-				user.sendMessage(ChatColor.RED + "You cannot do that!");
-				return;
-			}
-			
-			if (args.length==1) {
-				user.sendMessage(ChatColor.YELLOW
-						+ "Possible searches: here (your location), owner,");
-				user.sendMessage(ChatColor.YELLOW + "guest, rights (aka build rights).");
-				return;
-			}
-			
-			if (args[1].equalsIgnoreCase("location") || args[1].equalsIgnoreCase("here")) {
-				
-				Player player = user.getHandle();
-				Location location = player.getLocation();
-				int total = 0;
-				
-				if (plugin.lots.isInLot(location).equalsIgnoreCase("-1")) {
-					user.sendMessage(ChatColor.RED + "You are not standing inside a lot");
-					return;
-				} else {
-					
-					for (String LotID : plugin.lots.lot.keySet()) {
-						if (plugin.lots.getLot(LotID).withinLot(location)) {
-							total++;
-						}
-					}
-					
-					user.sendMessage(ChatColor.YELLOW
-							+ "You are standing in the following lots: (" + total + ")");
-				}
-				
-				String list = "";
-				int i = 0, r = 0;
-				List<String> usedIDs = new ArrayList<String>();
-				for (String LotID : plugin.lots.lot.keySet()) {
-					if (!plugin.lots.getLot(LotID).withinLot(location)) {
-						continue;
-					}
-					LotID = LotID.split(",")[0];
-					if (!usedIDs.contains(LotID)) {
-						usedIDs.add(LotID);
-						list += LotID;
-						i++;
-						r++;
-						if (r < total)
-							list += ",  ";
-						else
-							list += ".";
-						if (i >= 3) {
-							user.sendMessage(ChatColor.GRAY + list);
-							i = 0;
-							list = "";
-						}
-					}
-				}
-				if (!list.equalsIgnoreCase("")) {
-					user.sendMessage(ChatColor.YELLOW + list);
-				}
-			}
-			return;
-		}
-		
 		
 		/*
 		 * Alerts the user to an invalid command.
 		 */
+		
 		user.sendMessage(ChatColor.RED + "Unknown lot command!" + ChatColor.YELLOW + " Available Commands:");
 		user.sendMessage(ChatColor.YELLOW
 				+ "set, advset, delete, guest, info, setowner, group");
