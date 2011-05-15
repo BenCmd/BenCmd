@@ -12,7 +12,7 @@ import net.minecraft.server.Packet29DestroyEntity;
 
 public class Invisibility {
 	BenCmd plugin;
-	Timer timer;
+	public Timer timer;
 
 	public Invisibility(BenCmd instance) {
 		plugin = instance;

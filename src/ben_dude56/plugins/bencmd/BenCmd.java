@@ -113,6 +113,9 @@ public class BenCmd extends JavaPlugin {
 	@Override
 	public void onDisable() {
 		FreezeTimer.cancel();
+		chatListen.slow.slowTimer.cancel();
+		inv.timer.cancel();
+		flyDetect.flyTime.cancel();
 		PluginDescriptionFile pdfFile = this.getDescription();
 		log.info(pdfFile.getName() + " v" + pdfFile.getVersion()
 				+ " has been disabled!");
