@@ -11,11 +11,11 @@ import ben_dude56.plugins.bencmd.User;
 
 public class InvisibleCommands implements Commands {
 	BenCmd plugin;
-	
+
 	public InvisibleCommands(BenCmd instance) {
 		plugin = instance;
 	}
-	
+
 	public boolean onCommand(CommandSender sender, Command command,
 			String commandLabel, String[] args) {
 		User user;
@@ -24,8 +24,7 @@ public class InvisibleCommands implements Commands {
 		} catch (ClassCastException e) {
 			user = new User(plugin);
 		}
-		if (commandLabel.equalsIgnoreCase("poof")
-				&& user.hasPerm("canPoof")) {
+		if (commandLabel.equalsIgnoreCase("poof") && user.hasPerm("canPoof")) {
 			Poof(user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("nopoof")
@@ -43,23 +42,24 @@ public class InvisibleCommands implements Commands {
 		}
 		return false;
 	}
-	
+
 	public void Poof(User user) {
-		if(!user.isPoofed()) {
+		if (!user.isPoofed()) {
 			user.Poof();
 			user.sendMessage(ChatColor.GREEN + "POOF!");
 		} else {
-			if(user.isOffline()) {
-				user.sendMessage(ChatColor.RED + "You cannot unpoof while offline!");
+			if (user.isOffline()) {
+				user.sendMessage(ChatColor.RED
+						+ "You cannot unpoof while offline!");
 				return;
 			}
 			user.UnPoof();
 			user.sendMessage(ChatColor.GREEN + "REVERSE POOF!");
 		}
 	}
-	
+
 	public void NoPoof(User user) {
-		if(!user.isNoPoofed()) {
+		if (!user.isNoPoofed()) {
 			user.NoPoof();
 			user.sendMessage(ChatColor.GREEN + "NOPOOF!");
 		} else {
@@ -67,21 +67,21 @@ public class InvisibleCommands implements Commands {
 			user.sendMessage(ChatColor.GREEN + "REVERSE NOPOOF!");
 		}
 	}
-	
+
 	public void Offline(User user) {
-		if(!user.isPoofed()) {
+		if (!user.isPoofed()) {
 			user.sendMessage(ChatColor.RED + "You must be poofed to do that!");
 		} else {
-			if(user.isOffline()) {
+			if (user.isOffline()) {
 				user.sendMessage(ChatColor.RED + "You are already offline!");
 			} else {
 				user.goOffline();
 			}
 		}
 	}
-	
+
 	public void Online(User user) {
-		if(!user.isOffline()) {
+		if (!user.isOffline()) {
 			user.sendMessage(ChatColor.RED + "You are already online!");
 		} else {
 			user.goOnline();

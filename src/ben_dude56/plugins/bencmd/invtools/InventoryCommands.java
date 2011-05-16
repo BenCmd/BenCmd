@@ -59,7 +59,7 @@ public class InventoryCommands implements Commands {
 	}
 
 	public void Unl(String[] args, User user) {
-		if(user.isServer()) {
+		if (user.isServer()) {
 			user.sendMessage(ChatColor.RED + "The server cannot do that!");
 			return;
 		}
@@ -94,7 +94,7 @@ public class InventoryCommands implements Commands {
 	}
 
 	public void Disp(String[] args, User user) {
-		if(user.isServer()) {
+		if (user.isServer()) {
 			user.sendMessage(ChatColor.RED + "The server cannot do that!");
 			return;
 		}
@@ -154,7 +154,7 @@ public class InventoryCommands implements Commands {
 		int ItemDamage = Item.getDamage();
 		if (args.length == 3) {
 			User user2;
-			if((user2 = User.matchUser(args[2], plugin)) == null) {
+			if ((user2 = User.matchUser(args[2], plugin)) == null) {
 				user.sendMessage("Cannot find the player '" + args[2] + "'");
 				return;
 			}
@@ -182,7 +182,7 @@ public class InventoryCommands implements Commands {
 					+ ", amount: " + String.valueOf(fullAmount) + ", damage: "
 					+ String.valueOf(ItemDamage) + ")");
 		} else {
-			if(user.isServer()) {
+			if (user.isServer()) {
 				user.sendMessage(ChatColor.RED + "The server cannot do that!");
 				return;
 			}
@@ -212,7 +212,7 @@ public class InventoryCommands implements Commands {
 
 	public void ClearInventory(String[] args, User user) {
 		if (args.length == 0) {
-			if(user.isServer()) {
+			if (user.isServer()) {
 				user.sendMessage(ChatColor.RED + "The server cannot do that!");
 				return;
 			}
@@ -235,58 +235,67 @@ public class InventoryCommands implements Commands {
 					+ "Proper use is /clearinventory [player]");
 		}
 	}
-	
+
 	public void Kit(String[] args, User user) {
-		switch(args.length) {
+		switch (args.length) {
 		case 0:
 			String kits = "";
-			for(Kit kit: plugin.kits.kits) {
-				if(kit.canUseKit(user)) {
+			for (Kit kit : plugin.kits.kits) {
+				if (kit.canUseKit(user)) {
 					kits += " " + kit.getName();
 				}
 			}
-			if(kits.isEmpty()) {
-				user.sendMessage(ChatColor.RED + "You cannot access any kits...");
+			if (kits.isEmpty()) {
+				user.sendMessage(ChatColor.RED
+						+ "You cannot access any kits...");
 			} else {
-				user.sendMessage(ChatColor.YELLOW + "The following kits are available: " + kits);
+				user.sendMessage(ChatColor.YELLOW
+						+ "The following kits are available: " + kits);
 			}
 			break;
 		case 1:
-			if(user.isServer()) {
+			if (user.isServer()) {
 				user.sendMessage(ChatColor.RED + "The server cannot do that!");
 				return;
 			}
-			if(plugin.kits.kitExists(args[0])) {
-				if(plugin.kits.canUseKit(user, args[0])) {
+			if (plugin.kits.kitExists(args[0])) {
+				if (plugin.kits.canUseKit(user, args[0])) {
 					plugin.kits.giveKit(user, args[0]);
-					user.sendMessage(ChatColor.GREEN + "Enjoy, " + user.getName() + "!");
-					log.info("User " + user.getName() + " has spawned kit " + args[0] + "!");
+					user.sendMessage(ChatColor.GREEN + "Enjoy, "
+							+ user.getName() + "!");
+					log.info("User " + user.getName() + " has spawned kit "
+							+ args[0] + "!");
 				} else {
-					user.sendMessage(ChatColor.RED + "That kit doesn't exist or you don't have permission to use it!");
+					user.sendMessage(ChatColor.RED
+							+ "That kit doesn't exist or you don't have permission to use it!");
 				}
 			} else {
-				user.sendMessage(ChatColor.RED + "That kit doesn't exist or you don't have permission to use it!");
+				user.sendMessage(ChatColor.RED
+						+ "That kit doesn't exist or you don't have permission to use it!");
 			}
 			break;
 		case 2:
-			if(plugin.kits.kitExists(args[0])) {
-				if(plugin.kits.canUseKit(user, args[0])) {
+			if (plugin.kits.kitExists(args[0])) {
+				if (plugin.kits.canUseKit(user, args[0])) {
 					User user2;
-					if((user2 = User.matchUser(args[1], plugin)) == null) {
+					if ((user2 = User.matchUser(args[1], plugin)) == null) {
 						user.sendMessage(ChatColor.RED + args[1]
-						              						+ " doesn't exist or is not online.");
+								+ " doesn't exist or is not online.");
 						return;
 					}
 					plugin.kits.giveKit(user, args[1]);
 					user2.sendMessage(ChatColor.GREEN + user.getName()
 							+ " has sent you a gift.");
 					user.sendMessage("Your gift has been sent!");
-					log.info("User " + user.getName() + " has spawned kit " + args[1] + " for user " + user2.getName() + "!");
+					log.info("User " + user.getName() + " has spawned kit "
+							+ args[1] + " for user " + user2.getName() + "!");
 				} else {
-					user.sendMessage(ChatColor.RED + "That kit doesn't exist or you don't have permission to use it!");
+					user.sendMessage(ChatColor.RED
+							+ "That kit doesn't exist or you don't have permission to use it!");
 				}
 			} else {
-				user.sendMessage(ChatColor.RED + "That kit doesn't exist or you don't have permission to use it!");
+				user.sendMessage(ChatColor.RED
+						+ "That kit doesn't exist or you don't have permission to use it!");
 			}
 			break;
 		default:

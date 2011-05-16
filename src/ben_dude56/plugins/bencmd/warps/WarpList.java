@@ -27,7 +27,7 @@ public class WarpList {
 		plugin = instance;
 		LoadWarps();
 	}
-	
+
 	public boolean updateWarp(Warp warp) {
 		int ind = this.getIndex(warp);
 		String name = warp.warpName;
@@ -39,9 +39,9 @@ public class WarpList {
 		String world = warp.loc.getWorld().getName();
 		String group = warp.mustInheritGroup;
 		String value = name + ":" + x + "," + y + "," + z + ","
-			+ yaw.toString() + "," + pitch.toString() + ":" + world
-			+ ":" + group;
-		if(ind == -1) {
+				+ yaw.toString() + "," + pitch.toString() + ":" + world + ":"
+				+ group;
+		if (ind == -1) {
 			warpString.add(value);
 		} else {
 			warpString.add(ind, value);
@@ -49,10 +49,10 @@ public class WarpList {
 		SaveFile();
 		return true;
 	}
-	
+
 	public boolean remWarp(String name) {
 		int ind = this.getIndex(name);
-		if(ind == -1) {
+		if (ind == -1) {
 			return false;
 		}
 		warpString.remove(ind);
@@ -125,27 +125,27 @@ public class WarpList {
 		}
 		return true;
 	}
-	
+
 	public int getIndex(Warp warp) {
-		for(int i = 0; i < warpString.size(); i++) {
+		for (int i = 0; i < warpString.size(); i++) {
 			String value = warpString.get(i);
-			if(value.split(":")[0].equals(warp.warpName)) {
+			if (value.split(":")[0].equals(warp.warpName)) {
 				return i;
 			}
 		}
 		return -1;
 	}
-	
+
 	public int getIndex(String name) {
-		for(int i = 0; i < warpString.size(); i++) {
+		for (int i = 0; i < warpString.size(); i++) {
 			String value = warpString.get(i);
-			if(value.split(":")[0].equals(name)) {
+			if (value.split(":")[0].equals(name)) {
 				return i;
 			}
 		}
 		return -1;
 	}
-	
+
 	public boolean SaveFile() {
 		File warpFile;
 		warpFile = new File(plugin.propDir + "warps.db");
@@ -157,15 +157,15 @@ public class WarpList {
 			e.printStackTrace();
 			return false;
 		}
-		for(String value : warpString) {
+		for (String value : warpString) {
 			try {
 				bw.write(value);
-				if (!warpString.get(warpString.size() - 1)
-						.equals(value)) {
+				if (!warpString.get(warpString.size() - 1).equals(value)) {
 					bw.newLine();
 				}
 			} catch (IOException e) {
-				log.severe("BenCmd failed to save warp " + value.split(":")[0] + ":");
+				log.severe("BenCmd failed to save warp " + value.split(":")[0]
+						+ ":");
 				e.printStackTrace();
 			}
 		}
@@ -178,7 +178,7 @@ public class WarpList {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * @deprecated Causes extreme lag.
 	 */
@@ -258,13 +258,13 @@ public class WarpList {
 	public List<Warp> listWarps(Player player) {
 		List<Warp> list = new ArrayList<Warp>();
 		for (Warp warp : warps.values()) {
-			if (warp.canWarpHere(new WarpableUser(plugin,player))) {
+			if (warp.canWarpHere(new WarpableUser(plugin, player))) {
 				list.add(warp);
 			}
 		}
 		return list;
 	}
-	
+
 	public List<Warp> listAllWarps() {
 		return (List<Warp>) warps.values();
 	}

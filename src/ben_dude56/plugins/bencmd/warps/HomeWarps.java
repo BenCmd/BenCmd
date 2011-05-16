@@ -13,7 +13,7 @@ public class HomeWarps {
 		plugin = instance;
 		homes = new HomeList(plugin);
 	}
-	
+
 	public void ReloadHomes() {
 		homes.LoadHomes();
 	}
@@ -45,7 +45,7 @@ public class HomeWarps {
 		if (HomeNumber <= maxHomes) {
 			String name = player.getName() + HomeNumber.toString();
 			if (homes.warps.containsKey(name)) {
-				homes.getHome(name).WarpHere(new WarpableUser(plugin,player));
+				homes.getHome(name).WarpHere(new WarpableUser(plugin, player));
 			} else {
 				player.sendMessage(ChatColor.RED
 						+ "You must set that home first!");
@@ -62,7 +62,7 @@ public class HomeWarps {
 		if (HomeNumber <= maxHomes) {
 			String name = otherPlayer + HomeNumber.toString();
 			if (homes.warps.containsKey(name)) {
-				homes.getHome(name).WarpHere(new WarpableUser(plugin,player));
+				homes.getHome(name).WarpHere(new WarpableUser(plugin, player));
 			} else {
 				player.sendMessage(ChatColor.RED + otherPlayer
 						+ " doesn't have a home #" + HomeNumber.toString()

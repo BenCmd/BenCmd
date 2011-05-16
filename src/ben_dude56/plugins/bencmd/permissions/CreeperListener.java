@@ -9,15 +9,16 @@ import ben_dude56.plugins.bencmd.User;
 
 public class CreeperListener extends EntityListener {
 	BenCmd plugin;
-	
+
 	public CreeperListener(BenCmd instance) {
 		plugin = instance;
 	}
-	
+
 	public void onEntityTarget(EntityTargetEvent event) {
 		if (event.getEntity().toString().equalsIgnoreCase("CraftCreeper"))
 			event.setCancelled(true);
-		if (event.getTarget() instanceof Player && new User(plugin,(Player)event.getTarget()).isPoofed())
+		if (event.getTarget() instanceof Player
+				&& new User(plugin, (Player) event.getTarget()).isPoofed())
 			event.setCancelled(true);
 	}
 }

@@ -43,8 +43,8 @@ public class ChatPlayerListener extends PlayerListener {
 	}
 
 	public void onPlayerChat(PlayerChatEvent event) {
-		if(plugin.mainProperties.getBoolean("enableChannels", false)) {
-			
+		if (plugin.mainProperties.getBoolean("enableChannels", false)) {
+
 		}
 		String message = event.getMessage();
 		User user = new User(plugin, event.getPlayer());
@@ -103,7 +103,7 @@ public class ChatPlayerListener extends PlayerListener {
 			} else {
 				String playerString = "";
 				for (Player player2 : playerList) {
-					if(new User(plugin, player2).isOffline()) {
+					if (new User(plugin, player2).isOffline()) {
 						continue;
 					}
 					playerString += plugin.perm.groupFile
@@ -124,54 +124,55 @@ public class ChatPlayerListener extends PlayerListener {
 					+ (slow.getDefTime() / 1000)
 					+ " seconds between each chat message.");
 		}
-		if(user.hasPerm("isTicketAdmin") && plugin.reports.unreadTickets()) {
-			user.sendMessage(ChatColor.RED + "There are unread reports! Use /ticket list to see them!");
+		if (user.hasPerm("isTicketAdmin") && plugin.reports.unreadTickets()) {
+			user.sendMessage(ChatColor.RED
+					+ "There are unread reports! Use /ticket list to see them!");
 		}
 		event.setJoinMessage(user.getColor() + user.getName() + ChatColor.WHITE
 				+ " has joined the game...");
-		if(plugin.channels.isActive()) {
+		if (plugin.channels.isActive()) {
 			user.JoinActiveChannel("general");
 		}
 	}
-	
+
 	public void onPlayerQuit(PlayerQuitEvent event) {
 		User user = new User(plugin, event.getPlayer());
-		if(user.isOffline()) {
+		if (user.isOffline()) {
 			user.goOnlineNoMsg();
 			event.setQuitMessage("");
 		} else {
-			event.setQuitMessage(user.getColor() + user.getName() + ChatColor.WHITE
-					+ " has left the game...");
+			event.setQuitMessage(user.getColor() + user.getName()
+					+ ChatColor.WHITE + " has left the game...");
 		}
 		plugin.maxPlayers.leave(user);
-		if(user.isPoofed()) {
+		if (user.isPoofed()) {
 			user.UnPoof();
 		}
-		if(user.isNoPoofed()) {
+		if (user.isNoPoofed()) {
 			user.UnNoPoof();
 		}
-		if(user.inChannel()) {
+		if (user.inChannel()) {
 			user.LeaveActiveChannel();
 		}
 	}
-	
+
 	public void onPlayerKick(PlayerKickEvent event) {
 		User user = new User(plugin, event.getPlayer());
-		if(user.isOffline()) {
+		if (user.isOffline()) {
 			user.goOnlineNoMsg();
 			event.setLeaveMessage("");
 		} else {
-			event.setLeaveMessage(user.getColor() + user.getName() + ChatColor.WHITE
-					+ " has left the game...");
+			event.setLeaveMessage(user.getColor() + user.getName()
+					+ ChatColor.WHITE + " has left the game...");
 		}
 		plugin.maxPlayers.leave(user);
-		if(user.isPoofed()) {
+		if (user.isPoofed()) {
 			user.UnPoof();
 		}
-		if(user.isNoPoofed()) {
+		if (user.isNoPoofed()) {
 			user.UnNoPoof();
 		}
-		if(user.inChannel()) {
+		if (user.inChannel()) {
 			user.LeaveActiveChannel();
 		}
 	}

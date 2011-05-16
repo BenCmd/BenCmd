@@ -52,7 +52,8 @@ public class ProtectedCommands implements Commands {
 			if (args.length >= 1) {
 				guest = " " + args[0];
 			}
-			plugin.getServer().dispatchCommand(sender, "protect addguest" + guest);
+			plugin.getServer().dispatchCommand(sender,
+					"protect addguest" + guest);
 			return true;
 		}
 		if (commandLabel.equalsIgnoreCase("unshare")) {
@@ -60,7 +61,8 @@ public class ProtectedCommands implements Commands {
 			if (args.length >= 1) {
 				guest = " " + args[0];
 			}
-			plugin.getServer().dispatchCommand(sender, "protect remguest" + guest);
+			plugin.getServer().dispatchCommand(sender,
+					"protect remguest" + guest);
 			return true;
 		}
 		return false;
@@ -95,8 +97,9 @@ public class ProtectedCommands implements Commands {
 	}
 
 	public void AddProtect(String[] args, User user) {
-		if(!user.hasPerm("canProtect")) {
-			user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
+		if (!user.hasPerm("canProtect")) {
+			user.sendMessage(ChatColor.RED
+					+ "You don't have permission to do that!");
 		}
 		Block pointedAt = user.getHandle().getTargetBlock(null, 4);
 		if (pointedAt.getType() != Material.CHEST) {
@@ -104,7 +107,7 @@ public class ProtectedCommands implements Commands {
 					+ "You are not pointing at a protectable block!");
 			return;
 		}
-		if(plugin.protectFile.getProtection(pointedAt.getLocation()) != -1) {
+		if (plugin.protectFile.getProtection(pointedAt.getLocation()) != -1) {
 			user.sendMessage(ChatColor.RED + "That block is already protected!");
 			return;
 		}
@@ -125,7 +128,7 @@ public class ProtectedCommands implements Commands {
 			}
 		} else if (args.length == 2) {
 			PermissionUser user2;
-			if((user2 = PermissionUser.matchUser(args[1], plugin)) == null) {
+			if ((user2 = PermissionUser.matchUser(args[1], plugin)) == null) {
 				user.sendMessage(ChatColor.RED + "That player doesn't exist!");
 				return;
 			}
@@ -195,7 +198,8 @@ public class ProtectedCommands implements Commands {
 								+ "The protection on that block was removed.");
 					}
 				} else {
-					user.sendMessage(ChatColor.RED + "You aren't pointing at a protected block!");
+					user.sendMessage(ChatColor.RED
+							+ "You aren't pointing at a protected block!");
 				}
 			}
 		} else if (args.length == 2) {
@@ -203,13 +207,13 @@ public class ProtectedCommands implements Commands {
 			try {
 				id = Integer.parseInt(args[1]);
 			} catch (NumberFormatException e) {
-				user.sendMessage(ChatColor.RED + args[1] + "Cannot be converted into a number...");
+				user.sendMessage(ChatColor.RED + args[1]
+						+ "Cannot be converted into a number...");
 				return;
 			}
 			ProtectedChest chest;
 			try {
-				chest = (ProtectedChest) plugin.protectFile
-						.getProtection(id);
+				chest = (ProtectedChest) plugin.protectFile.getProtection(id);
 			} catch (ClassCastException e) {
 				user.sendMessage(ChatColor.RED
 						+ "There is a problem with the protection file. This incident has been reported.");
@@ -217,8 +221,7 @@ public class ProtectedCommands implements Commands {
 						+ String.valueOf(id) + " should be of type c...");
 				return;
 			} catch (NullPointerException e) {
-				user.sendMessage(ChatColor.RED
-						+ "That block isn't protected!");
+				user.sendMessage(ChatColor.RED + "That block isn't protected!");
 				return;
 			}
 			if (!chest.canChange(user)) {
@@ -234,9 +237,8 @@ public class ProtectedCommands implements Commands {
 				log.info(user.getName() + " removed "
 						+ chest.getOwner().getName()
 						+ "'s protected chest (id: "
-						+ String.valueOf(chest.GetId())
-						+ ") at position (" + w + "," + x + "," + y
-						+ "," + z + ")");
+						+ String.valueOf(chest.GetId()) + ") at position (" + w
+						+ "," + x + "," + y + "," + z + ")");
 				user.sendMessage(ChatColor.GREEN
 						+ "The protection on that block was removed.");
 				return;
@@ -246,17 +248,18 @@ public class ProtectedCommands implements Commands {
 					+ "Proper use is /protect remove [ID]");
 		}
 	}
-	
+
 	public void InfoProtect(String[] args, User user) {
 		Block pointedAt = user.getHandle().getTargetBlock(null, 4);
 		ProtectedBlock block;
-		if((block = plugin.protectFile.getProtection(plugin.protectFile.getProtection(pointedAt.getLocation()))) != null) {
+		if ((block = plugin.protectFile.getProtection(plugin.protectFile
+				.getProtection(pointedAt.getLocation()))) != null) {
 			String owner = block.getOwner().getName();
 			String id = String.valueOf(block.GetId());
 			String guests = "";
 			boolean init = false;
-			for(PermissionUser guest : block.getGuests()) {
-				if(init) {
+			for (PermissionUser guest : block.getGuests()) {
+				if (init) {
 					guests += ",";
 				} else {
 					init = true;
@@ -267,120 +270,155 @@ public class ProtectedCommands implements Commands {
 			user.sendMessage(ChatColor.DARK_GRAY + "Owner: " + owner);
 			user.sendMessage(ChatColor.DARK_GRAY + "Guests: " + guests);
 		} else {
-			user.sendMessage(ChatColor.RED + "You aren't pointing at a protected block!");
+			user.sendMessage(ChatColor.RED
+					+ "You aren't pointing at a protected block!");
 		}
 	}
-	
+
 	public void OwnerProtect(String[] args, User user) {
 		Block pointedAt = user.getHandle().getTargetBlock(null, 4);
 		ProtectedBlock block;
 		if (args.length == 2) {
-			if((block = plugin.protectFile.getProtection(plugin.protectFile.getProtection(pointedAt.getLocation()))) != null) {
+			if ((block = plugin.protectFile.getProtection(plugin.protectFile
+					.getProtection(pointedAt.getLocation()))) != null) {
 				PermissionUser newOwner;
-				if((newOwner = PermissionUser.matchUser(args[1], plugin)) == null) {
-					user.sendMessage(ChatColor.RED + "That player doesn't exist!");
+				if ((newOwner = PermissionUser.matchUser(args[1], plugin)) == null) {
+					user.sendMessage(ChatColor.RED
+							+ "That player doesn't exist!");
 					return;
 				}
-				log.info(user.getName() + " has changed the owner of " + block.getOwner().getName() + "'s protected block (id: " + block.GetId() + ") to " + args[1]);
-				user.sendMessage(ChatColor.GREEN + "That protected block now belongs to " + newOwner.getName());
+				log.info(user.getName() + " has changed the owner of "
+						+ block.getOwner().getName()
+						+ "'s protected block (id: " + block.GetId() + ") to "
+						+ args[1]);
+				user.sendMessage(ChatColor.GREEN
+						+ "That protected block now belongs to "
+						+ newOwner.getName());
 				plugin.protectFile.changeOwner(block.GetId(), newOwner);
 			} else {
-				user.sendMessage(ChatColor.RED + "You aren't pointing at a protected block!");
+				user.sendMessage(ChatColor.RED
+						+ "You aren't pointing at a protected block!");
 			}
 		} else if (args.length == 3) {
 			int id;
 			try {
 				id = Integer.parseInt(args[2]);
 			} catch (NumberFormatException e) {
-				user.sendMessage(ChatColor.RED + args[2] + "Cannot be converted into a number...");
+				user.sendMessage(ChatColor.RED + args[2]
+						+ "Cannot be converted into a number...");
 				return;
 			}
 			block = plugin.protectFile.getProtection(id);
 			PermissionUser newOwner;
-			if((newOwner = PermissionUser.matchUser(args[0], plugin)) == null) {
+			if ((newOwner = PermissionUser.matchUser(args[0], plugin)) == null) {
 				user.sendMessage(ChatColor.RED + "That player doesn't exist!");
 				return;
 			}
-			log.info(user.getName() + " has changed the owner of " + block.getOwner().getName() + "'s protected block (id: " + block.GetId() + ") to " + args[1]);
-			user.sendMessage(ChatColor.GREEN + "That protected block now belongs to " + newOwner.getName());
+			log.info(user.getName() + " has changed the owner of "
+					+ block.getOwner().getName() + "'s protected block (id: "
+					+ block.GetId() + ") to " + args[1]);
+			user.sendMessage(ChatColor.GREEN
+					+ "That protected block now belongs to "
+					+ newOwner.getName());
 			plugin.protectFile.changeOwner(block.GetId(), newOwner);
 		} else {
 			user.sendMessage(ChatColor.YELLOW
 					+ "Proper use is /protect setowner <Owner> [ID]");
 		}
 	}
-	
+
 	public void AddGuest(String[] args, User user) {
 		Block pointedAt = user.getHandle().getTargetBlock(null, 4);
 		ProtectedBlock block;
 		if (args.length == 2) {
-			if((block = plugin.protectFile.getProtection(plugin.protectFile.getProtection(pointedAt.getLocation()))) != null) {
+			if ((block = plugin.protectFile.getProtection(plugin.protectFile
+					.getProtection(pointedAt.getLocation()))) != null) {
 				PermissionUser newOwner;
-				if((newOwner = PermissionUser.matchUser(args[1], plugin)) == null) {
-					user.sendMessage(ChatColor.RED + "That player doesn't exist!");
+				if ((newOwner = PermissionUser.matchUser(args[1], plugin)) == null) {
+					user.sendMessage(ChatColor.RED
+							+ "That player doesn't exist!");
 					return;
 				}
-				log.info(user.getName() + " has added " + newOwner.getName() + " to the guest list of " + block.getOwner().getName() + "'s protected block (id: " + block.GetId() + ")");
-				user.sendMessage(ChatColor.GREEN + newOwner.getName() + " now has guest access to that block.");
+				log.info(user.getName() + " has added " + newOwner.getName()
+						+ " to the guest list of " + block.getOwner().getName()
+						+ "'s protected block (id: " + block.GetId() + ")");
+				user.sendMessage(ChatColor.GREEN + newOwner.getName()
+						+ " now has guest access to that block.");
 				plugin.protectFile.addGuest(block.GetId(), newOwner);
 			} else {
-				user.sendMessage(ChatColor.RED + "You aren't pointing at a protected block!");
+				user.sendMessage(ChatColor.RED
+						+ "You aren't pointing at a protected block!");
 			}
 		} else if (args.length == 3) {
 			int id;
 			try {
 				id = Integer.parseInt(args[2]);
 			} catch (NumberFormatException e) {
-				user.sendMessage(ChatColor.RED + args[2] + "Cannot be converted into a number...");
+				user.sendMessage(ChatColor.RED + args[2]
+						+ "Cannot be converted into a number...");
 				return;
 			}
 			block = plugin.protectFile.getProtection(id);
 			PermissionUser newOwner;
-			if((newOwner = PermissionUser.matchUser(args[0], plugin)) == null) {
+			if ((newOwner = PermissionUser.matchUser(args[0], plugin)) == null) {
 				user.sendMessage(ChatColor.RED + "That player doesn't exist!");
 				return;
 			}
-			log.info(user.getName() + " has added " + newOwner.getName() + " to the guest list of " + block.getOwner().getName() + "'s protected block (id: " + block.GetId() + ")");
-			user.sendMessage(ChatColor.GREEN + newOwner.getName() + " now has guest access to that block.");
+			log.info(user.getName() + " has added " + newOwner.getName()
+					+ " to the guest list of " + block.getOwner().getName()
+					+ "'s protected block (id: " + block.GetId() + ")");
+			user.sendMessage(ChatColor.GREEN + newOwner.getName()
+					+ " now has guest access to that block.");
 			plugin.protectFile.addGuest(block.GetId(), newOwner);
 		} else {
 			user.sendMessage(ChatColor.YELLOW
 					+ "Proper use is /protect addguest <Guest> [ID]");
 		}
 	}
-	
+
 	public void RemGuest(String[] args, User user) {
 		Block pointedAt = user.getHandle().getTargetBlock(null, 4);
 		ProtectedBlock block;
 		if (args.length == 2) {
-			if((block = plugin.protectFile.getProtection(plugin.protectFile.getProtection(pointedAt.getLocation()))) != null) {
+			if ((block = plugin.protectFile.getProtection(plugin.protectFile
+					.getProtection(pointedAt.getLocation()))) != null) {
 				PermissionUser newOwner;
-				if((newOwner = PermissionUser.matchUser(args[1], plugin)) == null) {
-					user.sendMessage(ChatColor.RED + "That player doesn't exist!");
+				if ((newOwner = PermissionUser.matchUser(args[1], plugin)) == null) {
+					user.sendMessage(ChatColor.RED
+							+ "That player doesn't exist!");
 					return;
 				}
-				log.info(user.getName() + " has removed " + newOwner.getName() + " from the guest list of " + block.getOwner().getName() + "'s protected block (id: " + block.GetId() + ")");
-				user.sendMessage(ChatColor.GREEN + newOwner.getName() + " has now lost guest access to that block.");
+				log.info(user.getName() + " has removed " + newOwner.getName()
+						+ " from the guest list of "
+						+ block.getOwner().getName()
+						+ "'s protected block (id: " + block.GetId() + ")");
+				user.sendMessage(ChatColor.GREEN + newOwner.getName()
+						+ " has now lost guest access to that block.");
 				plugin.protectFile.removeGuest(block.GetId(), newOwner);
 			} else {
-				user.sendMessage(ChatColor.RED + "You aren't pointing at a protected block!");
+				user.sendMessage(ChatColor.RED
+						+ "You aren't pointing at a protected block!");
 			}
 		} else if (args.length == 3) {
 			int id;
 			try {
 				id = Integer.parseInt(args[2]);
 			} catch (NumberFormatException e) {
-				user.sendMessage(ChatColor.RED + args[2] + "Cannot be converted into a number...");
+				user.sendMessage(ChatColor.RED + args[2]
+						+ "Cannot be converted into a number...");
 				return;
 			}
 			block = plugin.protectFile.getProtection(id);
 			PermissionUser newOwner;
-			if((newOwner = PermissionUser.matchUser(args[0], plugin)) == null) {
+			if ((newOwner = PermissionUser.matchUser(args[0], plugin)) == null) {
 				user.sendMessage(ChatColor.RED + "That player doesn't exist!");
 				return;
 			}
-			log.info(user.getName() + " has removed " + newOwner.getName() + " from the guest list of " + block.getOwner().getName() + "'s protected block (id: " + block.GetId() + ")");
-			user.sendMessage(ChatColor.GREEN + newOwner.getName() + " has now lost guest access to that block.");
+			log.info(user.getName() + " has removed " + newOwner.getName()
+					+ " from the guest list of " + block.getOwner().getName()
+					+ "'s protected block (id: " + block.GetId() + ")");
+			user.sendMessage(ChatColor.GREEN + newOwner.getName()
+					+ " has now lost guest access to that block.");
 			plugin.protectFile.removeGuest(block.GetId(), newOwner);
 		} else {
 			user.sendMessage(ChatColor.YELLOW

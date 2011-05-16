@@ -13,26 +13,32 @@ import ben_dude56.plugins.bencmd.User;
 public class ProtectPlayerListener extends PlayerListener {
 	BenCmd plugin;
 	Logger log = Logger.getLogger("minecraft");
-	
+
 	public ProtectPlayerListener(BenCmd instance) {
 		plugin = instance;
 	}
-	
+
 	public void onPlayerInteract(PlayerInteractEvent event) {
-		if(event.getAction() != Action.RIGHT_CLICK_BLOCK || event.isCancelled()) {
+		if (event.getAction() != Action.RIGHT_CLICK_BLOCK
+				|| event.isCancelled()) {
 			return;
 		}
 		int id;
 		ProtectedBlock block;
-		if((id = plugin.protectFile.getProtection(event.getClickedBlock().getLocation())) != -1) {
+		if ((id = plugin.protectFile.getProtection(event.getClickedBlock()
+				.getLocation())) != -1) {
 			block = plugin.protectFile.getProtection(id);
 			User user = new User(plugin, event.getPlayer());
-			if(!block.canUse(user)) {
+			if (!block.canUse(user)) {
 				event.setCancelled(true);
-				user.sendMessage(ChatColor.RED + "That block is protected from use!  Use /protect info for more information...");
+				user.sendMessage(ChatColor.RED
+						+ "That block is protected from use!  Use /protect info for more information...");
 			} else {
-				if(!user.getName().equalsIgnoreCase(block.getOwner().getName())) {
-					log.info(user.getName() + " has accessed " + block.getOwner().getName() + "'s protected chest.");
+				if (!user.getName()
+						.equalsIgnoreCase(block.getOwner().getName())) {
+					log.info(user.getName() + " has accessed "
+							+ block.getOwner().getName()
+							+ "'s protected chest.");
 				}
 			}
 		}

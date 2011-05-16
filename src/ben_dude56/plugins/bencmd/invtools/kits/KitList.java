@@ -43,59 +43,60 @@ public class KitList extends Properties {
 			ex.printStackTrace();
 		}
 		kits.clear();
-		for(int i = 0; i < this.size(); i++) {
-			kits.add(new Kit(plugin, i, (String)this.values().toArray()[i], (String)this.keySet().toArray()[i]));
+		for (int i = 0; i < this.size(); i++) {
+			kits.add(new Kit(plugin, i, (String) this.values().toArray()[i],
+					(String) this.keySet().toArray()[i]));
 		}
 	}
-	
+
 	public boolean kitExists(String name) {
-		for(Kit kit : kits) {
-			if(kit.getName().equalsIgnoreCase(name)) {
+		for (Kit kit : kits) {
+			if (kit.getName().equalsIgnoreCase(name)) {
 				return true;
 			}
 		}
 		return false;
 	}
-	
+
 	public Kit getKit(String name) {
-		for(Kit kit : kits) {
-			if(kit.getName().equalsIgnoreCase(name)) {
+		for (Kit kit : kits) {
+			if (kit.getName().equalsIgnoreCase(name)) {
 				return kit;
 			}
 		}
 		return null;
 	}
-	
+
 	public Kit getKit(int ID) {
-		for(Kit kit : kits) {
-			if(kit.getId() == ID) {
+		for (Kit kit : kits) {
+			if (kit.getId() == ID) {
 				return kit;
 			}
 		}
 		return null;
 	}
-	
+
 	public boolean canUseKit(User user, String kitName) {
 		Kit kit = this.getKit(kitName);
-		if(kit != null) {
+		if (kit != null) {
 			return kit.canUseKit(user);
 		} else {
 			return false;
 		}
 	}
-	
+
 	public boolean giveKit(User user, String kitName) {
 		Kit kit = this.getKit(kitName);
-		if(kit != null) {
+		if (kit != null) {
 			return kit.giveKit(user);
 		} else {
 			return false;
 		}
 	}
-	
+
 	public boolean giveKit(User receiver, User sender, String kitName) {
 		Kit kit = this.getKit(kitName);
-		if(kit != null && kit.canUseKit(sender)) {
+		if (kit != null && kit.canUseKit(sender)) {
 			kit.forceGiveKit(receiver);
 			return true;
 		} else {

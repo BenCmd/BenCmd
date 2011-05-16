@@ -106,8 +106,10 @@ public class PermissionCommands implements Commands {
 				break;
 			} else if (args[1].startsWith("g:")) {
 				PermissionUser user2;
-				if((user2 = PermissionUser.matchUserIgnoreCase(args[0], plugin)) == null) {
-					user.sendMessage(ChatColor.RED + "That player doesn't exist!");
+				if ((user2 = PermissionUser
+						.matchUserIgnoreCase(args[0], plugin)) == null) {
+					user.sendMessage(ChatColor.RED
+							+ "That player doesn't exist!");
 					return;
 				}
 				switch (user2.changeGroup(args[1].replaceFirst("g:", ""))) {
@@ -137,8 +139,9 @@ public class PermissionCommands implements Commands {
 					break;
 				}
 				break;
-			} else if(args[1].startsWith("p:")) {
-				user.sendMessage(ChatColor.RED + "You can only do that for groups!");
+			} else if (args[1].startsWith("p:")) {
+				user.sendMessage(ChatColor.RED
+						+ "You can only do that for groups!");
 				return;
 			} else {
 				if (args[1].startsWith("+")) {
@@ -157,8 +160,10 @@ public class PermissionCommands implements Commands {
 				if (str.startsWith("+")) {
 					str = str.replaceFirst("\\+", "");
 					PermissionUser user2;
-					if((user2 = PermissionUser.matchUserIgnoreCase(args[0], plugin)) == null) {
-						user.sendMessage(ChatColor.RED + "That player doesn't exist!");
+					if ((user2 = PermissionUser.matchUserIgnoreCase(args[0],
+							plugin)) == null) {
+						user.sendMessage(ChatColor.RED
+								+ "That player doesn't exist!");
 						return;
 					}
 					switch (user2.addPermission(str)) {
@@ -185,8 +190,10 @@ public class PermissionCommands implements Commands {
 				} else if (str.startsWith("-")) {
 					str = str.replaceFirst("-", "");
 					PermissionUser user2;
-					if((user2 = PermissionUser.matchUserIgnoreCase(args[0], plugin)) == null) {
-						user.sendMessage(ChatColor.RED + "That player doesn't exist!");
+					if ((user2 = PermissionUser.matchUserIgnoreCase(args[0],
+							plugin)) == null) {
+						user.sendMessage(ChatColor.RED
+								+ "That player doesn't exist!");
 						return;
 					}
 					switch (user2.deletePermission(str)) {
@@ -297,8 +304,9 @@ public class PermissionCommands implements Commands {
 					break;
 				}
 				break;
-			} else if(args[1].startsWith("p:")) {
-				user.sendMessage(ChatColor.RED + "You can only do that for groups!");
+			} else if (args[1].startsWith("p:")) {
+				user.sendMessage(ChatColor.RED
+						+ "You can only do that for groups!");
 				return;
 			} else {
 				if (args[1].startsWith("+")) {
@@ -365,16 +373,18 @@ public class PermissionCommands implements Commands {
 			}
 		}
 	}
-	
+
 	public void Status(String[] args, User user) {
 		PermissionUser puser2 = null;
 		User user2 = null;
-		if(args.length == 1 && !user.hasPerm("canCheckOtherStatus")) {
-			user.sendMessage(ChatColor.RED + "You don't have enough permissions to check the status of others!");
+		if (args.length == 1 && !user.hasPerm("canCheckOtherStatus")) {
+			user.sendMessage(ChatColor.RED
+					+ "You don't have enough permissions to check the status of others!");
 			return;
 		} else if (args.length == 1) {
-			if((puser2 = PermissionUser.matchUserIgnoreCase(args[0], plugin)) == null) {
-				user.sendMessage(ChatColor.RED + "That user isn't in the database!");
+			if ((puser2 = PermissionUser.matchUserIgnoreCase(args[0], plugin)) == null) {
+				user.sendMessage(ChatColor.RED
+						+ "That user isn't in the database!");
 				return;
 			}
 			user2 = User.matchUser(args[0], plugin);
@@ -382,60 +392,67 @@ public class PermissionCommands implements Commands {
 			puser2 = user;
 			user2 = user;
 		} else {
-			user.sendMessage(ChatColor.YELLOW + "Proper use is: /status [player]");
+			user.sendMessage(ChatColor.YELLOW
+					+ "Proper use is: /status [player]");
 			return;
 		}
 		boolean jailed = puser2.hasPerm("isJailed", false);
 		boolean muted = puser2.hasPerm("isMuted", false);
 		boolean reported = false;
 		for (Report ticket : plugin.reports.getReports()) {
-			if(ticket.getAccused().getName().equalsIgnoreCase(puser2.getName()) && ticket.getStatus() != ReportStatus.CLOSED && ticket.getStatus() != ReportStatus.LOCKED) {
+			if (ticket.getAccused().getName()
+					.equalsIgnoreCase(puser2.getName())
+					&& ticket.getStatus() != ReportStatus.CLOSED
+					&& ticket.getStatus() != ReportStatus.LOCKED) {
 				reported = true;
 				break;
 			}
 		}
 		user.sendMessage(ChatColor.GRAY + "Status of " + puser2.getName() + ":");
-		if(jailed) {
+		if (jailed) {
 			user.sendMessage(ChatColor.RED + "   -Jailed: YES");
 		} else {
 			user.sendMessage(ChatColor.GRAY + "   -Jailed: NO");
 		}
-		if(muted) {
+		if (muted) {
 			user.sendMessage(ChatColor.RED + "   -Muted: YES");
 		} else {
 			user.sendMessage(ChatColor.GRAY + "   -Muted: NO");
 		}
-		if(reported) {
+		if (reported) {
 			user.sendMessage(ChatColor.RED + "   -Reported: YES");
 		} else {
 			user.sendMessage(ChatColor.GRAY + "   -Reported: NO");
 		}
-		if(user.hasPerm("canViewAdvStatus") && user2 != null) {
+		if (user.hasPerm("canViewAdvStatus") && user2 != null) {
 			boolean godded = user2.isGod();
 			boolean poofed = user2.isPoofed();
 			boolean nopoofed = user2.isNoPoofed();
 			int health = user2.getHandle().getHealth();
-			if(godded) {
+			if (godded) {
 				user.sendMessage(ChatColor.GREEN + "   -Godded: YES");
 			} else {
 				user.sendMessage(ChatColor.GRAY + "   -Godded: NO");
 			}
-			if(poofed) {
+			if (poofed) {
 				user.sendMessage(ChatColor.GREEN + "   -Invisible: YES");
 			} else {
 				user.sendMessage(ChatColor.GRAY + "   -Invisible: NO");
 			}
-			if(nopoofed) {
+			if (nopoofed) {
 				user.sendMessage(ChatColor.GREEN + "   -See-all: YES");
 			} else {
 				user.sendMessage(ChatColor.GRAY + "   -See-all: NO");
 			}
-			if(health >= 15) {
-				user.sendMessage(ChatColor.GREEN + "   -Health: " + (((double)health) / 2) + "/10");
+			if (health >= 15) {
+				user.sendMessage(ChatColor.GREEN + "   -Health: "
+						+ (((double) health) / 2) + "/10");
 			} else if (health <= 5) {
-				user.sendMessage(ChatColor.RED + "   -Health: " + (((double)health) / 2) + "/10");
+				user.sendMessage(ChatColor.RED + "   -Health: "
+						+ (((double) health) / 2) + "/10");
 			} else {
-				user.sendMessage(ChatColor.YELLOW + "   -Health: " + (((double)health) / 2) + "/10");
+				user.sendMessage(ChatColor.YELLOW + "   -Health: "
+						+ (((double) health) / 2) + "/10");
 			}
 		}
 	}

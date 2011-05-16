@@ -87,13 +87,14 @@ public class Warp {
 	}
 
 	public boolean canWarpHere(WarpableUser player) {
-		if(player.isServer()) {
+		if (player.isServer()) {
 			return true;
 		}
 		if (mustInheritGroup == "") {
 			return true;
 		}
-		if (plugin.perm.userFile.userInGroup(player.getName(), mustInheritGroup)) {
+		if (plugin.perm.userFile
+				.userInGroup(player.getName(), mustInheritGroup)) {
 			return true;
 		}
 		if (player.hasPerm("canWarpAnywhere")) {

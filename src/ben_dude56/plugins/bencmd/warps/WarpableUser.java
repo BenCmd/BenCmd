@@ -24,7 +24,7 @@ public class WarpableUser extends PermissionUser {
 		player = entity;
 		isConsole = false;
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	public WarpableUser(BenCmd instance) {
 		super(instance, "*");
@@ -33,85 +33,85 @@ public class WarpableUser extends PermissionUser {
 	}
 
 	public boolean CanWarpTo(String warpName) {
-		if(isConsole) {
+		if (isConsole) {
 			return false;
 		}
 		return plugin.warps.getWarp(warpName).canWarpHere(this);
 	}
 
 	public void WarpTo(String warpName) {
-		if(isConsole) {
+		if (isConsole) {
 			return;
 		}
 		plugin.warps.getWarp(warpName).WarpHere(this);
 	}
 
 	public void WarpTo(String warpName, User sender) {
-		if(isConsole) {
+		if (isConsole) {
 			return;
 		}
 		plugin.warps.getWarp(warpName).WarpHere(this, sender.getWarpableUser());
 	}
-	
+
 	public List<Warp> ListWarps() {
-		if(this.isConsole) {
+		if (this.isConsole) {
 			return plugin.warps.listAllWarps();
 		} else {
 			return plugin.warps.listWarps(player);
 		}
 	}
-	
+
 	public void WarpTo(Warp warp) {
-		if(isConsole) {
+		if (isConsole) {
 			return;
 		}
 		warp.WarpHere(this);
 	}
 
 	public void WarpTo(Warp warp, User sender) {
-		if(isConsole) {
+		if (isConsole) {
 			return;
 		}
 		warp.WarpHere(this, sender.getWarpableUser());
 	}
 
 	public void HomeWarp(Integer homeNumber) {
-		if(isConsole) {
+		if (isConsole) {
 			return;
 		}
 		plugin.homes.WarpOwnHome(player, homeNumber);
 	}
 
 	public void HomeWarp(Integer homeNumber, PermissionUser homeOf) {
-		if(isConsole || homeOf.getName().equalsIgnoreCase("*")) {
+		if (isConsole || homeOf.getName().equalsIgnoreCase("*")) {
 			return;
 		}
 		plugin.homes.WarpOtherHome(player, homeOf.getName(), homeNumber);
 	}
 
 	public boolean LastCheck() {
-		if(isConsole) {
+		if (isConsole) {
 			return false;
 		}
 		return plugin.checkpoints.returnPreWarp(player);
 	}
 
 	public void SetHome(Integer homeNumber) {
-		if(isConsole) {
+		if (isConsole) {
 			return;
 		}
 		plugin.homes.SetOwnHome(player, homeNumber);
 	}
 
 	public void SetHome(Integer homeNumber, PermissionUser homeOf) {
-		if(isConsole || homeOf.getName().equalsIgnoreCase("*")) {
+		if (isConsole || homeOf.getName().equalsIgnoreCase("*")) {
 			return;
 		}
 		plugin.homes.SetOtherHome(player, homeOf.getName(), homeNumber);
 	}
 
 	public void toggleJail() {
-		if(isConsole) {
+		if (isConsole) {
 			return;
 		}
 		if (this.hasPerm("isJailed", false)) {
@@ -122,7 +122,7 @@ public class WarpableUser extends PermissionUser {
 	}
 
 	public void setJail(boolean jailState) {
-		if(isConsole) {
+		if (isConsole) {
 			return;
 		}
 		if (jailState) {
@@ -133,7 +133,7 @@ public class WarpableUser extends PermissionUser {
 	}
 
 	public void Spawn() {
-		if(isConsole) {
+		if (isConsole) {
 			return;
 		}
 		Location spawn = player.getWorld().getSpawnLocation(); // Get the spawn
@@ -146,15 +146,15 @@ public class WarpableUser extends PermissionUser {
 	public WarpableUser getWarpableUser() {
 		return this;
 	}
-	
+
 	public void sendMessage(String message) {
-		if(message.contains("/n")) {
-			for(String newMessage : message.split("/n")) {
+		if (message.contains("/n")) {
+			for (String newMessage : message.split("/n")) {
 				this.sendMessage(newMessage);
 			}
 			return;
 		}
-		if(isConsole) {
+		if (isConsole) {
 			message = message.replaceAll("§.", "");
 			log.info(message);
 		} else {
@@ -163,7 +163,7 @@ public class WarpableUser extends PermissionUser {
 	}
 
 	public Player getHandle() {
-		if(isConsole) {
+		if (isConsole) {
 			return null;
 		}
 		return player;

@@ -65,28 +65,33 @@ public class BasicCommands implements Commands {
 			Help(args, user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("lemonpledge")) {
-			plugin.getServer().dispatchCommand(sender, "me \u00A7Edemands more lemon pledge!");
+			plugin.getServer().dispatchCommand(sender,
+					"me \u00A7Edemands more lemon pledge!");
 			return true;
-		} else if (commandLabel.equalsIgnoreCase("kill") && user.hasPerm("canKill")) {
+		} else if (commandLabel.equalsIgnoreCase("kill")
+				&& user.hasPerm("canKill")) {
 			Kill(args, user);
 			return true;
-		} else if (commandLabel.equalsIgnoreCase("spawnmob") && user.hasPerm("canSpawnMobs")) {
+		} else if (commandLabel.equalsIgnoreCase("spawnmob")
+				&& user.hasPerm("canSpawnMobs")) {
 			SpawnMob(args, user);
 			return true;
 		}
 		return false;
 	}
-	
+
 	public void Kill(String[] args, User user) {
-		if(args.length == 0) {
-			if(!user.Kill()) {
-				user.sendMessage(ChatColor.RED + "You can't kill someone while they're godded!");
+		if (args.length == 0) {
+			if (!user.Kill()) {
+				user.sendMessage(ChatColor.RED
+						+ "You can't kill someone while they're godded!");
 			}
 		} else if (args.length == 1) {
 			User user2;
-			if((user2 = User.matchUser(args[0], plugin)) != null) {
-				if(!user2.Kill()) {
-					user.sendMessage(ChatColor.RED + "You can't kill someone while they're godded!");
+			if ((user2 = User.matchUser(args[0], plugin)) != null) {
+				if (!user2.Kill()) {
+					user.sendMessage(ChatColor.RED
+							+ "You can't kill someone while they're godded!");
 				}
 			} else {
 				user.sendMessage(ChatColor.RED + "That user doesn't exist!");
@@ -100,16 +105,16 @@ public class BasicCommands implements Commands {
 					+ "Proper use is /time {day|night|set|lock} [time]");
 		} else {
 			if (args[0].equalsIgnoreCase("day")) {
-				if(user.isServer()) {
-					for(World world : plugin.getServer().getWorlds()) {
+				if (user.isServer()) {
+					for (World world : plugin.getServer().getWorlds()) {
 						world.setTime(0);
 					}
 				} else {
 					user.getHandle().getWorld().setTime(0);
 				}
 			} else if (args[0].equalsIgnoreCase("night")) {
-				if(user.isServer()) {
-					for(World world : plugin.getServer().getWorlds()) {
+				if (user.isServer()) {
+					for (World world : plugin.getServer().getWorlds()) {
 						world.setTime(15000);
 					}
 				} else {
@@ -118,8 +123,9 @@ public class BasicCommands implements Commands {
 			} else if (args[0].equalsIgnoreCase("lock")) {
 				if (plugin.timeRunning) {
 					log.info("BenCmd: " + user.getName() + " has frozen time!");
-					if(user.isServer()) {
-						plugin.timeFrozenAt = plugin.getServer().getWorlds().get(0).getFullTime();
+					if (user.isServer()) {
+						plugin.timeFrozenAt = plugin.getServer().getWorlds()
+								.get(0).getFullTime();
 					} else {
 						plugin.timeFrozenAt = user.getHandle().getWorld()
 								.getFullTime();
@@ -141,7 +147,7 @@ public class BasicCommands implements Commands {
 	}
 
 	public void Spawn(String[] args, User user) {
-		if(user.isServer()) {
+		if (user.isServer()) {
 			user.sendMessage(ChatColor.RED + "The server cannot do that!");
 			return;
 		}
@@ -150,8 +156,9 @@ public class BasicCommands implements Commands {
 
 	public void God(String[] args, User user) {
 		if (args.length == 0) {
-			if(user.isServer()) {
-				user.sendMessage(ChatColor.YELLOW + "Proper use is /god [player]");
+			if (user.isServer()) {
+				user.sendMessage(ChatColor.YELLOW
+						+ "Proper use is /god [player]");
 				return;
 			}
 			if (user.isGod()) { // If they're a god
@@ -194,8 +201,9 @@ public class BasicCommands implements Commands {
 
 	public void Heal(String[] args, User user) {
 		if (args.length == 0) {
-			if(user.isServer()) {
-				user.sendMessage(ChatColor.YELLOW + "Proper use is /heal [player]");
+			if (user.isServer()) {
+				user.sendMessage(ChatColor.YELLOW
+						+ "Proper use is /heal [player]");
 				return;
 			}
 			// Heal the player
@@ -221,7 +229,7 @@ public class BasicCommands implements Commands {
 	}
 
 	public void GenTree(User user) {
-		if(user.isServer()) {
+		if (user.isServer()) {
 			user.sendMessage(ChatColor.RED + "The server cannot do that!");
 			return;
 		}
@@ -284,142 +292,219 @@ public class BasicCommands implements Commands {
 			log.warning(user.getName()
 					+ " has reloaded the BenCmd configuration.");
 		}
-		if(args[0].equalsIgnoreCase("disable") && user.hasPerm("canDisable")) {
-			plugin.getServer().broadcastMessage(ChatColor.RED + "BenCmd is being temporarily disabled for maintenance...");
-			plugin.getServer().broadcastMessage(ChatColor.RED + "Some commands may cease to function until it is restarted...");
+		if (args[0].equalsIgnoreCase("disable") && user.hasPerm("canDisable")) {
+			plugin.getServer()
+					.broadcastMessage(
+							ChatColor.RED
+									+ "BenCmd is being temporarily disabled for maintenance...");
+			plugin.getServer()
+					.broadcastMessage(
+							ChatColor.RED
+									+ "Some commands may cease to function until it is restarted...");
 			plugin.getServer().getPluginManager().disablePlugin(plugin);
 		}
 	}
-	
+
 	public void SetSpawn(User user) {
-		if(user.isServer()) {
+		if (user.isServer()) {
 			user.sendMessage(ChatColor.RED + "The server cannot do that!");
 			return;
 		}
 		Location newSpawn = user.getHandle().getLocation();
 		user.sendMessage(ChatColor.GREEN + "The spawn location has been set!");
-		log.info(user.getName() + " has set the spawn location to (" + newSpawn.getBlockX() + ", " + newSpawn.getBlockY() + ", " + newSpawn.getBlockZ() + ")");
-		user.getHandle().getWorld().setSpawnLocation(newSpawn.getBlockX(), newSpawn.getBlockY(), newSpawn.getBlockZ());
+		log.info(user.getName() + " has set the spawn location to ("
+				+ newSpawn.getBlockX() + ", " + newSpawn.getBlockY() + ", "
+				+ newSpawn.getBlockZ() + ")");
+		user.getHandle()
+				.getWorld()
+				.setSpawnLocation(newSpawn.getBlockX(), newSpawn.getBlockY(),
+						newSpawn.getBlockZ());
 	}
-	
+
 	public void Help(String[] args, User user) {
 		int pageToShow;
-		if(args.length == 0) {
+		if (args.length == 0) {
 			pageToShow = 1;
 		} else {
-			if(args[0].equalsIgnoreCase("consuela")) {
-				user.sendMessage(ChatColor.GREEN + "/lemonpledge" + ChatColor.WHITE + " - " + ChatColor.GRAY + "Demand more lemon pledge...");
+			if (args[0].equalsIgnoreCase("consuela")) {
+				user.sendMessage(ChatColor.GREEN + "/lemonpledge"
+						+ ChatColor.WHITE + " - " + ChatColor.GRAY
+						+ "Demand more lemon pledge...");
 				return;
 			}
 			try {
 				pageToShow = Integer.parseInt(args[0]);
 			} catch (NumberFormatException e) {
-				user.sendMessage(ChatColor.RED + args[0] + " cannot be converted to a number!");
+				user.sendMessage(ChatColor.RED + args[0]
+						+ " cannot be converted to a number!");
 				return;
 			}
 		}
 		List<BCommand> commands = getCommands(user);
 		int max;
-		if(pageToShow > (max = (int)Math.ceil(commands.size() / 6) + 1)) {
-			user.sendMessage(ChatColor.RED + "There are only " + max + " pages to show!");
+		if (pageToShow > (max = (int) Math.ceil(commands.size() / 6) + 1)) {
+			user.sendMessage(ChatColor.RED + "There are only " + max
+					+ " pages to show!");
 			return;
 		} else if (pageToShow <= 0) {
-			user.sendMessage(ChatColor.RED + "The page number must be a natural number, retard!");
+			user.sendMessage(ChatColor.RED
+					+ "The page number must be a natural number, retard!");
 			return;
 		}
 		int i = (pageToShow - 1) * 6;
-		user.sendMessage(ChatColor.YELLOW + "Displaying help page " + ChatColor.GREEN + pageToShow + ChatColor.YELLOW + " of " + ChatColor.GREEN + max + ChatColor.YELLOW + ":");
-		while(i < (pageToShow - 1) * 6 + 6) {
-			if(i >= commands.size()) {
+		user.sendMessage(ChatColor.YELLOW + "Displaying help page "
+				+ ChatColor.GREEN + pageToShow + ChatColor.YELLOW + " of "
+				+ ChatColor.GREEN + max + ChatColor.YELLOW + ":");
+		while (i < (pageToShow - 1) * 6 + 6) {
+			if (i >= commands.size()) {
 				break;
 			}
-			user.sendMessage(ChatColor.GREEN + commands.get(i).getName() + ChatColor.WHITE + " - " + ChatColor.GRAY + commands.get(i).getDescription());
+			user.sendMessage(ChatColor.GREEN + commands.get(i).getName()
+					+ ChatColor.WHITE + " - " + ChatColor.GRAY
+					+ commands.get(i).getDescription());
 			i++;
 		}
 	}
-	
+
 	public void SpawnMob(String[] args, User user) {
-		if(user.isServer()) {
+		if (user.isServer()) {
 			user.sendMessage(ChatColor.RED + "The server cannot do that!");
 			return;
 		}
-		if(args.length != 1 && args.length != 2) {
-			user.sendMessage(ChatColor.YELLOW + "Proper use is /spawnmob <Mob Name> [Amount]");
+		if (args.length != 1 && args.length != 2) {
+			user.sendMessage(ChatColor.YELLOW
+					+ "Proper use is /spawnmob <Mob Name> [Amount]");
 			return;
 		}
 		int amount = 1;
-		if(args.length == 2) {
+		if (args.length == 2) {
 			try {
 				amount = Integer.parseInt(args[1]);
 			} catch (NumberFormatException e) {
-				user.sendMessage(ChatColor.RED + args[1] + " cannot be converted into a number!");
+				user.sendMessage(ChatColor.RED + args[1]
+						+ " cannot be converted into a number!");
 				return;
 			}
 		}
-		for(int i = 0; i < amount; i++) {
-			user.getHandle().getWorld().spawnCreature(user.getHandle().getLocation(), CreatureType.fromName(args[0]));
+		for (int i = 0; i < amount; i++) {
+			user.getHandle()
+					.getWorld()
+					.spawnCreature(user.getHandle().getLocation(),
+							CreatureType.fromName(args[0]));
 		}
 	}
-	
+
 	public List<BCommand> getCommands(User user) {
 		List<BCommand> commands = new ArrayList<BCommand>();
-		commands.add(new BCommand("/help [page]", "Displays the xth page of the command list...", "."));
-		commands.add(new BCommand("/slow [delay]", "Makes each user wait x seconds between chats.", "canSlowMode"));
-		commands.add(new BCommand("/mute <player>", "Mutes a player.", "canMute"));
-		commands.add(new BCommand("/unmute <player>", "Unmutes a player.", "canMute"));
-		commands.add(new BCommand("/list", "Lists the players online.", "canListPlayers"));
-		commands.add(new BCommand("/time {day|night|lock}", "Sets the time of day or locks the time.", "canChangeTime"));
-		commands.add(new BCommand("/spawn", "Sends you to the spawn.", "canSpawn"));
-		commands.add(new BCommand("/item <ID>[:damage] [amount] [player]", "Gives you an item.", "canSpawnItems"));
-		commands.add(new BCommand("/god [player]", "Makes you or another player a god.", "canMakeGod"));
-		commands.add(new BCommand("/heal [player]", "Heals you or another player", "canHeal"));
-		commands.add(new BCommand("/bencmd reload", "Reloads the BenCmd Config", "canReloadConfig"));
-		commands.add(new BCommand("/user <name> {add|remove|g:<group>|<permissions>}", "Controls user permissions", "canChangePerm"));
-		commands.add(new BCommand("/group <name> {add|remove|g:<group>|<permissions>}", "Controls group permissions", "canChangePerm"));
-		commands.add(new BCommand("/warp <warp>", "Warps you to a pre-defined point.", "canWarp"));
-		commands.add(new BCommand("/warp <warp> <player>", "Warps another player to a pre-defined point.", "canWarpOthers"));
-		commands.add(new BCommand("/setwarp <warp>", "Sets a new warp.", "canEditWarps"));
-		commands.add(new BCommand("/delwarp <warp>", "Deletes a warp.", "canEditWarps"));
-		commands.add(new BCommand("/back", "Warps you back to before your last warp.", "canWarp"));
-		commands.add(new BCommand("/home <number>", "Teleports to your xth home.", "canWarpOwnHomes"));
-		commands.add(new BCommand("/home <number> <player>", "Teleports to another player's xth home.", "canWarpOtherHomes"));
-		commands.add(new BCommand("/sethome <number>", "Sets your xth home.", "canEditOwnHomes"));
-		commands.add(new BCommand("/sethome <number> <player>", "Sets another player's xth home.", "canEditOtherHomes"));
-		commands.add(new BCommand("/delhome <number>", "Deletes your xth home.", "canEditOwnHomes"));
-		commands.add(new BCommand("/delhome <number> <player>", "Deletes another player's xth home.", "canEditOtherHomes"));
-		commands.add(new BCommand("/clearinventory [player]", "Clears your own or another player's inventory.", "canClearInventory"));
-		commands.add(new BCommand("/jail <player>", "Jails a player.", "canJail"));
-		commands.add(new BCommand("/unjail <player>", "Unjails a  player.", "canJail"));
-		commands.add(new BCommand("/setjail", "Sets the jail location.", "canJail"));
-		commands.add(new BCommand("/unl <ID>[:Damage]", "Creates an unlimited dispenser", "canMakeUnlDisp"));
-		commands.add(new BCommand("/disp", "Creates a disposal chest.", "canMakeDispChest"));
-		commands.add(new BCommand("/lot <command>", "Edits or gets info on lots.", "."));
-		commands.add(new BCommand("/kit <kitname>", "Spawns a kit.", "canSpawnKit"));
+		commands.add(new BCommand("/help [page]",
+				"Displays the xth page of the command list...", "."));
+		commands.add(new BCommand("/slow [delay]",
+				"Makes each user wait x seconds between chats.", "canSlowMode"));
+		commands.add(new BCommand("/mute <player>", "Mutes a player.",
+				"canMute"));
+		commands.add(new BCommand("/unmute <player>", "Unmutes a player.",
+				"canMute"));
+		commands.add(new BCommand("/list", "Lists the players online.",
+				"canListPlayers"));
+		commands.add(new BCommand("/time {day|night|lock}",
+				"Sets the time of day or locks the time.", "canChangeTime"));
+		commands.add(new BCommand("/spawn", "Sends you to the spawn.",
+				"canSpawn"));
+		commands.add(new BCommand("/item <ID>[:damage] [amount] [player]",
+				"Gives you an item.", "canSpawnItems"));
+		commands.add(new BCommand("/god [player]",
+				"Makes you or another player a god.", "canMakeGod"));
+		commands.add(new BCommand("/heal [player]",
+				"Heals you or another player", "canHeal"));
+		commands.add(new BCommand("/bencmd reload",
+				"Reloads the BenCmd Config", "canReloadConfig"));
+		commands.add(new BCommand(
+				"/user <name> {add|remove|g:<group>|<permissions>}",
+				"Controls user permissions", "canChangePerm"));
+		commands.add(new BCommand(
+				"/group <name> {add|remove|g:<group>|<permissions>}",
+				"Controls group permissions", "canChangePerm"));
+		commands.add(new BCommand("/warp <warp>",
+				"Warps you to a pre-defined point.", "canWarp"));
+		commands.add(new BCommand("/warp <warp> <player>",
+				"Warps another player to a pre-defined point.", "canWarpOthers"));
+		commands.add(new BCommand("/setwarp <warp>", "Sets a new warp.",
+				"canEditWarps"));
+		commands.add(new BCommand("/delwarp <warp>", "Deletes a warp.",
+				"canEditWarps"));
+		commands.add(new BCommand("/back",
+				"Warps you back to before your last warp.", "canWarp"));
+		commands.add(new BCommand("/home <number>",
+				"Teleports to your xth home.", "canWarpOwnHomes"));
+		commands.add(new BCommand("/home <number> <player>",
+				"Teleports to another player's xth home.", "canWarpOtherHomes"));
+		commands.add(new BCommand("/sethome <number>", "Sets your xth home.",
+				"canEditOwnHomes"));
+		commands.add(new BCommand("/sethome <number> <player>",
+				"Sets another player's xth home.", "canEditOtherHomes"));
+		commands.add(new BCommand("/delhome <number>",
+				"Deletes your xth home.", "canEditOwnHomes"));
+		commands.add(new BCommand("/delhome <number> <player>",
+				"Deletes another player's xth home.", "canEditOtherHomes"));
+		commands.add(new BCommand("/clearinventory [player]",
+				"Clears your own or another player's inventory.",
+				"canClearInventory"));
+		commands.add(new BCommand("/jail <player>", "Jails a player.",
+				"canJail"));
+		commands.add(new BCommand("/unjail <player>", "Unjails a  player.",
+				"canJail"));
+		commands.add(new BCommand("/setjail", "Sets the jail location.",
+				"canJail"));
+		commands.add(new BCommand("/unl <ID>[:Damage]",
+				"Creates an unlimited dispenser", "canMakeUnlDisp"));
+		commands.add(new BCommand("/disp", "Creates a disposal chest.",
+				"canMakeDispChest"));
+		commands.add(new BCommand("/lot <command>",
+				"Edits or gets info on lots.", "."));
+		commands.add(new BCommand("/kit <kitname>", "Spawns a kit.",
+				"canSpawnKit"));
 		commands.add(new BCommand("/poof", "Makes you invisible.", "canPoof"));
-		commands.add(new BCommand("/nopoof", "Makes you able to see invisible players.", "canNoPoof"));
-		commands.add(new BCommand("/protect {add|remove|info|setowner|addguest|remguest}", "Deals with protection.", "."));
+		commands.add(new BCommand("/nopoof",
+				"Makes you able to see invisible players.", "canNoPoof"));
+		commands.add(new BCommand(
+				"/protect {add|remove|info|setowner|addguest|remguest}",
+				"Deals with protection.", "."));
 		commands.add(new BCommand("/lock", "Locks a chest", "."));
 		commands.add(new BCommand("/unlock", "Unlocks a chest", "."));
 		commands.add(new BCommand("/share", "Adds a guest to a chest", "."));
-		commands.add(new BCommand("/unshare", "Removes a guest from a chest", "."));
-		commands.add(new BCommand("/setspawn", "Sets the map spawn point.", "canSetSpawn"));
-		commands.add(new BCommand("/me <message>", "Shows a message in the format \"*<player> <message>\".", "."));
-		commands.add(new BCommand("/tell <player> <message>", "PMs a player.", "."));
-		commands.add(new BCommand("/storm {off|rain|thunder}", "Changes the current map's storm status.", "canControlWeather"));
-		commands.add(new BCommand("/strike", "Strikes lightning where you are pointing.", "canControlWeather"));
-		commands.add(new BCommand("/offline", "Makes you appear to be offline.", "canOffline"));
-		commands.add(new BCommand("/online", "Makes you re-appear to be online.", "canOffline"));
-		commands.add(new BCommand("/report <player> <reason>", "Reports a player to the admins.", "canReport"));
-		commands.add(new BCommand("/ticket", "Lists and changes existing reports. Type /ticket for more info...", "."));
-		commands.add(new BCommand("/kill <player>", "Kills the player listed.", "canKill"));
-		commands.add(new BCommand("/spawnmob <Mob Name> [Amount]", "Spawns a specific amount of a specific mob.", "canSpawnMobs"));
-		for(int i = 0; i < commands.size(); i++) {
-			if(!commands.get(i).canUse(user)) {
+		commands.add(new BCommand("/unshare", "Removes a guest from a chest",
+				"."));
+		commands.add(new BCommand("/setspawn", "Sets the map spawn point.",
+				"canSetSpawn"));
+		commands.add(new BCommand("/me <message>",
+				"Shows a message in the format \"*<player> <message>\".", "."));
+		commands.add(new BCommand("/tell <player> <message>", "PMs a player.",
+				"."));
+		commands.add(new BCommand("/storm {off|rain|thunder}",
+				"Changes the current map's storm status.", "canControlWeather"));
+		commands.add(new BCommand("/strike",
+				"Strikes lightning where you are pointing.",
+				"canControlWeather"));
+		commands.add(new BCommand("/offline",
+				"Makes you appear to be offline.", "canOffline"));
+		commands.add(new BCommand("/online",
+				"Makes you re-appear to be online.", "canOffline"));
+		commands.add(new BCommand("/report <player> <reason>",
+				"Reports a player to the admins.", "canReport"));
+		commands.add(new BCommand(
+				"/ticket",
+				"Lists and changes existing reports. Type /ticket for more info...",
+				"."));
+		commands.add(new BCommand("/kill <player>", "Kills the player listed.",
+				"canKill"));
+		commands.add(new BCommand("/spawnmob <Mob Name> [Amount]",
+				"Spawns a specific amount of a specific mob.", "canSpawnMobs"));
+		for (int i = 0; i < commands.size(); i++) {
+			if (!commands.get(i).canUse(user)) {
 				commands.remove(i);
 			}
 		}
 		return commands;
 	}
-	
-	
+
 }

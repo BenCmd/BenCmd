@@ -29,10 +29,10 @@ public class DeathListener extends EntityListener {
 			event.getDrops().clear();
 			event.getDrops().add(new ItemStack(Material.PAPER, 5));
 		}
-		if(event.getEntity() instanceof CraftSkeleton) {
+		if (event.getEntity() instanceof CraftSkeleton) {
 			event.getDrops().add(new ItemStack(Material.PAPER, 3));
 		}
-		if(event.getEntity() instanceof CraftSpider) {
+		if (event.getEntity() instanceof CraftSpider) {
 			event.getDrops().add(new ItemStack(Material.PAPER, 6));
 		}
 		if (!(event.getEntity() instanceof Player)) {
@@ -71,7 +71,7 @@ public class DeathListener extends EntityListener {
 		if (!(event.getEntity() instanceof Player)) {
 			return;
 		}
-		if(new User(plugin, (Player)event.getEntity()).isPoofed()) {
+		if (new User(plugin, (Player) event.getEntity()).isPoofed()) {
 			event.setCancelled(true);
 		}
 		Player player = (Player) event.getEntity();

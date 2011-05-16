@@ -86,7 +86,8 @@ public class ItemBW extends Properties {
 		}
 		List<Material> matList = new ArrayList<Material>();
 		try {
-			for (String material : this.getProperty(group).split("/")[1].split(",")) {
+			for (String material : this.getProperty(group).split("/")[1]
+					.split(",")) {
 				Material mat;
 				try {
 					mat = Material.getMaterial(Integer.parseInt(material));
@@ -98,7 +99,9 @@ public class ItemBW extends Properties {
 				}
 				matList.add(mat);
 			}
-			if(this.getSetting(group) == BWSetting.BWWhite && mainPerm.groupFile.groupExists(mainPerm.groupFile.getGroup(group))) {
+			if (this.getSetting(group) == BWSetting.BWWhite
+					&& mainPerm.groupFile.groupExists(mainPerm.groupFile
+							.getGroup(group))) {
 				matList.addAll(getListed(mainPerm.groupFile.getGroup(group)));
 			}
 		} catch (IndexOutOfBoundsException e) {

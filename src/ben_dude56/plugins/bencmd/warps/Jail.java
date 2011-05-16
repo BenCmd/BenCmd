@@ -55,7 +55,7 @@ public class Jail {
 				"cannotBeJailed", true, true)) {
 			return false;
 		}
-		jailWarp.WarpHere(new WarpableUser(plugin,player));
+		jailWarp.WarpHere(new WarpableUser(plugin, player));
 		plugin.perm.userFile.addPermission(player.getName(), "isJailed");
 		player.sendMessage(ChatColor.RED
 				+ plugin.mainProperties.getString("jailMessage",

@@ -25,7 +25,7 @@ public class HomeList {
 		plugin = instance;
 		LoadHomes();
 	}
-	
+
 	public boolean updateHome(Warp warp) {
 		int ind = this.getIndex(warp);
 		String name = warp.warpName;
@@ -37,9 +37,9 @@ public class HomeList {
 		String world = warp.loc.getWorld().getName();
 		String group = warp.mustInheritGroup;
 		String value = name + ":" + x + "," + y + "," + z + ","
-			+ yaw.toString() + "," + pitch.toString() + ":" + world
-			+ ":" + group;
-		if(ind == -1) {
+				+ yaw.toString() + "," + pitch.toString() + ":" + world + ":"
+				+ group;
+		if (ind == -1) {
 			warpString.add(value);
 		} else {
 			warpString.add(ind, value);
@@ -47,31 +47,31 @@ public class HomeList {
 		SaveFile();
 		return true;
 	}
-	
+
 	public boolean remHome(String name) {
 		int ind = this.getIndex(name);
-		if(ind == -1) {
+		if (ind == -1) {
 			return false;
 		}
 		warpString.remove(ind);
 		SaveFile();
 		return true;
 	}
-	
+
 	public int getIndex(Warp warp) {
-		for(int i = 0; i < warpString.size(); i++) {
+		for (int i = 0; i < warpString.size(); i++) {
 			String value = warpString.get(i);
-			if(value.split(":")[0].equals(warp.warpName)) {
+			if (value.split(":")[0].equals(warp.warpName)) {
 				return i;
 			}
 		}
 		return -1;
 	}
-	
+
 	public int getIndex(String name) {
-		for(int i = 0; i < warpString.size(); i++) {
+		for (int i = 0; i < warpString.size(); i++) {
 			String value = warpString.get(i);
-			if(value.split(":")[0].equals(name)) {
+			if (value.split(":")[0].equals(name)) {
 				return i;
 			}
 		}
@@ -143,7 +143,7 @@ public class HomeList {
 		}
 		return true;
 	}
-	
+
 	public boolean SaveFile() {
 		File warpFile;
 		warpFile = new File(plugin.propDir + "homes.db");
@@ -155,15 +155,15 @@ public class HomeList {
 			e.printStackTrace();
 			return false;
 		}
-		for(String value : warpString) {
+		for (String value : warpString) {
 			try {
 				bw.write(value);
-				if (!warpString.get(warpString.size() - 1)
-						.equals(value)) {
+				if (!warpString.get(warpString.size() - 1).equals(value)) {
 					bw.newLine();
 				}
 			} catch (IOException e) {
-				log.severe("BenCmd failed to save home " + value.split(":")[0] + ":");
+				log.severe("BenCmd failed to save home " + value.split(":")[0]
+						+ ":");
 				e.printStackTrace();
 			}
 		}
@@ -176,7 +176,7 @@ public class HomeList {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * @deprecated Causes extreme lag.
 	 */

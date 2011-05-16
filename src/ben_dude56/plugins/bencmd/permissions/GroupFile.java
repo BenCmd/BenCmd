@@ -262,8 +262,11 @@ public class GroupFile extends Properties {
 		}
 		permissions += permission;
 		// Rewrite the permission value
-		this.put(group, this.getGroup(group) + "/" + permissions + "/"
-			+ this.getPrefix(group) + "/" + this.getColor(group).getCode());
+		this.put(
+				group,
+				this.getGroup(group) + "/" + permissions + "/"
+						+ this.getPrefix(group) + "/"
+						+ this.getColor(group).getCode());
 		save();
 		return PermChangeResult.Success; // Return success
 	}
@@ -294,8 +297,11 @@ public class GroupFile extends Properties {
 			permissions = permissions.substring(0, permissions.length() - 1);
 		}
 		// Rewrite the permission value
-		this.put(group, this.getGroup(group) + "/" + permissions + "/"
-				+ this.getPrefix(group) + "/" + this.getColor(group).getCode());
+		this.put(
+				group,
+				this.getGroup(group) + "/" + permissions + "/"
+						+ this.getPrefix(group) + "/"
+						+ this.getColor(group).getCode());
 		save();
 		return PermChangeResult.Success; // Return success
 	}
@@ -320,8 +326,9 @@ public class GroupFile extends Properties {
 													// of that group
 		try {
 			this.put(group,
-					groupName+ "/" + this.getProperty(group).split("/")[1] + "/"
-					+ this.getPrefix(group) + "/" + this.getColor(group).getCode());
+					groupName + "/" + this.getProperty(group).split("/")[1]
+							+ "/" + this.getPrefix(group) + "/"
+							+ this.getColor(group).getCode());
 			save();
 			return PermChangeResult.Success; // Return success
 		} catch (IndexOutOfBoundsException e) {

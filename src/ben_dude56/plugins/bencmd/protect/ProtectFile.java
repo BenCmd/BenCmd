@@ -121,7 +121,7 @@ public class ProtectFile extends Properties {
 			}
 		}
 	}
-	
+
 	public void updateValue(ProtectedBlock block) {
 		if (block instanceof ProtectedChest) {
 			String value;
@@ -148,7 +148,7 @@ public class ProtectFile extends Properties {
 		}
 		this.saveFile(proFile);
 	}
-	
+
 	public void remValue(Integer id) {
 		this.remove(id.toString());
 		this.saveFile(proFile);
@@ -280,9 +280,9 @@ public class ProtectFile extends Properties {
 			return;
 		}
 		ProtectedBlock pb = protectedBlocks.get(ind);
-		//protectedBlocks.remove(ind);
+		// protectedBlocks.remove(ind);
 		pb.setOwner(newOwner);
-		//protectedBlocks.add(ind, pb);
+		// protectedBlocks.add(ind, pb);
 	}
 
 	public void addGuest(int id, PermissionUser newGuest) {
@@ -292,9 +292,9 @@ public class ProtectFile extends Properties {
 			return;
 		}
 		ProtectedBlock pb = protectedBlocks.get(ind);
-		//protectedBlocks.remove(ind);
+		// protectedBlocks.remove(ind);
 		pb.addGuest(newGuest);
-		//protectedBlocks.add(ind, pb);
+		// protectedBlocks.add(ind, pb);
 	}
 
 	public void removeGuest(int id, PermissionUser oldGuest) {
@@ -304,11 +304,11 @@ public class ProtectFile extends Properties {
 			return;
 		}
 		ProtectedBlock pb = protectedBlocks.get(ind);
-		//protectedBlocks.remove(ind);
+		// protectedBlocks.remove(ind);
 		pb.removeGuest(oldGuest);
-		//protectedBlocks.add(ind, pb);
+		// protectedBlocks.add(ind, pb);
 	}
-	
+
 	/**
 	 * @deprecated Caused HUGE lag when run... NEVER USE!
 	 */

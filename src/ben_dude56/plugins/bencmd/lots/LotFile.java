@@ -82,7 +82,7 @@ public class LotFile extends Properties {
 			Location corner1, corner2;
 			corner1 = lotVal.getCorner1();
 			corner2 = lotVal.getCorner2();
-			
+
 			String LotID = lotVal.getFullID();
 			String value = "";
 			value += corner1.getBlockX() + ",";
@@ -100,15 +100,15 @@ public class LotFile extends Properties {
 				value += "," + owner + ",";
 				value += group;
 				int i = 0;
-				while (i<guests.size()) {
+				while (i < guests.size()) {
 					value += "," + guests.get(i);
 					i++;
 				}
 			}
 			this.put(LotID, value);
-		}	
+		}
 		try {
-			store(new FileOutputStream(file), "BenCmd Lots File");	// Save
+			store(new FileOutputStream(file), "BenCmd Lots File"); // Save
 																	// the
 																	// values
 		} catch (IOException ex) {
@@ -141,8 +141,8 @@ public class LotFile extends Properties {
 			value += corner2.getBlockY() + ",";
 			value += corner2.getBlockZ() + ",";
 			value += corner2.getWorld().getName();
-			if (LotID.split(",")[1].equalsIgnoreCase("0")){
-				value +=  "," + owner + ",";
+			if (LotID.split(",")[1].equalsIgnoreCase("0")) {
+				value += "," + owner + ",";
 				value += group;
 			}
 			lot.put(LotID, new Lot(plugin, LotID, value));
@@ -159,27 +159,26 @@ public class LotFile extends Properties {
 	 * @param lotID
 	 *            The ID of the lot to remove from the database
 	 */
-	
+
 	public boolean deleteLot(String LotID) {
 		if (!this.lotExists(LotID))
 			return false; // The lot doesn't exist and cannot be deleted
 		String SubID;
-		if (LotID.split(",").length==1)
+		if (LotID.split(",").length == 1)
 			SubID = "-1";
 		else
 			SubID = LotID.split(",")[1];
 		LotID = LotID.split(",")[0];
 		if (SubID.equalsIgnoreCase("-1")) {
-			try { 
+			try {
 				for (String key : plugin.lots.getLot(LotID).getSubs())
 					lot.remove(key);
-					save();
+				save();
 			} catch (Exception e) {
 				return false; // An unknown error was encountered!
 			}
 			return true;
-		}
-		else if (this.lotExists((LotID + "," + SubID))) {
+		} else if (this.lotExists((LotID + "," + SubID))) {
 			if (SubID.equalsIgnoreCase("0") && this.lotExists(LotID + ",1")) {
 				Lot oldLot = this.getLot(LotID + ",0");
 				Lot newLot = this.getLot(LotID + ",1");
@@ -199,8 +198,7 @@ public class LotFile extends Properties {
 				}
 				this.sortSubs(LotID);
 				save();
-			}
-			else {
+			} else {
 				try {
 					lot.remove((LotID + "," + SubID));
 					save();
@@ -222,12 +220,11 @@ public class LotFile extends Properties {
 	 *            The ID of the lot to check for.
 	 * @return This method returns whether the user exists.
 	 */
-	
+
 	public boolean lotExists(String LotID) {
-		if (LotID.split(",").length==1) {
+		if (LotID.split(",").length == 1) {
 			LotID = LotID + ",0";
-		}
-		else {
+		} else {
 			LotID = LotID.split(",")[0] + "," + LotID.split(",")[1];
 		}
 		if (lot.containsKey(LotID))
@@ -246,7 +243,7 @@ public class LotFile extends Properties {
 	}
 
 	public Lot getLot(String LotID) {
-		if (LotID.split(",").length==1)
+		if (LotID.split(",").length == 1)
 			LotID = LotID + ",0";
 		LotID = LotID.split(",")[0] + "," + LotID.split(",")[1];
 		return lot.get(LotID);
@@ -270,7 +267,7 @@ public class LotFile extends Properties {
 		}
 
 	}
-	
+
 	public String getNextSubID(String LotID) {
 		int i = 0;
 		while (true) {
@@ -280,35 +277,34 @@ public class LotFile extends Properties {
 			i++;
 		}
 	}
-	
+
 	public void selectionSort(int[] numbers) {
 		int min, temp;
-		
-		for (int index=0; index < numbers.length-1; index++) {
+
+		for (int index = 0; index < numbers.length - 1; index++) {
 			min = index;
-			for (int scan = index+1; scan < numbers.length; scan++)
+			for (int scan = index + 1; scan < numbers.length; scan++)
 				if (numbers[scan] < numbers[min])
 					min = scan;
-			
+
 			temp = numbers[min];
 			numbers[min] = numbers[index];
 			numbers[index] = temp;
-			}
 		}
-	public void insertionSort (int[] numbers)
-	{
-		for (int index = 0; index < numbers.length; index++)
-		{
+	}
+
+	public void insertionSort(int[] numbers) {
+		for (int index = 0; index < numbers.length; index++) {
 			int key = numbers[index];
 			int position = index;
-			
-			while (position > 0 && numbers[position-1] > key)
-			{
-				numbers[position] = numbers[position-1];
+
+			while (position > 0 && numbers[position - 1] > key) {
+				numbers[position] = numbers[position - 1];
 				position--;
 			}
 		}
 	}
+
 	public void sortSubs(String LotID) {
 		int sort = 0;
 		int i;
@@ -317,7 +313,7 @@ public class LotFile extends Properties {
 		if (!this.lotExists(LotID))
 			return;
 		for (String lot : this.getLot(LotID).getSubs()) {
-			try { 
+			try {
 				sub = Integer.parseInt(lot.split(",")[1]);
 			} catch (NumberFormatException e) {
 				log.severe("A lot's sub-id is formatted wrong!");
@@ -326,22 +322,21 @@ public class LotFile extends Properties {
 			if (sub > max)
 				max = sub;
 		}
-		for (i=0; i<=max; i++) {
+		for (i = 0; i <= max; i++) {
 			if (lotExists((LotID + "," + i))) {
-				if (sort>0) {
-					this.addLot((LotID + "," + (i-sort)), 
-							this.getLot(LotID + "," + i).getCorner1(),
-							this.getLot(LotID + "," + i).getCorner2(),
-							this.getLot(LotID + "," + i).getOwner(),
-							this.getLot(LotID + "," + i).getGroup());
+				if (sort > 0) {
+					this.addLot((LotID + "," + (i - sort)),
+							this.getLot(LotID + "," + i).getCorner1(), this
+									.getLot(LotID + "," + i).getCorner2(), this
+									.getLot(LotID + "," + i).getOwner(), this
+									.getLot(LotID + "," + i).getGroup());
 					this.lot.remove((LotID + "," + i));
 				}
-			}
-			else
+			} else
 				sort++;
 		}
 	}
-	
+
 	public boolean canBuildHere(Player player, Location location) {
 		boolean inLot = false;
 		for (String LotID : lot.keySet()) {
@@ -354,30 +349,30 @@ public class LotFile extends Properties {
 		}
 		if (inLot) {
 			return false;
-		}
-		else {
+		} else {
 			return true;
 		}
 	}
+
 	public String ownsHere(Player player, Location location) {
 		boolean inLot = false;
 		for (String LotID : lot.keySet()) {
 			if (plugin.lots.getLot(LotID).withinLot(location)) {
 				inLot = true;
-				PermissionUser user = PermissionUser.matchUser(player.getName(), plugin);
+				PermissionUser user = PermissionUser.matchUser(
+						player.getName(), plugin);
 				if (user == null) {
 					return "noUser";
 				}
-				if (plugin.lots.getLot(LotID).isOwner(player) || user.hasPerm("isLandlord")) {
+				if (plugin.lots.getLot(LotID).isOwner(player)
+						|| user.hasPerm("isLandlord")) {
 					return plugin.lots.getLot(LotID).getLotID();
 				}
 			}
 		}
 		if (inLot) {
 			return "false";
-		}
-		else
-		{
+		} else {
 			return "noLot";
 		}
 	}

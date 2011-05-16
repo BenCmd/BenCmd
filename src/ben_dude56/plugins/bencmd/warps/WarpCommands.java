@@ -28,8 +28,7 @@ public class WarpCommands implements Commands {
 		} catch (ClassCastException e) {
 			user = new User(plugin);
 		}
-		if (commandLabel.equalsIgnoreCase("warp")
-				&& user.hasPerm("canWarp")) {
+		if (commandLabel.equalsIgnoreCase("warp") && user.hasPerm("canWarp")) {
 			Warp(args, user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("setwarp")
@@ -83,13 +82,12 @@ public class WarpCommands implements Commands {
 				user.sendMessage(ChatColor.GREEN + "Available warps: " + str);
 				return;
 			} else {
-				user.sendMessage(ChatColor.RED
-						+ "You have no available warps.");
+				user.sendMessage(ChatColor.RED + "You have no available warps.");
 				return;
 			}
 		}
 		if (args.length == 1) {
-			if(user.isServer()) {
+			if (user.isServer()) {
 				user.sendMessage(ChatColor.RED + "The server cannot do that!");
 				return;
 			}
@@ -109,7 +107,8 @@ public class WarpCommands implements Commands {
 			}
 			User warper;
 			try {
-				warper = new User(plugin,plugin.getServer().matchPlayer(args[1]).get(0));
+				warper = new User(plugin, plugin.getServer()
+						.matchPlayer(args[1]).get(0));
 			} catch (NullPointerException e) {
 				user.sendMessage(ChatColor.RED + "That player doesn't exist!");
 				return;
@@ -120,14 +119,14 @@ public class WarpCommands implements Commands {
 			warper.WarpTo(warp, user);
 			return;
 		}
-		if(user.hasPerm("canWarpOthers")) {
+		if (user.hasPerm("canWarpOthers")) {
 			user.sendMessage(ChatColor.YELLOW
 					+ "Proper use is: /warp <name> [player]");
 		}
 	}
 
 	public void SetWarp(String[] args, User user) {
-		if(user.isServer()) {
+		if (user.isServer()) {
 			user.sendMessage(ChatColor.RED + "The server cannot do that!");
 			return;
 		}
@@ -187,7 +186,7 @@ public class WarpCommands implements Commands {
 	}
 
 	public void Back(User user) {
-		if(user.isServer()) {
+		if (user.isServer()) {
 			user.sendMessage(ChatColor.RED + "The server cannot do that!");
 			return;
 		}
@@ -198,7 +197,7 @@ public class WarpCommands implements Commands {
 	}
 
 	public void Home(String[] args, User user) {
-		if(user.isServer()) {
+		if (user.isServer()) {
 			user.sendMessage(ChatColor.RED + "The server cannot do that!");
 			return;
 		}
@@ -223,7 +222,8 @@ public class WarpCommands implements Commands {
 				int homenum;
 				try {
 					homenum = Integer.parseInt(args[0]);
-					user.HomeWarp(homenum, PermissionUser.matchUserIgnoreCase(args[1], plugin));
+					user.HomeWarp(homenum,
+							PermissionUser.matchUserIgnoreCase(args[1], plugin));
 				} catch (NumberFormatException e) {
 					user.sendMessage(ChatColor.RED + "Invalid home number!");
 				}
@@ -235,7 +235,7 @@ public class WarpCommands implements Commands {
 	}
 
 	public void SetHome(String[] args, User user) {
-		if(user.isServer()) {
+		if (user.isServer()) {
 			user.sendMessage(ChatColor.RED + "The server cannot do that!");
 			return;
 		}
@@ -260,7 +260,8 @@ public class WarpCommands implements Commands {
 				int homenum;
 				try {
 					homenum = Integer.parseInt(args[0]);
-					user.SetHome(homenum, PermissionUser.matchUserIgnoreCase(args[1], plugin));
+					user.SetHome(homenum,
+							PermissionUser.matchUserIgnoreCase(args[1], plugin));
 				} catch (NumberFormatException e) {
 					user.sendMessage(ChatColor.RED + "Invalid home number!");
 				}
@@ -281,7 +282,7 @@ public class WarpCommands implements Commands {
 						+ "Proper use is: /delhome <number>");
 			}
 		} else if (args.length == 1) {
-			if(user.isServer()) {
+			if (user.isServer()) {
 				user.sendMessage(ChatColor.YELLOW
 						+ "Proper use is: /delhome <number> [player]");
 				return;
@@ -327,7 +328,7 @@ public class WarpCommands implements Commands {
 	public void Jail(String[] args, User user) {
 		if (args.length == 1) {
 			User user2;
-			if((user2 = User.matchUser(args[0], plugin)) == null) {
+			if ((user2 = User.matchUser(args[0], plugin)) == null) {
 				user.sendMessage(ChatColor.RED + "That player doesn't exist!");
 				return;
 			}
@@ -340,15 +341,14 @@ public class WarpCommands implements Commands {
 			plugin.getServer().broadcastMessage(
 					ChatColor.RED + user2.getName() + " has been jailed!");
 		} else {
-			user.sendMessage(ChatColor.YELLOW
-					+ "Proper use is: /jail <player>");
+			user.sendMessage(ChatColor.YELLOW + "Proper use is: /jail <player>");
 		}
 	}
 
 	public void Unjail(String[] args, User user) {
 		if (args.length == 1) {
 			User user2;
-			if((user2 = User.matchUser(args[0], plugin)) == null) {
+			if ((user2 = User.matchUser(args[0], plugin)) == null) {
 				user.sendMessage(ChatColor.RED + "That player doesn't exist!");
 				return;
 			}
@@ -362,7 +362,7 @@ public class WarpCommands implements Commands {
 	}
 
 	public void SetJail(User user) {
-		if(user.isServer()) {
+		if (user.isServer()) {
 			user.sendMessage(ChatColor.RED + "The server cannot do that!");
 			return;
 		}

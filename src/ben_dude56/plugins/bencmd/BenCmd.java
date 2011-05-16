@@ -228,7 +228,8 @@ public class BenCmd extends JavaPlugin {
 		for (Player player : this.getServer().getOnlinePlayers()) {
 			User user;
 			JoinType jt = maxPlayers.join(user = new User(this, player));
-			if(jt == JoinType.NO_SLOT_NORMAL || jt == JoinType.NO_SLOT_RESERVED) {
+			if (jt == JoinType.NO_SLOT_NORMAL
+					|| jt == JoinType.NO_SLOT_RESERVED) {
 				user.Kick("The server ran out of player slots when reloading... :(");
 			}
 		}
@@ -291,7 +292,7 @@ public class BenCmd extends JavaPlugin {
 		FreezeTimer.schedule(new TimeFreeze(this), 0, 1);
 		log.info(pdfFile.getName() + " v" + pdfFile.getVersion()
 				+ " has been enabled!");
-		if(mainProperties.getBoolean("channelsEnabled", false)) {
+		if (mainProperties.getBoolean("channelsEnabled", false)) {
 			log.warning("BenCmd Chat Channels (Experimental) are active...");
 		}
 	}

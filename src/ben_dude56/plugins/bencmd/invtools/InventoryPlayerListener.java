@@ -26,7 +26,7 @@ public class InventoryPlayerListener extends PlayerListener {
 		}
 		Block block = event.getClickedBlock();
 		Player player = event.getPlayer();
-		if(back.TryDispense(block)) {
+		if (back.TryDispense(block)) {
 			event.setCancelled(true);
 		}
 		if (block.getType() == Material.CHEST

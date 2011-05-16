@@ -14,12 +14,12 @@ import ben_dude56.plugins.bencmd.BenCmd;
 public class ChatChannelController extends Properties {
 	private static final long serialVersionUID = 0L;
 	private List<ChatChannel> channels;
-	private List<ChatChannel> tempchannels; 
+	private List<ChatChannel> tempchannels;
 	String path;
 	Logger log = Logger.getLogger("minecraft");
 	BenCmd plugin;
 	boolean channelsActive;
-	
+
 	public ChatChannelController(String pathName, BenCmd instance) {
 		path = pathName;
 		plugin = instance;
@@ -28,28 +28,29 @@ public class ChatChannelController extends Properties {
 		channelsActive = true;
 		tempchannels = new ArrayList<ChatChannel>();
 	}
-	
-	public ChatChannelController(String pathName, BenCmd instance, boolean active) {
+
+	public ChatChannelController(String pathName, BenCmd instance,
+			boolean active) {
 		path = pathName;
 		plugin = instance;
 		channelsActive = active;
 		this.loadFile();
-		if(active) {
+		if (active) {
 			this.loadChannels();
 		}
 		tempchannels = new ArrayList<ChatChannel>();
 	}
-	
+
 	public void reloadChannels() {
 		this.loadFile();
 		this.loadChannels();
 	}
-	
+
 	public void saveAll() {
 		this.saveChannels();
 		this.saveFile();
 	}
-	
+
 	private void loadFile() {
 		File file = new File(path); // Prepare the file
 		if (!file.exists()) {
@@ -70,24 +71,28 @@ public class ChatChannelController extends Properties {
 			ex.printStackTrace();
 		}
 	}
-	
+
 	private void loadChannels() {
 		channels = new ArrayList<ChatChannel>();
-		for(int i = 0; i < this.values().size(); i++) {
+		for (int i = 0; i < this.values().size(); i++) {
 			try {
-				channels.add(new ChatChannel((String) this.keySet().toArray()[i], (String) this.values().toArray()[i], plugin));
+				channels.add(new ChatChannel(
+						(String) this.keySet().toArray()[i], (String) this
+								.values().toArray()[i], plugin));
 			} catch (Exception e) {
-				log.warning("ChatChannel " + (String) this.keySet().toArray()[i] + " couldn't be created!");
+				log.warning("ChatChannel "
+						+ (String) this.keySet().toArray()[i]
+						+ " couldn't be created!");
 			}
 		}
-		if(getChannel("General") == null) {
+		if (getChannel("General") == null) {
 			log.severe("ChatChannel General doesn't exist! Turning off Chat Channels...");
 			plugin.mainProperties.setProperty("channelsEnabled", "false");
 			plugin.mainProperties.saveFile("-BenCmd Main Config-");
 			return;
 		}
 	}
-	
+
 	private void saveFile() {
 		File file = new File(path);
 		if (file.exists()) {
@@ -99,29 +104,29 @@ public class ChatChannelController extends Properties {
 			}
 		}
 	}
-	
+
 	private void saveChannels() {
 		this.clear();
-		for(ChatChannel channel : channels) {
+		for (ChatChannel channel : channels) {
 			this.put(channel.getName(), channel.getValue());
 		}
 	}
-	
+
 	public boolean isActive() {
 		return channelsActive;
 	}
-	
+
 	public ChatChannel getChannel(String name) {
-		if(!channelsActive) {
+		if (!channelsActive) {
 			return null;
 		}
-		for(ChatChannel channel : channels) {
-			if(channel.getName().equalsIgnoreCase(name)) {
+		for (ChatChannel channel : channels) {
+			if (channel.getName().equalsIgnoreCase(name)) {
 				return channel;
 			}
 		}
-		for(ChatChannel channel : tempchannels) {
-			if(channel.getName().equalsIgnoreCase(name)) {
+		for (ChatChannel channel : tempchannels) {
+			if (channel.getName().equalsIgnoreCase(name)) {
 				return channel;
 			}
 		}

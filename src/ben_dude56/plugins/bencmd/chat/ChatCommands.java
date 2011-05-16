@@ -20,7 +20,7 @@ public class ChatCommands implements Commands {
 	public ChatCommands(BenCmd instance) {
 		plugin = instance;
 	}
-	
+
 	public boolean channelsEnabled() {
 		return plugin.mainProperties.getBoolean("channelsEnabled", false);
 	}
@@ -41,7 +41,7 @@ public class ChatCommands implements Commands {
 			list(args, user);
 			return true;
 		}
-		if(channelsEnabled()) {
+		if (channelsEnabled()) {
 			return false;
 		}
 		if (commandLabel.equalsIgnoreCase("slow")
@@ -84,7 +84,7 @@ public class ChatCommands implements Commands {
 			return;
 		}
 		PermissionUser user2;
-		if((user2 = PermissionUser.matchUserIgnoreCase(args[0], plugin)) == null) {
+		if ((user2 = PermissionUser.matchUserIgnoreCase(args[0], plugin)) == null) {
 			user.sendMessage(ChatColor.RED + "That user doesn't exist!");
 			return;
 		}
@@ -111,38 +111,41 @@ public class ChatCommands implements Commands {
 			break;
 		}
 	}
-	
+
 	public void listChannel(User user, ChatChannel channel) {
 		String playerString = "";
-		if(!channel.canListen(user)) {
+		if (!channel.canListen(user)) {
 			user.sendMessage(ChatColor.RED + "You can't access that channel!");
 			return;
 		}
-		for(User user2 : channel.getUsers()) {
-			if(user2.isOffline() && !user.isServer()) {
+		for (User user2 : channel.getUsers()) {
+			if (user2.isOffline() && !user.isServer()) {
 				continue;
 			}
-			playerString += user2.getColor()
-					+ user2.getName() + ChatColor.WHITE + ", ";
+			playerString += user2.getColor() + user2.getName()
+					+ ChatColor.WHITE + ", ";
 		}
 		user.sendMessage("The following players are on this channel: "
 				+ playerString);
 	}
 
 	public void list(String[] args, User user) {
-		if(channelsEnabled() && args.length != 0 && args[0].equalsIgnoreCase("channel")) {
-			if(args.length == 1) {
-				if(user.inChannel()) {
+		if (channelsEnabled() && args.length != 0
+				&& args[0].equalsIgnoreCase("channel")) {
+			if (args.length == 1) {
+				if (user.inChannel()) {
 					listChannel(user, user.getActiveChannel());
 				} else {
-					user.sendMessage(ChatColor.RED + "You must be in a chat channel to do that!");
+					user.sendMessage(ChatColor.RED
+							+ "You must be in a chat channel to do that!");
 				}
 			} else if (args.length == 2) {
 				ChatChannel channel;
-				if((channel = plugin.channels.getChannel(args[1])) != null) {
+				if ((channel = plugin.channels.getChannel(args[1])) != null) {
 					listChannel(user, channel);
 				} else {
-					user.sendMessage(ChatColor.RED + "That channel doesn't exist!");
+					user.sendMessage(ChatColor.RED
+							+ "That channel doesn't exist!");
 				}
 			}
 			return;
@@ -157,11 +160,11 @@ public class ChatCommands implements Commands {
 			String playerString = "";
 			for (Player player2 : playerList) {
 				User user2 = new User(plugin, player2);
-				if(user2.isOffline() && !user.isServer()) {
+				if (user2.isOffline() && !user.isServer()) {
 					continue;
 				}
-				playerString += user2.getColor()
-						+ user2.getName() + ChatColor.WHITE + ", ";
+				playerString += user2.getColor() + user2.getName()
+						+ ChatColor.WHITE + ", ";
 			}
 			user.sendMessage("The following players are online: "
 					+ playerString);
@@ -170,11 +173,12 @@ public class ChatCommands implements Commands {
 
 	public void unmute(String[] args, User user) {
 		if (args.length != 1) {
-			user.sendMessage(ChatColor.YELLOW + "Proper usage: /unmute <player>");
+			user.sendMessage(ChatColor.YELLOW
+					+ "Proper usage: /unmute <player>");
 			return;
 		}
 		PermissionUser user2;
-		if((user2 = PermissionUser.matchUserIgnoreCase(args[0], plugin)) == null) {
+		if ((user2 = PermissionUser.matchUserIgnoreCase(args[0], plugin)) == null) {
 			user.sendMessage(ChatColor.RED + "That user doesn't exist!");
 			return;
 		}
@@ -201,7 +205,7 @@ public class ChatCommands implements Commands {
 			break;
 		}
 	}
-	
+
 	public void me(String[] args, User user) {
 		if (args.length == 0) {
 			user.sendMessage(ChatColor.YELLOW + "Proper usage: /me <message>");
@@ -214,8 +218,8 @@ public class ChatCommands implements Commands {
 			return;
 		}
 		String message = "";
-		for(String word : args) {
-			if(message == "") {
+		for (String word : args) {
+			if (message == "") {
 				message += word;
 			} else {
 				message += " " + word;
@@ -230,7 +234,8 @@ public class ChatCommands implements Commands {
 		}
 		int slowTimeLeft = plugin.chatListen.slow.playerBlocked(user.getName());
 		if ((!plugin.perm.userFile.hasPermission(user.getName(),
-				"ignoreSlowMode", true, true)) && plugin.chatListen.slow.isEnabled()) {
+				"ignoreSlowMode", true, true))
+				&& plugin.chatListen.slow.isEnabled()) {
 			if (slowTimeLeft > 0) {
 				user.sendMessage(ChatColor.GRAY
 						+ "Slow mode is enabled! You must wait "
@@ -241,14 +246,16 @@ public class ChatCommands implements Commands {
 				plugin.chatListen.slow.playerAdd(user.getName());
 			}
 		}
-		message = ChatColor.WHITE + "*" + user.getColor() + user.getName() + " " + ChatColor.WHITE + message;
+		message = ChatColor.WHITE + "*" + user.getColor() + user.getName()
+				+ " " + ChatColor.WHITE + message;
 		plugin.getServer().broadcastMessage(message);
 		new User(plugin).sendMessage(message);
 	}
-	
+
 	public void tell(String[] args, User user) {
 		if (args.length <= 1) {
-			user.sendMessage(ChatColor.YELLOW + "Proper usage: /tell <player> <message>");
+			user.sendMessage(ChatColor.YELLOW
+					+ "Proper usage: /tell <player> <message>");
 			return;
 		}
 		if (user.isMuted()) {
@@ -258,21 +265,22 @@ public class ChatCommands implements Commands {
 			return;
 		}
 		User user2;
-		if((user2 = User.matchUser(args[0], plugin)) == null) {
+		if ((user2 = User.matchUser(args[0], plugin)) == null) {
 			user.sendMessage(ChatColor.RED + "That user doesn't exist!");
 			return;
 		}
-		if(user2.getName().equalsIgnoreCase(user.getName())) {
-			user.sendMessage(ChatColor.RED + "Are you trying to talk to yourself!?");
+		if (user2.getName().equalsIgnoreCase(user.getName())) {
+			user.sendMessage(ChatColor.RED
+					+ "Are you trying to talk to yourself!?");
 			return;
 		}
 		String message = "";
-		for(int i = 0; i < args.length; i++) {
-			if(i == 0) {
+		for (int i = 0; i < args.length; i++) {
+			if (i == 0) {
 				continue;
 			}
 			String word = args[i];
-			if(message == "") {
+			if (message == "") {
 				message += word;
 			} else {
 				message += " " + word;
@@ -287,7 +295,8 @@ public class ChatCommands implements Commands {
 		}
 		int slowTimeLeft = plugin.chatListen.slow.playerBlocked(user.getName());
 		if ((!plugin.perm.userFile.hasPermission(user.getName(),
-				"ignoreSlowMode", true, true)) && plugin.chatListen.slow.isEnabled()) {
+				"ignoreSlowMode", true, true))
+				&& plugin.chatListen.slow.isEnabled()) {
 			if (slowTimeLeft > 0) {
 				user.sendMessage(ChatColor.GRAY
 						+ "Slow mode is enabled! You must wait "
@@ -298,8 +307,11 @@ public class ChatCommands implements Commands {
 				plugin.chatListen.slow.playerAdd(user.getName());
 			}
 		}
-		user2.sendMessage(user.getColor() + user.getName() + ChatColor.GRAY + " has whispered: " + message);
-		user.sendMessage(ChatColor.GREEN + "Your PM to " + user2.getName() + " was sent!");
-		log.info("(" + user.getName() + " => " + user2.getName() + ") " + message);
+		user2.sendMessage(user.getColor() + user.getName() + ChatColor.GRAY
+				+ " has whispered: " + message);
+		user.sendMessage(ChatColor.GREEN + "Your PM to " + user2.getName()
+				+ " was sent!");
+		log.info("(" + user.getName() + " => " + user2.getName() + ") "
+				+ message);
 	}
 }

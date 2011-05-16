@@ -31,87 +31,87 @@ public class ChatChannel {
 	private List<User> listeners;
 	private List<User> talkers;
 	private List<User> mods;
-	
-	//Other
+
+	// Other
 	private boolean temp;
 
 	public ChatChannel(String key, String value, BenCmd instance) {
 		plugin = instance;
 		name = key;
 		temp = false;
-		
+
 		listenList = new ArrayList<PermissionUser>();
-		if(!value.split("/")[0].isEmpty()) {
-			for(String listen : value.split("/")[0].split(",")) {
+		if (!value.split("/")[0].isEmpty()) {
+			for (String listen : value.split("/")[0].split(",")) {
 				listenList.add(PermissionUser.matchUser(listen, instance));
 			}
 		}
-		
+
 		talkList = new ArrayList<PermissionUser>();
-		if(!value.split("/")[1].isEmpty()) {
-			for(String listen : value.split("/")[1].split(",")) {
+		if (!value.split("/")[1].isEmpty()) {
+			for (String listen : value.split("/")[1].split(",")) {
 				talkList.add(PermissionUser.matchUser(listen, instance));
 			}
 		}
-		
+
 		modList = new ArrayList<PermissionUser>();
-		if(!value.split("/")[2].isEmpty()) {
-			for(String listen : value.split("/")[2].split(",")) {
+		if (!value.split("/")[2].isEmpty()) {
+			for (String listen : value.split("/")[2].split(",")) {
 				modList.add(PermissionUser.matchUser(listen, instance));
 			}
 		}
-		if(value.split("/")[3].equalsIgnoreCase("d")) {
+		if (value.split("/")[3].equalsIgnoreCase("d")) {
 			autoLevel = ChatterType.DISALLOW;
-		} else if(value.split("/")[3].equalsIgnoreCase("l")) {
+		} else if (value.split("/")[3].equalsIgnoreCase("l")) {
 			autoLevel = ChatterType.LISTEN;
-		} else if(value.split("/")[3].equalsIgnoreCase("t")) {
+		} else if (value.split("/")[3].equalsIgnoreCase("t")) {
 			autoLevel = ChatterType.TALK;
 		} else {
 			throw new IllegalArgumentException();
 		}
-		
+
 		slow = new SlowMode(plugin, plugin.mainProperties.getInteger(
 				"slowTime", 10000));
 	}
-	
+
 	public ChatChannel(String name, User starter) {
 		this.name = name;
 		this.autoLevel = ChatterType.DISALLOW;
 		this.temp = true;
-		
+
 		listenList = new ArrayList<PermissionUser>();
 		listenList.add(starter);
 		talkList = new ArrayList<PermissionUser>();
 		talkList.add(starter);
 		modList = new ArrayList<PermissionUser>();
-		
+
 		slow = new SlowMode(plugin, plugin.mainProperties.getInteger(
 				"slowTime", 10000));
-		
-		if(starter.inChannel()) {
+
+		if (starter.inChannel()) {
 			starter.LeaveActiveChannel();
 		}
 		starter.ActivateChannel(this);
 		this.JoinAsMod(starter);
 	}
-	
+
 	public boolean isTemporary() {
 		return temp;
 	}
-	
+
 	public void update() {
-		
+
 	}
-	
+
 	public List<User> getUsers() {
 		return listeners;
 	}
-	
+
 	public String getValue() {
 		String value = "";
 		boolean commaAdd = false;
-		for(PermissionUser pUser : listenList) {
-			if(commaAdd) {
+		for (PermissionUser pUser : listenList) {
+			if (commaAdd) {
 				value += ",";
 			} else {
 				commaAdd = true;
@@ -120,8 +120,8 @@ public class ChatChannel {
 		}
 		value += "/";
 		commaAdd = false;
-		for(PermissionUser pUser : talkList) {
-			if(commaAdd) {
+		for (PermissionUser pUser : talkList) {
+			if (commaAdd) {
 				value += ",";
 			} else {
 				commaAdd = true;
@@ -130,15 +130,15 @@ public class ChatChannel {
 		}
 		value += "/";
 		commaAdd = false;
-		for(PermissionUser pUser : modList) {
-			if(commaAdd) {
+		for (PermissionUser pUser : modList) {
+			if (commaAdd) {
 				value += ",";
 			} else {
 				commaAdd = true;
 			}
 			value += pUser.getName();
 		}
-		if(autoLevel == ChatterType.DISALLOW) {
+		if (autoLevel == ChatterType.DISALLOW) {
 			value += "/d";
 		} else if (autoLevel == ChatterType.LISTEN) {
 			value += "/l";
@@ -147,15 +147,12 @@ public class ChatChannel {
 		}
 		return value;
 	}
-	
-	/*private User getListener(PermissionUser pUser) {
-		for (User listener : listeners) {
-			if (pUser.getName().equalsIgnoreCase(listener.getName())) {
-				return listener;
-			}
-		}
-		return null;
-	}*/
+
+	/*
+	 * private User getListener(PermissionUser pUser) { for (User listener :
+	 * listeners) { if (pUser.getName().equalsIgnoreCase(listener.getName())) {
+	 * return listener; } } return null; }
+	 */
 
 	public boolean canMod(PermissionUser user) {
 		for (PermissionUser mod : modList) {
@@ -255,21 +252,21 @@ public class ChatChannel {
 			receiver.sendMessage(message);
 		}
 	}
-	
+
 	public void ToggleSlow(User user) {
 		if (slow.isEnabled()) {
 			slow.DisableSlow();
-			log.info(user.getName() + " has disabled slow mode. (Channel: " + name + ")");
-			this.sendMessage(
-					ChatColor.GRAY + "Slow mode has been disabled.");
+			log.info(user.getName() + " has disabled slow mode. (Channel: "
+					+ name + ")");
+			this.sendMessage(ChatColor.GRAY + "Slow mode has been disabled.");
 		} else {
 			slow.EnableSlow();
-			log.info(user.getName() + " has enabled slow mode. (Channel: " + name + ")");
-			this.sendMessage(
-					ChatColor.GRAY
-							+ "Slow mode has been enabled. You must wait "
-							+ (slow.getDefTime() / 1000)
-							+ " seconds between each chat message.");
+			log.info(user.getName() + " has enabled slow mode. (Channel: "
+					+ name + ")");
+			this.sendMessage(ChatColor.GRAY
+					+ "Slow mode has been enabled. You must wait "
+					+ (slow.getDefTime() / 1000)
+					+ " seconds between each chat message.");
 		}
 	}
 
@@ -323,9 +320,9 @@ public class ChatChannel {
 			return false;
 		}
 	}
-	
+
 	protected void addMod(PermissionUser newMod) {
-		switch(autoLevel) {
+		switch (autoLevel) {
 		case LISTEN:
 			addTalk(newMod);
 			removeListen(newMod);
@@ -340,116 +337,121 @@ public class ChatChannel {
 			break;
 		}
 		modList.add(newMod);
-		for(User listener : listeners) {
-			if(newMod.getName().equalsIgnoreCase(listener.getName())) {
+		for (User listener : listeners) {
+			if (newMod.getName().equalsIgnoreCase(listener.getName())) {
 				UpdateAsMod(listener);
-				listener.sendMessage(ChatColor.GREEN + "You are now a mod in your current channel!");
+				listener.sendMessage(ChatColor.GREEN
+						+ "You are now a mod in your current channel!");
 				return;
 			}
 		}
 	}
-	
+
 	private void UpdateAsMod(User newMod) {
 		this.mods.add(newMod);
 	}
-	
+
 	private void UpdateAsNonMod(User oldMod) {
-		for(int i = 0; i < mods.size(); i++) {
-			if(mods.get(i).getName().equalsIgnoreCase(oldMod.getName())) {
+		for (int i = 0; i < mods.size(); i++) {
+			if (mods.get(i).getName().equalsIgnoreCase(oldMod.getName())) {
 				mods.remove(i);
 				break;
 			}
 		}
 	}
-	
+
 	private void UpdateAsTalker(User newTalker) {
 		this.talkers.add(newTalker);
 	}
-	
+
 	private void UpdateAsNonTalker(User oldTalker) {
-		for(int i = 0; i < talkers.size(); i++) {
-			if(talkers.get(i).getName().equalsIgnoreCase(oldTalker.getName())) {
+		for (int i = 0; i < talkers.size(); i++) {
+			if (talkers.get(i).getName().equalsIgnoreCase(oldTalker.getName())) {
 				talkers.remove(i);
-				oldTalker.sendMessage(ChatColor.RED + "You are no longer allowed to talk in your current channel!");
+				oldTalker
+						.sendMessage(ChatColor.RED
+								+ "You are no longer allowed to talk in your current channel!");
 				break;
 			}
 		}
 	}
-	
+
 	protected void ListenOnly(User listening) {
 		UpdateAsNonMod(listening);
 		UpdateAsNonTalker(listening);
 	}
-	
+
 	public void LeaveChannel(User leaving) {
 		UpdateAsNonMod(leaving);
 		UpdateAsNonTalker(leaving);
-		for(int i = 0; i < listeners.size(); i++) {
-			if(listeners.get(i).getName().equalsIgnoreCase(leaving.getName())) {
+		for (int i = 0; i < listeners.size(); i++) {
+			if (listeners.get(i).getName().equalsIgnoreCase(leaving.getName())) {
 				listeners.remove(i);
 				break;
 			}
 		}
-		this.sendMessage(leaving.getColor() + leaving.getName() + ChatColor.WHITE + " has left the channel");
+		this.sendMessage(leaving.getColor() + leaving.getName()
+				+ ChatColor.WHITE + " has left the channel");
 	}
-	
+
 	protected void removeMod(PermissionUser oldMod) {
-		for(int i = 0; i < modList.size(); i++) {
-			if(modList.get(i).getName().equalsIgnoreCase(oldMod.getName())) {
+		for (int i = 0; i < modList.size(); i++) {
+			if (modList.get(i).getName().equalsIgnoreCase(oldMod.getName())) {
 				modList.remove(i);
 				break;
 			}
 		}
-		for(User listener : listeners) {
-			if(oldMod.getName().equalsIgnoreCase(listener.getName())) {
+		for (User listener : listeners) {
+			if (oldMod.getName().equalsIgnoreCase(listener.getName())) {
 				UpdateAsNonMod(listener);
-				listener.sendMessage(ChatColor.RED + "You are no longer a mod in your current channel!");
+				listener.sendMessage(ChatColor.RED
+						+ "You are no longer a mod in your current channel!");
 				return;
 			}
 		}
 	}
-	
+
 	protected boolean voiceUser(PermissionUser toVoice) {
-		if(this.canTalk(toVoice)) {
+		if (this.canTalk(toVoice)) {
 			return false;
 		} else {
 			return true;
 		}
 	}
-	
+
 	protected void addListen(PermissionUser newListen) {
 		listenList.add(newListen);
-		if(autoLevel != ChatterType.DISALLOW) {
+		if (autoLevel != ChatterType.DISALLOW) {
 			return;
 		}
-		for(User listener : listeners) {
-			if(newListen.getName().equalsIgnoreCase(listener.getName())) {
+		for (User listener : listeners) {
+			if (newListen.getName().equalsIgnoreCase(listener.getName())) {
 				this.LeaveChannel(listener);
 				return;
 			}
 		}
 	}
-	
+
 	protected void removeListen(PermissionUser oldListen) {
-		for(int i = 0; i < talkList.size(); i++) {
-			if(talkList.get(i).getName().equalsIgnoreCase(oldListen.getName())) {
+		for (int i = 0; i < talkList.size(); i++) {
+			if (talkList.get(i).getName().equalsIgnoreCase(oldListen.getName())) {
 				talkList.remove(i);
 				break;
 			}
 		}
-		if(autoLevel == ChatterType.DISALLOW) {
+		if (autoLevel == ChatterType.DISALLOW) {
 			return;
 		}
-		for(User listener : listeners) {
-			if(oldListen.getName().equalsIgnoreCase(listener.getName())) {
+		for (User listener : listeners) {
+			if (oldListen.getName().equalsIgnoreCase(listener.getName())) {
 				this.LeaveChannel(listener);
 				return;
 			}
 		}
 	}
-	
+
 	protected void addTalk(PermissionUser newTalker) {
-		switch(autoLevel) {
+		switch (autoLevel) {
 		case LISTEN:
 			removeListen(newTalker);
 			break;
@@ -461,31 +463,33 @@ public class ChatChannel {
 			break;
 		}
 		talkList.add(newTalker);
-		for(User listener : listeners) {
-			if(newTalker.getName().equalsIgnoreCase(listener.getName())) {
+		for (User listener : listeners) {
+			if (newTalker.getName().equalsIgnoreCase(listener.getName())) {
 				UpdateAsTalker(listener);
-				listener.sendMessage(ChatColor.GREEN + "You can now talk in your current channel!");
+				listener.sendMessage(ChatColor.GREEN
+						+ "You can now talk in your current channel!");
 				return;
 			}
 		}
 	}
-	
+
 	protected void removeTalk(PermissionUser oldTalker) {
-		for(int i = 0; i < talkList.size(); i++) {
-			if(talkList.get(i).getName().equalsIgnoreCase(oldTalker.getName())) {
+		for (int i = 0; i < talkList.size(); i++) {
+			if (talkList.get(i).getName().equalsIgnoreCase(oldTalker.getName())) {
 				talkList.remove(i);
 				break;
 			}
 		}
-		for(User listener : listeners) {
-			if(oldTalker.getName().equalsIgnoreCase(listener.getName())) {
+		for (User listener : listeners) {
+			if (oldTalker.getName().equalsIgnoreCase(listener.getName())) {
 				UpdateAsNonTalker(listener);
-				listener.sendMessage(ChatColor.RED + "You can no longer talk in your current channel!");
+				listener.sendMessage(ChatColor.RED
+						+ "You can no longer talk in your current channel!");
 				return;
 			}
 		}
 	}
-	
+
 	protected ChatterType getAutoLevel() {
 		return autoLevel;
 	}

@@ -26,16 +26,16 @@ public class PreWarp {
 	public boolean returnPreWarp(Player player) {
 		String name = player.getName() + "_check";
 		if (prewarps.containsKey(name)) {
-			prewarps.get(name).WarpHere(new WarpableUser(plugin,player));
+			prewarps.get(name).WarpHere(new WarpableUser(plugin, player));
 			return true;
 		} else {
 			return false;
 		}
 	}
-	
+
 	public void RemovePreWarp(Player player) {
 		String name = player.getName() + "_check";
-		if(prewarps.containsKey(name)) {
+		if (prewarps.containsKey(name)) {
 			prewarps.remove(name);
 		}
 	}

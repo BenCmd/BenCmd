@@ -30,24 +30,30 @@ public class PermLoginListener extends PlayerListener {
 		}
 		switch (plugin.maxPlayers.join(new User(plugin, event.getPlayer()))) {
 		case NO_SLOT_NORMAL:
-			event.disallow(Result.KICK_FULL, plugin.mainProperties.getString("noNormal", "There are no normal slots currently available!"));
+			event.disallow(Result.KICK_FULL, plugin.mainProperties.getString(
+					"noNormal",
+					"There are no normal slots currently available!"));
 			break;
 		case NO_SLOT_RESERVED:
-			event.disallow(Result.KICK_FULL, plugin.mainProperties.getString("noReserved", "There are no normal slots or reserved slots currently available!"));
+			event.disallow(
+					Result.KICK_FULL,
+					plugin.mainProperties
+							.getString("noReserved",
+									"There are no normal slots or reserved slots currently available!"));
 			break;
 		}
 	}
-	
+
 	public void onPlayerPickupItem(PlayerPickupItemEvent event) {
-		User user = new User(plugin,event.getPlayer());
-		if(user.hasPerm("isJailed", false)) {
+		User user = new User(plugin, event.getPlayer());
+		if (user.hasPerm("isJailed", false)) {
 			event.setCancelled(true);
 		}
 	}
-	
+
 	public void onPlayerDropItem(PlayerDropItemEvent event) {
-		User user = new User(plugin,event.getPlayer());
-		if(user.hasPerm("isJailed", false)) {
+		User user = new User(plugin, event.getPlayer());
+		if (user.hasPerm("isJailed", false)) {
 			event.setCancelled(true);
 		}
 	}

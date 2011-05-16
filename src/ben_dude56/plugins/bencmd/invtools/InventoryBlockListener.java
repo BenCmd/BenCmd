@@ -64,29 +64,35 @@ public class InventoryBlockListener extends BlockListener {
 	}
 
 	public void onBlockRedstoneChange(BlockRedstoneEvent event) {
-		if (!(event.getOldCurrent() == 0) || !(event.getNewCurrent() > 0) || !plugin.mainProperties.getBoolean("redstoneUnlDisp", true)) {
+		if (!(event.getOldCurrent() == 0) || !(event.getNewCurrent() > 0)
+				|| !plugin.mainProperties.getBoolean("redstoneUnlDisp", true)) {
 			return;
 		}
 		Block block = event.getBlock();
 		Block block2;
-		block2 = block.getWorld().getBlockAt(block.getX() + 1, block.getY(), block.getZ());
-		if(back.TryDispense(block2)) {
+		block2 = block.getWorld().getBlockAt(block.getX() + 1, block.getY(),
+				block.getZ());
+		if (back.TryDispense(block2)) {
 			return;
 		}
-		block2 = block.getWorld().getBlockAt(block.getX() - 1, block.getY(), block.getZ());
-		if(back.TryDispense(block2)) {
+		block2 = block.getWorld().getBlockAt(block.getX() - 1, block.getY(),
+				block.getZ());
+		if (back.TryDispense(block2)) {
 			return;
 		}
-		block2 = block.getWorld().getBlockAt(block.getX(), block.getY(), block.getZ() + 1);
-		if(back.TryDispense(block2)) {
+		block2 = block.getWorld().getBlockAt(block.getX(), block.getY(),
+				block.getZ() + 1);
+		if (back.TryDispense(block2)) {
 			return;
 		}
-		block2 = block.getWorld().getBlockAt(block.getX(), block.getY(), block.getZ() - 1);
-		if(back.TryDispense(block2)) {
+		block2 = block.getWorld().getBlockAt(block.getX(), block.getY(),
+				block.getZ() - 1);
+		if (back.TryDispense(block2)) {
 			return;
 		}
-		block2 = block.getWorld().getBlockAt(block.getX(), block.getY() + 1, block.getZ());
-		if(back.TryDispense(block2)) {
+		block2 = block.getWorld().getBlockAt(block.getX(), block.getY() + 1,
+				block.getZ());
+		if (back.TryDispense(block2)) {
 			return;
 		}
 	}

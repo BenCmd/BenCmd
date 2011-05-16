@@ -8,16 +8,17 @@ import ben_dude56.plugins.bencmd.BenCmd;
 
 public class WeatherPListener extends PlayerListener {
 	BenCmd plugin;
-	
+
 	public WeatherPListener(BenCmd instance) {
 		plugin = instance;
 	}
-	
+
 	public void onPlayerInteract(PlayerInteractEvent event) {
-		if(event.getAction() != Action.RIGHT_CLICK_BLOCK && event.getAction() != Action.RIGHT_CLICK_AIR) {
+		if (event.getAction() != Action.RIGHT_CLICK_BLOCK
+				&& event.getAction() != Action.RIGHT_CLICK_AIR) {
 			return;
 		}
-		if(plugin.strikeBind.bindEquipped(event.getPlayer())) {
+		if (plugin.strikeBind.bindEquipped(event.getPlayer())) {
 			plugin.getServer().dispatchCommand(event.getPlayer(), "strike");
 		}
 	}

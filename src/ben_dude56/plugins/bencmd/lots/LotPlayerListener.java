@@ -57,26 +57,30 @@ public class LotPlayerListener extends PlayerListener {
 			}
 		}
 	}
-	
+
 	public void onPlayerBucketEmpty(PlayerBucketEmptyEvent event) {
-		String LotID = String.valueOf(plugin.lots.isInLot(event.getBlockClicked().getLocation()));
+		String LotID = String.valueOf(plugin.lots.isInLot(event
+				.getBlockClicked().getLocation()));
 		if (!LotID.equalsIgnoreCase("-1")) {
 			Player player = event.getPlayer();
 			String owner = plugin.lots.getLot(LotID).getOwner();
-			if (!plugin.lots.canBuildHere(player, event.getBlockClicked().getLocation())) {
+			if (!plugin.lots.canBuildHere(player, event.getBlockClicked()
+					.getLocation())) {
 				event.setCancelled(true);
 				player.sendMessage("You cannot build here. This lot is owned by "
 						+ owner);
 			}
 		}
 	}
-	
+
 	public void onPlayerBucketFill(PlayerBucketFillEvent event) {
-		String LotID = String.valueOf(plugin.lots.isInLot(event.getBlockClicked().getLocation()));
+		String LotID = String.valueOf(plugin.lots.isInLot(event
+				.getBlockClicked().getLocation()));
 		if (!LotID.equalsIgnoreCase("-1")) {
 			Player player = event.getPlayer();
 			String owner = plugin.lots.getLot(LotID).getOwner();
-			if (!plugin.lots.canBuildHere(player, event.getBlockClicked().getLocation())) {
+			if (!plugin.lots.canBuildHere(player, event.getBlockClicked()
+					.getLocation())) {
 				event.setCancelled(true);
 				player.sendMessage("You cannot build here. This lot is owned by "
 						+ owner);

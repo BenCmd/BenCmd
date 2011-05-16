@@ -56,8 +56,7 @@ public class Lot {
 	public String getOwner() {
 		if (getSubID().equalsIgnoreCase("0")) {
 			return owner;
-		}
-		else {
+		} else {
 			return plugin.lots.getLot(LotID).getOwner();
 		}
 	}
@@ -65,22 +64,22 @@ public class Lot {
 	public String getLotID() {
 		return LotID;
 	}
-	
+
 	public String getFullID() {
 		return FullID;
 	}
-	
+
 	public String getSubID() {
 		return SubID;
 	}
-	
+
 	public String getLotGroup() {
 		if (getSubID().equalsIgnoreCase("0"))
 			return group;
 		else
 			return plugin.lots.getLot(LotID).getLotGroup();
 	}
-	
+
 	public List<String> getSubs() {
 		List<String> subs;
 		subs = new ArrayList<String>();
@@ -108,26 +107,22 @@ public class Lot {
 		if (SubID.equalsIgnoreCase("0")) {
 			if (player.getName().equalsIgnoreCase(getOwner())) {
 				return true;
-			}
-			else {
+			} else {
 				return false;
 			}
-		}
-		else {
+		} else {
 			return plugin.lots.getLot(LotID).isOwner(player);
 		}
 	}
-	
+
 	public boolean isGuest(String guest) {
 		if (SubID.equalsIgnoreCase("0")) {
 			if (guests.contains(guest)) {
 				return true;
-			}
-			else {
+			} else {
 				return false;
 			}
-		}
-		else {
+		} else {
 			return plugin.lots.getLot(LotID).isGuest(guest);
 		}
 	}
@@ -137,73 +132,67 @@ public class Lot {
 		String group;
 		if (!SubID.equalsIgnoreCase("0")) {
 			group = plugin.lots.getLot(LotID).getGroup();
-		}
-		else
-		{
+		} else {
 			group = getGroup();
 		}
-		if (isOwner(player) || isGuest(player.getName()) || user.hasPerm("isLandlord") || user.getGroup().getName().equalsIgnoreCase(group)) {
+		if (isOwner(player) || isGuest(player.getName())
+				|| user.hasPerm("isLandlord")
+				|| user.getGroup().getName().equalsIgnoreCase(group)) {
 			return true;
-		}
-		else
+		} else
 			return false;
 	}
-	
+
 	public void addGuest(String guest) {
 		if (SubID.equalsIgnoreCase("0")) {
 			if (!isGuest(guest)) {
 				guests.add(guest);
 				plugin.lots.save();
 			}
-		}
-		else
+		} else
 			plugin.lots.getLot(LotID).addGuest(guest);
 	}
-	
+
 	public List<String> getGuests() {
 		if (SubID.equalsIgnoreCase("0"))
 			return guests;
 		else
 			return plugin.lots.getLot(LotID).getGuests();
 	}
-	
+
 	public void deleteGuest(String guest) {
 		if (SubID.equalsIgnoreCase("0")) {
 			if (isGuest(guest)) {
 				guests.remove(guest);
 				plugin.lots.save();
 			}
-		}
-		else
+		} else
 			plugin.lots.getLot(LotID).deleteGuest(guest);
 	}
-	
+
 	public void setGroup(String newGroup) {
 		if (SubID.equalsIgnoreCase("0")) {
 			group = newGroup;
 			plugin.lots.save();
-		}
-		else
+		} else
 			plugin.lots.getLot(LotID).setGroup(newGroup);
 	}
-	
+
 	public String getGroup() {
 		if (SubID.equalsIgnoreCase("0"))
 			return group;
 		else
 			return plugin.lots.getLot(LotID).getGroup();
 	}
-	
 
 	public void setOwner(String newOwner) {
 		if (SubID.equalsIgnoreCase("0")) {
 			owner = newOwner;
 			plugin.lots.save();
-		}
-		else
+		} else
 			plugin.lots.getLot(LotID).setOwner(newOwner);
 	}
-	
+
 	public void listGuests(User user) {
 		if (SubID.equalsIgnoreCase("0")) {
 			if (guests.size() == 0) {
@@ -232,20 +221,20 @@ public class Lot {
 			if (!list.equalsIgnoreCase("")) {
 				user.sendMessage(list);
 			}
-		}
-		else {
+		} else {
 			plugin.lots.getLot(LotID).listGuests(user);
 		}
 	}
-	
+
 	public boolean clearGuests() {
 		guests.clear();
 		plugin.lots.save();
 		return true;
 	}
-	public void setSubID(String id) { //BE EXTREMELY CAREFUL WITH THIS
+
+	public void setSubID(String id) { // BE EXTREMELY CAREFUL WITH THIS
 		SubID = id;
 		FullID = LotID + "," + SubID;
-		
+
 	}
 }

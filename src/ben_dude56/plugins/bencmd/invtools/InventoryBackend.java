@@ -60,10 +60,10 @@ public class InventoryBackend {
 			return THROWABLE_STACK;
 		return FULL_STACK;
 	}
-	
+
 	public boolean canBind(Material mat) {
 		int id = mat.getId();
-		if(id >= 256 && id <= 289) {
+		if (id >= 256 && id <= 289) {
 			return true;
 		} else if (id == 295 || id == 296) {
 			return true;
@@ -94,22 +94,22 @@ public class InventoryBackend {
 			}
 		} catch (NumberFormatException e) {
 			try {
-					if (plugin.itemAliases.containsKey(arg.split(":")[0])
-							&& arg.split(":").length == 2) {
+				if (plugin.itemAliases.containsKey(arg.split(":")[0])
+						&& arg.split(":").length == 2) {
+					ItemID = Integer.parseInt(plugin.itemAliases.getString(
+							arg.split(":")[0], ""));
+					Damage = Integer.parseInt(arg.split(":")[1]);
+				} else if (plugin.itemAliases.containsKey(arg)) {
+					if (plugin.itemAliases.getString(arg, "").split(":").length == 1) {
 						ItemID = Integer.parseInt(plugin.itemAliases.getString(
-								arg.split(":")[0], ""));
-						Damage = Integer.parseInt(arg.split(":")[1]);
-					} else if (plugin.itemAliases.containsKey(arg)) {
-						if (plugin.itemAliases.getString(arg, "").split(":").length == 1) {
-							ItemID = Integer.parseInt(plugin.itemAliases
-									.getString(arg, ""));
-						} else {
-							ItemID = Integer.parseInt(plugin.itemAliases
-									.getString(arg, "").split(":")[0]);
-							Damage = Integer.parseInt(plugin.itemAliases
-									.getString(arg, "").split(":")[1]);
-						}
+								arg, ""));
+					} else {
+						ItemID = Integer.parseInt(plugin.itemAliases.getString(
+								arg, "").split(":")[0]);
+						Damage = Integer.parseInt(plugin.itemAliases.getString(
+								arg, "").split(":")[1]);
 					}
+				}
 
 			} catch (NumberFormatException e2) {
 				return null;
@@ -121,7 +121,7 @@ public class InventoryBackend {
 			return new BCItem(Material.getMaterial(ItemID), Damage);
 		}
 	}
-	
+
 	public boolean TryDispense(Block block) {
 		if (plugin.dispensers.isUnlimitedDispenser(block.getLocation())
 				&& block.getType() == Material.DISPENSER) {

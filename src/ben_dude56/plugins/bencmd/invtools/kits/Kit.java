@@ -17,64 +17,84 @@ public class Kit {
 	static final Logger log = Logger.getLogger("minecraft");
 	private int kitId;
 	BenCmd plugin;
-	
+
 	public Kit(BenCmd instance, int ID, String value, String name) {
 		plugin = instance;
 		kitName = name;
 		kitId = ID;
-		if(value.split("/").length >= 2) {
+		if (value.split("/").length >= 2) {
 			group = value.split("/")[1];
 		} else {
 			group = "";
 		}
-		for(String itemKey : value.split("/")[0].split(",")) {
+		for (String itemKey : value.split("/")[0].split(",")) {
 			int itemId;
 			short itemDamage;
 			int itemAmount;
-			if(itemKey.split(" ").length == 1) {
-				if(itemKey.split(" ")[0].split(":").length == 2) {
+			if (itemKey.split(" ").length == 1) {
+				if (itemKey.split(" ")[0].split(":").length == 2) {
 					try {
-						itemId = plugin.kits.back.checkAlias(itemKey.split(" ")[0]).getMaterial().getId();
+						itemId = plugin.kits.back
+								.checkAlias(itemKey.split(" ")[0])
+								.getMaterial().getId();
 					} catch (NumberFormatException e) {
-						log.severe("Error in kit (id: " + String.valueOf(ID) + "). " + itemKey.split(" ")[0] + " is NaN!");
+						log.severe("Error in kit (id: " + String.valueOf(ID)
+								+ "). " + itemKey.split(" ")[0] + " is NaN!");
 						continue;
 					}
 					try {
-						itemDamage = Short.parseShort(itemKey.split(" ")[0].split(":")[1]);
+						itemDamage = Short.parseShort(itemKey.split(" ")[0]
+								.split(":")[1]);
 					} catch (NumberFormatException e) {
-						log.severe("Error in kit (id: " + String.valueOf(ID) + "). " + itemKey.split(" ")[0].split(":")[1] + " is NaN!");
+						log.severe("Error in kit (id: " + String.valueOf(ID)
+								+ "). " + itemKey.split(" ")[0].split(":")[1]
+								+ " is NaN!");
 						continue;
 					}
 					itemAmount = 1;
 				} else {
 					try {
-						itemId = new InventoryBackend(plugin).checkAlias(itemKey.split(" ")[0]).getMaterial().getId();
+						itemId = new InventoryBackend(plugin)
+								.checkAlias(itemKey.split(" ")[0])
+								.getMaterial().getId();
 					} catch (NumberFormatException e) {
-						log.severe("Error in kit (id: " + String.valueOf(ID) + "). " + itemKey.split(" ")[0].split(":")[0] + " is NaN!");
+						log.severe("Error in kit (id: " + String.valueOf(ID)
+								+ "). " + itemKey.split(" ")[0].split(":")[0]
+								+ " is NaN!");
 						continue;
 					}
 					itemAmount = 1;
 					itemDamage = 0;
 				}
 			} else if (itemKey.split(" ").length == 2) {
-				if(itemKey.split(" ")[0].split(":").length == 2) {
+				if (itemKey.split(" ")[0].split(":").length == 2) {
 					try {
-						itemId = new InventoryBackend(plugin).checkAlias(itemKey.split(" ")[0]).getMaterial().getId();
+						itemId = new InventoryBackend(plugin)
+								.checkAlias(itemKey.split(" ")[0])
+								.getMaterial().getId();
 					} catch (NumberFormatException e) {
-						log.severe("Error in kit (id: " + String.valueOf(ID) + "). " + itemKey.split(" ")[0] + " is NaN!");
+						log.severe("Error in kit (id: " + String.valueOf(ID)
+								+ "). " + itemKey.split(" ")[0] + " is NaN!");
 						continue;
 					}
 					try {
-						itemDamage = Short.parseShort(itemKey.split(" ")[0].split(":")[1]);
+						itemDamage = Short.parseShort(itemKey.split(" ")[0]
+								.split(":")[1]);
 					} catch (NumberFormatException e) {
-						log.severe("Error in kit (id: " + String.valueOf(ID) + "). " + itemKey.split(" ")[0].split(":")[1] + " is NaN!");
+						log.severe("Error in kit (id: " + String.valueOf(ID)
+								+ "). " + itemKey.split(" ")[0].split(":")[1]
+								+ " is NaN!");
 						continue;
 					}
 				} else {
 					try {
-						itemId = new InventoryBackend(plugin).checkAlias(itemKey.split(" ")[0]).getMaterial().getId();
+						itemId = new InventoryBackend(plugin)
+								.checkAlias(itemKey.split(" ")[0])
+								.getMaterial().getId();
 					} catch (NumberFormatException e) {
-						log.severe("Error in kit (id: " + String.valueOf(ID) + "). " + itemKey.split(" ")[0].split(":")[0] + " is NaN!");
+						log.severe("Error in kit (id: " + String.valueOf(ID)
+								+ "). " + itemKey.split(" ")[0].split(":")[0]
+								+ " is NaN!");
 						continue;
 					}
 					itemDamage = 0;
@@ -82,64 +102,57 @@ public class Kit {
 				try {
 					itemAmount = Integer.parseInt(itemKey.split(" ")[1]);
 				} catch (NumberFormatException e) {
-					log.severe("Error in kit (id: " + String.valueOf(ID) + "). " + itemKey.split(" ")[0].split(":")[0] + " is NaN!");
+					log.severe("Error in kit (id: " + String.valueOf(ID)
+							+ "). " + itemKey.split(" ")[0].split(":")[0]
+							+ " is NaN!");
 					continue;
 				}
 			} else {
-				log.severe("Error in kit (id: " + String.valueOf(ID) + "). Too many/not enough spaces.");
+				log.severe("Error in kit (id: " + String.valueOf(ID)
+						+ "). Too many/not enough spaces.");
 				continue;
 			}
 			items.add(new ItemStack(itemId, itemAmount, itemDamage));
 		}
 	}
-	
+
 	public boolean canUseKit(User user) {
-		if(user.hasPerm("allKit")) {
+		if (user.hasPerm("allKit")) {
 			return true;
 		}
 		return (user.inGroup(group));
 	}
-	
+
 	public boolean giveKit(User user) {
-		if(!canUseKit(user)) {
+		if (!canUseKit(user)) {
 			return false;
 		}
-		for(ItemStack item : items) {
+		for (ItemStack item : items) {
 			if (user.getHandle().getInventory().firstEmpty() >= 0) {
-				user.getHandle()
-						.getInventory()
-						.addItem(item);
+				user.getHandle().getInventory().addItem(item);
 			} else {
-				user.getHandle()
-						.getWorld()
-						.dropItem(
-								user.getHandle().getLocation(),
-								item);
+				user.getHandle().getWorld()
+						.dropItem(user.getHandle().getLocation(), item);
 			}
 		}
 		return true;
 	}
-	
+
 	public void forceGiveKit(User user) {
-		for(ItemStack item : items) {
+		for (ItemStack item : items) {
 			if (user.getHandle().getInventory().firstEmpty() >= 0) {
-				user.getHandle()
-						.getInventory()
-						.addItem(item);
+				user.getHandle().getInventory().addItem(item);
 			} else {
-				user.getHandle()
-						.getWorld()
-						.dropItem(
-								user.getHandle().getLocation(),
-								item);
+				user.getHandle().getWorld()
+						.dropItem(user.getHandle().getLocation(), item);
 			}
 		}
 	}
-	
+
 	public String getName() {
 		return kitName;
 	}
-	
+
 	public int getId() {
 		return kitId;
 	}

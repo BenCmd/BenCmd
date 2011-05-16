@@ -44,7 +44,8 @@ public class ProtectedBlock {
 	}
 
 	public boolean canChange(PermissionUser user) {
-		if (blockOwner.getName().equalsIgnoreCase(user.getName()) || user.hasPerm("isProtectionAdmin")) {
+		if (blockOwner.getName().equalsIgnoreCase(user.getName())
+				|| user.hasPerm("isProtectionAdmin")) {
 			return true;
 		} else {
 			return false;
@@ -60,7 +61,7 @@ public class ProtectedBlock {
 			return true;
 		}
 	}
-	
+
 	public boolean addGuest(PermissionUser guest) {
 		if (isGuest(guest) == -1) {
 			blockGuests.add(guest);
@@ -70,11 +71,11 @@ public class ProtectedBlock {
 			return false;
 		}
 	}
-	
+
 	public int isGuest(PermissionUser user) {
-		for(int i = 0; i < blockGuests.size(); i++) {
+		for (int i = 0; i < blockGuests.size(); i++) {
 			PermissionUser guest = blockGuests.get(i);
-			if(guest.getName().equalsIgnoreCase(user.getName())) {
+			if (guest.getName().equalsIgnoreCase(user.getName())) {
 				return i;
 			}
 		}

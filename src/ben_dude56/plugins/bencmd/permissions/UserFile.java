@@ -211,7 +211,8 @@ public class UserFile extends Properties {
 				if (userPerm.contains("isJailed") && starIsTrue) {
 					return false;
 				}
-				if ((permission == "NoBuild" || permission == "isJailed") && userPerm.contains("isJailed")) {
+				if ((permission == "NoBuild" || permission == "isJailed")
+						&& userPerm.contains("isJailed")) {
 					return true;
 				}
 				if (userPerm.contains(permission)
@@ -254,7 +255,7 @@ public class UserFile extends Properties {
 					player,
 					mainPerm.plugin.mainProperties.getString("defaultGroup",
 							"default") + "//15"); // Put the new user into the
-												// database
+													// database
 			save();
 			return true; // Return success
 		} catch (Exception e) {

@@ -22,13 +22,13 @@ public class ReportFile extends Properties {
 	private String proFile = "plugins/BenCmd/tickets.db";
 	private List<Report> reports = new ArrayList<Report>();
 	Logger log = Logger.getLogger("minecraft");
-	
+
 	public ReportFile(BenCmd instance) {
 		plugin = instance;
 		this.loadFile();
 		this.loadTickets();
 	}
-	
+
 	public void loadFile() {
 		File file = new File(proFile);
 		if (file.exists()) {
@@ -40,31 +40,33 @@ public class ReportFile extends Properties {
 			}
 		}
 	}
-	
+
 	public void copyToOld() throws IOException, FileNotFoundException {
 		File current = new File(proFile);
 		File old = new File("plugins/BenCmd/tickets.db");
-		if(!old.exists()) {
+		if (!old.exists()) {
 			old.createNewFile();
 		}
 		InputStream in = new FileInputStream(current);
-	    OutputStream out = new FileOutputStream(old);
-	    byte[] buf = new byte[1024];
-	    int len;
-	    while ((len = in.read(buf)) > 0){
-	      out.write(buf, 0, len);
-	    }
-	    in.close();
-	    out.close();
+		OutputStream out = new FileOutputStream(old);
+		byte[] buf = new byte[1024];
+		int len;
+		while ((len = in.read(buf)) > 0) {
+			out.write(buf, 0, len);
+		}
+		in.close();
+		out.close();
 	}
-	
+
 	public void loadTickets() {
 		reports.clear();
-		for(int i = 0; i < this.values().size(); i++) {
-			if(((String)this.values().toArray()[i]).split("/").length != 7) {
+		for (int i = 0; i < this.values().size(); i++) {
+			if (((String) this.values().toArray()[i]).split("/").length != 7) {
 				try {
-					Integer id = Integer.parseInt((String) this.keySet().toArray()[i]);
-					log.info("Ticket #" + this.keySet().toArray()[i] + " is outdated! Attempting to upgrade...");
+					Integer id = Integer.parseInt((String) this.keySet()
+							.toArray()[i]);
+					log.info("Ticket #" + this.keySet().toArray()[i]
+							+ " is outdated! Attempting to upgrade...");
 					reports.add(this.TicketUpgrade(id));
 				} catch (Exception e) {
 					try {
@@ -77,17 +79,26 @@ public class ReportFile extends Properties {
 				continue;
 			}
 			try {
-				Integer id = Integer.parseInt((String) this.keySet().toArray()[i]);
-				PermissionUser sender = PermissionUser.matchUserIgnoreCase(((String)this.values().toArray()[i]).split("/")[0], plugin);
-				PermissionUser accused = PermissionUser.matchUserIgnoreCase(((String)this.values().toArray()[i]).split("/")[1], plugin);
-				String reason = ((String)this.values().toArray()[i]).split("/")[2];
-				Integer timesReopened = Integer.parseInt(((String)this.values().toArray()[i]).split("/")[3]);
-				String finalRemark = ((String)this.values().toArray()[i]).split("/")[4];
+				Integer id = Integer
+						.parseInt((String) this.keySet().toArray()[i]);
+				PermissionUser sender = PermissionUser.matchUserIgnoreCase(
+						((String) this.values().toArray()[i]).split("/")[0],
+						plugin);
+				PermissionUser accused = PermissionUser.matchUserIgnoreCase(
+						((String) this.values().toArray()[i]).split("/")[1],
+						plugin);
+				String reason = ((String) this.values().toArray()[i])
+						.split("/")[2];
+				Integer timesReopened = Integer.parseInt(((String) this
+						.values().toArray()[i]).split("/")[3]);
+				String finalRemark = ((String) this.values().toArray()[i])
+						.split("/")[4];
 				List<String> addedinfo = new ArrayList<String>();
-				for(String addedinfostr : ((String)this.values().toArray()[i]).split("/")[5].split(",")) {
+				for (String addedinfostr : ((String) this.values().toArray()[i])
+						.split("/")[5].split(",")) {
 					addedinfo.add(addedinfostr);
 				}
-				String type = ((String)this.values().toArray()[i]).split("/")[6];
+				String type = ((String) this.values().toArray()[i]).split("/")[6];
 				Report.ReportStatus status;
 				if (type.equalsIgnoreCase("u")) {
 					status = Report.ReportStatus.UNREAD;
@@ -102,24 +113,28 @@ public class ReportFile extends Properties {
 				} else {
 					throw new Exception();
 				}
-				reports.add(new Report(plugin, id, sender, accused, status, reason, finalRemark, timesReopened, addedinfo));
+				reports.add(new Report(plugin, id, sender, accused, status,
+						reason, finalRemark, timesReopened, addedinfo));
 			} catch (Exception e) {
 				log.warning("A ticket in the tickets list couldn't be loaded!");
 			}
 		}
 	}
-	
+
 	public Report TicketUpgrade(Integer id) throws Exception {
 		Integer i = getIndexById(id);
-		if(i == -1) {
+		if (i == -1) {
 			return null;
 		}
-		PermissionUser sender = PermissionUser.matchUserIgnoreCase(((String)this.values().toArray()[i]).split("/")[0], plugin);
-		PermissionUser accused = PermissionUser.matchUserIgnoreCase(((String)this.values().toArray()[i]).split("/")[1], plugin);
-		String reason = ((String)this.values().toArray()[i]).split("/")[2];
-		Integer timesReopened = Integer.parseInt(((String)this.values().toArray()[i]).split("/")[3]);
-		String finalRemark = ((String)this.values().toArray()[i]).split("/")[4];
-		String type = ((String)this.values().toArray()[i]).split("/")[5];
+		PermissionUser sender = PermissionUser.matchUserIgnoreCase(
+				((String) this.values().toArray()[i]).split("/")[0], plugin);
+		PermissionUser accused = PermissionUser.matchUserIgnoreCase(
+				((String) this.values().toArray()[i]).split("/")[1], plugin);
+		String reason = ((String) this.values().toArray()[i]).split("/")[2];
+		Integer timesReopened = Integer.parseInt(((String) this.values()
+				.toArray()[i]).split("/")[3]);
+		String finalRemark = ((String) this.values().toArray()[i]).split("/")[4];
+		String type = ((String) this.values().toArray()[i]).split("/")[5];
 		Report.ReportStatus status;
 		if (type.equalsIgnoreCase("u")) {
 			status = Report.ReportStatus.UNREAD;
@@ -134,9 +149,10 @@ public class ReportFile extends Properties {
 		} else {
 			throw new Exception();
 		}
-		return new Report(plugin, id, sender, accused, status, reason, finalRemark, timesReopened, new ArrayList<String>());
+		return new Report(plugin, id, sender, accused, status, reason,
+				finalRemark, timesReopened, new ArrayList<String>());
 	}
-	
+
 	public void saveAll() {
 		saveTickets();
 		saveFile("== BenCmd Tickets ==");
@@ -153,10 +169,10 @@ public class ReportFile extends Properties {
 			}
 		}
 	}
-	
+
 	public void saveTickets() {
 		this.clear();
-		for(Report ticket : reports) {
+		for (Report ticket : reports) {
 			String key = ticket.getId().toString();
 			String value = ticket.getSender().getName() + "/";
 			value += ticket.getAccused().getName() + "/";
@@ -164,8 +180,8 @@ public class ReportFile extends Properties {
 			value += ticket.getTimesReopened().toString() + "/";
 			value += ticket.getRemark() + "/";
 			boolean first = true;
-			for(String info : ticket.getAddedInfo()) {
-				if(first) {
+			for (String info : ticket.getAddedInfo()) {
+				if (first) {
 					first = false;
 					value += info;
 				} else {
@@ -173,7 +189,7 @@ public class ReportFile extends Properties {
 				}
 			}
 			value += "/";
-			switch(ticket.getStatus()) {
+			switch (ticket.getStatus()) {
 			case UNREAD:
 				value += "u";
 				break;
@@ -193,47 +209,48 @@ public class ReportFile extends Properties {
 			this.put(key, value);
 		}
 	}
-	
+
 	public void addTicket(Report report) {
 		reports.add(report);
 		this.saveAll();
 	}
-	
+
 	public Integer nextId() {
-		for(int i = 0; true; i++) {
-			if(getTicketById(i) == null) {
+		for (int i = 0; true; i++) {
+			if (getTicketById(i) == null) {
 				return i;
 			}
 		}
 	}
-	
+
 	public boolean unreadTickets() {
-		for(Report ticket : reports) {
-			if(ticket.getStatus() == Report.ReportStatus.UNREAD) {
+		for (Report ticket : reports) {
+			if (ticket.getStatus() == Report.ReportStatus.UNREAD) {
 				return true;
 			}
 		}
 		return false;
 	}
-	
+
 	public Report getTicketById(Integer id) {
-		for(Report ticket : reports) {
-			if(ticket.getId() == id) {
+		for (Report ticket : reports) {
+			if (ticket.getId() == id) {
 				return ticket;
 			}
 		}
 		return null;
 	}
-	
+
 	public Integer getIndexById(Integer id) {
-		for(int i = 0; i < this.keySet().size(); i++) {
-			if(this.keySet().toArray()[i].toString().equalsIgnoreCase(id.toString())) {
+		for (int i = 0; i < this.keySet().size(); i++) {
+			if (this.keySet().toArray()[i].toString().equalsIgnoreCase(
+					id.toString())) {
 				return i;
 			}
 		}
 		return -1;
 	}
-	
+
 	public List<Report> getReports() {
 		return reports;
 	}

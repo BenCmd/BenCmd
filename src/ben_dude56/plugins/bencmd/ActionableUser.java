@@ -21,57 +21,55 @@ public class ActionableUser extends WarpableUser {
 		player = entity;
 		isConsole = false;
 	}
-	
-	public ActionableUser(BenCmd instance)
-			throws NullPointerException {
+
+	public ActionableUser(BenCmd instance) throws NullPointerException {
 		super(instance);
 		plugin = instance;
 		isConsole = true;
 	}
-	
+
 	public void Poof() {
-		if(isConsole) {
+		if (isConsole) {
 			log.info("The server is already invisible, doofus!");
 			return;
 		}
 		plugin.inv.addInv(player);
 	}
-	
+
 	public void UnPoof() {
-		if(isConsole) {
+		if (isConsole) {
 			log.info("This code should NEVER be reached...");
 			return;
 		}
 		plugin.inv.remInv(player);
 	}
-	
+
 	public void NoPoof() {
-		if(isConsole) {
+		if (isConsole) {
 			log.info("The server has no eyes...");
 			return;
 		}
 		plugin.inv.addNoInv(player);
 	}
-	
+
 	public void UnNoPoof() {
-		if(isConsole) {
+		if (isConsole) {
 			log.info("his code should NEVER be reached...");
 			return;
 		}
 		plugin.inv.remNoInv(player);
 	}
-	
-	
+
 	public boolean isPoofed() {
-		if(isConsole) {
+		if (isConsole) {
 			return false;
 		} else {
 			return plugin.invisible.contains(player);
 		}
 	}
-	
+
 	public boolean isNoPoofed() {
-		if(isConsole) {
+		if (isConsole) {
 			return false;
 		} else {
 			return plugin.noinvisible.contains(player);
@@ -79,7 +77,7 @@ public class ActionableUser extends WarpableUser {
 	}
 
 	public void Kick(String reason, Player sender) {
-		if(isConsole) {
+		if (isConsole) {
 			log.info(sender.getName() + " attempted to kick the server!");
 			return;
 		}
@@ -88,7 +86,7 @@ public class ActionableUser extends WarpableUser {
 	}
 
 	public void Kick(String reason) {
-		if(isConsole) {
+		if (isConsole) {
 			log.info("An attempt was made to kick the server!");
 			return;
 		}
@@ -96,7 +94,7 @@ public class ActionableUser extends WarpableUser {
 	}
 
 	public void Kick(Player sender) {
-		if(isConsole) {
+		if (isConsole) {
 			log.info(sender.getName() + " attempted to kick the server!");
 			return;
 		}
@@ -105,7 +103,7 @@ public class ActionableUser extends WarpableUser {
 	}
 
 	public void Kick() {
-		if(isConsole) {
+		if (isConsole) {
 			log.info("An attempt was made to kick the server!");
 			return;
 		}
@@ -113,7 +111,7 @@ public class ActionableUser extends WarpableUser {
 	}
 
 	public boolean Kill() {
-		if(isConsole) {
+		if (isConsole) {
 			log.info("An attempt was made to kill the server!");
 			return false;
 		}
@@ -127,28 +125,28 @@ public class ActionableUser extends WarpableUser {
 	}
 
 	public void Heal() {
-		if(isConsole) {
+		if (isConsole) {
 			return;
 		}
 		player.setHealth(20);
 	}
 
 	public void makeGod() {
-		if(isConsole) {
+		if (isConsole) {
 			return;
 		}
 		plugin.setGod(player, true);
 	}
 
 	public void makeNonGod() {
-		if(isConsole) {
+		if (isConsole) {
 			return;
 		}
 		plugin.setGod(player, false);
 	}
 
 	public boolean isGod() {
-		if(isConsole) {
+		if (isConsole) {
 			return true;
 		}
 		return plugin.isGod(player);
@@ -173,37 +171,39 @@ public class ActionableUser extends WarpableUser {
 	public boolean canBuild() {
 		return !this.hasPerm("NoBuild", false);
 	}
-	
+
 	public boolean isOffline() {
-		for(ActionableUser user : plugin.offline) {
-			if(user.getName().equalsIgnoreCase(this.getName())) {
+		for (ActionableUser user : plugin.offline) {
+			if (user.getName().equalsIgnoreCase(this.getName())) {
 				return true;
 			}
 		}
 		return false;
 	}
-	
+
 	public void goOffline() {
-		plugin.getServer().broadcastMessage(this.getColor() + this.getName() + ChatColor.WHITE
-				+ " has left the game...");
+		plugin.getServer().broadcastMessage(
+				this.getColor() + this.getName() + ChatColor.WHITE
+						+ " has left the game...");
 		plugin.offline.add(this);
 	}
-	
+
 	public void goOnline() {
-		for(int i = 0; i < plugin.offline.size(); i++) {
+		for (int i = 0; i < plugin.offline.size(); i++) {
 			ActionableUser user = plugin.offline.get(i);
-			if(user.getName().equalsIgnoreCase(this.getName())) {
+			if (user.getName().equalsIgnoreCase(this.getName())) {
 				plugin.offline.remove(i);
 			}
 		}
-		plugin.getServer().broadcastMessage(this.getColor() + this.getName() + ChatColor.WHITE
-				+ " has joined the game...");
+		plugin.getServer().broadcastMessage(
+				this.getColor() + this.getName() + ChatColor.WHITE
+						+ " has joined the game...");
 	}
-	
+
 	public void goOnlineNoMsg() {
-		for(int i = 0; i < plugin.offline.size(); i++) {
+		for (int i = 0; i < plugin.offline.size(); i++) {
 			ActionableUser user = plugin.offline.get(i);
-			if(user.getName().equalsIgnoreCase(this.getName())) {
+			if (user.getName().equalsIgnoreCase(this.getName())) {
 				plugin.offline.remove(i);
 			}
 		}
