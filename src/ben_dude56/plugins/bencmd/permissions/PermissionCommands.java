@@ -431,11 +431,11 @@ public class PermissionCommands implements Commands {
 				user.sendMessage(ChatColor.GRAY + "   -See-all: NO");
 			}
 			if(health >= 15) {
-				user.sendMessage(ChatColor.GREEN + "   -Health: " + (health / 2) + "/10");
+				user.sendMessage(ChatColor.GREEN + "   -Health: " + (((double)health) / 2) + "/10");
 			} else if (health <= 5) {
-				user.sendMessage(ChatColor.RED + "   -Health: " + (health / 2) + "/10");
+				user.sendMessage(ChatColor.RED + "   -Health: " + (((double)health) / 2) + "/10");
 			} else {
-				user.sendMessage(ChatColor.YELLOW + "   -Health: " + (health / 2) + "/10");
+				user.sendMessage(ChatColor.YELLOW + "   -Health: " + (((double)health) / 2) + "/10");
 			}
 		}
 	}
