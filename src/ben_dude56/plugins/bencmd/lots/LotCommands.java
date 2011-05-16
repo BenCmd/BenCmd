@@ -812,6 +812,51 @@ public class LotCommands implements Commands {
 				return;
 			}
 
+			
+			//Lists Lots by SPECIFIED PLAYER'S OWNERSHIP
+			
+			if (args[1].equalsIgnoreCase("owner")) {
+				
+				if (args.length==2) {
+					user.sendMessage(ChatColor.YELLOW + "Correct Usage: /lot list owner <name>");
+					return;
+				}
+				String owner = args[2];
+				int total = 0;
+				List<String> usedIDs = new ArrayList<String>();
+				
+				for (String LotID : plugin.lots.lot.keySet()) {
+					if (plugin.lots.getLot(LotID).getOwner().equalsIgnoreCase(owner)
+							&& !usedIDs.contains(LotID.split(",")[0])) {
+						usedIDs.add(LotID.split(",")[0]);
+					}
+				}
+				
+				user.sendMessage(ChatColor.GRAY
+						+ owner +" owns the following lots: (" + usedIDs.size() + ")");
+				
+				String list = "";
+				int i = 0, r = 0;
+				for (String LotID : usedIDs) {
+					list += LotID;
+					i++;
+					r++;
+					if (r < total)
+						list += ",  ";
+					else
+						list += ".";
+					if (i >= 3) {
+						user.sendMessage(ChatColor.GRAY + list);
+						i = 0;
+						list = "";
+					}
+				}
+				if (!list.equalsIgnoreCase("")) {
+					user.sendMessage(ChatColor.GRAY + list);
+				}
+				return;
+			}
+
 			return;
 		}
 
