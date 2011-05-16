@@ -24,7 +24,7 @@ public class GroupFile extends Properties {
 	 *            The parent of this GroupFile.
 	 */
 	public GroupFile(MainPermissions mainPermissions) {
-		mainPerm = mainPermissions; // Intialize the value of the parent
+		mainPerm = mainPermissions; // Initialize the value of the parent
 		this.reload(); // Load the values into memory.
 	}
 
@@ -198,7 +198,7 @@ public class GroupFile extends Properties {
 			this.put(
 					group,
 					mainPerm.plugin.mainProperties.getString("defaultGroup",
-							"default") + "///"); // Put the new group into the
+							"default") + "///15"); // Put the new group into the
 													// database
 			save();
 			return true; // Return success

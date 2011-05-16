@@ -29,7 +29,7 @@ public class UserFile extends Properties {
 	 *            The parent of this UserFile.
 	 */
 	public UserFile(MainPermissions mainPermissions) {
-		mainPerm = mainPermissions; // Intialize the value of the parent
+		mainPerm = mainPermissions; // Initialize the value of the parent
 		this.reload(); // Load the values into memory.
 	}
 
@@ -253,7 +253,7 @@ public class UserFile extends Properties {
 			this.put(
 					player,
 					mainPerm.plugin.mainProperties.getString("defaultGroup",
-							"default") + "/ /e"); // Put the new user into the
+							"default") + "//15"); // Put the new user into the
 												// database
 			save();
 			return true; // Return success
