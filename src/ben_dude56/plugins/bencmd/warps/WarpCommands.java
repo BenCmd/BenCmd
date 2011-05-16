@@ -201,7 +201,7 @@ public class WarpCommands implements Commands {
 			user.sendMessage(ChatColor.RED + "The server cannot do that!");
 			return;
 		}
-		if (args.length == 0 || args.length > 2) {
+		if (args.length > 2) {
 			if (user.hasPerm("canWarpOtherHomes")) {
 				user.sendMessage(ChatColor.YELLOW
 						+ "Proper use is: /home <number> [player]");
@@ -209,13 +209,18 @@ public class WarpCommands implements Commands {
 				user.sendMessage(ChatColor.YELLOW
 						+ "Proper use is: /home <number>");
 			}
-		} else if (args.length == 1) {
+		} else if (args.length <= 1) {
 			int homenum;
-			try {
-				homenum = Integer.parseInt(args[0]);
-				user.HomeWarp(homenum);
-			} catch (NumberFormatException e) {
-				user.sendMessage(ChatColor.RED + "Invalid home number!");
+			if (args.length == 0) {
+				user.HomeWarp(1);
+			} else {
+				try {
+					homenum = Integer.parseInt(args[0]);
+					user.HomeWarp(homenum);
+				} catch (NumberFormatException e) {
+					user.sendMessage(ChatColor.RED + "Invalid home number!");
+					return;
+				}
 			}
 		} else if (args.length == 2) {
 			if (user.hasPerm("canWarpOtherHomes")) {
@@ -239,7 +244,7 @@ public class WarpCommands implements Commands {
 			user.sendMessage(ChatColor.RED + "The server cannot do that!");
 			return;
 		}
-		if (args.length == 0 || args.length > 2) {
+		if (args.length > 2) {
 			if (user.hasPerm("canEditOtherHomes")) {
 				user.sendMessage(ChatColor.YELLOW
 						+ "Proper use is: /sethome <number> [player]");
@@ -247,13 +252,17 @@ public class WarpCommands implements Commands {
 				user.sendMessage(ChatColor.YELLOW
 						+ "Proper use is: /sethome <number>");
 			}
-		} else if (args.length == 1) {
+		} else if (args.length <= 1) {
 			int homenum;
-			try {
-				homenum = Integer.parseInt(args[0]);
-				user.SetHome(homenum);
-			} catch (NumberFormatException e) {
-				user.sendMessage(ChatColor.RED + "Invalid home number!");
+			if (args.length == 0) {
+				user.SetHome(1);
+			} else {
+				try {
+					homenum = Integer.parseInt(args[0]);
+					user.SetHome(homenum);
+				} catch (NumberFormatException e) {
+					user.sendMessage(ChatColor.RED + "Invalid home number!");
+				}
 			}
 		} else if (args.length == 2) {
 			if (user.hasPerm("canEditOtherHomes")) {
@@ -273,7 +282,7 @@ public class WarpCommands implements Commands {
 	}
 
 	public void DelHome(String[] args, User user) {
-		if (args.length == 0 || args.length > 2) {
+		if (args.length > 2) {
 			if (user.hasPerm("canEditOtherHomes")) {
 				user.sendMessage(ChatColor.YELLOW
 						+ "Proper use is: /delhome <number> [player]");
@@ -281,25 +290,37 @@ public class WarpCommands implements Commands {
 				user.sendMessage(ChatColor.YELLOW
 						+ "Proper use is: /delhome <number>");
 			}
-		} else if (args.length == 1) {
+		} else if (args.length <= 1) {
 			if (user.isServer()) {
 				user.sendMessage(ChatColor.YELLOW
 						+ "Proper use is: /delhome <number> [player]");
-				return;
 			}
 			int homenum;
-			try {
-				homenum = Integer.parseInt(args[0]);
-				if (plugin.homes.DeleteHome(user.getName(), homenum)) {
+			if (args.length == 0) {
+				if (plugin.homes.DeleteHome(user.getName(), 1)) {
 					user.sendMessage(ChatColor.GREEN + "Your home #"
-							+ ((Integer) homenum).toString()
+							+ ((Integer) 1).toString()
 							+ " has been successfully deleted!");
 				} else {
 					user.sendMessage(ChatColor.RED
 							+ "You must set that home first!");
 				}
-			} catch (NumberFormatException e) {
-				user.sendMessage(ChatColor.RED + "Invalid home number!");
+			} else {
+				try {
+					homenum = Integer.parseInt(args[0]);
+					if (plugin.homes.DeleteHome(user.getName(), homenum)) {
+						user.sendMessage(ChatColor.GREEN + "Your home #"
+								+ ((Integer) homenum).toString()
+								+ " has been successfully deleted!");
+						return;
+					} else {
+						user.sendMessage(ChatColor.RED
+								+ "You must set that home first!");
+						return;
+					}
+				} catch (NumberFormatException e) {
+					user.sendMessage(ChatColor.RED + "Invalid home number!");
+				}
 			}
 		} else if (args.length == 2) {
 			if (user.hasPerm("canEditOtherHomes")) {
