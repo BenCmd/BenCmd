@@ -62,7 +62,6 @@ public class BenCmd extends JavaPlugin {
 	public final LotPlayerListener lotListener = new LotPlayerListener(this);
 	public final LotBlockListener lotBListener = new LotBlockListener(this);
 	private final WeatherPListener wpListen = new WeatherPListener(this);
-	private final HashMap<Player, Boolean> debugees = new HashMap<Player, Boolean>();
 	public final HashMap<Player, Boolean> godmode = new HashMap<Player, Boolean>();
 	public final List<Player> invisible = new ArrayList<Player>();
 	public final List<Player> noinvisible = new ArrayList<Player>();
@@ -114,7 +113,11 @@ public class BenCmd extends JavaPlugin {
 	}
 
 	@Override
+	/**
+	 * Disables the plugin
+	 */
 	public void onDisable() {
+		// Cancel all running timers
 		FreezeTimer.cancel();
 		chatListen.slow.slowTimer.cancel();
 		inv.timer.cancel();
@@ -125,7 +128,11 @@ public class BenCmd extends JavaPlugin {
 	}
 
 	@Override
+	/**
+	 * Initializes the plugin for general use.
+	 */
 	public void onEnable() {
+		// Check for missing files and add them if necessary
 		new File(propDir).mkdirs();
 		if (!mainProp.exists()) {
 			try {
@@ -199,6 +206,7 @@ public class BenCmd extends JavaPlugin {
 				e.printStackTrace();
 			}
 		}
+		// Start loading classes
 		perm = new MainPermissions(this);
 		warps = new WarpList(this);
 		homes = new HomeWarps(this);
@@ -225,6 +233,8 @@ public class BenCmd extends JavaPlugin {
 		reports = new ReportFile(this);
 		flyDetect = new FlyDetect(this);
 		strikeBind = new WeatherBinding(this);
+		// Check for existing players (on reload) and add them to the maxPlayers
+		// class
 		for (Player player : this.getServer().getOnlinePlayers()) {
 			User user;
 			JoinType jt = maxPlayers.join(user = new User(this, player));
@@ -233,6 +243,7 @@ public class BenCmd extends JavaPlugin {
 				user.Kick("The server ran out of player slots when reloading... :(");
 			}
 		}
+		// Register all necessary events
 		PluginManager pm = getServer().getPluginManager();
 		pm.registerEvent(Event.Type.PLAYER_JOIN, this.chatListen,
 				Event.Priority.Normal, this);
@@ -289,6 +300,7 @@ public class BenCmd extends JavaPlugin {
 		pm.registerEvent(Event.Type.PLAYER_INTERACT, this.wpListen,
 				Event.Priority.Highest, this);
 		PluginDescriptionFile pdfFile = this.getDescription();
+		// Prepare the time lock timer
 		FreezeTimer.schedule(new TimeFreeze(this), 0, 1);
 		log.info(pdfFile.getName() + " v" + pdfFile.getVersion()
 				+ " has been enabled!");
@@ -297,18 +309,14 @@ public class BenCmd extends JavaPlugin {
 		}
 	}
 
-	public boolean isDebugging(final Player player) {
-		if (debugees.containsKey(player)) {
-			return debugees.get(player);
-		} else {
-			return false;
-		}
-	}
-
-	public void setDebugging(final Player player, final boolean value) {
-		debugees.put(player, value);
-	}
-
+	/**
+	 * Used to add or remove a player's god status
+	 * 
+	 * @param player
+	 *            The player who's status should be edited
+	 * @param value
+	 *            Whether the player would be godded
+	 */
 	public void setGod(final Player player, final boolean value) {
 		if (value) {
 			godmode.put(player, value);
@@ -318,6 +326,13 @@ public class BenCmd extends JavaPlugin {
 		}
 	}
 
+	/**
+	 * Checks if a player has god status
+	 * 
+	 * @param player
+	 *            The player to check the status of
+	 * @return Returns whether or not the player has god status
+	 */
 	public boolean isGod(final Player player) {
 		if (godmode.containsKey(player)) {
 			return godmode.get(player);
