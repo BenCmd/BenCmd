@@ -14,9 +14,7 @@ public class FlyTimer extends TimerTask {
 		flyDetect = detect;
 	}
 
-	public boolean onBlock(Player player) {
-		Location loc = player.getLocation();
-		loc.setY(loc.getY() - 1);
+	public boolean onBlock(Location loc) {
 		loc.setX(loc.getX() - 1);
 		loc.setZ(loc.getZ() - 1);
 		if (loc.getBlock().getType() != Material.AIR) {
@@ -60,7 +58,9 @@ public class FlyTimer extends TimerTask {
 	@Override
 	public void run() {
 		for (Player player : flyDetect.plugin.getServer().getOnlinePlayers()) {
-			if (!onBlock(player)) {
+			Location loc = player.getLocation();
+			loc.setY(loc.getY() - 1);
+			if (!onBlock(player.getLocation()) && !onBlock(loc)) {
 				flyDetect.detect(player);
 			} else {
 				flyDetect.undetect(player);
