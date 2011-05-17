@@ -254,7 +254,7 @@ public class UserFile extends Properties {
 			this.put(
 					player,
 					mainPerm.plugin.mainProperties.getString("defaultGroup",
-							"default") + "//15"); // Put the new user into the
+							"default") + "//14"); // Put the new user into the
 													// database
 			save();
 			return true; // Return success
