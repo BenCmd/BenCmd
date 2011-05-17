@@ -89,7 +89,7 @@ public class ChatChannel {
 				"slowTime", 10000));
 
 		if (starter.inChannel()) {
-			starter.LeaveActiveChannel();
+			starter.DeactivateChannel();
 		}
 		starter.ActivateChannel(this);
 		this.JoinAsMod(starter);
@@ -494,7 +494,7 @@ public class ChatChannel {
 		return autoLevel;
 	}
 
-	enum ChatterType {
+	public static enum ChatterType {
 		LISTEN, TALK, MOD, DISALLOW
 	}
 }

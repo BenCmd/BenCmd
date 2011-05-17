@@ -152,7 +152,7 @@ public class ChatPlayerListener extends PlayerListener {
 			user.UnNoPoof();
 		}
 		if (user.inChannel()) {
-			user.LeaveActiveChannel();
+			user.DeactivateChannel();
 		}
 	}
 
@@ -173,7 +173,7 @@ public class ChatPlayerListener extends PlayerListener {
 			user.UnNoPoof();
 		}
 		if (user.inChannel()) {
-			user.LeaveActiveChannel();
+			user.DeactivateChannel();
 		}
 	}
 

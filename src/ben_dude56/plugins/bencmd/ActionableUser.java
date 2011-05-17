@@ -14,6 +14,12 @@ public class ActionableUser extends WarpableUser {
 	private boolean isConsole;
 	Logger log = Logger.getLogger("minecraft");
 
+	/**
+	 * Creates an ActionableUser corresponding to a player entity.
+	 * @param instance The BenCmd Plugin reference to point to
+	 * @param entity The player entity that this ActionableUser should point to.
+	 * @throws NullPointerException
+	 */
 	public ActionableUser(BenCmd instance, Player entity)
 			throws NullPointerException {
 		super(instance, entity);
@@ -21,13 +27,20 @@ public class ActionableUser extends WarpableUser {
 		player = entity;
 		isConsole = false;
 	}
-
-	public ActionableUser(BenCmd instance) throws NullPointerException {
+	
+	/**
+	 * Creates an ActionableUser corresponding to the console.
+	 * @param instance The BenCmd Plugin reference to point to
+	 */
+	public ActionableUser(BenCmd instance) {
 		super(instance);
 		plugin = instance;
 		isConsole = true;
 	}
 
+	/**
+	 * Causes the ActionableUser to become invisible
+	 */
 	public void Poof() {
 		if (isConsole) {
 			log.info("The server is already invisible, doofus!");
@@ -36,6 +49,9 @@ public class ActionableUser extends WarpableUser {
 		plugin.inv.addInv(player);
 	}
 
+	/**
+	 * Causes the ActionableUser to become visible
+	 */
 	public void UnPoof() {
 		if (isConsole) {
 			log.info("This code should NEVER be reached...");
@@ -44,6 +60,9 @@ public class ActionableUser extends WarpableUser {
 		plugin.inv.remInv(player);
 	}
 
+	/**
+	 * Causes the ActionableUser to be able to see invisible ActionableUsers
+	 */
 	public void NoPoof() {
 		if (isConsole) {
 			log.info("The server has no eyes...");
@@ -52,6 +71,9 @@ public class ActionableUser extends WarpableUser {
 		plugin.inv.addNoInv(player);
 	}
 
+	/**
+	 * Causes the ActionableUser to be unable to see invisible ActionableUsers
+	 */
 	public void UnNoPoof() {
 		if (isConsole) {
 			log.info("his code should NEVER be reached...");
@@ -59,7 +81,11 @@ public class ActionableUser extends WarpableUser {
 		}
 		plugin.inv.remNoInv(player);
 	}
-
+	
+	/**
+	 * Gets whether or not the ActionableUser is invisible
+	 * @return Returns whether the ActionableUser is invisible
+	 */
 	public boolean isPoofed() {
 		if (isConsole) {
 			return false;
@@ -68,6 +94,10 @@ public class ActionableUser extends WarpableUser {
 		}
 	}
 
+	/**
+	 * Gets whether or not the ActionableUser can see invisible ActionableUsers
+	 * @return Returns whether or not the ActionableUser can see invisible ActionableUsers
+	 */
 	public boolean isNoPoofed() {
 		if (isConsole) {
 			return false;
@@ -76,6 +106,11 @@ public class ActionableUser extends WarpableUser {
 		}
 	}
 
+	/**
+	 * Kicks the user
+	 * @param reason The reason that they were kicked
+	 * @param sender The user that kicked them
+	 */
 	public void Kick(String reason, Player sender) {
 		if (isConsole) {
 			log.info(sender.getName() + " attempted to kick the server!");
@@ -84,7 +119,11 @@ public class ActionableUser extends WarpableUser {
 		player.kickPlayer("You have been kicked by user: " + sender.getName()
 				+ ". Reason: " + reason + ".");
 	}
-
+	
+	/**
+	 * Kicks the user
+	 * @param reason The reason that they were kicked
+	 */
 	public void Kick(String reason) {
 		if (isConsole) {
 			log.info("An attempt was made to kick the server!");
@@ -93,6 +132,10 @@ public class ActionableUser extends WarpableUser {
 		player.kickPlayer("You have been kicked. Reason: " + reason + ".");
 	}
 
+	/**
+	 * Kicks the user
+	 * @param sender The user that kicked them
+	 */
 	public void Kick(Player sender) {
 		if (isConsole) {
 			log.info(sender.getName() + " attempted to kick the server!");
@@ -101,7 +144,10 @@ public class ActionableUser extends WarpableUser {
 		player.kickPlayer("You have been kicked by user: " + sender.getName()
 				+ ".");
 	}
-
+	
+	/**
+	 * Kicks the user
+	 */
 	public void Kick() {
 		if (isConsole) {
 			log.info("An attempt was made to kick the server!");
@@ -110,6 +156,10 @@ public class ActionableUser extends WarpableUser {
 		player.kickPlayer("You have been kicked.");
 	}
 
+	/**
+	 * Kills the user
+	 * @return Return whether or not the user could be killed
+	 */
 	public boolean Kill() {
 		if (isConsole) {
 			log.info("An attempt was made to kill the server!");
@@ -123,7 +173,10 @@ public class ActionableUser extends WarpableUser {
 			return true;
 		}
 	}
-
+	
+	/**
+	 * Heals the user to full health
+	 */
 	public void Heal() {
 		if (isConsole) {
 			return;
@@ -131,13 +184,19 @@ public class ActionableUser extends WarpableUser {
 		player.setHealth(20);
 	}
 
+	/**
+	 * Makes the user enter god mode
+	 */
 	public void makeGod() {
 		if (isConsole) {
 			return;
 		}
 		plugin.setGod(player, true);
 	}
-
+	
+	/**
+	 * Makes the user exit god mode
+	 */
 	public void makeNonGod() {
 		if (isConsole) {
 			return;
@@ -145,6 +204,10 @@ public class ActionableUser extends WarpableUser {
 		plugin.setGod(player, false);
 	}
 
+	/**
+	 * Gets whether the user is in god mode
+	 * @return Returns whether the user is in god mode
+	 */
 	public boolean isGod() {
 		if (isConsole) {
 			return true;
@@ -152,26 +215,51 @@ public class ActionableUser extends WarpableUser {
 		return plugin.isGod(player);
 	}
 
+	/**
+	 * Checks if the user is muted
+	 * @return True if muted, false otherwise
+	 */
 	public boolean isMuted() {
 		return this.hasPerm("isMuted", false);
 	}
 
+	/**
+	 * Mutes the user
+	 * @return Returns the result of the permission change
+	 */
 	public PermChangeResult Mute() {
 		return this.addPermission("isMuted");
 	}
 
+	/**
+	 * Unmutes the user
+	 * @return Returns the result of the permission change
+	 */
 	public PermChangeResult Unmute() {
 		return this.deletePermission("isMuted");
 	}
 
+	/**
+	 * Returns the ActionableUser directly
+	 * @return Returns the ActionableUser
+	 * @deprecated Unused function
+	 */
 	public ActionableUser getActionableUser() {
 		return this;
 	}
 
+	/**
+	 * Checks if the user is allowed to build
+	 * @return True if they can build, False otherwise
+	 */
 	public boolean canBuild() {
 		return !this.hasPerm("NoBuild", false);
 	}
 
+	/**
+	 * Checks if the user is using /offline
+	 * @return Whether /offline was used
+	 */
 	public boolean isOffline() {
 		for (ActionableUser user : plugin.offline) {
 			if (user.getName().equalsIgnoreCase(this.getName())) {
@@ -181,6 +269,9 @@ public class ActionableUser extends WarpableUser {
 		return false;
 	}
 
+	/**
+	 * Forces the user to appear to be offline
+	 */
 	public void goOffline() {
 		plugin.getServer().broadcastMessage(
 				this.getColor() + this.getName() + ChatColor.WHITE
@@ -188,6 +279,9 @@ public class ActionableUser extends WarpableUser {
 		plugin.offline.add(this);
 	}
 
+	/**
+	 * Forces a user that is faking offline to reappear.
+	 */
 	public void goOnline() {
 		for (int i = 0; i < plugin.offline.size(); i++) {
 			ActionableUser user = plugin.offline.get(i);
@@ -200,6 +294,9 @@ public class ActionableUser extends WarpableUser {
 						+ " has joined the game...");
 	}
 
+	/**
+	 * Forces a user that is faking offline to reappear without showing a message
+	 */
 	public void goOnlineNoMsg() {
 		for (int i = 0; i < plugin.offline.size(); i++) {
 			ActionableUser user = plugin.offline.get(i);
