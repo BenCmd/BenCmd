@@ -292,16 +292,14 @@ public class ProtectFile extends Properties {
 		int id = getNextId();
 		ProtectedBlock protect = null;
 		switch (type) {
-		case Chest: {
+		case Chest:
 			protectedBlocks.add(protect = new ProtectedChest(plugin, id, owner,
 					new ArrayList<PermissionUser>(), loc));
 			break;
-		}
-		case Door: {
+		case Door:
 			protectedBlocks.add(protect = new ProtectedDoor(plugin, id, owner,
 					new ArrayList<PermissionUser>(), loc));
 			break;
-		}
 		}
 		updateValue(protect);
 		return id;
