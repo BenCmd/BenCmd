@@ -34,4 +34,20 @@ public class ProtectedDoor extends ProtectedBlock {
 			return null;
 		}
 	}
+
+	public Block getBelowBlock() {
+		Block block1 = new Location(blockLocation.getWorld(),
+				blockLocation.getX(), blockLocation.getY() - 1,
+				blockLocation.getZ()).getBlock();
+		Block block2 = new Location(blockLocation.getWorld(),
+				blockLocation.getX(), blockLocation.getY() - 2,
+				blockLocation.getZ()).getBlock();
+		if (block1.getType() != Material.WOODEN_DOOR) {
+			return block1;
+		} else if (block2.getType() != Material.WOODEN_DOOR) {
+			return block2;
+		} else {
+			return null;
+		}
+	}
 }

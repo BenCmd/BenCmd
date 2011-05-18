@@ -251,6 +251,11 @@ public class ProtectFile extends Properties {
 					id = block.GetId();
 					break;
 				}
+				if (((ProtectedDoor) block).getBelowBlock().getLocation()
+						.equals(loc)) {
+					id = block.GetId();
+					break;
+				}
 			}
 		}
 		return id;
