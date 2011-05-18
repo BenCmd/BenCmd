@@ -20,7 +20,9 @@ public class ProtectPlayerListener extends PlayerListener {
 	}
 
 	public void onPlayerInteract(PlayerInteractEvent event) {
-		if ((event.getAction() != Action.RIGHT_CLICK_BLOCK && !(event.getAction() == Action.LEFT_CLICK_BLOCK && event.getClickedBlock().getType() == Material.WOODEN_DOOR))
+		if ((event.getAction() != Action.RIGHT_CLICK_BLOCK && !(event
+				.getAction() == Action.LEFT_CLICK_BLOCK && event
+				.getClickedBlock().getType() == Material.WOODEN_DOOR))
 				|| event.isCancelled()) {
 			return;
 		}
