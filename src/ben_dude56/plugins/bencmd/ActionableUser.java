@@ -16,8 +16,11 @@ public class ActionableUser extends WarpableUser {
 
 	/**
 	 * Creates an ActionableUser corresponding to a player entity.
-	 * @param instance The BenCmd Plugin reference to point to
-	 * @param entity The player entity that this ActionableUser should point to.
+	 * 
+	 * @param instance
+	 *            The BenCmd Plugin reference to point to
+	 * @param entity
+	 *            The player entity that this ActionableUser should point to.
 	 * @throws NullPointerException
 	 */
 	public ActionableUser(BenCmd instance, Player entity)
@@ -27,10 +30,12 @@ public class ActionableUser extends WarpableUser {
 		player = entity;
 		isConsole = false;
 	}
-	
+
 	/**
 	 * Creates an ActionableUser corresponding to the console.
-	 * @param instance The BenCmd Plugin reference to point to
+	 * 
+	 * @param instance
+	 *            The BenCmd Plugin reference to point to
 	 */
 	public ActionableUser(BenCmd instance) {
 		super(instance);
@@ -81,9 +86,10 @@ public class ActionableUser extends WarpableUser {
 		}
 		plugin.inv.remNoInv(player);
 	}
-	
+
 	/**
 	 * Gets whether or not the ActionableUser is invisible
+	 * 
 	 * @return Returns whether the ActionableUser is invisible
 	 */
 	public boolean isPoofed() {
@@ -96,7 +102,9 @@ public class ActionableUser extends WarpableUser {
 
 	/**
 	 * Gets whether or not the ActionableUser can see invisible ActionableUsers
-	 * @return Returns whether or not the ActionableUser can see invisible ActionableUsers
+	 * 
+	 * @return Returns whether or not the ActionableUser can see invisible
+	 *         ActionableUsers
 	 */
 	public boolean isNoPoofed() {
 		if (isConsole) {
@@ -108,8 +116,11 @@ public class ActionableUser extends WarpableUser {
 
 	/**
 	 * Kicks the user
-	 * @param reason The reason that they were kicked
-	 * @param sender The user that kicked them
+	 * 
+	 * @param reason
+	 *            The reason that they were kicked
+	 * @param sender
+	 *            The user that kicked them
 	 */
 	public void Kick(String reason, Player sender) {
 		if (isConsole) {
@@ -119,10 +130,12 @@ public class ActionableUser extends WarpableUser {
 		player.kickPlayer("You have been kicked by user: " + sender.getName()
 				+ ". Reason: " + reason + ".");
 	}
-	
+
 	/**
 	 * Kicks the user
-	 * @param reason The reason that they were kicked
+	 * 
+	 * @param reason
+	 *            The reason that they were kicked
 	 */
 	public void Kick(String reason) {
 		if (isConsole) {
@@ -134,7 +147,9 @@ public class ActionableUser extends WarpableUser {
 
 	/**
 	 * Kicks the user
-	 * @param sender The user that kicked them
+	 * 
+	 * @param sender
+	 *            The user that kicked them
 	 */
 	public void Kick(Player sender) {
 		if (isConsole) {
@@ -144,7 +159,7 @@ public class ActionableUser extends WarpableUser {
 		player.kickPlayer("You have been kicked by user: " + sender.getName()
 				+ ".");
 	}
-	
+
 	/**
 	 * Kicks the user
 	 */
@@ -158,6 +173,7 @@ public class ActionableUser extends WarpableUser {
 
 	/**
 	 * Kills the user
+	 * 
 	 * @return Return whether or not the user could be killed
 	 */
 	public boolean Kill() {
@@ -173,7 +189,7 @@ public class ActionableUser extends WarpableUser {
 			return true;
 		}
 	}
-	
+
 	/**
 	 * Heals the user to full health
 	 */
@@ -193,7 +209,7 @@ public class ActionableUser extends WarpableUser {
 		}
 		plugin.setGod(player, true);
 	}
-	
+
 	/**
 	 * Makes the user exit god mode
 	 */
@@ -206,6 +222,7 @@ public class ActionableUser extends WarpableUser {
 
 	/**
 	 * Gets whether the user is in god mode
+	 * 
 	 * @return Returns whether the user is in god mode
 	 */
 	public boolean isGod() {
@@ -217,6 +234,7 @@ public class ActionableUser extends WarpableUser {
 
 	/**
 	 * Checks if the user is muted
+	 * 
 	 * @return True if muted, false otherwise
 	 */
 	public boolean isMuted() {
@@ -225,6 +243,7 @@ public class ActionableUser extends WarpableUser {
 
 	/**
 	 * Mutes the user
+	 * 
 	 * @return Returns the result of the permission change
 	 */
 	public PermChangeResult Mute() {
@@ -233,6 +252,7 @@ public class ActionableUser extends WarpableUser {
 
 	/**
 	 * Unmutes the user
+	 * 
 	 * @return Returns the result of the permission change
 	 */
 	public PermChangeResult Unmute() {
@@ -241,6 +261,7 @@ public class ActionableUser extends WarpableUser {
 
 	/**
 	 * Returns the ActionableUser directly
+	 * 
 	 * @return Returns the ActionableUser
 	 * @deprecated Unused function
 	 */
@@ -250,6 +271,7 @@ public class ActionableUser extends WarpableUser {
 
 	/**
 	 * Checks if the user is allowed to build
+	 * 
 	 * @return True if they can build, False otherwise
 	 */
 	public boolean canBuild() {
@@ -258,6 +280,7 @@ public class ActionableUser extends WarpableUser {
 
 	/**
 	 * Checks if the user is using /offline
+	 * 
 	 * @return Whether /offline was used
 	 */
 	public boolean isOffline() {
@@ -295,7 +318,8 @@ public class ActionableUser extends WarpableUser {
 	}
 
 	/**
-	 * Forces a user that is faking offline to reappear without showing a message
+	 * Forces a user that is faking offline to reappear without showing a
+	 * message
 	 */
 	public void goOnlineNoMsg() {
 		for (int i = 0; i < plugin.offline.size(); i++) {

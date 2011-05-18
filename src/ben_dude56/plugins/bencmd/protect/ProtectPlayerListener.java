@@ -3,6 +3,7 @@ package ben_dude56.plugins.bencmd.protect;
 import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerListener;
@@ -19,7 +20,7 @@ public class ProtectPlayerListener extends PlayerListener {
 	}
 
 	public void onPlayerInteract(PlayerInteractEvent event) {
-		if (event.getAction() != Action.RIGHT_CLICK_BLOCK
+		if ((event.getAction() != Action.RIGHT_CLICK_BLOCK && !(event.getAction() == Action.LEFT_CLICK_BLOCK && event.getClickedBlock().getType() == Material.WOODEN_DOOR))
 				|| event.isCancelled()) {
 			return;
 		}
@@ -38,7 +39,7 @@ public class ProtectPlayerListener extends PlayerListener {
 						.equalsIgnoreCase(block.getOwner().getName())) {
 					log.info(user.getName() + " has accessed "
 							+ block.getOwner().getName()
-							+ "'s protected chest.");
+							+ "'s protected block. (" + block.GetId() + ")");
 				}
 			}
 		}

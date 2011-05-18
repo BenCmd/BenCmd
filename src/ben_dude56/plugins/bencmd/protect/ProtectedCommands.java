@@ -100,9 +100,10 @@ public class ProtectedCommands implements Commands {
 		if (!user.hasPerm("canProtect")) {
 			user.sendMessage(ChatColor.RED
 					+ "You don't have permission to do that!");
+			return;
 		}
 		Block pointedAt = user.getHandle().getTargetBlock(null, 4);
-		if (pointedAt.getType() != Material.CHEST) {
+		if (pointedAt.getType() != Material.CHEST && pointedAt.getType() != Material.WOODEN_DOOR) {
 			user.sendMessage(ChatColor.RED
 					+ "You are not pointing at a protectable block!");
 			return;
@@ -125,6 +126,19 @@ public class ProtectedCommands implements Commands {
 				log.info(user.getName() + " created protected chest (id: " + id
 						+ ") with owner " + user.getName() + " at position ("
 						+ w + "," + x + "," + y + "," + z + ")");
+			} else if (pointedAt.getType() == Material.WOODEN_DOOR) {
+				int id = plugin.protectFile.addProtection(user,
+						pointedAt.getLocation(), ProtectionType.Door);
+				user.sendMessage(ChatColor.GREEN
+						+ "Protected door created with owner "
+						+ user.getName() + ".");
+				String w = pointedAt.getWorld().getName();
+				String x = String.valueOf(pointedAt.getX());
+				String y = String.valueOf(pointedAt.getY());
+				String z = String.valueOf(pointedAt.getX());
+				log.info(user.getName() + " created protected door (id: " + id
+						+ ") with owner " + user.getName() + " at position ("
+						+ w + "," + x + "," + y + "," + z + ")");
 			}
 		} else if (args.length == 2) {
 			PermissionUser user2;
@@ -145,6 +159,19 @@ public class ProtectedCommands implements Commands {
 				log.info(user.getName() + " created protected chest (id: " + id
 						+ ") with owner " + user2.getName() + " at position ("
 						+ w + "," + x + "," + y + "," + z + ")");
+			} else if (pointedAt.getType() == Material.WOODEN_DOOR) {
+				int id = plugin.protectFile.addProtection(user2,
+						pointedAt.getLocation(), ProtectionType.Door);
+				user.sendMessage(ChatColor.GREEN
+						+ "Protected door created with owner "
+						+ user2.getName() + ".");
+				String w = pointedAt.getWorld().getName();
+				String x = String.valueOf(pointedAt.getX());
+				String y = String.valueOf(pointedAt.getY());
+				String z = String.valueOf(pointedAt.getX());
+				log.info(user.getName() + " created protected door (id: " + id
+						+ ") with owner " + user2.getName() + " at position ("
+						+ w + "," + x + "," + y + "," + z + ")");
 			}
 		} else {
 			user.sendMessage(ChatColor.YELLOW
@@ -155,7 +182,7 @@ public class ProtectedCommands implements Commands {
 	public void RemoveProtect(String[] args, User user) {
 		Block pointedAt = user.getHandle().getTargetBlock(null, 4);
 		if (args.length == 1) {
-			if (pointedAt.getType() != Material.CHEST) {
+			if (pointedAt.getType() != Material.CHEST && pointedAt.getType() != Material.WOODEN_DOOR) {
 				user.sendMessage(ChatColor.RED
 						+ "You are not pointing at a protectable block!");
 				return;
@@ -201,6 +228,47 @@ public class ProtectedCommands implements Commands {
 					user.sendMessage(ChatColor.RED
 							+ "You aren't pointing at a protected block!");
 				}
+			} else if (pointedAt.getType() == Material.WOODEN_DOOR){
+				int id;
+				if ((id = plugin.protectFile.getProtection(pointedAt
+						.getLocation())) != -1) {
+					ProtectedDoor door;
+					try {
+						door = (ProtectedDoor) plugin.protectFile
+								.getProtection(id);
+					} catch (ClassCastException e) {
+						user.sendMessage(ChatColor.RED
+								+ "There is a problem with the protection file. This incident has been reported.");
+						log.warning("There was a type mismatch in protection.db: Entry with id "
+								+ String.valueOf(id) + " should be type d...");
+						return;
+					} catch (NullPointerException e) {
+						user.sendMessage(ChatColor.RED
+								+ "That block isn't protected!");
+						return;
+					}
+					if (!door.canChange(user)) {
+						user.sendMessage(ChatColor.RED
+								+ "You don't have permission to remove the protection on that block!");
+					} else {
+						plugin.protectFile.removeProtection(door.GetId());
+						String w = pointedAt.getWorld().getName();
+						String x = String.valueOf(pointedAt.getX());
+						String y = String.valueOf(pointedAt.getY());
+						String z = String.valueOf(pointedAt.getZ());
+						log.info(user.getName() + " removed "
+								+ door.getOwner().getName()
+								+ "'s protected chest (id: "
+								+ String.valueOf(door.GetId())
+								+ ") at position (" + w + "," + x + "," + y
+								+ "," + z + ")");
+						user.sendMessage(ChatColor.GREEN
+								+ "The protection on that block was removed.");
+					}
+				} else {
+					user.sendMessage(ChatColor.RED
+							+ "You aren't pointing at a protected block!");
+				}
 			}
 		} else if (args.length == 2) {
 			int id;
@@ -211,37 +279,53 @@ public class ProtectedCommands implements Commands {
 						+ "Cannot be converted into a number...");
 				return;
 			}
-			ProtectedChest chest;
-			try {
-				chest = (ProtectedChest) plugin.protectFile.getProtection(id);
-			} catch (ClassCastException e) {
-				user.sendMessage(ChatColor.RED
-						+ "There is a problem with the protection file. This incident has been reported.");
-				log.warning("There was a type mismatch in protection.db: Entry with id "
-						+ String.valueOf(id) + " should be of type c...");
-				return;
-			} catch (NullPointerException e) {
+			ProtectedBlock block = plugin.protectFile.getProtection(id);
+			if(block == null) {
 				user.sendMessage(ChatColor.RED + "That block isn't protected!");
 				return;
 			}
-			if (!chest.canChange(user)) {
-				user.sendMessage(ChatColor.RED
-						+ "You don't have permission to remove the protection on that block!");
-				return;
-			} else {
-				plugin.protectFile.removeProtection(chest.GetId());
-				String w = pointedAt.getWorld().getName();
-				String x = String.valueOf(pointedAt.getX());
-				String y = String.valueOf(pointedAt.getY());
-				String z = String.valueOf(pointedAt.getZ());
-				log.info(user.getName() + " removed "
-						+ chest.getOwner().getName()
-						+ "'s protected chest (id: "
-						+ String.valueOf(chest.GetId()) + ") at position (" + w
-						+ "," + x + "," + y + "," + z + ")");
-				user.sendMessage(ChatColor.GREEN
-						+ "The protection on that block was removed.");
-				return;
+			if(block instanceof ProtectedChest) {
+				ProtectedChest chest = (ProtectedChest) block;
+				if (!chest.canChange(user)) {
+					user.sendMessage(ChatColor.RED
+							+ "You don't have permission to remove the protection on that block!");
+					return;
+				} else {
+					plugin.protectFile.removeProtection(chest.GetId());
+					String w = pointedAt.getWorld().getName();
+					String x = String.valueOf(pointedAt.getX());
+					String y = String.valueOf(pointedAt.getY());
+					String z = String.valueOf(pointedAt.getZ());
+					log.info(user.getName() + " removed "
+							+ chest.getOwner().getName()
+							+ "'s protected chest (id: "
+							+ String.valueOf(chest.GetId()) + ") at position (" + w
+							+ "," + x + "," + y + "," + z + ")");
+					user.sendMessage(ChatColor.GREEN
+							+ "The protection on that block was removed.");
+					return;
+				}
+			} else if (block instanceof ProtectedDoor) {
+				ProtectedDoor door = (ProtectedDoor) block;
+				if (!door.canChange(user)) {
+					user.sendMessage(ChatColor.RED
+							+ "You don't have permission to remove the protection on that block!");
+					return;
+				} else {
+					plugin.protectFile.removeProtection(door.GetId());
+					String w = pointedAt.getWorld().getName();
+					String x = String.valueOf(pointedAt.getX());
+					String y = String.valueOf(pointedAt.getY());
+					String z = String.valueOf(pointedAt.getZ());
+					log.info(user.getName() + " removed "
+							+ door.getOwner().getName()
+							+ "'s protected door (id: "
+							+ String.valueOf(door.GetId()) + ") at position (" + w
+							+ "," + x + "," + y + "," + z + ")");
+					user.sendMessage(ChatColor.GREEN
+							+ "The protection on that block was removed.");
+					return;
+				}
 			}
 		} else {
 			user.sendMessage(ChatColor.YELLOW
@@ -281,6 +365,11 @@ public class ProtectedCommands implements Commands {
 		if (args.length == 2) {
 			if ((block = plugin.protectFile.getProtection(plugin.protectFile
 					.getProtection(pointedAt.getLocation()))) != null) {
+				if (!block.canChange(user)) {
+					user.sendMessage(ChatColor.RED
+							+ "You don't have permission to edit the protection on that block!");
+					return;
+				}
 				PermissionUser newOwner;
 				if ((newOwner = PermissionUser.matchUser(args[1], plugin)) == null) {
 					user.sendMessage(ChatColor.RED
@@ -309,6 +398,9 @@ public class ProtectedCommands implements Commands {
 				return;
 			}
 			block = plugin.protectFile.getProtection(id);
+			if(!block.canChange(user)) {
+				
+			}
 			PermissionUser newOwner;
 			if ((newOwner = PermissionUser.matchUser(args[0], plugin)) == null) {
 				user.sendMessage(ChatColor.RED + "That player doesn't exist!");
@@ -333,6 +425,11 @@ public class ProtectedCommands implements Commands {
 		if (args.length == 2) {
 			if ((block = plugin.protectFile.getProtection(plugin.protectFile
 					.getProtection(pointedAt.getLocation()))) != null) {
+				if (!block.canChange(user)) {
+					user.sendMessage(ChatColor.RED
+							+ "You don't have permission to edit the protection on that block!");
+					return;
+				}
 				PermissionUser newOwner;
 				if ((newOwner = PermissionUser.matchUser(args[1], plugin)) == null) {
 					user.sendMessage(ChatColor.RED
@@ -382,6 +479,11 @@ public class ProtectedCommands implements Commands {
 		if (args.length == 2) {
 			if ((block = plugin.protectFile.getProtection(plugin.protectFile
 					.getProtection(pointedAt.getLocation()))) != null) {
+				if (!block.canChange(user)) {
+					user.sendMessage(ChatColor.RED
+							+ "You don't have permission to edit the protection on that block!");
+					return;
+				}
 				PermissionUser newOwner;
 				if ((newOwner = PermissionUser.matchUser(args[1], plugin)) == null) {
 					user.sendMessage(ChatColor.RED

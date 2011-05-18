@@ -115,6 +115,9 @@ public class ProtectFile extends Properties {
 			if (type.equalsIgnoreCase("c")) {
 				protectedBlocks.add(new ProtectedChest(plugin, id, owner,
 						guests, loc));
+			} else if (type.equalsIgnoreCase("d")) {
+				protectedBlocks.add(new ProtectedDoor(plugin, id, owner,
+						guests, loc));
 			} else {
 				log.warning("Entry " + key + " in " + proFile
 						+ " is invalid and was ignored!");
@@ -129,6 +132,28 @@ public class ProtectFile extends Properties {
 			key = String.valueOf(block.GetId());
 			value = "";
 			value += "c/";
+			boolean init = false;
+			for (PermissionUser guest : block.getGuests()) {
+				if (init) {
+					value += ",";
+				} else {
+					init = false;
+				}
+				value += guest.getName();
+			}
+			value += "/" + block.getOwner().getName();
+			Location blockLoc = block.getLocation();
+			value += "/" + blockLoc.getWorld().getName() + ","
+					+ String.valueOf(blockLoc.getBlockX()) + ","
+					+ String.valueOf(blockLoc.getBlockY()) + ","
+					+ String.valueOf(blockLoc.getBlockZ());
+			this.put(key, value);
+		} else if (block instanceof ProtectedDoor) {
+			String value;
+			String key;
+			key = String.valueOf(block.GetId());
+			value = "";
+			value += "d/";
 			boolean init = false;
 			for (PermissionUser guest : block.getGuests()) {
 				if (init) {
@@ -179,6 +204,28 @@ public class ProtectFile extends Properties {
 						+ String.valueOf(blockLoc.getBlockY()) + ","
 						+ String.valueOf(blockLoc.getBlockZ());
 				this.put(key, value);
+			} else if (block instanceof ProtectedDoor) {
+				String value;
+				String key;
+				key = String.valueOf(block.GetId());
+				value = "";
+				value += "d/";
+				boolean init = false;
+				for (PermissionUser guest : block.getGuests()) {
+					if (init) {
+						value += ",";
+					} else {
+						init = false;
+					}
+					value += guest.getName();
+				}
+				value += "/" + block.getOwner().getName();
+				Location blockLoc = block.getLocation();
+				value += "/" + blockLoc.getWorld().getName() + ","
+						+ String.valueOf(blockLoc.getBlockX()) + ","
+						+ String.valueOf(blockLoc.getBlockY()) + ","
+						+ String.valueOf(blockLoc.getBlockZ());
+				this.put(key, value);
 			}
 		}
 	}
@@ -194,6 +241,13 @@ public class ProtectFile extends Properties {
 				if (((ProtectedChest) block).isDoubleChest()
 						&& ((ProtectedChest) block).getSecondChest()
 								.getLocation().equals(loc)) {
+					id = block.GetId();
+					break;
+				}
+			}
+			if (block instanceof ProtectedDoor) {
+				if (((ProtectedDoor) block).getSecondBlock().getLocation()
+						.equals(loc)) {
 					id = block.GetId();
 					break;
 				}
@@ -235,6 +289,9 @@ public class ProtectFile extends Properties {
 		switch (type) {
 		case Chest:
 			protectedBlocks.add(protect = new ProtectedChest(plugin, id, owner,
+					new ArrayList<PermissionUser>(), loc));
+		case Door:
+			protectedBlocks.add(protect = new ProtectedDoor(plugin, id, owner,
 					new ArrayList<PermissionUser>(), loc));
 		}
 		updateValue(protect);
