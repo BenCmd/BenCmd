@@ -77,6 +77,7 @@ public class BenCmd extends JavaPlugin {
 	public final File proFile = new File(propDir + "protection.db");
 	public final File chatFile = new File(propDir + "channels.db");
 	public final File ticketFile = new File(propDir + "tickets.db");
+	public final File pricesFile = new File(propDir + "prices.db");
 	public PluginProperties mainProperties;
 	public PluginProperties itemAliases;
 	public LotFile lots;
@@ -195,6 +196,14 @@ public class BenCmd extends JavaPlugin {
 		if (!chatFile.exists()) {
 			try {
 				chatFile.createNewFile();
+			} catch (IOException e) {
+				System.out.println("BenCmd had a problem:");
+				e.printStackTrace();
+			}
+		}
+		if (!ticketFile.exists()) {
+			try {
+				ticketFile.createNewFile();
 			} catch (IOException e) {
 				System.out.println("BenCmd had a problem:");
 				e.printStackTrace();
