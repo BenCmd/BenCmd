@@ -38,6 +38,7 @@ import ben_dude56.plugins.bencmd.invtools.kits.*;
 import ben_dude56.plugins.bencmd.lots.*;
 import ben_dude56.plugins.bencmd.nofly.*;
 import ben_dude56.plugins.bencmd.weather.*;
+import ben_dude56.plugins.bencmd.money.*;
 
 /**
  * BenCmd for Bukkit
@@ -101,6 +102,7 @@ public class BenCmd extends JavaPlugin {
 	public ReportFile reports;
 	public FlyDetect flyDetect;
 	public WeatherBinding strikeBind;
+	public PriceFile prices;
 	public Logger log = Logger.getLogger("minecraft");
 
 	public boolean checkID(int id) {
@@ -233,6 +235,7 @@ public class BenCmd extends JavaPlugin {
 		reports = new ReportFile(this);
 		flyDetect = new FlyDetect(this);
 		strikeBind = new WeatherBinding(this);
+		prices = new PriceFile(this, propDir + "prices.db");
 		// Check for existing players (on reload) and add them to the maxPlayers
 		// class
 		for (Player player : this.getServer().getOnlinePlayers()) {
@@ -374,6 +377,9 @@ public class BenCmd extends JavaPlugin {
 				commandLabel, args)) {
 			return true;
 		} else if (new WeatherCommands(this).onCommand(sender, command,
+				commandLabel, args)) {
+			return true;
+		} else if (new MoneyCommands(this).onCommand(sender, command,
 				commandLabel, args)) {
 			return true;
 		} else {

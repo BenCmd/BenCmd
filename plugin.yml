@@ -176,3 +176,9 @@ commands:
     status:
         usage:
         description: Gets someone's status (muted, jailed, reported)
+    buy:
+        usage:
+        description: Allows a user to buy an item.
+    sell:
+        usage:
+        description: Allows a user to sell an item.
