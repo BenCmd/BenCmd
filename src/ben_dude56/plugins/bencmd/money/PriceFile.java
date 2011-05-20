@@ -135,27 +135,60 @@ public class PriceFile extends Properties {
 		}
 	}
 	
+	public void savePrice(BuyableItem item) {
+		String key = item.getItemId() + "," + item.getDurability();
+		String value = item.getPrice().toString();
+		value += "/" + item.getSupply().toString();
+		value += "/" + item.getSupplyDemand().toString();
+		if(item instanceof Currency) {
+			value += "/true";
+		} else {
+			value += "/false";
+		}
+		this.put(key, value);
+		items.put(key, item);
+		saveFile();
+	}
+	
+	public void remPrice(BuyableItem item) {
+		String key = item.getItemId() + "," + item.getDurability();
+		this.remove(key);
+		items.remove(key);
+		saveFile();
+	}
+	
 	public void pollUpdate() {
 		if(new Date().getTime() >= nextUpdate) {
-			nextUpdate += 86400;
-			for(BuyableItem item : items.values()) {
-				if(item instanceof Currency) {
-					continue;
+			ForceUpdate();
+		}
+	}
+	
+	public void ForceUpdate() {
+		nextUpdate = new Date().getTime() + 86400;
+		for(BuyableItem item : items.values()) {
+			if(item instanceof Currency) {
+				continue;
+			}
+			if(item.getSupplyDemand() >= ((double)back.getStackNumber(item.getItemId())) * 1.5) {
+				Integer newPrice = item.getPrice();
+				newPrice += (int) Math.ceil((item.getSupplyDemand() / 2) * (((double)back.getStackNumber(item.getItemId())) * 0.5));
+				item.setPrice(newPrice);
+				savePrice(item);
+			} else if (item.getSupplyDemand() <= ((double)back.getStackNumber(item.getItemId())) * -1.5) {
+				Integer newPrice = item.getPrice();
+				newPrice -= (int) Math.ceil((item.getSupplyDemand() / 2) * -(((double)back.getStackNumber(item.getItemId())) * 0.5));
+				if(newPrice < 1) {
+					newPrice = 1;
 				}
-				if(item.getSupplyDemand() >= ((double)back.getStackNumber(item.getItemId())) * 1.5) {
-					Integer newPrice = item.getPrice();
-					newPrice += (int) Math.ceil((item.getSupplyDemand() / 2) * (((double)back.getStackNumber(item.getItemId())) * 0.5));
-					item.setPrice(newPrice);
-				} else if (item.getSupplyDemand() <= ((double)back.getStackNumber(item.getItemId())) * -1.5) {
-					Integer newPrice = item.getPrice();
-					newPrice -= (int) Math.ceil((item.getSupplyDemand() / 2) * -(((double)back.getStackNumber(item.getItemId())) * 0.5));
-					if(newPrice < 1) {
-						newPrice = 1;
-					}
-					item.setPrice(newPrice);
-				}
+				item.setPrice(newPrice);
+				savePrice(item);
 			}
 		}
+	}
+	
+	public void saveUpdateTime() {
+		this.put("nextUpdate", String.valueOf(nextUpdate));
+		saveFile();
 	}
 	
 	public BuyableItem getItem(BCItem item) {

@@ -47,6 +47,10 @@ public class BuyableItem {
 		cost = price;
 	}
 	
+	protected void setSupply(Integer Supply) {
+		supply = Supply;
+	}
+	
 	public boolean inStock() {
 		return (supply != 0);
 	}
@@ -66,6 +70,7 @@ public class BuyableItem {
 		Integer amountHas = 0;
 		Integer amountTaken = 0;
 		Integer amountNeeded = amount * cost;
+		Integer fullAmt = amount;
 		HashMap<Integer, Currency> sortedCurrencies = new HashMap<Integer, Currency>();
 		for(Currency currencyType : priceFile.getCurrencies()) {
 			sortedCurrencies.put(currencyType.getPrice(), currencyType);
@@ -177,9 +182,9 @@ public class BuyableItem {
 										(short)(int) this.getDurability()));
 			}
 		}
-		supdem += amount;
+		supdem += fullAmt;
 		if(supply != -1) {
-			supply -= amount;
+			supply -= fullAmt;
 		}
 		return BuyResult.SUCCESS;
 	}
@@ -187,6 +192,7 @@ public class BuyableItem {
 	public boolean sellItem(User user, Integer amount) {
 		Integer amountHas = 0;
 		Integer amountTaken = 0;
+		Integer fullAmt = amount;
 		HashMap<Integer, ? extends ItemStack> matches = user.getHandle().getInventory().all(this.getMaterial());
 		for(ItemStack iStack : matches.values()) {
 			amountHas += iStack.getAmount();
@@ -249,6 +255,10 @@ public class BuyableItem {
 									new ItemStack(changeCurrency.getMaterial(), amt));
 				}
 			}
+		}
+		supdem -= fullAmt;
+		if(supply != -1) {
+			supply += fullAmt;
 		}
 		return true;
 	}

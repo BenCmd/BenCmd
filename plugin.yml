@@ -1,5 +1,5 @@
 name: BenCmd
-version: 1.0.1
+version: 1.0.2
 main: ben_dude56.plugins.bencmd.BenCmd
 commands:
     slow:
@@ -182,3 +182,9 @@ commands:
     sell:
         usage:
         description: Allows a user to sell an item.
+    market:
+        usage:
+        description: Controls currencies and buyable items.
+    price:
+        usage:
+        description: Gets the price of an item.
