@@ -22,7 +22,7 @@ public class PriceFile extends Properties {
 	private HashMap<String, BuyableItem> items = new HashMap<String, BuyableItem>();
 	private long nextUpdate;
 	private InventoryBackend back;
-	
+
 	public PriceFile(BenCmd instance, String priceLocation) {
 		plugin = instance;
 		proFile = priceLocation;
@@ -30,7 +30,7 @@ public class PriceFile extends Properties {
 		loadFile();
 		loadPrices();
 	}
-	
+
 	public void loadFile() {
 		File file = new File(proFile);
 		if (file.exists()) {
@@ -42,7 +42,7 @@ public class PriceFile extends Properties {
 			}
 		}
 	}
-	
+
 	public void saveFile() {
 		File file = new File(proFile);
 		if (file.exists()) {
@@ -54,93 +54,129 @@ public class PriceFile extends Properties {
 			}
 		}
 	}
-	
+
 	public void loadPrices() {
 		nextUpdate = 0;
 		items.clear();
-		for(int i = 0; i < this.values().size(); i++) {
+		for (int i = 0; i < this.values().size(); i++) {
 			int itemid;
 			int damage;
 			int price;
 			int supply;
 			int supplydemand;
 			boolean isCurrency;
-			if(((String)this.keySet().toArray()[i]).equalsIgnoreCase("nextUpdate")) {
+			if (((String) this.keySet().toArray()[i])
+					.equalsIgnoreCase("nextUpdate")) {
 				try {
 					nextUpdate = Long.parseLong(this.getProperty("nextUpdate"));
 				} catch (NumberFormatException e) {
-					plugin.log.severe("nextUpdate (value: " + this.getProperty("nextUpdate") + ") couldn't be converted to a number!");
+					plugin.log.severe("nextUpdate (value: "
+							+ this.getProperty("nextUpdate")
+							+ ") couldn't be converted to a number!");
 				}
 				continue;
 			}
 			try {
-				itemid = Integer.parseInt(((String) this.keySet().toArray()[i]).split(",")[0]);
+				itemid = Integer.parseInt(((String) this.keySet().toArray()[i])
+						.split(",")[0]);
 			} catch (NumberFormatException e) {
-				plugin.log.severe("A value in the price file couldn't be loaded (" + this.keySet().toArray()[i] + "): ID is NaN");
+				plugin.log
+						.severe("A value in the price file couldn't be loaded ("
+								+ this.keySet().toArray()[i] + "): ID is NaN");
 				continue;
 			} catch (IndexOutOfBoundsException e) {
-				plugin.log.severe("A value in the price file couldn't be loaded (" + this.keySet().toArray()[i] + "): ID is missing");
+				plugin.log
+						.severe("A value in the price file couldn't be loaded ("
+								+ this.keySet().toArray()[i]
+								+ "): ID is missing");
 				continue;
 			}
 			try {
-				damage = Integer.parseInt(((String) this.keySet().toArray()[i]).split(",")[1]);
+				damage = Integer.parseInt(((String) this.keySet().toArray()[i])
+						.split(",")[1]);
 			} catch (NumberFormatException e) {
-				plugin.log.severe("A value in the price file couldn't be loaded (" + this.keySet().toArray()[i] + "): Damage is NaN");
+				plugin.log
+						.severe("A value in the price file couldn't be loaded ("
+								+ this.keySet().toArray()[i]
+								+ "): Damage is NaN");
 				continue;
 			} catch (IndexOutOfBoundsException e) {
 				damage = 0;
 			}
-			String[] slashsplit = ((String) this.values().toArray()[i]).split("/");
+			String[] slashsplit = ((String) this.values().toArray()[i])
+					.split("/");
 			try {
 				price = Integer.parseInt(slashsplit[0]);
 			} catch (NumberFormatException e) {
-				plugin.log.severe("A value in the price file couldn't be loaded (" + this.keySet().toArray()[i] + "): Cost is NaN");
+				plugin.log
+						.severe("A value in the price file couldn't be loaded ("
+								+ this.keySet().toArray()[i] + "): Cost is NaN");
 				continue;
 			} catch (IndexOutOfBoundsException e) {
-				plugin.log.severe("A value in the price file couldn't be loaded (" + this.keySet().toArray()[i] + "): Cost is missing");
+				plugin.log
+						.severe("A value in the price file couldn't be loaded ("
+								+ this.keySet().toArray()[i]
+								+ "): Cost is missing");
 				continue;
 			}
 			try {
 				supply = Integer.parseInt(slashsplit[1]);
 			} catch (NumberFormatException e) {
-				plugin.log.severe("A value in the price file couldn't be loaded (" + this.keySet().toArray()[i] + "): Supply is NaN");
+				plugin.log
+						.severe("A value in the price file couldn't be loaded ("
+								+ this.keySet().toArray()[i]
+								+ "): Supply is NaN");
 				continue;
 			} catch (IndexOutOfBoundsException e) {
-				plugin.log.severe("A value in the price file couldn't be loaded (" + this.keySet().toArray()[i] + "): Supply is missing");
+				plugin.log
+						.severe("A value in the price file couldn't be loaded ("
+								+ this.keySet().toArray()[i]
+								+ "): Supply is missing");
 				continue;
 			}
 			try {
 				supplydemand = Integer.parseInt(slashsplit[2]);
 			} catch (NumberFormatException e) {
-				plugin.log.severe("A value in the price file couldn't be loaded (" + this.keySet().toArray()[i] + "): Supply/Demand is NaN");
+				plugin.log
+						.severe("A value in the price file couldn't be loaded ("
+								+ this.keySet().toArray()[i]
+								+ "): Supply/Demand is NaN");
 				continue;
 			} catch (IndexOutOfBoundsException e) {
-				plugin.log.severe("A value in the price file couldn't be loaded (" + this.keySet().toArray()[i] + "): Supply/Demand is missing");
+				plugin.log
+						.severe("A value in the price file couldn't be loaded ("
+								+ this.keySet().toArray()[i]
+								+ "): Supply/Demand is missing");
 				continue;
 			}
 			try {
 				isCurrency = (slashsplit[3].equalsIgnoreCase("true"));
 			} catch (IndexOutOfBoundsException e) {
-				plugin.log.severe("A value in the price file couldn't be loaded (" + this.keySet().toArray()[i] + "): isCurrency is missing");
+				plugin.log
+						.severe("A value in the price file couldn't be loaded ("
+								+ this.keySet().toArray()[i]
+								+ "): isCurrency is missing");
 				continue;
 			}
-			if(isCurrency) {
-				items.put(itemid + "," + damage, new Currency(itemid, damage, price, supply, supplydemand, this));
+			if (isCurrency) {
+				items.put(itemid + "," + damage, new Currency(itemid, damage,
+						price, supply, supplydemand, this));
 			} else {
-				items.put(itemid + "," + damage, new BuyableItem(itemid, damage, price, supply, supplydemand, this));
+				items.put(itemid + "," + damage, new BuyableItem(itemid,
+						damage, price, supply, supplydemand, this));
 			}
 		}
-		if(nextUpdate == 0) {
+		if (nextUpdate == 0) {
 			nextUpdate = new Date().getTime() + 86400;
 		}
 	}
-	
+
 	public void savePrice(BuyableItem item) {
 		String key = item.getItemId() + "," + item.getDurability();
 		String value = item.getPrice().toString();
 		value += "/" + item.getSupply().toString();
 		value += "/" + item.getSupplyDemand().toString();
-		if(item instanceof Currency) {
+		if (item instanceof Currency) {
 			value += "/true";
 		} else {
 			value += "/false";
@@ -149,35 +185,43 @@ public class PriceFile extends Properties {
 		items.put(key, item);
 		saveFile();
 	}
-	
+
 	public void remPrice(BuyableItem item) {
 		String key = item.getItemId() + "," + item.getDurability();
 		this.remove(key);
 		items.remove(key);
 		saveFile();
 	}
-	
+
 	public void pollUpdate() {
-		if(new Date().getTime() >= nextUpdate) {
+		if (new Date().getTime() >= nextUpdate) {
 			ForceUpdate();
 		}
 	}
-	
+
 	public void ForceUpdate() {
 		nextUpdate = new Date().getTime() + 86400;
-		for(BuyableItem item : items.values()) {
-			if(item instanceof Currency) {
+		for (BuyableItem item : items.values()) {
+			if (item instanceof Currency) {
 				continue;
 			}
-			if(item.getSupplyDemand() >= ((double)back.getStackNumber(item.getItemId())) * 1.5) {
+			if (item.getSupplyDemand() >= ((double) back.getStackNumber(item
+					.getItemId())) * 1.5) {
 				Integer newPrice = item.getPrice();
-				newPrice += (int) Math.ceil((item.getSupplyDemand() / 2) * (((double)back.getStackNumber(item.getItemId())) * 0.5));
+				newPrice += (int) Math
+						.ceil((item.getSupplyDemand() / 2)
+								* (((double) back.getStackNumber(item
+										.getItemId())) * 0.5));
 				item.setPrice(newPrice);
 				savePrice(item);
-			} else if (item.getSupplyDemand() <= ((double)back.getStackNumber(item.getItemId())) * -1.5) {
+			} else if (item.getSupplyDemand() <= ((double) back
+					.getStackNumber(item.getItemId())) * -1.5) {
 				Integer newPrice = item.getPrice();
-				newPrice -= (int) Math.ceil((item.getSupplyDemand() / 2) * -(((double)back.getStackNumber(item.getItemId())) * 0.5));
-				if(newPrice < 1) {
+				newPrice -= (int) Math
+						.ceil((item.getSupplyDemand() / 2)
+								* -(((double) back.getStackNumber(item
+										.getItemId())) * 0.5));
+				if (newPrice < 1) {
 					newPrice = 1;
 				}
 				item.setPrice(newPrice);
@@ -185,24 +229,25 @@ public class PriceFile extends Properties {
 			}
 		}
 	}
-	
+
 	public void saveUpdateTime() {
 		this.put("nextUpdate", String.valueOf(nextUpdate));
 		saveFile();
 	}
-	
+
 	public BuyableItem getItem(BCItem item) {
 		try {
-			return items.get(item.getMaterial().getId() + "," + item.getDamage());
+			return items.get(item.getMaterial().getId() + ","
+					+ item.getDamage());
 		} catch (NullPointerException e) {
 			return null;
 		}
 	}
-	
+
 	public List<Currency> getCurrencies() {
 		List<Currency> currencies = new ArrayList<Currency>();
-		for(BuyableItem item : items.values()) {
-			if(item instanceof Currency) {
+		for (BuyableItem item : items.values()) {
+			if (item instanceof Currency) {
 				currencies.add((Currency) item);
 			}
 		}

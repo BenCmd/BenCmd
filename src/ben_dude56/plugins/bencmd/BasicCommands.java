@@ -499,6 +499,14 @@ public class BasicCommands implements Commands {
 				"canKill"));
 		commands.add(new BCommand("/spawnmob <Mob Name> [Amount]",
 				"Spawns a specific amount of a specific mob.", "canSpawnMobs"));
+		commands.add(new BCommand("/buy <Item> [Amount]", "Buys an item.", "."));
+		commands.add(new BCommand("/sell <Item> [Amount]",
+				"Sells an item from your inventory.", "."));
+		commands.add(new BCommand("/price <Item>",
+				"Lists the price of a specific item.", "."));
+		commands.add(new BCommand("/market",
+				"Used to administrate the economic functions of BenCmd.",
+				"canControlMarket"));
 		for (int i = 0; i < commands.size(); i++) {
 			if (!commands.get(i).canUse(user)) {
 				commands.remove(i);
