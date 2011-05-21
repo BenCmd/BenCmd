@@ -9,6 +9,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
+import java.util.Timer;
+
+import org.bukkit.ChatColor;
 
 import ben_dude56.plugins.bencmd.BenCmd;
 import ben_dude56.plugins.bencmd.invtools.BCItem;
@@ -22,6 +25,7 @@ public class PriceFile extends Properties {
 	private HashMap<String, BuyableItem> items = new HashMap<String, BuyableItem>();
 	private long nextUpdate;
 	private InventoryBackend back;
+	private Timer update;
 
 	public PriceFile(BenCmd instance, String priceLocation) {
 		plugin = instance;
@@ -29,6 +33,12 @@ public class PriceFile extends Properties {
 		back = new InventoryBackend(plugin);
 		loadFile();
 		loadPrices();
+		update = new Timer();
+		update.schedule(new UpdateTimer(this), 1000);
+	}
+	
+	public void unloadTimer() {
+		update.cancel();
 	}
 
 	public void loadFile() {
@@ -200,7 +210,8 @@ public class PriceFile extends Properties {
 	}
 
 	public void ForceUpdate() {
-		nextUpdate = new Date().getTime() + 86400;
+		nextUpdate = new Date().getTime() + 1800;
+		plugin.getServer().broadcastMessage(ChatColor.RED + "ALERT: All prices are being updated...");
 		for (BuyableItem item : items.values()) {
 			if (item instanceof Currency) {
 				continue;
@@ -209,22 +220,26 @@ public class PriceFile extends Properties {
 					.getItemId())) * 1.5) {
 				Integer newPrice = item.getPrice();
 				newPrice += (int) Math
-						.ceil((item.getSupplyDemand() / 64)
+						.ceil((item.getSupplyDemand() / back
+								.getStackNumber(item.getItemId()))
 								* (((double) back.getStackNumber(item
 										.getItemId())) * 0.5));
 				item.setPrice(newPrice);
+				item.resetSupplyDemand();
 				savePrice(item);
 			} else if (item.getSupplyDemand() <= ((double) back
 					.getStackNumber(item.getItemId())) * -1.5) {
 				Integer newPrice = item.getPrice();
 				newPrice -= (int) Math
-						.ceil((item.getSupplyDemand() / 64)
+						.ceil((item.getSupplyDemand() / back
+								.getStackNumber(item.getItemId()))
 								* -(((double) back.getStackNumber(item
 										.getItemId())) * 0.5));
 				if (newPrice < 1) {
 					newPrice = 1;
 				}
 				item.setPrice(newPrice);
+				item.resetSupplyDemand();
 				savePrice(item);
 			}
 		}
