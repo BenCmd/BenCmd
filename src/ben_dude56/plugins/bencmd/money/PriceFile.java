@@ -209,7 +209,7 @@ public class PriceFile extends Properties {
 					.getItemId())) * 1.5) {
 				Integer newPrice = item.getPrice();
 				newPrice += (int) Math
-						.ceil((item.getSupplyDemand() / 2)
+						.ceil((item.getSupplyDemand() / 64)
 								* (((double) back.getStackNumber(item
 										.getItemId())) * 0.5));
 				item.setPrice(newPrice);
@@ -218,7 +218,7 @@ public class PriceFile extends Properties {
 					.getStackNumber(item.getItemId())) * -1.5) {
 				Integer newPrice = item.getPrice();
 				newPrice -= (int) Math
-						.ceil((item.getSupplyDemand() / 2)
+						.ceil((item.getSupplyDemand() / 64)
 								* -(((double) back.getStackNumber(item
 										.getItemId())) * 0.5));
 				if (newPrice < 1) {
