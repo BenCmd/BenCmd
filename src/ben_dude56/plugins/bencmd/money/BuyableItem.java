@@ -78,6 +78,10 @@ public class BuyableItem {
 			HashMap<Integer, ? extends ItemStack> matches = user.getHandle()
 					.getInventory().all(currencyType.getMaterial());
 			for (ItemStack match : matches.values()) {
+				if (match.getTypeId() == this.getItemId()
+						&& match.getDurability() == this.getDurability()) {
+					continue;
+				}
 				amountHas += currencyType.getPrice() * match.getAmount();
 			}
 		}
@@ -97,6 +101,10 @@ public class BuyableItem {
 					.getInventory().all(currency.getMaterial());
 			for (Integer pos : matches.keySet()) {
 				ItemStack item = user.getHandle().getInventory().getItem(pos);
+				if (item.getTypeId() == this.getItemId()
+						&& item.getDurability() == this.getDurability()) {
+					continue;
+				}
 				if (amountTaken + item.getAmount() * value <= amountNeeded) {
 					amountTaken += item.getAmount() * value;
 					user.getHandle().getInventory().clear(pos);
@@ -114,6 +122,10 @@ public class BuyableItem {
 		}
 		if (amountTaken < amountNeeded) {
 			for (Currency currency : sortedCurrencies.values()) {
+				if (currency.getItemId() == this.getItemId()
+						&& currency.getDurability() == this.getDurability()) {
+					continue;
+				}
 				HashMap<Integer, ? extends ItemStack> matches = user
 						.getHandle().getInventory().all(currency.getMaterial());
 				if (!matches.isEmpty()) {
