@@ -36,7 +36,7 @@ public class PriceFile extends Properties {
 		update = new Timer();
 		update.schedule(new UpdateTimer(this), 1000);
 	}
-	
+
 	public void unloadTimer() {
 		update.cancel();
 	}
@@ -211,7 +211,8 @@ public class PriceFile extends Properties {
 
 	public void ForceUpdate() {
 		nextUpdate = new Date().getTime() + 1800;
-		plugin.getServer().broadcastMessage(ChatColor.RED + "ALERT: All prices are being updated...");
+		plugin.getServer().broadcastMessage(
+				ChatColor.RED + "ALERT: All prices are being updated...");
 		for (BuyableItem item : items.values()) {
 			if (item instanceof Currency) {
 				continue;
@@ -220,10 +221,9 @@ public class PriceFile extends Properties {
 					.getItemId())) * 1.5) {
 				Integer newPrice = item.getPrice();
 				newPrice += (int) Math
-						.ceil((item.getSupplyDemand() / back
-								.getStackNumber(item.getItemId()))
-								* (((double) back.getStackNumber(item
-										.getItemId())) * 0.5));
+						.ceil((item.getSupplyDemand()
+								/ ((double) back.getStackNumber(item
+										.getItemId())) * 0.25));
 				item.setPrice(newPrice);
 				item.resetSupplyDemand();
 				savePrice(item);
@@ -231,10 +231,9 @@ public class PriceFile extends Properties {
 					.getStackNumber(item.getItemId())) * -1.5) {
 				Integer newPrice = item.getPrice();
 				newPrice -= (int) Math
-						.ceil((item.getSupplyDemand() / back
-								.getStackNumber(item.getItemId()))
-								* -(((double) back.getStackNumber(item
-										.getItemId())) * 0.5));
+						.ceil((-item.getSupplyDemand()
+								/ ((double) back.getStackNumber(item
+										.getItemId())) * 0.25));
 				if (newPrice < 1) {
 					newPrice = 1;
 				}
