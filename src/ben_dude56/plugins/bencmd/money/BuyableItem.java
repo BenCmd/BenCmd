@@ -13,12 +13,12 @@ import ben_dude56.plugins.bencmd.invtools.InventoryBackend;
 public class BuyableItem {
 	private Integer id;
 	private Integer durability;
-	private Integer cost;
+	private Double cost;
 	private Integer supply;
 	private Integer supdem;
 	private PriceFile priceFile;
 
-	public BuyableItem(Integer ID, Integer Damage, Integer Cost,
+	public BuyableItem(Integer ID, Integer Damage, Double Cost,
 			Integer Supply, Integer SupplyDemand, PriceFile instance) {
 		id = ID;
 		durability = Damage;
@@ -36,7 +36,7 @@ public class BuyableItem {
 		return id;
 	}
 
-	public Integer getPrice() {
+	public Double getPrice() {
 		return cost;
 	}
 
@@ -44,7 +44,7 @@ public class BuyableItem {
 		return supdem;
 	}
 
-	protected void setPrice(Integer price) {
+	protected void setPrice(Double price) {
 		cost = price;
 	}
 
@@ -68,11 +68,11 @@ public class BuyableItem {
 		if (amount > supply && supply != -1) {
 			return BuyResult.INS_SUPPLY;
 		}
-		Integer amountHas = 0;
-		Integer amountTaken = 0;
-		Integer amountNeeded = amount * cost;
+		Double amountHas = 0.0;
+		Double amountTaken = 0.0;
+		Double amountNeeded = amount * cost;
 		Integer fullAmt = amount;
-		HashMap<Integer, Currency> sortedCurrencies = new HashMap<Integer, Currency>();
+		HashMap<Double, Currency> sortedCurrencies = new HashMap<Double, Currency>();
 		for (Currency currencyType : priceFile.getCurrencies()) {
 			sortedCurrencies.put(currencyType.getPrice(), currencyType);
 			HashMap<Integer, ? extends ItemStack> matches = user.getHandle()
@@ -96,7 +96,7 @@ public class BuyableItem {
 			reversedCurrencies[reversedCurrencies.length - i - 1] = temp;
 		}
 		for (Currency currency : sortedCurrencies.values()) {
-			Integer value = currency.getPrice();
+			Double value = currency.getPrice();
 			HashMap<Integer, ? extends ItemStack> matches = user.getHandle()
 					.getInventory().all(currency.getMaterial());
 			for (Integer pos : matches.keySet()) {
@@ -110,7 +110,7 @@ public class BuyableItem {
 					user.getHandle().getInventory().clear(pos);
 				} else if (amountTaken + value <= amountNeeded) {
 					int taken;
-					taken = (amountNeeded - amountTaken) / value;
+					taken = (int) Math.ceil((amountNeeded - amountTaken) / value);
 					item.setAmount(item.getAmount() - taken);
 					user.getHandle().getInventory().setItem(pos, item);
 					amountTaken += taken * value;
@@ -241,7 +241,7 @@ public class BuyableItem {
 				break;
 			}
 		}
-		HashMap<Integer, Currency> sortedCurrencies = new HashMap<Integer, Currency>();
+		HashMap<Double, Currency> sortedCurrencies = new HashMap<Double, Currency>();
 		for (Currency currencyType : priceFile.getCurrencies()) {
 			sortedCurrencies.put(currencyType.getPrice(), currencyType);
 		}
@@ -293,10 +293,10 @@ public class BuyableItem {
 		return true;
 	}
 
-	public HashMap<Currency, Integer> makeChange(Integer change,
+	public HashMap<Currency, Integer> makeChange(Double change,
 			Object[] acceptedCurrencies) {
 		HashMap<Currency, Integer> giveChange = new HashMap<Currency, Integer>();
-		Integer given = 0;
+		Double given = 0.0;
 		for (Object currencyo : acceptedCurrencies) {
 			Currency currency = (Currency) currencyo;
 			double rem = change - given;

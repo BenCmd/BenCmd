@@ -2,7 +2,7 @@ package ben_dude56.plugins.bencmd.money;
 
 public class Currency extends BuyableItem {
 
-	public Currency(Integer ID, Integer Damage, Integer Cost, Integer Supply,
+	public Currency(Integer ID, Integer Damage, Double Cost, Integer Supply,
 			Integer SupplyDemand, PriceFile instance) {
 		super(ID, Damage, Cost, Supply, SupplyDemand, instance);
 	}

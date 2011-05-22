@@ -26,6 +26,7 @@ public class PriceFile extends Properties {
 	private long nextUpdate;
 	private InventoryBackend back;
 	private Timer update;
+	private boolean timerenabled;
 
 	public PriceFile(BenCmd instance, String priceLocation) {
 		plugin = instance;
@@ -34,10 +35,31 @@ public class PriceFile extends Properties {
 		loadFile();
 		loadPrices();
 		update = new Timer();
-		update.schedule(new UpdateTimer(this), 1000);
+		if(plugin.mainProperties.getInteger("updateTime", 1800000) == -1) {
+			timerenabled = false;
+		} else {
+			update.schedule(new UpdateTimer(this), 0, 1000);
+			timerenabled = true;
+		}
+	}
+	
+	public boolean isTimerEnabled() {
+		return timerenabled;
+	}
+	
+	public void loadTimer() {
+		if(timerenabled) {
+			return;
+		}
+		timerenabled = true;
+		update.schedule(new UpdateTimer(this), 0, 1000);
 	}
 
 	public void unloadTimer() {
+		if(!timerenabled) {
+			return;
+		}
+		timerenabled = true;
 		update.cancel();
 	}
 
@@ -71,7 +93,7 @@ public class PriceFile extends Properties {
 		for (int i = 0; i < this.values().size(); i++) {
 			int itemid;
 			int damage;
-			int price;
+			double price;
 			int supply;
 			int supplydemand;
 			boolean isCurrency;
@@ -116,7 +138,7 @@ public class PriceFile extends Properties {
 			String[] slashsplit = ((String) this.values().toArray()[i])
 					.split("/");
 			try {
-				price = Integer.parseInt(slashsplit[0]);
+				price = Double.parseDouble(slashsplit[0]);
 			} catch (NumberFormatException e) {
 				plugin.log
 						.severe("A value in the price file couldn't be loaded ("
@@ -177,7 +199,7 @@ public class PriceFile extends Properties {
 			}
 		}
 		if (nextUpdate == 0) {
-			nextUpdate = new Date().getTime() + 86400;
+			nextUpdate = new Date().getTime() + plugin.mainProperties.getInteger("updateTime", 1800000);
 		}
 	}
 
@@ -204,38 +226,47 @@ public class PriceFile extends Properties {
 	}
 
 	public void pollUpdate() {
-		if (new Date().getTime() >= nextUpdate) {
+		if(plugin.mainProperties.getInteger("updateTime", 1800000) == -1) {
+			return;
+		}
+		long nowTime = new Date().getTime();
+		if (nowTime >= nextUpdate) {
 			ForceUpdate();
 		}
 	}
 
 	public void ForceUpdate() {
-		nextUpdate = new Date().getTime() + 1800;
+		nextUpdate = new Date().getTime() + plugin.mainProperties.getInteger("updateTime", 1800000);
+		saveUpdateTime();
 		plugin.getServer().broadcastMessage(
 				ChatColor.RED + "ALERT: All prices are being updated...");
 		for (BuyableItem item : items.values()) {
 			if (item instanceof Currency) {
 				continue;
 			}
-			if (item.getSupplyDemand() >= ((double) back.getStackNumber(item
-					.getItemId())) * 1.5) {
-				Integer newPrice = item.getPrice();
-				newPrice += (int) Math
-						.ceil((item.getSupplyDemand()
+			if (item.getSupplyDemand() > 0) {
+				Double oldPrice = item.getPrice();
+				Double newPrice = oldPrice;
+				newPrice += item.getSupplyDemand()
 								/ ((double) back.getStackNumber(item
-										.getItemId())) * 0.25));
+										.getItemId())) * plugin.mainProperties.getDouble("marketMultiple", 0.25);
+				if(newPrice - oldPrice > plugin.mainProperties.getDouble("marketMaxChange", 2)) {
+					newPrice = oldPrice + plugin.mainProperties.getDouble("marketMaxChange", 2);
+				}
 				item.setPrice(newPrice);
 				item.resetSupplyDemand();
 				savePrice(item);
-			} else if (item.getSupplyDemand() <= ((double) back
-					.getStackNumber(item.getItemId())) * -1.5) {
-				Integer newPrice = item.getPrice();
-				newPrice -= (int) Math
-						.ceil((-item.getSupplyDemand()
+			} else if (item.getSupplyDemand() < 0) {
+				Double oldPrice = item.getPrice();
+				Double newPrice = oldPrice;
+				newPrice -= -item.getSupplyDemand()
 								/ ((double) back.getStackNumber(item
-										.getItemId())) * 0.25));
-				if (newPrice < 1) {
-					newPrice = 1;
+										.getItemId())) * plugin.mainProperties.getDouble("marketMultiple", 0.25);
+				if (newPrice < plugin.mainProperties.getDouble("marketMin", 0.05)) {
+					newPrice = 0.05;
+				}
+				if(oldPrice - newPrice > plugin.mainProperties.getDouble("marketMaxChange", 2)) {
+					newPrice = oldPrice - plugin.mainProperties.getDouble("marketMaxChange", 2);
 				}
 				item.setPrice(newPrice);
 				item.resetSupplyDemand();

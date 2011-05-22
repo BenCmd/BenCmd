@@ -50,6 +50,10 @@ public class MoneyCommands implements Commands {
 	}
 
 	public void Buy(String[] args, User user) {
+		if(!plugin.mainProperties.getBoolean("marketOpen", true)) {
+			user.sendMessage(ChatColor.RED + "The market is currently closed!");
+			return;
+		}
 		if (args.length == 0 || args.length > 2) {
 			user.sendMessage(ChatColor.YELLOW
 					+ "Proper use is /buy <ID>[:Damage] [Amount]");
@@ -96,6 +100,10 @@ public class MoneyCommands implements Commands {
 	}
 
 	public void Sell(String[] args, User user) {
+		if(!plugin.mainProperties.getBoolean("marketOpen", true)) {
+			user.sendMessage(ChatColor.RED + "The market is currently closed!");
+			return;
+		}
 		if (args.length == 0 || args.length > 2) {
 			user.sendMessage(ChatColor.YELLOW
 					+ "Proper use is /sell <ID>[:Damage] [Amount]");
@@ -143,14 +151,109 @@ public class MoneyCommands implements Commands {
 		} else if (args[0].equalsIgnoreCase("supply")) {
 			MarketSupply(args, user);
 		} else if (args[0].equalsIgnoreCase("update")) {
-			if (args.length != 1) {
-				user.sendMessage(ChatColor.YELLOW
-						+ "Proper use is /market update");
+			MarketUpdate(args, user);
+		} else if (args[0].equalsIgnoreCase("noupdate")) {
+			if(!plugin.prices.isTimerEnabled()) {
+				user.sendMessage(ChatColor.RED + "Updating is already disabled!");
 				return;
 			}
+			plugin.mainProperties.setProperty("updateTime", "-1");
+			plugin.mainProperties.saveFile("-BenCmd Main Config-");
+			user.sendMessage(ChatColor.GREEN + "Updating disabled!");
+			plugin.prices.unloadTimer();
+		} else if (args[0].equalsIgnoreCase("close")) {
+			if(!plugin.mainProperties.getBoolean("marketOpen", true)) {
+				user.sendMessage(ChatColor.RED + "The market is already closed!");
+				return;
+			}
+			plugin.mainProperties.setProperty("marketOpen", "false");
+			plugin.mainProperties.saveFile("-BenCmd Main Config-");
+			plugin.getServer().broadcastMessage(ChatColor.RED + "The market is now closed!");
+		} else if (args[0].equalsIgnoreCase("open")) {
+			if(plugin.mainProperties.getBoolean("marketOpen", true)) {
+				user.sendMessage(ChatColor.RED + "The market is already open!");
+				return;
+			}
+			plugin.mainProperties.setProperty("marketOpen", "true");
+			plugin.mainProperties.saveFile("-BenCmd Main Config-");
+			plugin.getServer().broadcastMessage(ChatColor.GREEN + "The market is now open!");
+		} else if (args[0].equalsIgnoreCase("multiple")) {
+			if(args.length != 2) {
+				user.sendMessage(ChatColor.YELLOW
+						+ "Proper use is /market multiple <multiple>");
+				return;
+			}
+			Double multiple;
+			try {
+				multiple = Double.parseDouble(args[1]);
+			} catch (NumberFormatException e) {
+				user.sendMessage(ChatColor.YELLOW
+						+ "Proper use is /market multiple <multiple>");
+				return;
+			}
+			plugin.mainProperties.setProperty("marketMultiple", multiple.toString());
+			plugin.mainProperties.saveFile("-BenCmd Main Config-");
+		} else if (args[0].equalsIgnoreCase("max")) {
+			if(args.length != 2) {
+				user.sendMessage(ChatColor.YELLOW
+						+ "Proper use is /market max <max>");
+				return;
+			}
+			Double max;
+			try {
+				max = Double.parseDouble(args[1]);
+			} catch (NumberFormatException e) {
+				user.sendMessage(ChatColor.YELLOW
+						+ "Proper use is /market max <max>");
+				return;
+			}
+			plugin.mainProperties.setProperty("marketMaxChange", max.toString());
+			plugin.mainProperties.saveFile("-BenCmd Main Config-");
+		} else if (args[0].equalsIgnoreCase("min")) {
+			if(args.length != 2) {
+				user.sendMessage(ChatColor.YELLOW
+						+ "Proper use is /market min <min>");
+				return;
+			}
+			Double min;
+			try {
+				min = Double.parseDouble(args[1]);
+			} catch (NumberFormatException e) {
+				user.sendMessage(ChatColor.YELLOW
+						+ "Proper use is /market min <min>");
+				return;
+			}
+			plugin.mainProperties.setProperty("marketMin", min.toString());
+			plugin.mainProperties.saveFile("-BenCmd Main Config-");
+		}
+	}
+	
+	public void MarketUpdate(String[] args, User user) {
+		if (args.length == 1) {
 			plugin.prices.ForceUpdate();
 			user.sendMessage(ChatColor.GREEN
 					+ "All prices have been recalculated.");
+		} else if (args.length == 2) {
+			Integer updateTime;
+			try {
+				updateTime = Integer.parseInt(args[1]);
+			} catch (NumberFormatException e) {
+				user.sendMessage(ChatColor.YELLOW
+						+ "Proper use is /market update [delay]");
+				return;
+			}
+			plugin.mainProperties.setProperty("updateTime", updateTime.toString());
+			plugin.mainProperties.saveFile("-BenCmd Main Config-");
+			plugin.prices.ForceUpdate();
+			if(!plugin.prices.isTimerEnabled()) {
+				plugin.prices.loadTimer();
+				user.sendMessage(ChatColor.GREEN + "Updating enabled!");
+			} else {
+				user.sendMessage(ChatColor.GREEN + "Updating rate changed!");
+			}
+		} else {
+			user.sendMessage(ChatColor.YELLOW
+					+ "Proper use is /market update [delay]");
 		}
 	}
 
@@ -166,9 +269,9 @@ public class MoneyCommands implements Commands {
 			return;
 		}
 		BuyableItem bitem;
-		Integer price;
+		Double price;
 		try {
-			price = Integer.parseInt(args[2]);
+			price = Double.parseDouble(args[2]);
 		} catch (NumberFormatException e) {
 			user.sendMessage(ChatColor.RED + "Invalid price");
 			return;
@@ -234,9 +337,9 @@ public class MoneyCommands implements Commands {
 			return;
 		}
 		BuyableItem bitem;
-		Integer price;
+		Double price;
 		try {
-			price = Integer.parseInt(args[2]);
+			price = Double.parseDouble(args[2]);
 		} catch (NumberFormatException e) {
 			user.sendMessage(ChatColor.RED + "Invalid price");
 			return;
