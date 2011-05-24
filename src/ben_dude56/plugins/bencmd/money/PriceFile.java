@@ -253,6 +253,8 @@ public class PriceFile extends Properties {
 				if(newPrice - oldPrice > plugin.mainProperties.getDouble("marketMaxChange", 2)) {
 					newPrice = oldPrice + plugin.mainProperties.getDouble("marketMaxChange", 2);
 				}
+				newPrice *= 100;
+				newPrice = Math.ceil(newPrice) / 100;
 				item.setPrice(newPrice);
 				item.resetSupplyDemand();
 				savePrice(item);
