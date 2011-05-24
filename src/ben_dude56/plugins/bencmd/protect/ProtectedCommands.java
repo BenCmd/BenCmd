@@ -113,6 +113,10 @@ public class ProtectedCommands implements Commands {
 			user.sendMessage(ChatColor.RED + "That block is already protected!");
 			return;
 		}
+		if(!plugin.lots.canBuildHere(user.getHandle(), pointedAt.getLocation())) {
+			user.sendMessage(ChatColor.RED + "You're not allowed to protect blocks in other peoples' lots.");
+			return;
+		}
 		if (args.length == 1) {
 			if (pointedAt.getType() == Material.CHEST) {
 				int id = plugin.protectFile.addProtection(user,
