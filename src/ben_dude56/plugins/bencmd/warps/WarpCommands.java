@@ -67,6 +67,20 @@ public class WarpCommands implements Commands {
 				&& user.hasPerm("canJail")) {
 			SetJail(user);
 			return true;
+		} else if (commandLabel.equalsIgnoreCase("tp")) {
+			Tp(args, user);
+			return true;
+		} else if (commandLabel.equalsIgnoreCase("tphere")
+				&& user.hasPerm("canTpOther")) {
+			if(args.length != 1) {
+				user.sendMessage(ChatColor.YELLOW
+						+ "Proper use is: /tphere <player>");
+			} else if(user.isServer()) {
+				user.sendMessage(ChatColor.RED + "The server cannot do that!");
+			} else {
+				plugin.getServer().dispatchCommand(user.getHandle(), "tp " + args[0] + " " + user.getName());
+			}
+			return true;
 		}
 		return false;
 	}
@@ -388,5 +402,55 @@ public class WarpCommands implements Commands {
 			return;
 		}
 		plugin.jail.setJail(user.getHandle().getLocation());
+	}
+	
+	public void Tp(String[] args, User user) {
+		if(args.length == 1) {
+			if(!user.hasPerm("canTpSelf")) {
+				user.sendMessage(ChatColor.RED
+						+ "You don't have permission to do that!");
+				return;
+			}
+			User user2 = User.matchUser(args[0], plugin);
+			if(user2 == null) {
+				user.sendMessage(ChatColor.RED + args[0] + " isn't online!");
+				return;
+			}
+			plugin.checkpoints.SetPreWarp(user.getHandle());
+			user.getHandle().teleport(user2.getHandle());
+			plugin.log.info(user.getName() + " has teleported to " + user2.getName());
+			user.sendMessage(ChatColor.YELLOW + "Woosh!");
+		} else if (args.length == 2) {
+			if(args[0].equalsIgnoreCase(user.getName())) {
+				plugin.getServer().dispatchCommand(user.getHandle(), "tp " + args[1]);
+				return;
+			}
+			if(!user.hasPerm("canTpOther")) {
+				user.sendMessage(ChatColor.RED
+						+ "You don't have permission to do that!");
+				return;
+			}
+			User user1 = User.matchUser(args[0], plugin);
+			User user2 = User.matchUser(args[1], plugin);
+			if(user1 == null) {
+				user.sendMessage(ChatColor.RED + args[0] + " isn't online!");
+				return;
+			} else if (user2 == null) {
+				user.sendMessage(ChatColor.RED + args[1] + " isn't online!");
+				return;
+			}
+			plugin.checkpoints.SetPreWarp(user1.getHandle());
+			user1.getHandle().teleport(user2.getHandle());
+			plugin.log.info(user1.getName() + " has been teleported to " + user2.getName() + " by " + user.getName());
+			user1.sendMessage(ChatColor.YELLOW + "Woosh!");
+		} else {
+			if(user.hasPerm("canTpSelf") || user.hasPerm("canTpOther")) {
+				user.sendMessage(ChatColor.YELLOW
+						+ "Proper use is: /tp <player> [player]");
+			} else {
+				user.sendMessage(ChatColor.RED
+						+ "You don't have permission to do that!");
+			}
+		}
 	}
 }

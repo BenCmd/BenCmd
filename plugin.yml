@@ -188,3 +188,9 @@ commands:
     price:
         usage:
         description: Gets the price of an item.
+    tp:
+        usage:
+        description: Teleports a player to another.
+    tphere:
+        usage:
+        description: Teleports a player to you.
