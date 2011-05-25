@@ -127,6 +127,7 @@ public class ActionableUser extends WarpableUser {
 			log.info(sender.getName() + " attempted to kick the server!");
 			return;
 		}
+		plugin.kicked.addUser(this);
 		player.kickPlayer("You have been kicked by user: " + sender.getName()
 				+ ". Reason: " + reason + ".");
 	}
@@ -142,6 +143,7 @@ public class ActionableUser extends WarpableUser {
 			log.info("An attempt was made to kick the server!");
 			return;
 		}
+		plugin.kicked.addUser(this);
 		player.kickPlayer("You have been kicked. Reason: " + reason + ".");
 	}
 
@@ -156,6 +158,7 @@ public class ActionableUser extends WarpableUser {
 			log.info(sender.getName() + " attempted to kick the server!");
 			return;
 		}
+		plugin.kicked.addUser(this);
 		player.kickPlayer("You have been kicked by user: " + sender.getName()
 				+ ".");
 	}
@@ -168,6 +171,7 @@ public class ActionableUser extends WarpableUser {
 			log.info("An attempt was made to kick the server!");
 			return;
 		}
+		plugin.kicked.addUser(this);
 		player.kickPlayer("You have been kicked.");
 	}
 

@@ -40,6 +40,10 @@ public class PermissionCommands implements Commands {
 		} else if (commandLabel.equalsIgnoreCase("status")) {
 			Status(args, user);
 			return true;
+		} else if (commandLabel.equalsIgnoreCase("kick")
+				&& user.hasPerm("canKick")) {
+			Kick(args, user);
+			return true;
 		}
 		return false;
 	}
@@ -453,6 +457,50 @@ public class PermissionCommands implements Commands {
 			} else {
 				user.sendMessage(ChatColor.YELLOW + "   -Health: "
 						+ (((double) health) / 2) + "/10");
+			}
+		}
+	}
+	
+	public void Kick(String[] args, User user) {
+		boolean anon = false;
+		String reason = "";
+		User toKick;
+		if(args.length == 0) {
+			user.sendMessage(ChatColor.YELLOW
+					+ "Proper use is: /kick <player> [--anon] [reason]");
+			return;
+		}
+		toKick = User.matchUser(args[0], plugin);
+		if(toKick == null) {
+			user.sendMessage(ChatColor.RED + args[0] + " cannot be found!");
+			return;
+		}
+		if(args.length > 1) {
+			int i = 1;
+			if(args[1].equalsIgnoreCase("--anon")) {
+				i++;
+				anon = true;
+			}
+			while (i < args.length) {
+				if(reason.isEmpty()) {
+					reason = args[i];
+				} else {
+					reason += " " + args[i];
+				}
+				i++;
+			}
+		}
+		if(anon) {
+			if(reason.isEmpty()) {
+				toKick.Kick();
+			} else {
+				toKick.Kick(reason);
+			}
+		} else {
+			if(reason.isEmpty()) {
+				toKick.Kick(user.getHandle());
+			} else {
+				toKick.Kick(reason, user.getHandle());
 			}
 		}
 	}

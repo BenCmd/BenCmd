@@ -104,6 +104,7 @@ public class BenCmd extends JavaPlugin {
 	public FlyDetect flyDetect;
 	public WeatherBinding strikeBind;
 	public PriceFile prices;
+	public KickList kicked;
 	public Logger log = Logger.getLogger("minecraft");
 
 	public boolean checkID(int id) {
@@ -122,9 +123,14 @@ public class BenCmd extends JavaPlugin {
 	public void onDisable() {
 		// Cancel all running timers
 		FreezeTimer.cancel();
+		FreezeTimer = null;
 		chatListen.slow.slowTimer.cancel();
+		chatListen.slow.slowTimer = null;
 		inv.timer.cancel();
+		inv.timer = null;
 		flyDetect.flyTime.cancel();
+		flyDetect.flyTime = null;
+		kicked.killTimer();
 		PluginDescriptionFile pdfFile = this.getDescription();
 		log.info(pdfFile.getName() + " v" + pdfFile.getVersion()
 				+ " has been disabled!");
@@ -245,6 +251,7 @@ public class BenCmd extends JavaPlugin {
 		flyDetect = new FlyDetect(this);
 		strikeBind = new WeatherBinding(this);
 		prices = new PriceFile(this, propDir + "prices.db");
+		kicked = new KickList(this);
 		// Check for existing players (on reload) and add them to the maxPlayers
 		// class
 		for (Player player : this.getServer().getOnlinePlayers()) {

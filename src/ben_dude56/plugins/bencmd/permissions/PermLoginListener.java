@@ -28,6 +28,10 @@ public class PermLoginListener extends PlayerListener {
 					"You are currently banned from this server!");
 			return;
 		}
+		if(plugin.kicked.isBlocked(event.getPlayer().getName())) {
+			event.disallow(Result.KICK_OTHER, "You cannot connect until 2 minutes after being kicked.");
+			return;
+		}
 		switch (plugin.maxPlayers.join(new User(plugin, event.getPlayer()))) {
 		case NO_SLOT_NORMAL:
 			event.disallow(Result.KICK_FULL, plugin.mainProperties.getString(
