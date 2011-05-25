@@ -197,3 +197,6 @@ commands:
     kick:
         usage:
         description: Kicks a player and prevents them from re-connecting for 2 minutes.
+    public:
+        usage:
+        description: Creates a public protection.

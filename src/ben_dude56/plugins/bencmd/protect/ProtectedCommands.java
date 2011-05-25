@@ -34,20 +34,24 @@ public class ProtectedCommands implements Commands {
 		if (commandLabel.equalsIgnoreCase("protect")) {
 			Protect(args, user);
 			return true;
-		}
-		if (commandLabel.equalsIgnoreCase("lock")) {
+		} else if (commandLabel.equalsIgnoreCase("lock")) {
 			String owner = "";
 			if (args.length >= 1) {
 				owner = " " + args[0];
 			}
 			plugin.getServer().dispatchCommand(sender, "protect add" + owner);
 			return true;
-		}
-		if (commandLabel.equalsIgnoreCase("unlock")) {
+		} else if (commandLabel.equalsIgnoreCase("public")) {
+			String owner = "";
+			if (args.length >= 1) {
+				owner = " " + args[0];
+			}
+			plugin.getServer().dispatchCommand(sender, "protect public" + owner);
+			return true;
+		} else if (commandLabel.equalsIgnoreCase("unlock")) {
 			plugin.getServer().dispatchCommand(sender, "protect remove");
 			return true;
-		}
-		if (commandLabel.equalsIgnoreCase("share")) {
+		} else if (commandLabel.equalsIgnoreCase("share")) {
 			String guest = "";
 			if (args.length >= 1) {
 				guest = " " + args[0];
@@ -55,8 +59,7 @@ public class ProtectedCommands implements Commands {
 			plugin.getServer().dispatchCommand(sender,
 					"protect addguest" + guest);
 			return true;
-		}
-		if (commandLabel.equalsIgnoreCase("unshare")) {
+		} else if (commandLabel.equalsIgnoreCase("unshare")) {
 			String guest = "";
 			if (args.length >= 1) {
 				guest = " " + args[0];
@@ -75,11 +78,13 @@ public class ProtectedCommands implements Commands {
 		}
 		if (args.length == 0) {
 			user.sendMessage(ChatColor.YELLOW
-					+ "Proper use is /protect {add|remove|info|setowner|addguest|remguest}");
+					+ "Proper use is /protect {add|public|remove|info|setowner|addguest|remguest}");
 			return;
 		}
 		if (args[0].equalsIgnoreCase("add")) {
 			AddProtect(args, user);
+		} else if (args[0].equalsIgnoreCase("public")) {
+			PublicProtect(args, user);
 		} else if (args[0].equalsIgnoreCase("remove")) {
 			RemoveProtect(args, user);
 		} else if (args[0].equalsIgnoreCase("info")) {
@@ -183,6 +188,94 @@ public class ProtectedCommands implements Commands {
 					+ "Proper use is /protect add [owner]");
 		}
 	}
+	
+	public void PublicProtect(String[] args, User user) {
+		if (!user.hasPerm("canProtect")) {
+			user.sendMessage(ChatColor.RED
+					+ "You don't have permission to do that!");
+			return;
+		}
+		Block pointedAt = user.getHandle().getTargetBlock(null, 4);
+		if (pointedAt.getType() != Material.CHEST
+				&& pointedAt.getType() != Material.WOODEN_DOOR) {
+			user.sendMessage(ChatColor.RED
+					+ "You are not pointing at a protectable block!");
+			return;
+		}
+		if (plugin.protectFile.getProtection(pointedAt.getLocation()) != -1) {
+			user.sendMessage(ChatColor.RED + "That block is already protected!");
+			return;
+		}
+		if(!plugin.lots.canBuildHere(user.getHandle(), pointedAt.getLocation())) {
+			user.sendMessage(ChatColor.RED + "You're not allowed to protect blocks in other peoples' lots.");
+			return;
+		}
+		if (args.length == 1) {
+			if (pointedAt.getType() == Material.CHEST) {
+				int id = plugin.protectFile.addProtection(user,
+						pointedAt.getLocation(), ProtectionType.PChest);
+				user.sendMessage(ChatColor.GREEN
+						+ "Public chest created with owner "
+						+ user.getName() + ".");
+				String w = pointedAt.getWorld().getName();
+				String x = String.valueOf(pointedAt.getX());
+				String y = String.valueOf(pointedAt.getY());
+				String z = String.valueOf(pointedAt.getX());
+				log.info(user.getName() + " created public chest (id: " + id
+						+ ") with owner " + user.getName() + " at position ("
+						+ w + "," + x + "," + y + "," + z + ")");
+			} else if (pointedAt.getType() == Material.WOODEN_DOOR) {
+				int id = plugin.protectFile.addProtection(user,
+						pointedAt.getLocation(), ProtectionType.PDoor);
+				user.sendMessage(ChatColor.GREEN
+						+ "Public door created with owner " + user.getName()
+						+ ".");
+				String w = pointedAt.getWorld().getName();
+				String x = String.valueOf(pointedAt.getX());
+				String y = String.valueOf(pointedAt.getY());
+				String z = String.valueOf(pointedAt.getX());
+				log.info(user.getName() + " created public door (id: " + id
+						+ ") with owner " + user.getName() + " at position ("
+						+ w + "," + x + "," + y + "," + z + ")");
+			}
+		} else if (args.length == 2) {
+			PermissionUser user2;
+			if ((user2 = PermissionUser.matchUser(args[1], plugin)) == null) {
+				user.sendMessage(ChatColor.RED + "That player doesn't exist!");
+				return;
+			}
+			if (pointedAt.getType() == Material.CHEST) {
+				int id = plugin.protectFile.addProtection(user2,
+						pointedAt.getLocation(), ProtectionType.PChest);
+				user.sendMessage(ChatColor.GREEN
+						+ "Public chest created with owner "
+						+ user2.getName() + ".");
+				String w = pointedAt.getWorld().getName();
+				String x = String.valueOf(pointedAt.getX());
+				String y = String.valueOf(pointedAt.getY());
+				String z = String.valueOf(pointedAt.getX());
+				log.info(user.getName() + " created public chest (id: " + id
+						+ ") with owner " + user2.getName() + " at position ("
+						+ w + "," + x + "," + y + "," + z + ")");
+			} else if (pointedAt.getType() == Material.WOODEN_DOOR) {
+				int id = plugin.protectFile.addProtection(user2,
+						pointedAt.getLocation(), ProtectionType.PDoor);
+				user.sendMessage(ChatColor.GREEN
+						+ "Public door created with owner "
+						+ user2.getName() + ".");
+				String w = pointedAt.getWorld().getName();
+				String x = String.valueOf(pointedAt.getX());
+				String y = String.valueOf(pointedAt.getY());
+				String z = String.valueOf(pointedAt.getX());
+				log.info(user.getName() + " created public door (id: " + id
+						+ ") with owner " + user2.getName() + " at position ("
+						+ w + "," + x + "," + y + "," + z + ")");
+			}
+		} else {
+			user.sendMessage(ChatColor.YELLOW
+					+ "Proper use is /protect public [owner]");
+		}
+	}
 
 	public void RemoveProtect(String[] args, User user) {
 		Block pointedAt = user.getHandle().getTargetBlock(null, 4);
@@ -197,34 +290,20 @@ public class ProtectedCommands implements Commands {
 				int id;
 				if ((id = plugin.protectFile.getProtection(pointedAt
 						.getLocation())) != -1) {
-					ProtectedChest chest;
-					try {
-						chest = (ProtectedChest) plugin.protectFile
-								.getProtection(id);
-					} catch (ClassCastException e) {
-						user.sendMessage(ChatColor.RED
-								+ "There is a problem with the protection file. This incident has been reported.");
-						log.warning("There was a type mismatch in protection.db: Entry with id "
-								+ String.valueOf(id) + " should be type c...");
-						return;
-					} catch (NullPointerException e) {
-						user.sendMessage(ChatColor.RED
-								+ "That block isn't protected!");
-						return;
-					}
-					if (!chest.canChange(user)) {
+					ProtectedBlock block = plugin.protectFile.getProtection(id);
+					if (!block.canChange(user)) {
 						user.sendMessage(ChatColor.RED
 								+ "You don't have permission to remove the protection on that block!");
 					} else {
-						plugin.protectFile.removeProtection(chest.GetId());
+						plugin.protectFile.removeProtection(block.GetId());
 						String w = pointedAt.getWorld().getName();
 						String x = String.valueOf(pointedAt.getX());
 						String y = String.valueOf(pointedAt.getY());
 						String z = String.valueOf(pointedAt.getZ());
 						log.info(user.getName() + " removed "
-								+ chest.getOwner().getName()
+								+ block.getOwner().getName()
 								+ "'s protected chest (id: "
-								+ String.valueOf(chest.GetId())
+								+ String.valueOf(block.GetId())
 								+ ") at position (" + w + "," + x + "," + y
 								+ "," + z + ")");
 						user.sendMessage(ChatColor.GREEN
@@ -238,34 +317,20 @@ public class ProtectedCommands implements Commands {
 				int id;
 				if ((id = plugin.protectFile.getProtection(pointedAt
 						.getLocation())) != -1) {
-					ProtectedDoor door;
-					try {
-						door = (ProtectedDoor) plugin.protectFile
-								.getProtection(id);
-					} catch (ClassCastException e) {
-						user.sendMessage(ChatColor.RED
-								+ "There is a problem with the protection file. This incident has been reported.");
-						log.warning("There was a type mismatch in protection.db: Entry with id "
-								+ String.valueOf(id) + " should be type d...");
-						return;
-					} catch (NullPointerException e) {
-						user.sendMessage(ChatColor.RED
-								+ "That block isn't protected!");
-						return;
-					}
-					if (!door.canChange(user)) {
+					ProtectedBlock block = plugin.protectFile.getProtection(id);
+					if (!block.canChange(user)) {
 						user.sendMessage(ChatColor.RED
 								+ "You don't have permission to remove the protection on that block!");
 					} else {
-						plugin.protectFile.removeProtection(door.GetId());
+						plugin.protectFile.removeProtection(block.GetId());
 						String w = pointedAt.getWorld().getName();
 						String x = String.valueOf(pointedAt.getX());
 						String y = String.valueOf(pointedAt.getY());
 						String z = String.valueOf(pointedAt.getZ());
 						log.info(user.getName() + " removed "
-								+ door.getOwner().getName()
+								+ block.getOwner().getName()
 								+ "'s protected chest (id: "
-								+ String.valueOf(door.GetId())
+								+ String.valueOf(block.GetId())
 								+ ") at position (" + w + "," + x + "," + y
 								+ "," + z + ")");
 						user.sendMessage(ChatColor.GREEN
@@ -291,42 +356,40 @@ public class ProtectedCommands implements Commands {
 				return;
 			}
 			if (block instanceof ProtectedChest) {
-				ProtectedChest chest = (ProtectedChest) block;
-				if (!chest.canChange(user)) {
+				if (!block.canChange(user)) {
 					user.sendMessage(ChatColor.RED
 							+ "You don't have permission to remove the protection on that block!");
 					return;
 				} else {
-					plugin.protectFile.removeProtection(chest.GetId());
+					plugin.protectFile.removeProtection(block.GetId());
 					String w = pointedAt.getWorld().getName();
 					String x = String.valueOf(pointedAt.getX());
 					String y = String.valueOf(pointedAt.getY());
 					String z = String.valueOf(pointedAt.getZ());
 					log.info(user.getName() + " removed "
-							+ chest.getOwner().getName()
+							+ block.getOwner().getName()
 							+ "'s protected chest (id: "
-							+ String.valueOf(chest.GetId()) + ") at position ("
+							+ String.valueOf(block.GetId()) + ") at position ("
 							+ w + "," + x + "," + y + "," + z + ")");
 					user.sendMessage(ChatColor.GREEN
 							+ "The protection on that block was removed.");
 					return;
 				}
 			} else if (block instanceof ProtectedDoor) {
-				ProtectedDoor door = (ProtectedDoor) block;
-				if (!door.canChange(user)) {
+				if (!block.canChange(user)) {
 					user.sendMessage(ChatColor.RED
 							+ "You don't have permission to remove the protection on that block!");
 					return;
 				} else {
-					plugin.protectFile.removeProtection(door.GetId());
+					plugin.protectFile.removeProtection(block.GetId());
 					String w = pointedAt.getWorld().getName();
 					String x = String.valueOf(pointedAt.getX());
 					String y = String.valueOf(pointedAt.getY());
 					String z = String.valueOf(pointedAt.getZ());
 					log.info(user.getName() + " removed "
-							+ door.getOwner().getName()
+							+ block.getOwner().getName()
 							+ "'s protected door (id: "
-							+ String.valueOf(door.GetId()) + ") at position ("
+							+ String.valueOf(block.GetId()) + ") at position ("
 							+ w + "," + x + "," + y + "," + z + ")");
 					user.sendMessage(ChatColor.GREEN
 							+ "The protection on that block was removed.");

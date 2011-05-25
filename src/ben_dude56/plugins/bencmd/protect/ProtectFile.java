@@ -118,6 +118,12 @@ public class ProtectFile extends Properties {
 			} else if (type.equalsIgnoreCase("d")) {
 				protectedBlocks.add(new ProtectedDoor(plugin, id, owner,
 						guests, loc));
+			} else if (type.equalsIgnoreCase("pc")) {
+				protectedBlocks.add(new PublicChest(plugin, id, owner,
+						guests, loc));
+			} else if (type.equalsIgnoreCase("pd")) {
+				protectedBlocks.add(new PublicDoor(plugin, id, owner,
+						guests, loc));
 			} else {
 				log.warning("Entry " + key + " in " + proFile
 						+ " is invalid and was ignored!");
@@ -170,6 +176,50 @@ public class ProtectFile extends Properties {
 					+ String.valueOf(blockLoc.getBlockY()) + ","
 					+ String.valueOf(blockLoc.getBlockZ());
 			this.put(key, value);
+		} else if (block instanceof PublicChest) {
+			String value;
+			String key;
+			key = String.valueOf(block.GetId());
+			value = "";
+			value += "pc/";
+			boolean init = false;
+			for (PermissionUser guest : block.getGuests()) {
+				if (init) {
+					value += ",";
+				} else {
+					init = false;
+				}
+				value += guest.getName();
+			}
+			value += "/" + block.getOwner().getName();
+			Location blockLoc = block.getLocation();
+			value += "/" + blockLoc.getWorld().getName() + ","
+					+ String.valueOf(blockLoc.getBlockX()) + ","
+					+ String.valueOf(blockLoc.getBlockY()) + ","
+					+ String.valueOf(blockLoc.getBlockZ());
+			this.put(key, value);
+		} else if (block instanceof PublicDoor) {
+			String value;
+			String key;
+			key = String.valueOf(block.GetId());
+			value = "";
+			value += "pd/";
+			boolean init = false;
+			for (PermissionUser guest : block.getGuests()) {
+				if (init) {
+					value += ",";
+				} else {
+					init = false;
+				}
+				value += guest.getName();
+			}
+			value += "/" + block.getOwner().getName();
+			Location blockLoc = block.getLocation();
+			value += "/" + blockLoc.getWorld().getName() + ","
+					+ String.valueOf(blockLoc.getBlockX()) + ","
+					+ String.valueOf(blockLoc.getBlockY()) + ","
+					+ String.valueOf(blockLoc.getBlockZ());
+			this.put(key, value);
 		}
 		this.saveFile(proFile);
 	}
@@ -177,57 +227,6 @@ public class ProtectFile extends Properties {
 	public void remValue(Integer id) {
 		this.remove(id.toString());
 		this.saveFile(proFile);
-	}
-
-	public void saveValues() {
-		this.clear();
-		for (ProtectedBlock block : protectedBlocks) {
-			if (block instanceof ProtectedChest) {
-				String value;
-				String key;
-				key = String.valueOf(block.GetId());
-				value = "";
-				value += "c/";
-				boolean init = false;
-				for (PermissionUser guest : block.getGuests()) {
-					if (init) {
-						value += ",";
-					} else {
-						init = false;
-					}
-					value += guest.getName();
-				}
-				value += "/" + block.getOwner().getName();
-				Location blockLoc = block.getLocation();
-				value += "/" + blockLoc.getWorld().getName() + ","
-						+ String.valueOf(blockLoc.getBlockX()) + ","
-						+ String.valueOf(blockLoc.getBlockY()) + ","
-						+ String.valueOf(blockLoc.getBlockZ());
-				this.put(key, value);
-			} else if (block instanceof ProtectedDoor) {
-				String value;
-				String key;
-				key = String.valueOf(block.GetId());
-				value = "";
-				value += "d/";
-				boolean init = false;
-				for (PermissionUser guest : block.getGuests()) {
-					if (init) {
-						value += ",";
-					} else {
-						init = false;
-					}
-					value += guest.getName();
-				}
-				value += "/" + block.getOwner().getName();
-				Location blockLoc = block.getLocation();
-				value += "/" + blockLoc.getWorld().getName() + ","
-						+ String.valueOf(blockLoc.getBlockX()) + ","
-						+ String.valueOf(blockLoc.getBlockY()) + ","
-						+ String.valueOf(blockLoc.getBlockZ());
-				this.put(key, value);
-			}
-		}
 	}
 
 	public int getProtection(Location loc) {
@@ -245,6 +244,14 @@ public class ProtectFile extends Properties {
 					break;
 				}
 			}
+			if(block instanceof PublicChest) {
+				if (((PublicChest) block).isDoubleChest()
+						&& ((PublicChest) block).getSecondChest()
+								.getLocation().equals(loc)) {
+					id = block.GetId();
+					break;
+				}
+			}
 			if (block instanceof ProtectedDoor) {
 				if (((ProtectedDoor) block).getSecondBlock().getLocation()
 						.equals(loc)) {
@@ -252,6 +259,18 @@ public class ProtectFile extends Properties {
 					break;
 				}
 				if (((ProtectedDoor) block).getBelowBlock().getLocation()
+						.equals(loc)) {
+					id = block.GetId();
+					break;
+				}
+			}
+			if (block instanceof PublicDoor) {
+				if (((PublicDoor) block).getSecondBlock().getLocation()
+						.equals(loc)) {
+					id = block.GetId();
+					break;
+				}
+				if (((PublicDoor) block).getBelowBlock().getLocation()
 						.equals(loc)) {
 					id = block.GetId();
 					break;
@@ -300,6 +319,15 @@ public class ProtectFile extends Properties {
 			protectedBlocks.add(protect = new ProtectedDoor(plugin, id, owner,
 					new ArrayList<PermissionUser>(), loc));
 			break;
+		case PDoor:
+			protectedBlocks.add(protect = new PublicDoor(plugin, id, owner,
+					new ArrayList<PermissionUser>(), loc));
+			break;
+		case PChest:
+			protectedBlocks.add(protect = new PublicChest(plugin, id, owner,
+					new ArrayList<PermissionUser>(), loc));
+			break;
+			
 		}
 		updateValue(protect);
 		return id;
@@ -373,18 +401,7 @@ public class ProtectFile extends Properties {
 		// protectedBlocks.add(ind, pb);
 	}
 
-	/**
-	 * @deprecated Caused HUGE lag when run... NEVER USE!
-	 */
-	@SuppressWarnings("unused")
-	private void ForceReload() {
-		saveValues();
-		saveFile(proFile);
-		loadFile();
-		loadValues();
-	}
-
 	public static enum ProtectionType {
-		Chest, Door, Furnace
+		Chest, Door, Furnace, PDoor, PChest
 	}
 }
