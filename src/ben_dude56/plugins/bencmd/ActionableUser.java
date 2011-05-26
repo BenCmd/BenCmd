@@ -114,6 +114,7 @@ public class ActionableUser extends WarpableUser {
 		}
 	}
 
+	//TODO For version 1.0.3: Make all Kick() methods take User instances rather than Player instances
 	/**
 	 * Kicks the user
 	 * 

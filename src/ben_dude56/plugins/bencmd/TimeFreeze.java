@@ -4,6 +4,7 @@ import java.util.TimerTask;
 
 import org.bukkit.World;
 
+// TODO For version 1.0.3: Make code more stable
 public class TimeFreeze extends TimerTask {
 
 	private BenCmd plugin;

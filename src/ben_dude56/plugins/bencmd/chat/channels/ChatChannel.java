@@ -12,6 +12,7 @@ import ben_dude56.plugins.bencmd.chat.ChatChecker;
 import ben_dude56.plugins.bencmd.chat.SlowMode;
 import ben_dude56.plugins.bencmd.permissions.PermissionUser;
 
+//TODO For version 1.1.0: Completely rewrite code. Current code is too messy.
 public class ChatChannel {
 	// Constants
 	Logger log = Logger.getLogger("minecraft");

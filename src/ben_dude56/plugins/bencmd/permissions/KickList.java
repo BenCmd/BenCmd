@@ -6,6 +6,7 @@ import java.util.TimerTask;
 
 import ben_dude56.plugins.bencmd.BenCmd;
 
+//TODO For version 1.0.4: Rewrite code using Date.getTime() rather than a changing value...
 public class KickList {
 	private Timer kickTimer;
 	private HashMap<PermissionUser, Integer> users;

@@ -9,6 +9,7 @@ import org.bukkit.ChatColor;
 import ben_dude56.plugins.bencmd.BenCmd;
 import ben_dude56.plugins.bencmd.User;
 
+//TODO For version 1.0.4: Rewrite code using Date.getTime() rather than a changing value...
 public class SlowMode {
 	BenCmd plugin;
 	private boolean enabled;

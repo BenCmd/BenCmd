@@ -13,6 +13,7 @@ import ben_dude56.plugins.bencmd.User;
 import ben_dude56.plugins.bencmd.chat.channels.ChatChannel.ChatterType;
 import ben_dude56.plugins.bencmd.permissions.PermissionUser;
 
+//TODO For version 1.1.0: Completely rewrite code. Current code is too messy.
 public class ChatChannelCommands implements Commands {
 
 	BenCmd plugin;

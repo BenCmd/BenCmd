@@ -2,6 +2,7 @@ package ben_dude56.plugins.bencmd.chat;
 
 import java.util.TimerTask;
 
+//TODO For version 1.0.4: Rewrite code using Date.getTime() rather than a changing value...
 public class SlowModeTimer extends TimerTask {
 	SlowMode parent;
 

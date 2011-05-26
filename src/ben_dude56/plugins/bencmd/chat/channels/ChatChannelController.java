@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 
 import ben_dude56.plugins.bencmd.BenCmd;
 
+//TODO For version 1.1.0: Completely rewrite code. Current code is too messy.
 public class ChatChannelController extends Properties {
 	private static final long serialVersionUID = 0L;
 	private List<ChatChannel> channels;
