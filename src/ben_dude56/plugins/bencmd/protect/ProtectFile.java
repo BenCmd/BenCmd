@@ -253,27 +253,43 @@ public class ProtectFile extends Properties {
 				}
 			}
 			if (block instanceof ProtectedDoor) {
-				if (((ProtectedDoor) block).getSecondBlock().getLocation()
-						.equals(loc)) {
-					id = block.GetId();
-					break;
+				try {
+					if (((ProtectedDoor) block).getSecondBlock().getLocation()
+							.equals(loc)) {
+						id = block.GetId();
+						break;
+					}
+				} catch (NullPointerException e) {
+					log.warning(block.GetId() + " has a missing secondary block. Is it the wrong type?");
 				}
-				if (((ProtectedDoor) block).getBelowBlock().getLocation()
-						.equals(loc)) {
-					id = block.GetId();
-					break;
+				try {
+					if (((ProtectedDoor) block).getBelowBlock().getLocation()
+							.equals(loc)) {
+						id = block.GetId();
+						break;
+					}
+				} catch (NullPointerException e) {
+					log.warning(block.GetId() + " has a missing secondary block. Is it the wrong type?");
 				}
 			}
 			if (block instanceof PublicDoor) {
-				if (((PublicDoor) block).getSecondBlock().getLocation()
-						.equals(loc)) {
-					id = block.GetId();
-					break;
+				try {
+					if (((PublicDoor) block).getSecondBlock().getLocation()
+							.equals(loc)) {
+						id = block.GetId();
+						break;
+					}
+				} catch (NullPointerException e) {
+					log.warning(block.GetId() + " has a missing secondary block. Is it the wrong type?");
 				}
-				if (((PublicDoor) block).getBelowBlock().getLocation()
-						.equals(loc)) {
-					id = block.GetId();
-					break;
+				try {
+					if (((PublicDoor) block).getBelowBlock().getLocation()
+							.equals(loc)) {
+						id = block.GetId();
+						break;
+					}
+				} catch (NullPointerException e) {
+					log.warning(block.GetId() + " has a missing secondary block. Is it the wrong type?");
 				}
 			}
 		}
