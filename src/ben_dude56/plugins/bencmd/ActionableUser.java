@@ -114,7 +114,6 @@ public class ActionableUser extends WarpableUser {
 		}
 	}
 
-	//TODO For version 1.0.3: Make all Kick() methods take User instances rather than Player instances
 	/**
 	 * Kicks the user
 	 * 
@@ -123,7 +122,7 @@ public class ActionableUser extends WarpableUser {
 	 * @param sender
 	 *            The user that kicked them
 	 */
-	public void Kick(String reason, Player sender) {
+	public void Kick(String reason, User sender) {
 		if (isConsole) {
 			log.info(sender.getName() + " attempted to kick the server!");
 			return;
@@ -154,7 +153,7 @@ public class ActionableUser extends WarpableUser {
 	 * @param sender
 	 *            The user that kicked them
 	 */
-	public void Kick(Player sender) {
+	public void Kick(User sender) {
 		if (isConsole) {
 			log.info(sender.getName() + " attempted to kick the server!");
 			return;

@@ -498,9 +498,9 @@ public class PermissionCommands implements Commands {
 			}
 		} else {
 			if(reason.isEmpty()) {
-				toKick.Kick(user.getHandle());
+				toKick.Kick(user);
 			} else {
-				toKick.Kick(reason, user.getHandle());
+				toKick.Kick(reason, user);
 			}
 		}
 	}

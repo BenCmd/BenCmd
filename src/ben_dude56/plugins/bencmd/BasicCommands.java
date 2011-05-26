@@ -125,10 +125,10 @@ public class BasicCommands implements Commands {
 					log.info("BenCmd: " + user.getName() + " has frozen time!");
 					if (user.isServer()) {
 						plugin.timeFrozenAt = plugin.getServer().getWorlds()
-								.get(0).getFullTime();
+								.get(0).getTime();
 					} else {
 						plugin.timeFrozenAt = user.getHandle().getWorld()
-								.getFullTime();
+								.getTime();
 					}
 					plugin.timeRunning = false;
 					plugin.getServer().broadcastMessage(

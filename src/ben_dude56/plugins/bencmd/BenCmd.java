@@ -320,7 +320,7 @@ public class BenCmd extends JavaPlugin {
 				Event.Priority.Highest, this);
 		PluginDescriptionFile pdfFile = this.getDescription();
 		// Prepare the time lock timer
-		FreezeTimer.schedule(new TimeFreeze(this), 0, 1);
+		FreezeTimer.schedule(new TimeFreeze(this), 0, 100);
 		log.info(pdfFile.getName() + " v" + pdfFile.getVersion()
 				+ " has been enabled!");
 		if (mainProperties.getBoolean("channelsEnabled", false)) {
