@@ -1,32 +1,32 @@
 package ben_dude56.plugins.bencmd.permissions;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import ben_dude56.plugins.bencmd.BenCmd;
 
-//TODO For version 1.0.4: Rewrite code using Date.getTime() rather than a changing value...
 public class KickList {
 	private Timer kickTimer;
-	private HashMap<PermissionUser, Integer> users;
+	private HashMap<PermissionUser, Long> users;
+	private BenCmd plugin;
 	
 	public KickList(BenCmd instance) {
-		users = new HashMap<PermissionUser, Integer>();
+		users = new HashMap<PermissionUser, Long>();
 		kickTimer = new Timer();
-		kickTimer.schedule(new KickTimer(this), 0, 1);
+		kickTimer.schedule(new KickTimer(this), 0, 100);
+		plugin = instance;
 	}
 	
 	@SuppressWarnings("unchecked")
-	public HashMap<PermissionUser, Integer> getUserList() {
-		return (HashMap<PermissionUser, Integer>) users.clone();
+	public HashMap<PermissionUser, Long> getUserList() {
+		return (HashMap<PermissionUser, Long>) users.clone();
 	}
 	
-	public void updateUser(PermissionUser user, Integer time) {
-		if(time == 0) {
+	public void checkUser(PermissionUser user) {
+		if(new Date().getTime() >= users.get(user)) {
 			users.remove(user);
-		} else {
-			users.put(user, time);
 		}
 	}
 	
@@ -34,16 +34,17 @@ public class KickList {
 		if(user.hasPerm("noKickDelay")) {
 			return;
 		}
-		users.put(user, 72000);
+		users.put(user, new Date().getTime() + plugin.mainProperties.getInteger("kickDelay", 120000));
 	}
 	
-	public boolean isBlocked(String name) {
+	public long isBlocked(String name) {
 		for(int i = 0; i < users.size(); i++) {
-			if(((PermissionUser)users.keySet().toArray()[i]).getName().equalsIgnoreCase(name)) {
-				return true;
+			PermissionUser user;
+			if((user = (PermissionUser)users.keySet().toArray()[i]).getName().equalsIgnoreCase(name)) {
+				return users.get(user) - new Date().getTime();
 			}
 		}
-		return false;
+		return 0;
 	}
 	
 	public void clearList() {
@@ -63,9 +64,9 @@ public class KickList {
 		}
 
 		public void run() {
-			HashMap<PermissionUser, Integer> users = list.getUserList();
+			HashMap<PermissionUser, Long> users = list.getUserList();
 			for(PermissionUser user : users.keySet()) {
-				list.updateUser(user, users.get(user) - 1);
+				list.checkUser(user);
 			}
 		}
 
