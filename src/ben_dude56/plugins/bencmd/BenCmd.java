@@ -269,7 +269,6 @@ public class BenCmd extends JavaPlugin {
 		}
 		// Register all necessary events
 		PluginManager pm = getServer().getPluginManager();
-		pm.isPluginEnabled("");
 		pm.registerEvent(Event.Type.PLAYER_JOIN, this.chatListen,
 				Event.Priority.Normal, this);
 		pm.registerEvent(Event.Type.PLAYER_LOGIN, this.permLoginListener,
