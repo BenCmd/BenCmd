@@ -30,7 +30,7 @@ public class PermLoginListener extends PlayerListener {
 		}
 		long timeLeft;
 		if((timeLeft = plugin.kicked.isBlocked(event.getPlayer().getName())) > 0) {
-			event.disallow(Result.KICK_OTHER, "You cannot connect for " + String.valueOf(Math.ceil(timeLeft / 60000.0)) + " more minutes...");
+			event.disallow(Result.KICK_OTHER, "You cannot connect for " + String.valueOf((int) Math.ceil(timeLeft / 60000.0)) + " more minutes...");
 			return;
 		}
 		switch (plugin.maxPlayers.join(new User(plugin, event.getPlayer()))) {

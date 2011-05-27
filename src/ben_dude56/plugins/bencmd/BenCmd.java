@@ -3,42 +3,64 @@ package ben_dude56.plugins.bencmd;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
 import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Server;
-import org.bukkit.TreeType;
-import org.bukkit.block.Block;
-import org.bukkit.command.*;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
-import org.bukkit.event.player.PlayerChatEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.PluginLoader;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.java.JavaPlugin;
 
-import ben_dude56.plugins.bencmd.permissions.*;
+import ben_dude56.plugins.bencmd.chat.ChatCommands;
+import ben_dude56.plugins.bencmd.chat.ChatPlayerListener;
+import ben_dude56.plugins.bencmd.chat.channels.ChatChannelCommands;
+import ben_dude56.plugins.bencmd.chat.channels.ChatChannelController;
+import ben_dude56.plugins.bencmd.invisible.Invisibility;
+import ben_dude56.plugins.bencmd.invisible.InvisibleCommands;
+import ben_dude56.plugins.bencmd.invtools.DispChest;
+import ben_dude56.plugins.bencmd.invtools.InventoryBlockListener;
+import ben_dude56.plugins.bencmd.invtools.InventoryCommands;
+import ben_dude56.plugins.bencmd.invtools.InventoryPlayerListener;
+import ben_dude56.plugins.bencmd.invtools.UnlimitedDisp;
+import ben_dude56.plugins.bencmd.invtools.kits.KitList;
+import ben_dude56.plugins.bencmd.lots.LotBlockListener;
+import ben_dude56.plugins.bencmd.lots.LotCommands;
+import ben_dude56.plugins.bencmd.lots.LotFile;
+import ben_dude56.plugins.bencmd.lots.LotPlayerListener;
+import ben_dude56.plugins.bencmd.money.MoneyCommands;
+import ben_dude56.plugins.bencmd.money.PriceFile;
+import ben_dude56.plugins.bencmd.nofly.FlyDetect;
+import ben_dude56.plugins.bencmd.permissions.BlockChecker;
+import ben_dude56.plugins.bencmd.permissions.CreeperListener;
+import ben_dude56.plugins.bencmd.permissions.EntityPermListen;
+import ben_dude56.plugins.bencmd.permissions.KickList;
+import ben_dude56.plugins.bencmd.permissions.MainPermissions;
+import ben_dude56.plugins.bencmd.permissions.MaxPlayers;
 import ben_dude56.plugins.bencmd.permissions.MaxPlayers.JoinType;
-import ben_dude56.plugins.bencmd.protect.*;
-import ben_dude56.plugins.bencmd.reporting.*;
-import ben_dude56.plugins.bencmd.warps.*;
-import ben_dude56.plugins.bencmd.chat.*;
-import ben_dude56.plugins.bencmd.chat.channels.*;
-import ben_dude56.plugins.bencmd.invisible.*;
-import ben_dude56.plugins.bencmd.invtools.*;
-import ben_dude56.plugins.bencmd.invtools.kits.*;
-import ben_dude56.plugins.bencmd.lots.*;
-import ben_dude56.plugins.bencmd.nofly.*;
-import ben_dude56.plugins.bencmd.weather.*;
-import ben_dude56.plugins.bencmd.money.*;
+import ben_dude56.plugins.bencmd.permissions.PermLoginListener;
+import ben_dude56.plugins.bencmd.permissions.PermissionCommands;
+import ben_dude56.plugins.bencmd.protect.ProtectBlockListener;
+import ben_dude56.plugins.bencmd.protect.ProtectFile;
+import ben_dude56.plugins.bencmd.protect.ProtectPlayerListener;
+import ben_dude56.plugins.bencmd.protect.ProtectedCommands;
+import ben_dude56.plugins.bencmd.reporting.ReportCommands;
+import ben_dude56.plugins.bencmd.reporting.ReportFile;
+import ben_dude56.plugins.bencmd.warps.DeathListener;
+import ben_dude56.plugins.bencmd.warps.HomeWarps;
+import ben_dude56.plugins.bencmd.warps.Jail;
+import ben_dude56.plugins.bencmd.warps.PreWarp;
+import ben_dude56.plugins.bencmd.warps.WarpCommands;
+import ben_dude56.plugins.bencmd.warps.WarpList;
+import ben_dude56.plugins.bencmd.weather.WeatherBinding;
+import ben_dude56.plugins.bencmd.weather.WeatherCommands;
+import ben_dude56.plugins.bencmd.weather.WeatherPListener;
 
 /**
  * BenCmd for Bukkit
@@ -46,7 +68,7 @@ import ben_dude56.plugins.bencmd.money.*;
  * @author ben_dude56
  * 
  */
-@SuppressWarnings("unused")
+//@SuppressWarnings("unused")
 public class BenCmd extends JavaPlugin {
 	public final static boolean debug = false;
 	private final PermLoginListener permLoginListener = new PermLoginListener(
@@ -215,9 +237,9 @@ public class BenCmd extends JavaPlugin {
 				e.printStackTrace();
 			}
 		}
-		if (!ticketFile.exists()) {
+		if (!pricesFile.exists()) {
 			try {
-				ticketFile.createNewFile();
+				pricesFile.createNewFile();
 			} catch (IOException e) {
 				System.out.println("BenCmd had a problem:");
 				e.printStackTrace();

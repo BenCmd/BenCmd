@@ -342,7 +342,7 @@ public class BasicCommands implements Commands {
 		}
 		List<BCommand> commands = getCommands(user);
 		int max;
-		if (pageToShow > (max = (int) Math.ceil(commands.size() / 6) + 1)) {
+		if (pageToShow > (max = (int) Math.ceil((commands.size() - 1) / 6) + 1)) {
 			user.sendMessage(ChatColor.RED + "There are only " + max
 					+ " pages to show!");
 			return;
@@ -469,11 +469,12 @@ public class BasicCommands implements Commands {
 		commands.add(new BCommand(
 				"/protect {add|remove|info|setowner|addguest|remguest}",
 				"Deals with protection.", "."));
-		commands.add(new BCommand("/lock", "Locks a chest", "."));
-		commands.add(new BCommand("/unlock", "Unlocks a chest", "."));
-		commands.add(new BCommand("/share", "Adds a guest to a chest", "."));
+		commands.add(new BCommand("/lock", "Locks a chest", "canProtect"));
+		commands.add(new BCommand("/public", "Publicly locks a chest", "canProtect"));
+		commands.add(new BCommand("/unlock", "Unlocks a chest", "canProtect"));
+		commands.add(new BCommand("/share", "Adds a guest to a chest", "canProtect"));
 		commands.add(new BCommand("/unshare", "Removes a guest from a chest",
-				"."));
+				"canProtect"));
 		commands.add(new BCommand("/setspawn", "Sets the map spawn point.",
 				"canSetSpawn"));
 		commands.add(new BCommand("/me <message>",
@@ -507,6 +508,11 @@ public class BasicCommands implements Commands {
 		commands.add(new BCommand("/market",
 				"Used to administrate the economic functions of BenCmd.",
 				"canControlMarket"));
+		commands.add(new BCommand("/tp <player> [player]", "Teleports a player to another player.",
+		"canTpSelf"));
+		commands.add(new BCommand("/tphere <player>", "Teleports a player to you.",
+		"canTpOther"));
+		
 		for (int i = 0; i < commands.size(); i++) {
 			if (!commands.get(i).canUse(user)) {
 				commands.remove(i);
