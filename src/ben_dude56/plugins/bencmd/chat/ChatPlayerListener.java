@@ -63,7 +63,7 @@ public class ChatPlayerListener extends PlayerListener {
 							"You used a blocked word..."));
 			return;
 		}
-		int slowTimeLeft = slow.playerBlocked(user.getName());
+		long slowTimeLeft = slow.playerBlocked(user.getName());
 		if ((!user.hasPerm("ignoreSlowMode")) && slow.isEnabled()) {
 			if (slowTimeLeft > 0) {
 				user.sendMessage(ChatColor.GRAY

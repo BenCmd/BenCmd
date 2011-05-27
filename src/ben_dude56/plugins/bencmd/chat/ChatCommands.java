@@ -232,7 +232,7 @@ public class ChatCommands implements Commands {
 							"You used a blocked word..."));
 			return;
 		}
-		int slowTimeLeft = plugin.chatListen.slow.playerBlocked(user.getName());
+		long slowTimeLeft = plugin.chatListen.slow.playerBlocked(user.getName());
 		if ((!plugin.perm.userFile.hasPermission(user.getName(),
 				"ignoreSlowMode", true, true))
 				&& plugin.chatListen.slow.isEnabled()) {
@@ -293,7 +293,7 @@ public class ChatCommands implements Commands {
 							"You used a blocked word..."));
 			return;
 		}
-		int slowTimeLeft = plugin.chatListen.slow.playerBlocked(user.getName());
+		long slowTimeLeft = plugin.chatListen.slow.playerBlocked(user.getName());
 		if ((!plugin.perm.userFile.hasPermission(user.getName(),
 				"ignoreSlowMode", true, true))
 				&& plugin.chatListen.slow.isEnabled()) {

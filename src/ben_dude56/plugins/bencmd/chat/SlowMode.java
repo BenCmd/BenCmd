@@ -1,7 +1,9 @@
 package ben_dude56.plugins.bencmd.chat;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
@@ -9,13 +11,12 @@ import org.bukkit.ChatColor;
 import ben_dude56.plugins.bencmd.BenCmd;
 import ben_dude56.plugins.bencmd.User;
 
-//TODO For version 1.0.4: Rewrite code using Date.getTime() rather than a changing value...
 public class SlowMode {
 	BenCmd plugin;
 	private boolean enabled;
 	private Integer defTime;
 	private Integer origDefTime;
-	public HashMap<String, Integer> playerList = new HashMap<String, Integer>();
+	public HashMap<String, Long> playerList = new HashMap<String, Long>();
 	public Timer slowTimer = new Timer();
 	Logger log = Logger.getLogger("minecraft");
 
@@ -52,32 +53,43 @@ public class SlowMode {
 		defTime = defaultTime;
 		origDefTime = defaultTime;
 		enabled = plugin.mainProperties.getBoolean("slowByDefault", false);
-		slowTimer.schedule(new SlowModeTimer(this), 0, 1);
+		slowTimer.schedule(new SlowModeTimer(this), 0, 100);
 	}
 
 	public void playerAdd(String player) {
 		if (enabled) {
-			playerList.put(player, defTime);
+			playerList.put(player, new Date().getTime() + defTime);
 		}
 	}
 
-	public int playerBlocked(String player) {
+	public long playerBlocked(String player) {
 		if (playerList.containsKey(player)) {
-			return playerList.get(player);
+			return playerList.get(player) - new Date().getTime();
 		} else {
 			return 0;
 		}
 	}
 
-	public void run() {
+	public void runCheck() {
 		for (int i = 0; i < playerList.size(); i++) {
 			String playerName = (String) playerList.keySet().toArray()[i];
-			Integer timeLeft = (Integer) playerList.values().toArray()[i];
-			timeLeft--;
-			if (timeLeft <= 0) {
+			Long timeDone = (Long) playerList.values().toArray()[i];
+			if(new Date().getTime() >= timeDone) {
 				playerList.remove(playerName);
-			} else {
-				playerList.put(playerName, timeLeft);
+			}
+		}
+	}
+	
+	public class SlowModeTimer extends TimerTask {
+		SlowMode parent;
+
+		public SlowModeTimer(SlowMode instance) {
+			parent = instance;
+		}
+
+		public void run() {
+			if (parent.isEnabled()) {
+				runCheck();
 			}
 		}
 	}
