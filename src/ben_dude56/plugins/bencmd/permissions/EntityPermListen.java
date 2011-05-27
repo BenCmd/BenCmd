@@ -56,7 +56,7 @@ public class EntityPermListen extends EntityListener {
 			} else {
 				double newdistance = distanceBetween(loc,
 						onlinePlayer.getLocation());
-				if (newdistance > olddistance) {
+				if (newdistance < olddistance) {
 					lastPlayer = onlinePlayer;
 					olddistance = newdistance;
 				}

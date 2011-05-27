@@ -77,10 +77,9 @@ public class BlockChecker extends BlockListener {
 					&& material != Material.NETHERRACK
 					&& user.getHandle().getTargetBlock(null, 4).getType() != Material.NETHERRACK) {
 				event.setCancelled(true);
-				return;
 			}
-			if (!user.hasPerm("canBurnAll")) {
-				event.setCancelled(true);
+			if (user.hasPerm("canBurnAll")) {
+				event.setCancelled(false);
 			}
 		} catch (NullPointerException e) {
 			event.setCancelled(true);
