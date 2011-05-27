@@ -252,6 +252,11 @@ public class BenCmd extends JavaPlugin {
 		strikeBind = new WeatherBinding(this);
 		prices = new PriceFile(this, propDir + "prices.db");
 		kicked = new KickList(this);
+		// SANITY CHECK
+		if(!sanityCheck()) {
+			this.getServer().getPluginManager().disablePlugin(this);
+			return;
+		}
 		// Check for existing players (on reload) and add them to the maxPlayers
 		// class
 		for (Player player : this.getServer().getOnlinePlayers()) {
@@ -264,6 +269,7 @@ public class BenCmd extends JavaPlugin {
 		}
 		// Register all necessary events
 		PluginManager pm = getServer().getPluginManager();
+		pm.isPluginEnabled("");
 		pm.registerEvent(Event.Type.PLAYER_JOIN, this.chatListen,
 				Event.Priority.Normal, this);
 		pm.registerEvent(Event.Type.PLAYER_LOGIN, this.permLoginListener,
@@ -358,6 +364,70 @@ public class BenCmd extends JavaPlugin {
 		} else {
 			return false;
 		}
+	}
+
+	public String[] fatalconflicts = new String[] { "Essentials", "KeepChest",
+			"OPImmunity", "Humiliation", "Wrath", "CenZor", "xGive", "getID",
+			"ItemDrop", "Reporter", "Spyer", "WeatherGod", "TweakedCycle",
+			"DefaultCommands", "Prefixer", "RegexFilter", "iChat", "nChat",
+			"ColorMe", "SimpleCensor", "Silence", "Chat Color", "SimpleWhisper",
+			"Colors", "On Request", "iOP", "OffLine", "mGold", "StockCraft" };
+	public String[] warningconflicts = new String[] { "WorldGuard", "Jail",
+			"PlgSetspawn", "GiveTo", "SpawnCreature", "CreatureSpawner",
+			"FullChest", "SpawnMob", "SimpleSpawn", "AdminCmd", "StruckDown",
+			"Requests", "EasyShout", "DeathTpPlus", "iConomy", "RepairChest" };
+	public String[] minorconflicts = new String[] { "MessageChanger",
+			"NoMoreRain", "kcpxBukkit", "Regios", "ClothCommand", "ChatCensor",
+			"Permissions", "DeathSigns" };
+
+	public boolean sanityCheck() {
+		PluginManager pm = getServer().getPluginManager();
+		int result = -1;
+		for (String plugin : fatalconflicts) {
+			if (pm.getPlugin(plugin) != null) {
+				log.severe("BenCmd Plugin Check: " + plugin
+						+ " can cause major problems with BenCmd.");
+				result = 2;
+			}
+		}
+		for (String plugin : warningconflicts) {
+			if (pm.getPlugin(plugin) != null) {
+				log.warning("BenCmd Plugin Check: " + plugin
+						+ " can cause some command conflicts with BenCmd.");
+				if (result == -1) {
+					result = 1;
+				}
+			}
+		}
+		for (String plugin : minorconflicts) {
+			if (pm.getPlugin(plugin) != null) {
+				log.info("BenCmd Plugin Check: " + plugin
+						+ " may cause minor conflicts with BenCmd.");
+				if (result == -1) {
+					result = 0;
+				}
+			}
+		}
+		if (result == 2) {
+			if (mainProperties.getInteger("pluginCheckFailLevel", 1) <= 2) {
+				log.severe("BenCmd Plugin Conflicts have caused BenCmd to automatically shut down.");
+				log.severe("You can override this by changing pluginCheckFailLevel in main.properties to 3 or higher...");
+				return false;
+			}
+		} else if (result == 1) {
+			if (mainProperties.getInteger("pluginCheckFailLevel", 1) <= 1) {
+				log.severe("BenCmd Plugin Conflicts have caused BenCmd to automatically shut down.");
+				log.severe("You can override this by changing pluginCheckFailLevel in main.properties to 2 or higher...");
+				return false;
+			}
+		} else if (result == 0) {
+			if (mainProperties.getInteger("pluginCheckFailLevel", 1) <= 0) {
+				log.severe("BenCmd Plugin Conflicts have caused BenCmd to automatically shut down.");
+				log.severe("You can override this by changing pluginCheckFailLevel in main.properties to 1 or higher...");
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public boolean onCommand(CommandSender sender, Command command,
