@@ -128,7 +128,7 @@ public class Lot {
 	}
 
 	public boolean canBuild(Player player) {
-		User user = new User(plugin, player);
+		User user = User.getUser(plugin, player);
 		String group;
 		if (!SubID.equalsIgnoreCase("0")) {
 			group = plugin.lots.getLot(LotID).getGroup();

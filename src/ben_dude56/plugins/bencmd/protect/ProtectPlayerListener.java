@@ -21,10 +21,14 @@ public class ProtectPlayerListener extends PlayerListener {
 	}
 
 	public void onPlayerInteract(PlayerInteractEvent event) {
-		if(event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getClickedBlock().getType() == Material.BED_BLOCK) {
-			if(event.getPlayer().getWorld().getEnvironment() == Environment.NETHER){
-				event.getPlayer().sendMessage(ChatColor.RED + "Did you really think that would work!?");
-				log.info(event.getPlayer().getName() + " attempted to use a bed in the Nether.");
+		if (event.getAction() == Action.RIGHT_CLICK_BLOCK
+				&& event.getClickedBlock().getType() == Material.BED_BLOCK) {
+			if (event.getPlayer().getWorld().getEnvironment() == Environment.NETHER) {
+				event.getPlayer().sendMessage(
+						ChatColor.RED
+								+ "Did you really think that would work!?");
+				log.info(event.getPlayer().getName()
+						+ " attempted to use a bed in the Nether.");
 				event.setCancelled(true);
 			}
 		}
@@ -39,7 +43,7 @@ public class ProtectPlayerListener extends PlayerListener {
 		if ((id = plugin.protectFile.getProtection(event.getClickedBlock()
 				.getLocation())) != -1) {
 			block = plugin.protectFile.getProtection(id);
-			User user = new User(plugin, event.getPlayer());
+			User user = User.getUser(plugin, event.getPlayer());
 			if (!block.canUse(user)) {
 				event.setCancelled(true);
 				user.sendMessage(ChatColor.RED

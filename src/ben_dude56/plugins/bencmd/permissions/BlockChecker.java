@@ -20,7 +20,7 @@ public class BlockChecker extends BlockListener {
 	}
 
 	public void onBlockPlace(BlockPlaceEvent event) {
-		User user = new User(plugin, event.getPlayer());
+		User user = User.getUser(plugin, event.getPlayer());
 		if (!user.canBuild()) {
 			event.setCancelled(true);
 			user.sendMessage(ChatColor.RED
@@ -29,7 +29,7 @@ public class BlockChecker extends BlockListener {
 	}
 
 	public void onBlockBreak(BlockBreakEvent event) {
-		User user = new User(plugin, event.getPlayer());
+		User user = User.getUser(plugin, event.getPlayer());
 		if (event.getBlock().getType() == Material.TNT
 				&& user.getHandle().getItemInHand().getType() == Material.WATER) {
 			event.getBlock().setType(Material.AIR);
@@ -61,7 +61,7 @@ public class BlockChecker extends BlockListener {
 
 	public void onBlockIgnite(BlockIgniteEvent event) {
 		try {
-			User user = new User(plugin, event.getPlayer());
+			User user = User.getUser(plugin, event.getPlayer());
 			Material material = user
 					.getHandle()
 					.getWorld()

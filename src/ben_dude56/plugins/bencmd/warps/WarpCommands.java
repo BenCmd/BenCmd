@@ -24,9 +24,9 @@ public class WarpCommands implements Commands {
 			String commandLabel, String[] args) {
 		User user;
 		try {
-			user = new User(plugin, (Player) sender);
+			user = User.getUser(plugin, (Player) sender);
 		} catch (ClassCastException e) {
-			user = new User(plugin);
+			user = User.getUser(plugin);
 		}
 		if (commandLabel.equalsIgnoreCase("warp") && user.hasPerm("canWarp")) {
 			Warp(args, user);
@@ -72,13 +72,14 @@ public class WarpCommands implements Commands {
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("tphere")
 				&& user.hasPerm("canTpOther")) {
-			if(args.length != 1) {
+			if (args.length != 1) {
 				user.sendMessage(ChatColor.YELLOW
 						+ "Proper use is: /tphere <player>");
-			} else if(user.isServer()) {
+			} else if (user.isServer()) {
 				user.sendMessage(ChatColor.RED + "The server cannot do that!");
 			} else {
-				plugin.getServer().dispatchCommand(user.getHandle(), "tp " + args[0] + " " + user.getName());
+				plugin.getServer().dispatchCommand(user.getHandle(),
+						"tp " + args[0] + " " + user.getName());
 			}
 			return true;
 		}
@@ -121,7 +122,7 @@ public class WarpCommands implements Commands {
 			}
 			User warper;
 			try {
-				warper = new User(plugin, plugin.getServer()
+				warper = User.getUser(plugin, plugin.getServer()
 						.matchPlayer(args[1]).get(0));
 			} catch (NullPointerException e) {
 				user.sendMessage(ChatColor.RED + "That player doesn't exist!");
@@ -403,36 +404,38 @@ public class WarpCommands implements Commands {
 		}
 		plugin.jail.setJail(user.getHandle().getLocation());
 	}
-	
+
 	public void Tp(String[] args, User user) {
-		if(args.length == 1) {
-			if(!user.hasPerm("canTpSelf")) {
+		if (args.length == 1) {
+			if (!user.hasPerm("canTpSelf")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
 				return;
 			}
 			User user2 = User.matchUser(args[0], plugin);
-			if(user2 == null) {
+			if (user2 == null) {
 				user.sendMessage(ChatColor.RED + args[0] + " isn't online!");
 				return;
 			}
 			plugin.checkpoints.SetPreWarp(user.getHandle());
 			user.getHandle().teleport(user2.getHandle());
-			plugin.log.info(user.getName() + " has teleported to " + user2.getName());
+			plugin.log.info(user.getName() + " has teleported to "
+					+ user2.getName());
 			user.sendMessage(ChatColor.YELLOW + "Woosh!");
 		} else if (args.length == 2) {
-			if(args[0].equalsIgnoreCase(user.getName())) {
-				plugin.getServer().dispatchCommand(user.getHandle(), "tp " + args[1]);
+			if (args[0].equalsIgnoreCase(user.getName())) {
+				plugin.getServer().dispatchCommand(user.getHandle(),
+						"tp " + args[1]);
 				return;
 			}
-			if(!user.hasPerm("canTpOther")) {
+			if (!user.hasPerm("canTpOther")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
 				return;
 			}
 			User user1 = User.matchUser(args[0], plugin);
 			User user2 = User.matchUser(args[1], plugin);
-			if(user1 == null) {
+			if (user1 == null) {
 				user.sendMessage(ChatColor.RED + args[0] + " isn't online!");
 				return;
 			} else if (user2 == null) {
@@ -441,10 +444,11 @@ public class WarpCommands implements Commands {
 			}
 			plugin.checkpoints.SetPreWarp(user1.getHandle());
 			user1.getHandle().teleport(user2.getHandle());
-			plugin.log.info(user1.getName() + " has been teleported to " + user2.getName() + " by " + user.getName());
+			plugin.log.info(user1.getName() + " has been teleported to "
+					+ user2.getName() + " by " + user.getName());
 			user1.sendMessage(ChatColor.YELLOW + "Woosh!");
 		} else {
-			if(user.hasPerm("canTpSelf") || user.hasPerm("canTpOther")) {
+			if (user.hasPerm("canTpSelf") || user.hasPerm("canTpOther")) {
 				user.sendMessage(ChatColor.YELLOW
 						+ "Proper use is: /tp <player> [player]");
 			} else {

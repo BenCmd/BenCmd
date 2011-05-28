@@ -244,6 +244,8 @@ public class BenCmd extends JavaPlugin {
 				e.printStackTrace();
 			}
 		}
+		// Get some static methods ready
+		User.finalizeAll();
 		// Start loading classes
 		perm = new MainPermissions(this);
 		warps = new WarpList(this);
@@ -274,7 +276,7 @@ public class BenCmd extends JavaPlugin {
 		prices = new PriceFile(this, propDir + "prices.db");
 		kicked = new KickList(this);
 		// SANITY CHECK
-		if(!sanityCheck()) {
+		if (!sanityCheck()) {
 			this.getServer().getPluginManager().disablePlugin(this);
 			return;
 		}
@@ -282,7 +284,7 @@ public class BenCmd extends JavaPlugin {
 		// class
 		for (Player player : this.getServer().getOnlinePlayers()) {
 			User user;
-			JoinType jt = maxPlayers.join(user = new User(this, player));
+			JoinType jt = maxPlayers.join(user = User.getUser(this, player));
 			if (jt == JoinType.NO_SLOT_NORMAL
 					|| jt == JoinType.NO_SLOT_RESERVED) {
 				user.Kick("The server ran out of player slots when reloading... :(");
@@ -390,8 +392,9 @@ public class BenCmd extends JavaPlugin {
 			"OPImmunity", "Humiliation", "Wrath", "CenZor", "xGive", "getID",
 			"ItemDrop", "Reporter", "Spyer", "WeatherGod", "TweakedCycle",
 			"DefaultCommands", "Prefixer", "RegexFilter", "iChat", "nChat",
-			"ColorMe", "SimpleCensor", "Silence", "Chat Color", "SimpleWhisper",
-			"Colors", "On Request", "iOP", "OffLine", "mGold", "StockCraft" };
+			"ColorMe", "SimpleCensor", "Silence", "Chat Color",
+			"SimpleWhisper", "Colors", "On Request", "iOP", "OffLine", "mGold",
+			"StockCraft" };
 	public String[] warningconflicts = new String[] { "WorldGuard", "Jail",
 			"PlgSetspawn", "GiveTo", "SpawnCreature", "CreatureSpawner",
 			"FullChest", "SpawnMob", "SimpleSpawn", "AdminCmd", "StruckDown",
@@ -491,9 +494,9 @@ public class BenCmd extends JavaPlugin {
 		} else {
 			User user;
 			try {
-				user = new User(this, (Player) sender);
+				user = User.getUser(this, (Player) sender);
 			} catch (ClassCastException e) {
-				user = new User(this);
+				user = User.getUser(this);
 			}
 			user.sendMessage(ChatColor.RED
 					+ "You don't have permission to do that!");

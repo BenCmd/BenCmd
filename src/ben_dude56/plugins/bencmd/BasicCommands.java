@@ -30,9 +30,9 @@ public class BasicCommands implements Commands {
 			String commandLabel, String[] args) {
 		User user;
 		try {
-			user = new User(plugin, (Player) sender);
+			user = User.getUser(plugin, (Player) sender);
 		} catch (ClassCastException e) {
-			user = new User(plugin);
+			user = User.getUser(plugin);
 		}
 		if (commandLabel.equalsIgnoreCase("time")
 				&& user.hasPerm("canChangeTime")) {
@@ -215,8 +215,7 @@ public class BasicCommands implements Commands {
 			// Heal the other player
 			User user2;
 			if ((user2 = User.matchUser(args[0], plugin)) != null) {
-				user2 = new User(plugin, plugin.getServer()
-						.matchPlayer(args[0]).get(0));
+				user2 = User.matchUser(args[0], plugin);
 				user2.Heal();
 				user2.sendMessage(ChatColor.GREEN + "You have been healed.");
 				log.info("BenCmd: " + user.getName() + " has healed "
@@ -470,9 +469,11 @@ public class BasicCommands implements Commands {
 				"/protect {add|remove|info|setowner|addguest|remguest}",
 				"Deals with protection.", "."));
 		commands.add(new BCommand("/lock", "Locks a chest", "canProtect"));
-		commands.add(new BCommand("/public", "Publicly locks a chest", "canProtect"));
+		commands.add(new BCommand("/public", "Publicly locks a chest",
+				"canProtect"));
 		commands.add(new BCommand("/unlock", "Unlocks a chest", "canProtect"));
-		commands.add(new BCommand("/share", "Adds a guest to a chest", "canProtect"));
+		commands.add(new BCommand("/share", "Adds a guest to a chest",
+				"canProtect"));
 		commands.add(new BCommand("/unshare", "Removes a guest from a chest",
 				"canProtect"));
 		commands.add(new BCommand("/setspawn", "Sets the map spawn point.",
@@ -508,11 +509,11 @@ public class BasicCommands implements Commands {
 		commands.add(new BCommand("/market",
 				"Used to administrate the economic functions of BenCmd.",
 				"canControlMarket"));
-		commands.add(new BCommand("/tp <player> [player]", "Teleports a player to another player.",
-		"canTpSelf"));
-		commands.add(new BCommand("/tphere <player>", "Teleports a player to you.",
-		"canTpOther"));
-		
+		commands.add(new BCommand("/tp <player> [player]",
+				"Teleports a player to another player.", "canTpSelf"));
+		commands.add(new BCommand("/tphere <player>",
+				"Teleports a player to you.", "canTpOther"));
+
 		for (int i = 0; i < commands.size(); i++) {
 			if (!commands.get(i).canUse(user)) {
 				commands.remove(i);

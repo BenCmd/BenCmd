@@ -4,7 +4,7 @@ import java.util.TimerTask;
 
 public class UpdateTimer extends TimerTask {
 	PriceFile priceFile;
-	
+
 	public UpdateTimer(PriceFile instance) {
 		priceFile = instance;
 	}

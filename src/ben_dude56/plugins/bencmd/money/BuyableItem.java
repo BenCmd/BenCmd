@@ -18,8 +18,8 @@ public class BuyableItem {
 	private Integer supdem;
 	private PriceFile priceFile;
 
-	public BuyableItem(Integer ID, Integer Damage, Double Cost,
-			Integer Supply, Integer SupplyDemand, PriceFile instance) {
+	public BuyableItem(Integer ID, Integer Damage, Double Cost, Integer Supply,
+			Integer SupplyDemand, PriceFile instance) {
 		id = ID;
 		durability = Damage;
 		cost = Cost;
@@ -110,7 +110,8 @@ public class BuyableItem {
 					user.getHandle().getInventory().clear(pos);
 				} else if (amountTaken + value <= amountNeeded) {
 					int taken;
-					taken = (int) Math.ceil((amountNeeded - amountTaken) / value);
+					taken = (int) Math.ceil((amountNeeded - amountTaken)
+							/ value);
 					item.setAmount(item.getAmount() - taken);
 					user.getHandle().getInventory().setItem(pos, item);
 					amountTaken += taken * value;

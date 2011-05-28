@@ -28,9 +28,9 @@ public class ChatCommands implements Commands {
 			String commandLabel, String[] args) {
 		User user;
 		try {
-			user = new User(plugin, (Player) sender);
+			user = User.getUser(plugin, (Player) sender);
 		} catch (ClassCastException e) {
-			user = new User(plugin);
+			user = User.getUser(plugin);
 		}
 		if (commandLabel.equalsIgnoreCase("tell")) {
 			tell(args, user);
@@ -119,7 +119,7 @@ public class ChatCommands implements Commands {
 		} else {
 			String playerString = "";
 			for (Player player2 : playerList) {
-				User user2 = new User(plugin, player2);
+				User user2 = User.getUser(plugin, player2);
 				if (user2.isOffline() && !user.isServer()) {
 					continue;
 				}
@@ -192,7 +192,8 @@ public class ChatCommands implements Commands {
 							"You used a blocked word..."));
 			return;
 		}
-		long slowTimeLeft = plugin.chatListen.slow.playerBlocked(user.getName());
+		long slowTimeLeft = plugin.chatListen.slow
+				.playerBlocked(user.getName());
 		if ((!plugin.perm.userFile.hasPermission(user.getName(),
 				"ignoreSlowMode", true, true))
 				&& plugin.chatListen.slow.isEnabled()) {
@@ -209,7 +210,7 @@ public class ChatCommands implements Commands {
 		message = ChatColor.WHITE + "*" + user.getColor() + user.getName()
 				+ " " + ChatColor.WHITE + message;
 		plugin.getServer().broadcastMessage(message);
-		new User(plugin).sendMessage(message);
+		User.getUser(plugin).sendMessage(message);
 	}
 
 	public void tell(String[] args, User user) {
@@ -253,7 +254,8 @@ public class ChatCommands implements Commands {
 							"You used a blocked word..."));
 			return;
 		}
-		long slowTimeLeft = plugin.chatListen.slow.playerBlocked(user.getName());
+		long slowTimeLeft = plugin.chatListen.slow
+				.playerBlocked(user.getName());
 		if ((!plugin.perm.userFile.hasPermission(user.getName(),
 				"ignoreSlowMode", true, true))
 				&& plugin.chatListen.slow.isEnabled()) {

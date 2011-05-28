@@ -26,9 +26,9 @@ public class LotCommands implements Commands {
 			String commandLabel, String[] args) {
 		User user;
 		try {
-			user = new User(plugin, (Player) sender);
+			user = User.getUser(plugin, (Player) sender);
 		} catch (ClassCastException e) {
-			user = new User(plugin);
+			user = User.getUser(plugin);
 		}
 		if (commandLabel.equalsIgnoreCase("lot")) {
 			Lot(args, user);

@@ -27,9 +27,9 @@ public class ProtectedCommands implements Commands {
 			String commandLabel, String[] args) {
 		User user;
 		try {
-			user = new User(plugin, (Player) sender);
+			user = User.getUser(plugin, (Player) sender);
 		} catch (ClassCastException e) {
-			user = new User(plugin);
+			user = User.getUser(plugin);
 		}
 		if (commandLabel.equalsIgnoreCase("protect")) {
 			Protect(args, user);
@@ -46,7 +46,8 @@ public class ProtectedCommands implements Commands {
 			if (args.length >= 1) {
 				owner = " " + args[0];
 			}
-			plugin.getServer().dispatchCommand(sender, "protect public" + owner);
+			plugin.getServer()
+					.dispatchCommand(sender, "protect public" + owner);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("unlock")) {
 			plugin.getServer().dispatchCommand(sender, "protect remove");
@@ -118,8 +119,10 @@ public class ProtectedCommands implements Commands {
 			user.sendMessage(ChatColor.RED + "That block is already protected!");
 			return;
 		}
-		if(!plugin.lots.canBuildHere(user.getHandle(), pointedAt.getLocation())) {
-			user.sendMessage(ChatColor.RED + "You're not allowed to protect blocks in other peoples' lots.");
+		if (!plugin.lots
+				.canBuildHere(user.getHandle(), pointedAt.getLocation())) {
+			user.sendMessage(ChatColor.RED
+					+ "You're not allowed to protect blocks in other peoples' lots.");
 			return;
 		}
 		if (args.length == 1) {
@@ -188,7 +191,7 @@ public class ProtectedCommands implements Commands {
 					+ "Proper use is /protect add [owner]");
 		}
 	}
-	
+
 	public void PublicProtect(String[] args, User user) {
 		if (!user.hasPerm("canProtect")) {
 			user.sendMessage(ChatColor.RED
@@ -206,8 +209,10 @@ public class ProtectedCommands implements Commands {
 			user.sendMessage(ChatColor.RED + "That block is already protected!");
 			return;
 		}
-		if(!plugin.lots.canBuildHere(user.getHandle(), pointedAt.getLocation())) {
-			user.sendMessage(ChatColor.RED + "You're not allowed to protect blocks in other peoples' lots.");
+		if (!plugin.lots
+				.canBuildHere(user.getHandle(), pointedAt.getLocation())) {
+			user.sendMessage(ChatColor.RED
+					+ "You're not allowed to protect blocks in other peoples' lots.");
 			return;
 		}
 		if (args.length == 1) {
@@ -215,8 +220,8 @@ public class ProtectedCommands implements Commands {
 				int id = plugin.protectFile.addProtection(user,
 						pointedAt.getLocation(), ProtectionType.PChest);
 				user.sendMessage(ChatColor.GREEN
-						+ "Public chest created with owner "
-						+ user.getName() + ".");
+						+ "Public chest created with owner " + user.getName()
+						+ ".");
 				String w = pointedAt.getWorld().getName();
 				String x = String.valueOf(pointedAt.getX());
 				String y = String.valueOf(pointedAt.getY());
@@ -248,8 +253,8 @@ public class ProtectedCommands implements Commands {
 				int id = plugin.protectFile.addProtection(user2,
 						pointedAt.getLocation(), ProtectionType.PChest);
 				user.sendMessage(ChatColor.GREEN
-						+ "Public chest created with owner "
-						+ user2.getName() + ".");
+						+ "Public chest created with owner " + user2.getName()
+						+ ".");
 				String w = pointedAt.getWorld().getName();
 				String x = String.valueOf(pointedAt.getX());
 				String y = String.valueOf(pointedAt.getY());
@@ -261,8 +266,8 @@ public class ProtectedCommands implements Commands {
 				int id = plugin.protectFile.addProtection(user2,
 						pointedAt.getLocation(), ProtectionType.PDoor);
 				user.sendMessage(ChatColor.GREEN
-						+ "Public door created with owner "
-						+ user2.getName() + ".");
+						+ "Public door created with owner " + user2.getName()
+						+ ".");
 				String w = pointedAt.getWorld().getName();
 				String x = String.valueOf(pointedAt.getX());
 				String y = String.valueOf(pointedAt.getY());

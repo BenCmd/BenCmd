@@ -26,9 +26,9 @@ public class ReportCommands implements Commands {
 			String commandLabel, String[] args) {
 		User user;
 		try {
-			user = new User(plugin, (Player) sender);
+			user = User.getUser(plugin, (Player) sender);
 		} catch (ClassCastException e) {
-			user = new User(plugin);
+			user = User.getUser(plugin);
 		}
 		if (commandLabel.equalsIgnoreCase("report")
 				&& user.hasPerm("canReport")) {
@@ -78,7 +78,7 @@ public class ReportCommands implements Commands {
 				+ "You can also list your currently open tickets using /ticket list.");
 		for (Player onlinePlayer : plugin.getServer().getOnlinePlayers()) {
 			User onlineUser;
-			if ((onlineUser = new User(plugin, onlinePlayer))
+			if ((onlineUser = User.getUser(plugin, onlinePlayer))
 					.hasPerm("isTicketAdmin")) {
 				onlineUser.sendMessage(ChatColor.RED
 						+ "A new report has been filed! Use /ticket " + id
@@ -398,7 +398,7 @@ public class ReportCommands implements Commands {
 					for (Player onlinePlayer : plugin.getServer()
 							.getOnlinePlayers()) {
 						User onlineUser;
-						if ((onlineUser = new User(plugin, onlinePlayer))
+						if ((onlineUser = User.getUser(plugin, onlinePlayer))
 								.hasPerm("isTicketAdmin")) {
 							onlineUser
 									.sendMessage(ChatColor.RED

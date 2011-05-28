@@ -29,7 +29,7 @@ public class LotPlayerListener extends PlayerListener {
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 			Player player = event.getPlayer();
-			if (new User(plugin, player).hasPerm("isLandlord")
+			if (User.getUser(plugin, player).hasPerm("isLandlord")
 					&& player.getItemInHand().getType() == Material.WOOD_SPADE) {
 				checkPlayer(player.getName());
 				this.corner.get(player.getName()).setCorner2(
@@ -43,7 +43,7 @@ public class LotPlayerListener extends PlayerListener {
 			}
 		} else if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
 			Player player = event.getPlayer();
-			if (new User(plugin, player).hasPerm("isLandlord")
+			if (User.getUser(plugin, player).hasPerm("isLandlord")
 					&& player.getItemInHand().getType() == Material.WOOD_SPADE) {
 				checkPlayer(player.getName());
 				this.corner.get(player.getName()).setCorner1(

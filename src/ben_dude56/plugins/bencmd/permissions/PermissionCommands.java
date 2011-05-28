@@ -25,9 +25,9 @@ public class PermissionCommands implements Commands {
 			String commandLabel, String[] args) {
 		User user;
 		try {
-			user = new User(plugin, (Player) sender);
+			user = User.getUser(plugin, (Player) sender);
 		} catch (ClassCastException e) {
-			user = new User(plugin);
+			user = User.getUser(plugin);
 		}
 		if (commandLabel.equalsIgnoreCase("user")
 				&& user.hasPerm("canChangePerm")) {
@@ -47,8 +47,9 @@ public class PermissionCommands implements Commands {
 		}
 		return false;
 	}
-	
-	//TODO For version 1.1.1: Add ability to change prefixes and colors using /group and /user
+
+	// TODO For version 1.1.1: Add ability to change prefixes and colors using
+	// /group and /user
 
 	public void User(String[] args, User user) {
 		if (args.length == 0 || args[0].equalsIgnoreCase("help")) {
@@ -462,29 +463,29 @@ public class PermissionCommands implements Commands {
 			}
 		}
 	}
-	
+
 	public void Kick(String[] args, User user) {
 		boolean anon = false;
 		String reason = "";
 		User toKick;
-		if(args.length == 0) {
+		if (args.length == 0) {
 			user.sendMessage(ChatColor.YELLOW
 					+ "Proper use is: /kick <player> [--anon] [reason]");
 			return;
 		}
 		toKick = User.matchUser(args[0], plugin);
-		if(toKick == null) {
+		if (toKick == null) {
 			user.sendMessage(ChatColor.RED + args[0] + " cannot be found!");
 			return;
 		}
-		if(args.length > 1) {
+		if (args.length > 1) {
 			int i = 1;
-			if(args[1].equalsIgnoreCase("--anon")) {
+			if (args[1].equalsIgnoreCase("--anon")) {
 				i++;
 				anon = true;
 			}
 			while (i < args.length) {
-				if(reason.isEmpty()) {
+				if (reason.isEmpty()) {
 					reason = args[i];
 				} else {
 					reason += " " + args[i];
@@ -492,14 +493,14 @@ public class PermissionCommands implements Commands {
 				i++;
 			}
 		}
-		if(anon) {
-			if(reason.isEmpty()) {
+		if (anon) {
+			if (reason.isEmpty()) {
 				toKick.Kick();
 			} else {
 				toKick.Kick(reason);
 			}
 		} else {
-			if(reason.isEmpty()) {
+			if (reason.isEmpty()) {
 				toKick.Kick(user);
 			} else {
 				toKick.Kick(reason, user);

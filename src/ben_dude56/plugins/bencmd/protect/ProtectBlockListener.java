@@ -27,7 +27,7 @@ public class ProtectBlockListener extends BlockListener {
 		if ((id = plugin.protectFile.getProtection(event.getBlock()
 				.getLocation())) != -1) {
 			block = plugin.protectFile.getProtection(id);
-			User user = new User(plugin, event.getPlayer());
+			User user = User.getUser(plugin, event.getPlayer());
 			if (!block.canChange(user)) {
 				event.setCancelled(true);
 				user.sendMessage(ChatColor.RED

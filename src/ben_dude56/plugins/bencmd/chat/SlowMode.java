@@ -75,12 +75,12 @@ public class SlowMode {
 		for (int i = 0; i < playerList.size(); i++) {
 			String playerName = (String) playerList.keySet().toArray()[i];
 			Long timeDone = (Long) playerList.values().toArray()[i];
-			if(new Date().getTime() >= timeDone) {
+			if (new Date().getTime() >= timeDone) {
 				playerList.remove(playerName);
 			}
 		}
 	}
-	
+
 	public class SlowModeTimer extends TimerTask {
 		SlowMode parent;
 

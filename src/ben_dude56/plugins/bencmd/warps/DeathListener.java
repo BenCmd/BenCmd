@@ -71,7 +71,7 @@ public class DeathListener extends EntityListener {
 		if (!(event.getEntity() instanceof Player)) {
 			return;
 		}
-		if (new User(plugin, (Player) event.getEntity()).isPoofed()) {
+		if (User.getUser(plugin, (Player) event.getEntity()).isPoofed()) {
 			event.setCancelled(true);
 		}
 		Player player = (Player) event.getEntity();

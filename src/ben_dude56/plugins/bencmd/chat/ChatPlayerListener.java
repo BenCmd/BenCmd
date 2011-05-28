@@ -44,12 +44,13 @@ public class ChatPlayerListener extends PlayerListener {
 
 	public void onPlayerChat(PlayerChatEvent event) {
 		String message = event.getMessage();
-		User user = new User(plugin, event.getPlayer());
+		User user = User.getUser(plugin, event.getPlayer());
 		if (plugin.mainProperties.getBoolean("channelsEnabled", false)) {
-			if(user.inChannel()) {
+			if (user.inChannel()) {
 				user.getActiveChannel().sendChat(user, message);
 			} else {
-				user.sendMessage(ChatColor.RED + "You must be in a chat channel to talk!");
+				user.sendMessage(ChatColor.RED
+						+ "You must be in a chat channel to talk!");
 			}
 			event.setCancelled(true);
 			return;
@@ -100,7 +101,7 @@ public class ChatPlayerListener extends PlayerListener {
 	}
 
 	public void onPlayerJoin(PlayerJoinEvent event) {
-		User user = new User(plugin, event.getPlayer());
+		User user = User.getUser(plugin, event.getPlayer());
 		Player[] playerList = plugin.getServer().getOnlinePlayers();
 		if (user.hasPerm("canListPlayers")) {
 			if (playerList.length == 1) {
@@ -109,7 +110,7 @@ public class ChatPlayerListener extends PlayerListener {
 			} else {
 				String playerString = "";
 				for (Player player2 : playerList) {
-					if (new User(plugin, player2).isOffline()) {
+					if (User.getUser(plugin, player2).isOffline()) {
 						continue;
 					}
 					playerString += plugin.perm.groupFile
@@ -139,7 +140,7 @@ public class ChatPlayerListener extends PlayerListener {
 	}
 
 	public void onPlayerQuit(PlayerQuitEvent event) {
-		User user = new User(plugin, event.getPlayer());
+		User user = User.getUser(plugin, event.getPlayer());
 		if (user.isOffline()) {
 			user.goOnlineNoMsg();
 			event.setQuitMessage("");
@@ -154,10 +155,11 @@ public class ChatPlayerListener extends PlayerListener {
 		if (user.isNoPoofed()) {
 			user.UnNoPoof();
 		}
+		User.finalizeUser(user);
 	}
 
 	public void onPlayerKick(PlayerKickEvent event) {
-		User user = new User(plugin, event.getPlayer());
+		User user = User.getUser(plugin, event.getPlayer());
 		if (user.isOffline()) {
 			user.goOnlineNoMsg();
 			event.setLeaveMessage("");
@@ -172,6 +174,7 @@ public class ChatPlayerListener extends PlayerListener {
 		if (user.isNoPoofed()) {
 			user.UnNoPoof();
 		}
+		User.finalizeUser(user);
 	}
 
 }

@@ -34,7 +34,7 @@ public class FlyDetect {
 	}
 
 	public int getOffences(Player player) {
-		if (new User(plugin, player).hasPerm("isJailed", false)) {
+		if (User.getUser(plugin, player).hasPerm("isJailed", false)) {
 			return 3;
 		}
 		if (offenders.containsKey(player.getName())) {
@@ -45,7 +45,7 @@ public class FlyDetect {
 	}
 
 	public void addOffence(Player player) {
-		if (new User(plugin, player).hasPerm("isJailed", false)) {
+		if (User.getUser(plugin, player).hasPerm("isJailed", false)) {
 			return;
 		}
 		if (offenders.containsKey(player.getName())) {
@@ -56,7 +56,7 @@ public class FlyDetect {
 	}
 
 	public void detect(Player player) {
-		if (new User(plugin, player).hasPerm("canFly")) {
+		if (User.getUser(plugin, player).hasPerm("canFly")) {
 			return;
 		}
 		if (isDetected(player)) {
@@ -89,29 +89,29 @@ public class FlyDetect {
 			} else if (time == 6000) {
 				switch (getOffences(player)) {
 				case 0:
-					new User(plugin, player).Spawn();
+					User.getUser(plugin, player).Spawn();
 					plugin.checkpoints.RemovePreWarp(player);
 					plugin.getServer().broadcastMessage(
 							ChatColor.RED + player.getName()
 									+ " was sent to spawn for flying!");
 					break;
 				case 1:
-					new User(plugin, player)
+					User.getUser(plugin, player)
 							.Kick("You were auto-detected flying!");
 					plugin.getServer().broadcastMessage(
 							ChatColor.RED + player.getName()
 									+ " was kicked for flying!");
 					break;
 				case 2:
-					if (!new User(plugin, player).hasPerm("isJailed", false)) {
-						new User(plugin, player).toggleJail();
+					if (!User.getUser(plugin, player).hasPerm("isJailed", false)) {
+						User.getUser(plugin, player).toggleJail();
 						plugin.getServer().broadcastMessage(
 								ChatColor.RED + player.getName()
 										+ " was jailed for flying!");
 					}
 					break;
 				default:
-					new User(plugin, player)
+					User.getUser(plugin, player)
 							.Kick("You were auto-detected flying!");
 					plugin.getServer().broadcastMessage(
 							ChatColor.RED + player.getName()
@@ -120,7 +120,6 @@ public class FlyDetect {
 				}
 				log.warning("Action taken on " + player.getName()
 						+ " for flying!");
-				undetect(player);
 				addOffence(player);
 			}
 		} else {

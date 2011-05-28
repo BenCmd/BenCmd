@@ -35,20 +35,20 @@ public class PriceFile extends Properties {
 		loadFile();
 		loadPrices();
 		update = new Timer();
-		if(plugin.mainProperties.getInteger("updateTime", 1800000) == -1) {
+		if (plugin.mainProperties.getInteger("updateTime", 1800000) == -1) {
 			timerenabled = false;
 		} else {
 			update.schedule(new UpdateTimer(this), 0, 1000);
 			timerenabled = true;
 		}
 	}
-	
+
 	public boolean isTimerEnabled() {
 		return timerenabled;
 	}
-	
+
 	public void loadTimer() {
-		if(timerenabled) {
+		if (timerenabled) {
 			return;
 		}
 		timerenabled = true;
@@ -56,7 +56,7 @@ public class PriceFile extends Properties {
 	}
 
 	public void unloadTimer() {
-		if(!timerenabled) {
+		if (!timerenabled) {
 			return;
 		}
 		timerenabled = true;
@@ -199,7 +199,8 @@ public class PriceFile extends Properties {
 			}
 		}
 		if (nextUpdate == 0) {
-			nextUpdate = new Date().getTime() + plugin.mainProperties.getInteger("updateTime", 1800000);
+			nextUpdate = new Date().getTime()
+					+ plugin.mainProperties.getInteger("updateTime", 1800000);
 		}
 	}
 
@@ -226,7 +227,7 @@ public class PriceFile extends Properties {
 	}
 
 	public void pollUpdate() {
-		if(plugin.mainProperties.getInteger("updateTime", 1800000) == -1) {
+		if (plugin.mainProperties.getInteger("updateTime", 1800000) == -1) {
 			return;
 		}
 		long nowTime = new Date().getTime();
@@ -236,7 +237,8 @@ public class PriceFile extends Properties {
 	}
 
 	public void ForceUpdate() {
-		nextUpdate = new Date().getTime() + plugin.mainProperties.getInteger("updateTime", 1800000);
+		nextUpdate = new Date().getTime()
+				+ plugin.mainProperties.getInteger("updateTime", 1800000);
 		saveUpdateTime();
 		plugin.getServer().broadcastMessage(
 				ChatColor.RED + "ALERT: All prices are being updated...");
@@ -248,10 +250,14 @@ public class PriceFile extends Properties {
 				Double oldPrice = item.getPrice();
 				Double newPrice = oldPrice;
 				newPrice += item.getSupplyDemand()
-								/ ((double) back.getStackNumber(item
-										.getItemId())) * plugin.mainProperties.getDouble("marketMultiple", 0.25);
-				if(newPrice - oldPrice > plugin.mainProperties.getDouble("marketMaxChange", 2)) {
-					newPrice = oldPrice + plugin.mainProperties.getDouble("marketMaxChange", 2);
+						/ ((double) back.getStackNumber(item.getItemId()))
+						* plugin.mainProperties.getDouble("marketMultiple",
+								0.25);
+				if (newPrice - oldPrice > plugin.mainProperties.getDouble(
+						"marketMaxChange", 2)) {
+					newPrice = oldPrice
+							+ plugin.mainProperties.getDouble(
+									"marketMaxChange", 2);
 				}
 				newPrice *= 100;
 				newPrice = Math.ceil(newPrice) / 100;
@@ -262,13 +268,18 @@ public class PriceFile extends Properties {
 				Double oldPrice = item.getPrice();
 				Double newPrice = oldPrice;
 				newPrice -= -item.getSupplyDemand()
-								/ ((double) back.getStackNumber(item
-										.getItemId())) * plugin.mainProperties.getDouble("marketMultiple", 0.25);
-				if (newPrice < plugin.mainProperties.getDouble("marketMin", 0.05)) {
+						/ ((double) back.getStackNumber(item.getItemId()))
+						* plugin.mainProperties.getDouble("marketMultiple",
+								0.25);
+				if (newPrice < plugin.mainProperties.getDouble("marketMin",
+						0.05)) {
 					newPrice = 0.05;
 				}
-				if(oldPrice - newPrice > plugin.mainProperties.getDouble("marketMaxChange", 2)) {
-					newPrice = oldPrice - plugin.mainProperties.getDouble("marketMaxChange", 2);
+				if (oldPrice - newPrice > plugin.mainProperties.getDouble(
+						"marketMaxChange", 2)) {
+					newPrice = oldPrice
+							- plugin.mainProperties.getDouble(
+									"marketMaxChange", 2);
 				}
 				item.setPrice(newPrice);
 				item.resetSupplyDemand();

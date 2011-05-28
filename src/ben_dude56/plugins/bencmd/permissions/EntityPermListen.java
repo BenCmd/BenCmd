@@ -35,7 +35,7 @@ public class EntityPermListen extends EntityListener {
 			Logger.getLogger("minecraft").info(logMessage);
 			if (plugin.mainProperties.getBoolean("attemptRedstoneTntKick",
 					false)) {
-				User user = new User(plugin, nearPlayer);
+				User user = User.getUser(plugin, nearPlayer);
 				plugin.getServer().broadcastMessage(
 						ChatColor.RED + user.getName()
 								+ " tried to detonate TNT!");

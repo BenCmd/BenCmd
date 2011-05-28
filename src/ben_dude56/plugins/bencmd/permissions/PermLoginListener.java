@@ -29,11 +29,13 @@ public class PermLoginListener extends PlayerListener {
 			return;
 		}
 		long timeLeft;
-		if((timeLeft = plugin.kicked.isBlocked(event.getPlayer().getName())) > 0) {
-			event.disallow(Result.KICK_OTHER, "You cannot connect for " + String.valueOf((int) Math.ceil(timeLeft / 60000.0)) + " more minutes...");
+		if ((timeLeft = plugin.kicked.isBlocked(event.getPlayer().getName())) > 0) {
+			event.disallow(Result.KICK_OTHER, "You cannot connect for "
+					+ String.valueOf((int) Math.ceil(timeLeft / 60000.0))
+					+ " more minutes...");
 			return;
 		}
-		switch (plugin.maxPlayers.join(new User(plugin, event.getPlayer()))) {
+		switch (plugin.maxPlayers.join(User.getUser(plugin, event.getPlayer()))) {
 		case NO_SLOT_NORMAL:
 			event.disallow(Result.KICK_FULL, plugin.mainProperties.getString(
 					"noNormal",
@@ -47,17 +49,18 @@ public class PermLoginListener extends PlayerListener {
 									"There are no normal slots or reserved slots currently available!"));
 			break;
 		}
+		User.finalizeUser(User.getUser(plugin, event.getPlayer()));
 	}
 
 	public void onPlayerPickupItem(PlayerPickupItemEvent event) {
-		User user = new User(plugin, event.getPlayer());
+		User user = User.getUser(plugin, event.getPlayer());
 		if (user.hasPerm("isJailed", false)) {
 			event.setCancelled(true);
 		}
 	}
 
 	public void onPlayerDropItem(PlayerDropItemEvent event) {
-		User user = new User(plugin, event.getPlayer());
+		User user = User.getUser(plugin, event.getPlayer());
 		if (user.hasPerm("isJailed", false)) {
 			event.setCancelled(true);
 		}

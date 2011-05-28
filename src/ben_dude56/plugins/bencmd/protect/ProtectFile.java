@@ -119,11 +119,11 @@ public class ProtectFile extends Properties {
 				protectedBlocks.add(new ProtectedDoor(plugin, id, owner,
 						guests, loc));
 			} else if (type.equalsIgnoreCase("pc")) {
-				protectedBlocks.add(new PublicChest(plugin, id, owner,
-						guests, loc));
+				protectedBlocks.add(new PublicChest(plugin, id, owner, guests,
+						loc));
 			} else if (type.equalsIgnoreCase("pd")) {
-				protectedBlocks.add(new PublicDoor(plugin, id, owner,
-						guests, loc));
+				protectedBlocks.add(new PublicDoor(plugin, id, owner, guests,
+						loc));
 			} else {
 				log.warning("Entry " + key + " in " + proFile
 						+ " is invalid and was ignored!");
@@ -244,10 +244,10 @@ public class ProtectFile extends Properties {
 					break;
 				}
 			}
-			if(block instanceof PublicChest) {
+			if (block instanceof PublicChest) {
 				if (((PublicChest) block).isDoubleChest()
-						&& ((PublicChest) block).getSecondChest()
-								.getLocation().equals(loc)) {
+						&& ((PublicChest) block).getSecondChest().getLocation()
+								.equals(loc)) {
 					id = block.GetId();
 					break;
 				}
@@ -260,7 +260,8 @@ public class ProtectFile extends Properties {
 						break;
 					}
 				} catch (NullPointerException e) {
-					log.warning(block.GetId() + " has a missing secondary block. Is it the wrong type?");
+					log.warning(block.GetId()
+							+ " has a missing secondary block. Is it the wrong type?");
 				}
 				try {
 					if (((ProtectedDoor) block).getBelowBlock().getLocation()
@@ -269,7 +270,8 @@ public class ProtectFile extends Properties {
 						break;
 					}
 				} catch (NullPointerException e) {
-					log.warning(block.GetId() + " has a missing secondary block. Is it the wrong type?");
+					log.warning(block.GetId()
+							+ " has a missing secondary block. Is it the wrong type?");
 				}
 			}
 			if (block instanceof PublicDoor) {
@@ -280,7 +282,8 @@ public class ProtectFile extends Properties {
 						break;
 					}
 				} catch (NullPointerException e) {
-					log.warning(block.GetId() + " has a missing secondary block. Is it the wrong type?");
+					log.warning(block.GetId()
+							+ " has a missing secondary block. Is it the wrong type?");
 				}
 				try {
 					if (((PublicDoor) block).getBelowBlock().getLocation()
@@ -289,7 +292,8 @@ public class ProtectFile extends Properties {
 						break;
 					}
 				} catch (NullPointerException e) {
-					log.warning(block.GetId() + " has a missing secondary block. Is it the wrong type?");
+					log.warning(block.GetId()
+							+ " has a missing secondary block. Is it the wrong type?");
 				}
 			}
 		}
@@ -343,7 +347,7 @@ public class ProtectFile extends Properties {
 			protectedBlocks.add(protect = new PublicChest(plugin, id, owner,
 					new ArrayList<PermissionUser>(), loc));
 			break;
-			
+
 		}
 		updateValue(protect);
 		return id;
