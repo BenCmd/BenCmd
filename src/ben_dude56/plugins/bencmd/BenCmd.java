@@ -68,7 +68,6 @@ import ben_dude56.plugins.bencmd.weather.WeatherPListener;
  * @author ben_dude56
  * 
  */
-//@SuppressWarnings("unused")
 public class BenCmd extends JavaPlugin {
 	public final static boolean debug = false;
 	private final PermLoginListener permLoginListener = new PermLoginListener(

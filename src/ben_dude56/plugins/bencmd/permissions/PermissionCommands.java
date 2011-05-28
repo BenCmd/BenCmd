@@ -47,6 +47,8 @@ public class PermissionCommands implements Commands {
 		}
 		return false;
 	}
+	
+	//TODO For version 1.1.1: Add ability to change prefixes and colors using /group and /user
 
 	public void User(String[] args, User user) {
 		if (args.length == 0 || args[0].equalsIgnoreCase("help")) {

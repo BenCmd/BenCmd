@@ -43,11 +43,17 @@ public class ChatPlayerListener extends PlayerListener {
 	}
 
 	public void onPlayerChat(PlayerChatEvent event) {
-		if (plugin.mainProperties.getBoolean("enableChannels", false)) {
-
-		}
 		String message = event.getMessage();
 		User user = new User(plugin, event.getPlayer());
+		if (plugin.mainProperties.getBoolean("channelsEnabled", false)) {
+			if(user.inChannel()) {
+				user.getActiveChannel().sendChat(user, message);
+			} else {
+				user.sendMessage(ChatColor.RED + "You must be in a chat channel to talk!");
+			}
+			event.setCancelled(true);
+			return;
+		}
 		if (user.isMuted()) {
 			event.setCancelled(true);
 			user.sendMessage(ChatColor.GRAY
@@ -130,9 +136,6 @@ public class ChatPlayerListener extends PlayerListener {
 		}
 		event.setJoinMessage(user.getColor() + user.getName() + ChatColor.WHITE
 				+ " has joined the game...");
-		if (plugin.channels.isActive()) {
-			user.JoinActiveChannel("general");
-		}
 	}
 
 	public void onPlayerQuit(PlayerQuitEvent event) {
@@ -151,9 +154,6 @@ public class ChatPlayerListener extends PlayerListener {
 		if (user.isNoPoofed()) {
 			user.UnNoPoof();
 		}
-		if (user.inChannel()) {
-			user.DeactivateChannel();
-		}
 	}
 
 	public void onPlayerKick(PlayerKickEvent event) {
@@ -171,9 +171,6 @@ public class ChatPlayerListener extends PlayerListener {
 		}
 		if (user.isNoPoofed()) {
 			user.UnNoPoof();
-		}
-		if (user.inChannel()) {
-			user.DeactivateChannel();
 		}
 	}
 

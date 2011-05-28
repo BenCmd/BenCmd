@@ -9,7 +9,6 @@ import java.util.logging.Logger;
 import org.bukkit.ChatColor;
 
 import ben_dude56.plugins.bencmd.BenCmd;
-import ben_dude56.plugins.bencmd.User;
 
 public class SlowMode {
 	BenCmd plugin;
@@ -34,10 +33,12 @@ public class SlowMode {
 		enabled = true;
 	}
 
-	public void EnableSlow(int millis, User user) {
+	public void EnableSlow(int millis) {
 		enabled = true;
 		defTime = millis;
-		log.info(user.getName() + " has enabled slow mode.");
+		if (plugin.mainProperties.getBoolean("channelsEnabled", false)) {
+			return;
+		}
 		plugin.getServer().broadcastMessage(
 				ChatColor.GRAY + "Slow mode has been enabled. You must wait "
 						+ (defTime / 1000)
@@ -52,7 +53,7 @@ public class SlowMode {
 		plugin = instance;
 		defTime = defaultTime;
 		origDefTime = defaultTime;
-		enabled = plugin.mainProperties.getBoolean("slowByDefault", false);
+		enabled = false;
 		slowTimer.schedule(new SlowModeTimer(this), 0, 100);
 	}
 

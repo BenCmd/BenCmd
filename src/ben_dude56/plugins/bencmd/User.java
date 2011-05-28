@@ -1,12 +1,17 @@
 package ben_dude56.plugins.bencmd;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.entity.Player;
 
 import ben_dude56.plugins.bencmd.chat.channels.ChatChannel;
+import ben_dude56.plugins.bencmd.chat.channels.ChatChannel.ChatLevel;
 
 public class User extends ActionableUser {
 	BenCmd plugin;
 	private ChatChannel activeChannel;
+	private List<ChatChannel> spying;
 
 	public static User matchUser(String name, BenCmd instance) {
 		for (Player online : instance.getServer().getOnlinePlayers()) {
@@ -30,6 +35,7 @@ public class User extends ActionableUser {
 		super(instance, entity);
 		plugin = instance;
 		activeChannel = null;
+		spying = new ArrayList<ChatChannel>();
 	}
 
 	/**
@@ -42,80 +48,52 @@ public class User extends ActionableUser {
 		super(instance);
 		plugin = instance;
 	}
-
-	/**
-	 * Changes the active channel of this user to reflect a different channel
-	 * 
-	 * @param channel
-	 *            The channel to enter
-	 * @return Returns whether they joined successfully
-	 */
-	public boolean ActivateChannel(ChatChannel channel) {
-		if (inChannel()) {
-			DeactivateChannel();
+	
+	public boolean inChannel() {
+		return (activeChannel == null);
+	}
+	
+	public boolean joinChannel(ChatChannel channel) {
+		if(inChannel()) {
+			getActiveChannel().leaveChannel(this);
 		}
-		if (channel.JoinChat(this) != ChatChannel.ChatterType.DISALLOW) {
+		if(channel.joinChannel(this) != ChatLevel.BANNED) {
 			activeChannel = channel;
 			return true;
 		} else {
 			return false;
 		}
 	}
-
-	/**
-	 * Forces the user to leave their active channel
-	 */
-	public void DeactivateChannel() {
-		activeChannel.LeaveChannel(this);
-		activeChannel = null;
+	
+	public void leaveChannel() {
+		getActiveChannel().leaveChannel(this);
 	}
-
-	/**
-	 * Checks if the user is currently talking in a channel
-	 * 
-	 * @return Returns if the user is in a channel
-	 */
-	public boolean inChannel() {
-		return (activeChannel != null);
-	}
-
-	/**
-	 * Used to check what channel a user is currently in, or manipulate or
-	 * otherwise interact with, a user's active channel.
-	 * 
-	 * @return Returns the channel the user is active in
-	 */
+	
 	public ChatChannel getActiveChannel() {
 		return activeChannel;
 	}
-
-	/**
-	 * Causes the user to join a new channel.
-	 * 
-	 * @param name
-	 *            The name of the channel to join
-	 * @return Whether the channel activated successfully
-	 */
-	public boolean JoinActiveChannel(String name) {
-		ChatChannel channel;
-		if ((channel = plugin.channels.getChannel(name)) == null) {
+	
+	public boolean spyChannel(ChatChannel channel) {
+		if(channel.Spy(this)) {
+			spying.add(channel);
+			return true;
+		} else {
 			return false;
 		}
-		return ActivateChannel(channel);
 	}
-
-	/**
-	 * Leaves the user's active channel
-	 * 
-	 * @return Whether the channel was left successfully
-	 * @deprecated Use {@link #DeactivateChannel()}
-	 */
-	public boolean LeaveActiveChannel() {
-		if (!this.inChannel()) {
+	
+	public boolean unspyChannel(ChatChannel channel) {
+		if(channel.Unspy(this)) {
+			spying.remove(channel);
+			return true;
+		} else {
 			return false;
 		}
-		activeChannel.LeaveChannel(this);
-		activeChannel = null;
-		return true;
+	}
+	
+	public void unspyAll() {
+		for (ChatChannel channel : spying) {
+			unspyChannel(channel);
+		}
 	}
 }

@@ -10,7 +10,6 @@ import org.bukkit.entity.Player;
 import ben_dude56.plugins.bencmd.BenCmd;
 import ben_dude56.plugins.bencmd.Commands;
 import ben_dude56.plugins.bencmd.User;
-import ben_dude56.plugins.bencmd.chat.channels.ChatChannel;
 import ben_dude56.plugins.bencmd.permissions.PermissionUser;
 
 public class ChatCommands implements Commands {
@@ -72,7 +71,7 @@ public class ChatCommands implements Commands {
 				user.sendMessage(ChatColor.RED + "Invalid delay!");
 				return;
 			}
-			plugin.chatListen.slow.EnableSlow(millis, user);
+			plugin.chatListen.slow.EnableSlow(millis);
 		} else {
 			plugin.chatListen.ToggleSlow(user);
 		}
@@ -112,46 +111,7 @@ public class ChatCommands implements Commands {
 		}
 	}
 
-	public void listChannel(User user, ChatChannel channel) {
-		String playerString = "";
-		if (!channel.canListen(user)) {
-			user.sendMessage(ChatColor.RED + "You can't access that channel!");
-			return;
-		}
-		for (User user2 : channel.getUsers()) {
-			if (user2.isOffline() && !user.isServer()) {
-				continue;
-			}
-			playerString += user2.getColor() + user2.getName()
-					+ ChatColor.WHITE + ", ";
-		}
-		user.sendMessage("The following players are on this channel: "
-				+ playerString);
-	}
-
 	public void list(String[] args, User user) {
-		if (channelsEnabled() && args.length != 0
-				&& args[0].equalsIgnoreCase("channel")) {
-			if (args.length == 1) {
-				if (user.inChannel()) {
-					listChannel(user, user.getActiveChannel());
-				} else {
-					user.sendMessage(ChatColor.RED
-							+ "You must be in a chat channel to do that!");
-				}
-			} else if (args.length == 2) {
-				ChatChannel channel;
-				if ((channel = plugin.channels.getChannel(args[1])) != null) {
-					listChannel(user, channel);
-				} else {
-					user.sendMessage(ChatColor.RED
-							+ "That channel doesn't exist!");
-				}
-			}
-			return;
-		} else {
-			user.sendMessage("Proper usage: /list [channel <name>]");
-		}
 		Player[] playerList = plugin.getServer().getOnlinePlayers();
 		if (playerList.length == 1 && !user.isServer()) {
 			user.sendMessage(ChatColor.GREEN

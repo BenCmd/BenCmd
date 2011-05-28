@@ -7,98 +7,74 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.logging.Logger;
+
+import org.bukkit.ChatColor;
 
 import ben_dude56.plugins.bencmd.BenCmd;
+import ben_dude56.plugins.bencmd.User;
+import ben_dude56.plugins.bencmd.chat.channels.ChatChannel.ChatLevel;
 
-//TODO For version 1.1.0: Completely rewrite code. Current code is too messy.
 public class ChatChannelController extends Properties {
 	private static final long serialVersionUID = 0L;
+	protected BenCmd plugin;
+	private String fileName;
 	private List<ChatChannel> channels;
-	private List<ChatChannel> tempchannels;
-	String path;
-	Logger log = Logger.getLogger("minecraft");
-	BenCmd plugin;
-	boolean channelsActive;
-
-	public ChatChannelController(String pathName, BenCmd instance) {
-		path = pathName;
+	
+	public ChatChannelController(String fileName, BenCmd instance) {
 		plugin = instance;
-		this.loadFile();
-		this.loadChannels();
-		channelsActive = true;
-		tempchannels = new ArrayList<ChatChannel>();
-	}
-
-	public ChatChannelController(String pathName, BenCmd instance,
-			boolean active) {
-		path = pathName;
-		plugin = instance;
-		channelsActive = active;
-		this.loadFile();
-		if (active) {
-			this.loadChannels();
-		}
-		tempchannels = new ArrayList<ChatChannel>();
-	}
-
-	public void reloadChannels() {
-		this.loadFile();
-		this.loadChannels();
-	}
-
-	public void saveAll() {
-		this.saveChannels();
-		this.saveFile();
-	}
-
-	private void loadFile() {
-		File file = new File(path); // Prepare the file
-		if (!file.exists()) {
-			try {
-				file.createNewFile(); // If the file doesn't exist, create it!
-			} catch (IOException ex) {
-				// If you can't, produce an error.
-				log.severe("BenCmd had a problem:");
-				ex.printStackTrace();
-				return;
-			}
-		}
-		try {
-			load(new FileInputStream(file)); // Load the values
-		} catch (IOException ex) {
-			// If you can't, produce an error.
-			log.severe("BenCmd had a problem:");
-			ex.printStackTrace();
-		}
-	}
-
-	private void loadChannels() {
+		this.fileName = fileName;
 		channels = new ArrayList<ChatChannel>();
-		for (int i = 0; i < this.values().size(); i++) {
-			try {
-				channels.add(new ChatChannel(
-						(String) this.keySet().toArray()[i], (String) this
-								.values().toArray()[i], plugin));
-			} catch (Exception e) {
-				log.warning("ChatChannel "
-						+ (String) this.keySet().toArray()[i]
-						+ " couldn't be created!");
+		loadFile();
+		loadChannels();
+	}
+	
+	private void loadChannels() {
+		for(int i = 0; i < this.size(); i++) {
+			ChatChannel channel = ChatChannel.getChannel(this, (String) this.keySet().toArray()[i], (String) this.values().toArray()[i]);
+			if(channel != null) {
+				channels.add(channel);
 			}
 		}
-		if (getChannel("General") == null) {
-			log.severe("ChatChannel General doesn't exist! Turning off Chat Channels...");
-			plugin.mainProperties.setProperty("channelsEnabled", "false");
-			plugin.mainProperties.saveFile("-BenCmd Main Config-");
-			return;
+	}
+	
+	protected void saveChannel(ChatChannel channel) {
+		this.put(channel.getName(), channel.getValue());
+		this.saveFile("-BenCmd Channel List-");
+	}
+	
+	public ChatChannel getChannel(String name) {
+		for(ChatChannel channel : channels) {
+			if(channel.getName().equalsIgnoreCase(name)) {
+				return channel;
+			}
+		}
+		return null;
+	}
+	
+	public void listChannels(User user) {
+		String value = "";
+		for(ChatChannel channel : channels) {
+			if(channel.getLevel(user) != ChatLevel.BANNED) {
+				if(value.isEmpty()) {
+					value += channel.getName();
+				} else {
+					value += ", " + channel.getName();
+				}
+			}
+		}
+		if(value.isEmpty()) {
+			user.sendMessage(ChatColor.GRAY + "There are no chat channels that you can join...");
+		} else {
+			user.sendMessage(ChatColor.GRAY + "The following chat channels are open to you:");
+			user.sendMessage(ChatColor.GRAY + value);
 		}
 	}
 
-	private void saveFile() {
-		File file = new File(path);
+	public void loadFile() {
+		File file = new File(fileName);
 		if (file.exists()) {
 			try {
-				store(new FileOutputStream(file), "-BenCmd Channel Config-");
+				load(new FileInputStream(file));
 			} catch (IOException e) {
 				System.out.println("BenCmd had a problem:");
 				e.printStackTrace();
@@ -106,31 +82,15 @@ public class ChatChannelController extends Properties {
 		}
 	}
 
-	private void saveChannels() {
-		this.clear();
-		for (ChatChannel channel : channels) {
-			this.put(channel.getName(), channel.getValue());
-		}
-	}
-
-	public boolean isActive() {
-		return channelsActive;
-	}
-
-	public ChatChannel getChannel(String name) {
-		if (!channelsActive) {
-			return null;
-		}
-		for (ChatChannel channel : channels) {
-			if (channel.getName().equalsIgnoreCase(name)) {
-				return channel;
+	public void saveFile(String header) {
+		File file = new File(fileName);
+		if (file.exists()) {
+			try {
+				store(new FileOutputStream(file), header);
+			} catch (IOException e) {
+				System.out.println("BenCmd had a problem:");
+				e.printStackTrace();
 			}
 		}
-		for (ChatChannel channel : tempchannels) {
-			if (channel.getName().equalsIgnoreCase(name)) {
-				return channel;
-			}
-		}
-		return null;
 	}
 }

@@ -1,5 +1,5 @@
 name: BenCmd
-version: 1.0.4
+version: 1.1.0
 main: ben_dude56.plugins.bencmd.BenCmd
 commands:
     slow:
@@ -116,21 +116,6 @@ commands:
     strike:
         usage:
         description: Strikes lightning at any location
-    mod:
-        usage:
-        description: Mods a user in the chat
-    demod:
-        usage:
-        description: Demods a user in the chat
-    deafen:
-        usage:
-        description: Deafens a user in the chat
-    undeafen:
-        usage:
-        description: Undeafens a user in the chat
-    memod:
-        usage:
-        description: Makes you a mod in the chat
     offline:
         usage:
         description: Makes you appear offline
@@ -200,3 +185,6 @@ commands:
     public:
         usage:
         description: Creates a public protection.
+    channel:
+        usage:
+        description: Manages chat channels
