@@ -155,6 +155,10 @@ public class ChatPlayerListener extends PlayerListener {
 		if (user.isNoPoofed()) {
 			user.UnNoPoof();
 		}
+		if(user.inChannel()) {
+			user.leaveChannel();
+		}
+		user.unspyAll();
 		User.finalizeUser(user);
 	}
 
@@ -174,6 +178,10 @@ public class ChatPlayerListener extends PlayerListener {
 		if (user.isNoPoofed()) {
 			user.UnNoPoof();
 		}
+		if(user.inChannel()) {
+			user.leaveChannel();
+		}
+		user.unspyAll();
 		User.finalizeUser(user);
 	}
 
