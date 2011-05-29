@@ -59,9 +59,17 @@ public class ChatChannelController extends Properties {
 		for (ChatChannel channel : channels) {
 			if (channel.getLevel(user) != ChatLevel.BANNED) {
 				if (value.isEmpty()) {
-					value += channel.getName();
+					if(channel.hasDisplayName()) {
+						value += channel.getName() + " (" + channel.getDisplayName() + ")";
+					} else {
+						value += channel.getName();
+					}
 				} else {
-					value += ", " + channel.getName();
+					if(channel.hasDisplayName()) {
+						value += ", " + channel.getName() + " (" + channel.getDisplayName() + ")";
+					} else {
+						value += ", " + channel.getName();
+					}
 				}
 			}
 		}
@@ -82,7 +90,7 @@ public class ChatChannelController extends Properties {
 				new ArrayList<PermissionUser>(),
 				new ArrayList<PermissionUser>(),
 				new ArrayList<PermissionUser>(), ChatLevel.DEFAULT,
-				"Change this using /channel motd <message>"));
+				"Change this using /channel motd <message>", name));
 		saveChannel(channel);
 		owner.joinChannel(channel);
 	}

@@ -40,7 +40,7 @@ public class ChatChannelCommands implements Commands {
 			if (user.inChannel()) {
 				if (user.getActiveChannel().isOwner(user)) {
 					user.sendMessage(ChatColor.YELLOW
-							+ "Proper use is /channel {spy|unspy|list|leave|remove|mute|kick|ban|guest|slow|pause|motd|giveto|mod}");
+							+ "Proper use is /channel {spy|unspy|list|leave|remove|mute|kick|ban|guest|slow|pause|motd|giveto|mod|name}");
 				} else if (user.getActiveChannel().isMod(user)) {
 					user.sendMessage(ChatColor.YELLOW
 							+ "Proper use is /channel {spy|unspy|list|leave|mute|kick|ban|guest|slow|pause|motd}");
@@ -264,8 +264,20 @@ public class ChatChannelCommands implements Commands {
 					user.sendMessage(ChatColor.RED + "You're not in a channel!");
 				}
 			} else if (args[0].equalsIgnoreCase("pause")) {
-				// TODO For version 1.1.1: Add pause capability to channels to
-				// allow only mods to talk
+				if (!user.inChannel()) {
+					user.sendMessage(ChatColor.RED + "You're not in a channel!");
+					return;
+				}
+				if (!user.getActiveChannel().isMod(user) && !user.getActiveChannel().isOwner(user)) {
+					user.sendMessage(ChatColor.RED
+							+ "You must be a mod to do that!");
+					return;
+				}
+				if(user.getActiveChannel().isPaused()) {
+					user.getActiveChannel().disablePause();
+				} else {
+					user.getActiveChannel().enablePause();
+				}
 			} else if (args[0].equalsIgnoreCase("motd")) {
 				if (!user.inChannel()) {
 					user.sendMessage(ChatColor.RED + "You're not in a channel!");
@@ -284,6 +296,10 @@ public class ChatChannelCommands implements Commands {
 							} else {
 								newMotd += " " + args[i];
 							}
+						}
+						if(newMotd.contains("`")) {
+							user.sendMessage(ChatColor.RED + "MOTDs cannot contain the special character: `");
+							return;
 						}
 						user.getActiveChannel().setMotd(newMotd);
 						user.sendMessage(ChatColor.YELLOW
@@ -389,6 +405,35 @@ public class ChatChannelCommands implements Commands {
 				} else {
 					user.sendMessage(ChatColor.YELLOW
 							+ "Proper use is /channel add <name>");
+				}
+			} else if (args[0].equalsIgnoreCase("name")) {
+				if (!user.inChannel()) {
+					user.sendMessage(ChatColor.RED + "You're not in a channel!");
+					return;
+				}
+				if (args.length == 1) {
+					user.sendMessage(ChatColor.YELLOW
+							+ "Proper use is /channel name <name>");
+				} else {
+					if (user.getActiveChannel().isOwner(user)) {
+						String newName = "";
+						for (int i = 1; i < args.length; i++) {
+							if(newName.isEmpty()) {
+								newName += args[i];
+							} else {
+								newName += " " + args[i];
+							}
+						}
+						if(newName.contains("`")) {
+							user.sendMessage(ChatColor.RED + "Display namess cannot contain the special character: `");
+							return;
+						}
+						user.getActiveChannel().setDisplayName(newName);
+						user.sendMessage(ChatColor.GREEN + "The display name was successfully set.");
+					} else {
+						user.sendMessage(ChatColor.RED
+								+ "You must be the channel owner to do that!");
+					}
 				}
 			}
 		}

@@ -17,6 +17,7 @@ public class ChatChannel {
 	private PermissionUser owner;
 	private ChatLevel defLevel;
 	private String motd;
+	private String displayName;
 
 	// Loaded allow/deny lists
 	private List<PermissionUser> mods;
@@ -29,11 +30,12 @@ public class ChatChannel {
 	private List<User> inChannel;
 	private List<User> spies;
 	private SlowMode slow;
+	private boolean paused;
 
 	// Constructors
 	protected static ChatChannel getChannel(ChatChannelController control,
 			String key, String value) {
-		if (value.split("/").length != 7) {
+		if (value.split("/").length != 8) {
 			control.plugin.log
 					.severe("ChatChannel "
 							+ key
@@ -120,13 +122,14 @@ public class ChatChannel {
 				muted.add(mute);
 			}
 		}
-		String motd = value.split("/")[5];
+		String motd = value.split("/")[5].replace("`", "/");
+		String displayname = value.split("/")[6].replace("`", "/");
 		ChatLevel joinType;
-		if (value.split("/")[6].equalsIgnoreCase("b")) {
+		if (value.split("/")[7].equalsIgnoreCase("b")) {
 			joinType = ChatLevel.BANNED;
-		} else if (value.split("/")[6].equalsIgnoreCase("m")) {
+		} else if (value.split("/")[7].equalsIgnoreCase("m")) {
 			joinType = ChatLevel.MUTED;
-		} else if (value.split("/")[6].equalsIgnoreCase("d")) {
+		} else if (value.split("/")[7].equalsIgnoreCase("d")) {
 			joinType = ChatLevel.DEFAULT;
 		} else {
 			control.plugin.log.warning("ChatChannel " + key
@@ -138,13 +141,14 @@ public class ChatChannel {
 			joinType = ChatLevel.DEFAULT;
 		}
 		return new ChatChannel(control, key, owner, mods, guests, banned,
-				muted, joinType, motd);
+				muted, joinType, motd, displayname);
 	}
 
 	protected ChatChannel(ChatChannelController control, String name,
 			PermissionUser owner, List<PermissionUser> mods,
 			List<PermissionUser> guests, List<PermissionUser> banned,
-			List<PermissionUser> muted, ChatLevel defaultLevel, String motd) {
+			List<PermissionUser> muted, ChatLevel defaultLevel, String motd,
+			String displayName) {
 		this.control = control;
 		this.name = name;
 		this.owner = owner;
@@ -158,6 +162,8 @@ public class ChatChannel {
 		this.spies = new ArrayList<User>();
 		this.slow = new SlowMode(control.plugin,
 				control.plugin.mainProperties.getInteger("slowTime", 10000));
+		this.paused = false;
+		this.displayName = displayName;
 	}
 
 	// Value-retrieving functions
@@ -190,7 +196,7 @@ public class ChatChannel {
 			}
 			value += muted.get(i).getName();
 		}
-		value += "/" + motd + "/";
+		value += "/" + motd.replace("/", "`") + "/" + displayName.replace("/", "`") + "/";
 		switch (defLevel) {
 		case BANNED:
 			value += "b";
@@ -204,6 +210,19 @@ public class ChatChannel {
 
 	public String getName() {
 		return name;
+	}
+	
+	public String getDisplayName() {
+		return displayName;
+	}
+	
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
+		control.saveChannel(this);
+	}
+	
+	public boolean hasDisplayName() {
+		return(!displayName.isEmpty() && !displayName.equals(name));
 	}
 
 	// Level-checking functions
@@ -277,7 +296,7 @@ public class ChatChannel {
 		return motd;
 	}
 
-	// Slow mode functions
+	// Slow mode / Pause mode functions
 	public void enableSlow() {
 		slow.EnableSlow();
 		this.broadcastMessage(ChatColor.GRAY
@@ -301,6 +320,20 @@ public class ChatChannel {
 
 	public boolean isSlow() {
 		return slow.isEnabled();
+	}
+	
+	public void enablePause() {
+		paused = true;
+		this.broadcastMessage(ChatColor.GRAY + "Pause mode has been enabled. Only mods can talk.");
+	}
+	
+	public void disablePause() {
+		paused = false;
+		this.broadcastMessage(ChatColor.GRAY + "Pause mode has been disabled.");
+	}
+	
+	public boolean isPaused() {
+		return paused;
 	}
 
 	// Online-status functions and methods
@@ -330,16 +363,22 @@ public class ChatChannel {
 			break;
 		case MUTED:
 			user.sendMessage(ChatColor.WHITE + "You have joined "
-					+ ChatColor.GREEN + this.name);
+					+ ChatColor.GREEN + this.displayName);
 			user.sendMessage(ChatColor.YELLOW + motd);
 			user.sendMessage(ChatColor.RED
 					+ "Please note that you are muted on this channel...");
+			if(this.isPaused()) {
+				user.sendMessage(ChatColor.GRAY + "Please note that pause mode is enabled. Only mods can talk.");
+			}
 			forceJoin(user);
 			break;
 		default:
 			user.sendMessage(ChatColor.WHITE + "You have joined "
-					+ ChatColor.GREEN + this.name);
+					+ ChatColor.GREEN + this.displayName);
 			user.sendMessage(ChatColor.YELLOW + motd);
+			if(this.isPaused()) {
+				user.sendMessage(ChatColor.GRAY + "Please note that pause mode is enabled. Only mods can talk.");
+			}
 			if (user.hasPerm("isUniversalMod") && !isMod(user)
 					&& !isOwner(user)) {
 				Mod(user);
@@ -479,6 +518,10 @@ public class ChatChannel {
 
 	// Messaging methods
 	public void sendChat(User user, String message) {
+		if (!isOwner(user) && !isMod(user) && paused) {
+			user.sendMessage(ChatColor.GRAY + "You can't talk while pause mode is enabled.");
+			return;
+		}
 		if (isMuted(user)) {
 			user.sendMessage(ChatColor.GRAY
 					+ control.plugin.mainProperties.getString("muteMessage",
@@ -523,13 +566,13 @@ public class ChatChannel {
 	}
 
 	protected void broadcastMessage(String message) {
-		control.plugin.log.info("(" + name + ") " + ChatColor.stripColor(message));
+		control.plugin.log.info("(" + displayName + ") " + ChatColor.stripColor(message));
 		for (User user : inChannel) {
-			user.sendMessage(ChatColor.YELLOW + "(" + this.name + ") "
+			user.sendMessage(ChatColor.YELLOW + "(" + this.displayName + ") "
 					+ ChatColor.WHITE + message);
 		}
 		for (User user : spies) {
-			user.sendMessage(ChatColor.YELLOW + "(" + this.name + ") "
+			user.sendMessage(ChatColor.YELLOW + "(" + this.displayName + ") "
 					+ ChatColor.WHITE + message);
 		}
 	}
@@ -551,6 +594,18 @@ public class ChatChannel {
 	// Permission-changing functions
 	protected void changeOwner(PermissionUser user) {
 		PermissionUser oldowner = owner;
+		if(isMod(user)) {
+			Unmod(user);
+		}
+		if(isGuested(user)) {
+			Unguest(user);
+		}
+		if(isMuted(user)) {
+			Unmute(user);
+		}
+		if(isBanned(user)) {
+			Unban(user);
+		}
 		owner = user;
 		Mod(oldowner);
 		control.saveChannel(this);
