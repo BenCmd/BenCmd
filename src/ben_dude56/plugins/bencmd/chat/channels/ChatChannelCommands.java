@@ -269,9 +269,20 @@ public class ChatChannelCommands implements Commands {
 				} else {
 					if (user.getActiveChannel().isMod(user)
 							|| user.getActiveChannel().isOwner(user)) {
+						String newMotd = "";
 						for (int i = 1; i < args.length; i++) {
-
+							if(newMotd.isEmpty()) {
+								newMotd += args[i];
+							} else {
+								newMotd += " " + args[i];
+							}
 						}
+						user.getActiveChannel().setMotd(newMotd);
+						user.sendMessage(ChatColor.YELLOW
+								+ user.getActiveChannel().getMotd());
+					} else {
+						user.sendMessage(ChatColor.RED
+								+ "You must be a mod to do that!");
 					}
 				}
 			} else if (args[0].equalsIgnoreCase("giveto")) {

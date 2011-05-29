@@ -96,14 +96,15 @@ public class FlyDetect {
 									+ " was sent to spawn for flying!");
 					break;
 				case 1:
-					User.getUser(plugin, player)
-							.Kick("You were auto-detected flying!");
+					User.getUser(plugin, player).Kick(
+							"You were auto-detected flying!");
 					plugin.getServer().broadcastMessage(
 							ChatColor.RED + player.getName()
 									+ " was kicked for flying!");
 					break;
 				case 2:
-					if (!User.getUser(plugin, player).hasPerm("isJailed", false)) {
+					if (!User.getUser(plugin, player)
+							.hasPerm("isJailed", false)) {
 						User.getUser(plugin, player).toggleJail();
 						plugin.getServer().broadcastMessage(
 								ChatColor.RED + player.getName()
@@ -111,8 +112,8 @@ public class FlyDetect {
 					}
 					break;
 				default:
-					User.getUser(plugin, player)
-							.Kick("You were auto-detected flying!");
+					User.getUser(plugin, player).Kick(
+							"You were auto-detected flying!");
 					plugin.getServer().broadcastMessage(
 							ChatColor.RED + player.getName()
 									+ " was kicked for flying!");

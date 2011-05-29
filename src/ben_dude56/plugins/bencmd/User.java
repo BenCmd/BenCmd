@@ -26,26 +26,26 @@ public class User extends ActionableUser {
 		}
 		return null;
 	}
-	
+
 	public static void finalizeAll() {
 		User.activeUsers.clear();
 	}
-	
+
 	public static void finalizeUser(User user) {
-		if(User.activeUsers.containsKey(user.getName())) {
+		if (User.activeUsers.containsKey(user.getName())) {
 			User.activeUsers.remove(user.getName());
 		}
-		assert(!User.activeUsers.containsKey(user.getName()));
+		assert (!User.activeUsers.containsKey(user.getName()));
 	}
-	
+
 	public static User getUser(BenCmd instance, Player entity) {
-		if(User.activeUsers.containsKey(entity.getName())) {
+		if (User.activeUsers.containsKey(entity.getName())) {
 			return User.activeUsers.get(entity.getName());
 		} else {
 			return new User(instance, entity);
 		}
 	}
-	
+
 	public static User getUser(BenCmd instance) {
 		return new User(instance);
 	}
@@ -63,12 +63,12 @@ public class User extends ActionableUser {
 		super(instance, entity);
 		plugin = instance;
 		player = entity;
-		if(User.activeChannels.containsKey(entity.getName())) {
+		if (User.activeChannels.containsKey(entity.getName())) {
 			activeChannel = User.activeChannels.get(entity.getName());
 		} else {
 			activeChannel = null;
 		}
-		if(User.spyingChannels.containsKey(entity.getName())) {
+		if (User.spyingChannels.containsKey(entity.getName())) {
 			spying = User.spyingChannels.get(entity.getName());
 		} else {
 			spying = new ArrayList<ChatChannel>();
@@ -90,11 +90,11 @@ public class User extends ActionableUser {
 	public boolean inChannel() {
 		return (activeChannel != null);
 	}
-	
+
 	private void pushActive() {
 		User.activeChannels.put(player.getName(), activeChannel);
 	}
-	
+
 	private void pushSpying() {
 		User.spyingChannels.put(player.getName(), spying);
 	}

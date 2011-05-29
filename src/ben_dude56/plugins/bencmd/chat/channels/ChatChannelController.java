@@ -13,6 +13,7 @@ import org.bukkit.ChatColor;
 import ben_dude56.plugins.bencmd.BenCmd;
 import ben_dude56.plugins.bencmd.User;
 import ben_dude56.plugins.bencmd.chat.channels.ChatChannel.ChatLevel;
+import ben_dude56.plugins.bencmd.permissions.PermissionUser;
 
 public class ChatChannelController extends Properties {
 	private static final long serialVersionUID = 0L;
@@ -72,6 +73,24 @@ public class ChatChannelController extends Properties {
 					+ "The following chat channels are open to you:");
 			user.sendMessage(ChatColor.GRAY + value);
 		}
+	}
+
+	protected void addChannel(String name, User owner) {
+		ChatChannel channel;
+		channels.add(channel = new ChatChannel(this, name, owner,
+				new ArrayList<PermissionUser>(),
+				new ArrayList<PermissionUser>(),
+				new ArrayList<PermissionUser>(),
+				new ArrayList<PermissionUser>(), ChatLevel.DEFAULT,
+				"Change this using /channel motd <message>"));
+		saveChannel(channel);
+		owner.joinChannel(channel);
+	}
+	
+	protected void removeChannel(ChatChannel channel) {
+		channel.prepDelete();
+		channels.remove(channel);
+		this.remove(channel.getName());
 	}
 
 	public void loadFile() {

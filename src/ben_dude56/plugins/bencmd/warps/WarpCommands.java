@@ -122,8 +122,8 @@ public class WarpCommands implements Commands {
 			}
 			User warper;
 			try {
-				warper = User.getUser(plugin, plugin.getServer()
-						.matchPlayer(args[1]).get(0));
+				warper = User.getUser(plugin,
+						plugin.getServer().matchPlayer(args[1]).get(0));
 			} catch (NullPointerException e) {
 				user.sendMessage(ChatColor.RED + "That player doesn't exist!");
 				return;

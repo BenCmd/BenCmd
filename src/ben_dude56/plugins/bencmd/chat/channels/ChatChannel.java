@@ -190,7 +190,7 @@ public class ChatChannel {
 			}
 			value += muted.get(i).getName();
 		}
-		value += "/";
+		value += "/" + motd + "/";
 		switch (defLevel) {
 		case BANNED:
 			value += "b";
@@ -319,11 +319,15 @@ public class ChatChannel {
 	}
 
 	public ChatLevel joinChannel(User user) {
+		if (isSpying(user)) {
+			Unspy(user);
+		}
 		ChatLevel level;
 		switch (level = getLevel(user)) {
 		case BANNED:
 			user.sendMessage(ChatColor.RED
 					+ "You're not allowed to join that channel!");
+			break;
 		case MUTED:
 			user.sendMessage(ChatColor.WHITE + "You have joined "
 					+ ChatColor.GREEN + this.name);
@@ -331,6 +335,7 @@ public class ChatChannel {
 			user.sendMessage(ChatColor.RED
 					+ "Please note that you are muted on this channel...");
 			forceJoin(user);
+			break;
 		default:
 			user.sendMessage(ChatColor.WHITE + "You have joined "
 					+ ChatColor.GREEN + this.name);
@@ -340,6 +345,7 @@ public class ChatChannel {
 				Mod(user);
 			}
 			forceJoin(user);
+			break;
 		}
 		return level;
 	}
@@ -360,11 +366,11 @@ public class ChatChannel {
 					broadcastMessage(user.getColor() + user.getName()
 							+ ChatColor.WHITE + " has left the chat");
 				}
+				user.sendMessage(ChatColor.GRAY
+						+ "You successfully left the chat channel: " + name);
 				return;
 			}
 		}
-		user.sendMessage(ChatColor.GRAY
-				+ "You successfully left the chat channel: " + name);
 	}
 
 	public boolean Kick(User user) {
@@ -375,12 +381,35 @@ public class ChatChannel {
 			return false;
 		}
 		if (isOnline(user) != null) {
-			leaveChannel(user);
+			user.leaveChannel();
 			user.sendMessage(ChatColor.RED
 					+ "You have been kicked from your active chat channel.");
 			return true;
 		} else {
 			return false;
+		}
+	}
+	
+	private void KillKick(User user) {
+		if (isOnline(user) != null) {
+			user.leaveChannel();
+			user.sendMessage(ChatColor.RED
+					+ "Your active chat channel was shut down.");
+		}
+	}
+	
+	private void KillUnspy(User user) {
+		user.unspyChannel(this);
+		user.sendMessage(ChatColor.RED
+				+ "Your active chat channel was shut down.");
+	}
+	
+	protected void prepDelete() {
+		while(!inChannel.isEmpty()) {
+			KillKick(inChannel.get(0));
+		}
+		while(!spies.isEmpty()) {
+			KillUnspy(spies.get(0));
 		}
 	}
 
@@ -394,7 +423,7 @@ public class ChatChannel {
 	}
 
 	public boolean Spy(User user) {
-		if (isMod(user)) {
+		if (isMod(user) || isOwner(user)) {
 			if (isOnline(user) != null) {
 				user.sendMessage(ChatColor.RED
 						+ "You can't spy on a channel that you're already in!");
@@ -427,7 +456,7 @@ public class ChatChannel {
 	}
 
 	public boolean Unspy(User user) {
-		if (isMod(user)) {
+		if (isMod(user) || isOwner(user)) {
 			if (!isSpying(user)) {
 				user.sendMessage(ChatColor.RED
 						+ "You're not spying on that channel!");
@@ -454,6 +483,7 @@ public class ChatChannel {
 			user.sendMessage(ChatColor.GRAY
 					+ control.plugin.mainProperties.getString("muteMessage",
 							"You are muted..."));
+			return;
 		}
 		boolean blocked = ChatChecker.checkBlocked(message, control.plugin);
 		if (blocked) {
@@ -493,7 +523,7 @@ public class ChatChannel {
 	}
 
 	protected void broadcastMessage(String message) {
-		control.plugin.log.info("(" + name + ") " + message);
+		control.plugin.log.info("(" + name + ") " + ChatColor.stripColor(message));
 		for (User user : inChannel) {
 			user.sendMessage(ChatColor.YELLOW + "(" + this.name + ") "
 					+ ChatColor.WHITE + message);
