@@ -160,8 +160,16 @@ public class ChatChannelCommands implements Commands {
 					user.sendMessage(ChatColor.RED + "You're not in a channel!");
 				}
 			} else if (args[0].equalsIgnoreCase("remove")) {
-				// TODO For version 1.1.1: Allow dynamic adding/removing of chat
-				// channels.
+				if(user.inChannel()) {
+					if(user.getActiveChannel().isOwner(user)) {
+						plugin.channels.removeChannel(user.getActiveChannel());
+					} else {
+						user.sendMessage(ChatColor.RED
+								+ "You must be the channel owner to do that!");
+					}
+				} else {
+					user.sendMessage(ChatColor.RED + "You're not in a channel!");
+				}
 			} else if (args[0].equalsIgnoreCase("ban")) {
 				if (args.length != 2) {
 					user.sendMessage(ChatColor.YELLOW
@@ -371,8 +379,17 @@ public class ChatChannelCommands implements Commands {
 							+ "That channel couldn't be found!");
 				}
 			} else if (args[0].equalsIgnoreCase("add")) {
-				// TODO For version 1.1.1: Allow dynamic adding/removing of chat
-				// channels.
+				if(!user.hasPerm("canAddChannels")) {
+					user.sendMessage(ChatColor.RED
+							+ "You don't have permission to do that!");
+					return;
+				}
+				if (args.length == 2) {
+					plugin.channels.addChannel(args[1], user);
+				} else {
+					user.sendMessage(ChatColor.YELLOW
+							+ "Proper use is /channel add <name>");
+				}
 			}
 		}
 	}

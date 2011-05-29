@@ -91,6 +91,7 @@ public class ChatChannelController extends Properties {
 		channel.prepDelete();
 		channels.remove(channel);
 		this.remove(channel.getName());
+		this.saveFile("-BenCmd Channel List-");
 	}
 
 	public void loadFile() {
