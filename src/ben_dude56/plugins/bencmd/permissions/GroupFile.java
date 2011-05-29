@@ -425,4 +425,22 @@ public class GroupFile extends Properties {
 			return ChatColor.WHITE;
 		}
 	}
+
+	public void setColor(String group, ChatColor color) {
+		this.put(
+				group,
+				this.getProperty(group).split("/")[2] + "/"
+						+ this.getProperty(group).split("/")[1] + "/"
+						+ this.getPrefix(group) + "/" + color.getCode());
+		save();
+	}
+	
+	public void setPrefix(String group, String prefix) {
+		this.put(
+				group,
+				this.getProperty(group).split("/")[2] + "/"
+						+ this.getProperty(group).split("/")[1] + "/"
+						+ prefix + "/" + getColor(group).getCode());
+		save();
+	}
 }

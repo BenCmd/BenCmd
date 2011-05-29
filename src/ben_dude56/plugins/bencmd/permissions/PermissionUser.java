@@ -118,6 +118,13 @@ public class PermissionUser {
 		}
 		return perm.userFile.getColor(name);
 	}
+	
+	public void setColor(ChatColor color) {
+		if(name.equalsIgnoreCase("*")) {
+			return;
+		}
+		perm.userFile.setColor(name, color);
+	}
 
 	public boolean inGroup(String groupName) {
 		if (name.equalsIgnoreCase("*")) {

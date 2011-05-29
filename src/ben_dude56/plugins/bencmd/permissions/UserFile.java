@@ -460,4 +460,10 @@ public class UserFile extends Properties {
 			return ChatColor.YELLOW;
 		}
 	}
+
+	public void setColor(String user, ChatColor color) {
+		this.put(user, this.getProperty(user).split("/")[0] + "/"
+				+ this.getProperty(user).split("/")[1] + "/" + color.getCode());
+		save();
+	}
 }

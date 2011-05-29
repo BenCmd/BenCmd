@@ -25,6 +25,8 @@ public class DeathListener extends EntityListener {
 	}
 
 	public void onEntityDeath(EntityDeathEvent event) {
+		// TODO For version 1.1.2: Provide options to use kits to control what
+		// monsters drop.
 		if (event.getEntity() instanceof CraftZombie) {
 			event.getDrops().clear();
 			event.getDrops().add(new ItemStack(Material.PAPER, 5));

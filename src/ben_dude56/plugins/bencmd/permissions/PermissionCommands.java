@@ -48,19 +48,18 @@ public class PermissionCommands implements Commands {
 		return false;
 	}
 
-	// TODO For version 1.1.1: Add ability to change prefixes and colors using
-	// /group and /user
-
 	public void User(String[] args, User user) {
 		if (args.length == 0 || args[0].equalsIgnoreCase("help")) {
 			user.sendMessage(ChatColor.YELLOW
-					+ "Proper use is: /user <name> {add|remove|g:<group>|<permissions>}");
+					+ "Proper use is: /user <name> {add|remove|g:<group>|c:<color>|<permissions>}");
 			user.sendMessage(ChatColor.YELLOW
 					+ "   -<name> is the name of the user.");
 			user.sendMessage(ChatColor.YELLOW
 					+ "   -Use add to add a user, and remove to delete one.");
 			user.sendMessage(ChatColor.YELLOW
 					+ "   -Use g:<group> to change the group that a user belongs to.");
+			user.sendMessage(ChatColor.YELLOW
+					+ "   -Use c:<color> to change the color that the player's name shows up as.");
 			user.sendMessage(ChatColor.YELLOW
 					+ "   -Otherwise, type +<permission> or -<permission> to add/remove permissions.");
 			return;
@@ -141,14 +140,35 @@ public class PermissionCommands implements Commands {
 				case Success:
 					user.sendMessage(ChatColor.GREEN
 							+ "The operation completed successfully!");
-					log.info("User " + args[0] + " has been moved into group "
-							+ args[1] + ".");
 					break;
 				}
 				break;
 			} else if (args[1].startsWith("p:")) {
 				user.sendMessage(ChatColor.RED
 						+ "You can only do that for groups!");
+				return;
+			} else if (args[1].startsWith("c:")) {
+				args[1] = args[1].replaceFirst("c:", "");
+				int colorid;
+				try {
+					colorid = Integer.parseInt(args[1]);
+				} catch (NumberFormatException e) {
+					try {
+						colorid = Integer.parseInt(args[1], 16);
+					} catch (NumberFormatException e2) {
+						user.sendMessage(ChatColor.RED + "Invalid color ID!");
+						return;
+					}
+				}
+				PermissionUser user2;
+				if((user2 = PermissionUser.matchUserIgnoreCase(args[0], plugin)) == null) {
+					user.sendMessage(ChatColor.RED
+							+ "The user you tried to change is not present in the database!");
+					return;
+				}
+				user2.setColor(ChatColor.getByCode(colorid));
+				user.sendMessage(ChatColor.GREEN
+						+ "The operation completed successfully!");
 				return;
 			} else {
 				if (args[1].startsWith("+")) {
@@ -232,13 +252,17 @@ public class PermissionCommands implements Commands {
 	public void Group(String[] args, User user) {
 		if (args.length == 0 || args[0].equalsIgnoreCase("help")) {
 			user.sendMessage(ChatColor.YELLOW
-					+ "Proper use is: /group <name> {add|remove|g:<group>|<permissions>}");
+					+ "Proper use is: /group <name> {add|remove|g:<group>|c:<color>|p:<prefix>|<permissions>}");
 			user.sendMessage(ChatColor.YELLOW
 					+ "   -<name> is the name of the group.");
 			user.sendMessage(ChatColor.YELLOW
 					+ "   -Use add to add a group, and remove to delete one.");
 			user.sendMessage(ChatColor.YELLOW
 					+ "   -Use g:<group> to change the group that a group belongs to.");
+			user.sendMessage(ChatColor.YELLOW
+					+ "   -Use c:<color> to change the color that the group's prefix shows up as.");
+			user.sendMessage(ChatColor.YELLOW
+					+ "   -Use p:<prefix> to change the prefix of the group.");
 			user.sendMessage(ChatColor.YELLOW
 					+ "   -Otherwise, type +<permission> or -<permission> to add/remove permissions.");
 			return;
@@ -312,9 +336,42 @@ public class PermissionCommands implements Commands {
 				}
 				break;
 			} else if (args[1].startsWith("p:")) {
-				user.sendMessage(ChatColor.RED
-						+ "You can only do that for groups!");
-				return;
+				args[1] = args[1].replaceFirst("p:", "");
+				PermissionGroup group;
+				try {
+					group = new PermissionGroup(plugin, args[0]);
+				} catch (NullPointerException e) {
+					user.sendMessage(ChatColor.RED
+							+ "The group you tried to change is not present in the database!");
+					return;
+				}
+				group.setPrefix(args[1]);
+				user.sendMessage(ChatColor.GREEN
+						+ "The operation completed successfully!");
+			} else if (args[1].startsWith("c:")) {
+				args[1] = args[1].replaceFirst("c:", "");
+				PermissionGroup group;
+				try {
+					group = new PermissionGroup(plugin, args[0]);
+				} catch (NullPointerException e) {
+					user.sendMessage(ChatColor.RED
+							+ "The group you tried to change is not present in the database!");
+					return;
+				}
+				int colorid;
+				try {
+					colorid = Integer.parseInt(args[1]);
+				} catch (NumberFormatException e) {
+					try {
+						colorid = Integer.parseInt(args[1], 16);
+					} catch (NumberFormatException e2) {
+						user.sendMessage(ChatColor.RED + "Invalid color ID!");
+						return;
+					}
+				}
+				group.setPrefixColor(ChatColor.getByCode(colorid));
+				user.sendMessage(ChatColor.GREEN
+						+ "The operation completed successfully!");
 			} else {
 				if (args[1].startsWith("+")) {
 					// Fall-through

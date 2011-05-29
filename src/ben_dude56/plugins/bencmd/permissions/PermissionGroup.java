@@ -50,9 +50,17 @@ public class PermissionGroup {
 	public String getPrefix() {
 		return perm.groupFile.getPrefix(name);
 	}
+	
+	public void setPrefix(String prefix) {
+		perm.groupFile.setPrefix(name, prefix);
+	}
 
 	public ChatColor getPrefixColor() {
 		return perm.groupFile.getColor(name);
+	}
+	
+	public void setPrefixColor(ChatColor color) {
+		perm.groupFile.setColor(name, color);
 	}
 
 	public PermissionGroup getGroup() {

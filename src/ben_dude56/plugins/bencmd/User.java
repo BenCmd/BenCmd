@@ -27,6 +27,10 @@ public class User extends ActionableUser {
 		return null;
 	}
 
+	public static User matchUserIgnoreCase(String name, BenCmd instance) {
+		return User.matchUser(name, instance);
+	}
+
 	public static void finalizeAll() {
 		User.activeUsers.clear();
 	}
