@@ -56,6 +56,8 @@ public class InventoryBackend {
 			return 1;
 		if (id == 354 || id == 2256 || id == 2257)
 			return 1;
+		if (id == 358)
+			return 1;
 		if (id == 332 || id == 344)
 			return THROWABLE_STACK;
 		return FULL_STACK;

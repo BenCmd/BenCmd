@@ -34,6 +34,7 @@ import ben_dude56.plugins.bencmd.lots.LotBlockListener;
 import ben_dude56.plugins.bencmd.lots.LotCommands;
 import ben_dude56.plugins.bencmd.lots.LotFile;
 import ben_dude56.plugins.bencmd.lots.LotPlayerListener;
+import ben_dude56.plugins.bencmd.maps.MapCommands;
 import ben_dude56.plugins.bencmd.money.MoneyCommands;
 import ben_dude56.plugins.bencmd.money.PriceFile;
 import ben_dude56.plugins.bencmd.nofly.FlyDetect;
@@ -489,6 +490,9 @@ public class BenCmd extends JavaPlugin {
 				commandLabel, args)) {
 			return true;
 		} else if (new MoneyCommands(this).onCommand(sender, command,
+				commandLabel, args)) {
+			return true;
+		} else if (new MapCommands(this).onCommand(sender, command,
 				commandLabel, args)) {
 			return true;
 		} else {

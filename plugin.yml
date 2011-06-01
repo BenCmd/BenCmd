@@ -188,3 +188,6 @@ commands:
     channel:
         usage:
         description: Manages chat channels
+    map:
+        usage:
+        description: Deals with maps
