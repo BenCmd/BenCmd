@@ -101,6 +101,9 @@ public class BuyableItem {
 					.getInventory().all(currency.getMaterial());
 			for (Integer pos : matches.keySet()) {
 				ItemStack item = user.getHandle().getInventory().getItem(pos);
+				if(item.getDurability() != this.durability) {
+					continue;
+				}
 				if (item.getTypeId() == this.getItemId()
 						&& item.getDurability() == this.getDurability()) {
 					continue;
@@ -229,12 +232,16 @@ public class BuyableItem {
 		}
 		for (int i = 0; i < matches.size(); i++) {
 			ItemStack iStack = (ItemStack) matches.values().toArray()[i];
+			if(iStack.getDurability() != this.durability) {
+				continue;
+			}
 			Integer slot = (Integer) matches.keySet().toArray()[i];
 			if (amountTaken + iStack.getAmount() <= amount) {
 				amountTaken += iStack.getAmount();
 				user.getHandle().getInventory().clear(slot);
 			} else {
 				Integer toTake = amount - amountTaken;
+				amountTaken += toTake;
 				iStack.setAmount(iStack.getAmount() - toTake);
 				user.getHandle().getInventory().setItem(slot, iStack);
 			}
