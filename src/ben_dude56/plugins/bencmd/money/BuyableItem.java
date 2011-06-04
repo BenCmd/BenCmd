@@ -225,6 +225,9 @@ public class BuyableItem {
 		HashMap<Integer, ? extends ItemStack> matches = user.getHandle()
 				.getInventory().all(this.getMaterial());
 		for (ItemStack iStack : matches.values()) {
+			if(iStack.getDurability() != this.durability) {
+				continue;
+			}
 			amountHas += iStack.getAmount();
 		}
 		if (amount > amountHas) {
