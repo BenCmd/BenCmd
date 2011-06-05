@@ -339,13 +339,13 @@ public class PermissionCommands implements Commands {
 				args[1] = args[1].replaceFirst("p:", "");
 				PermissionGroup group;
 				try {
-					group = new PermissionGroup(plugin, args[0].replace('_', ' '));
+					group = new PermissionGroup(plugin, args[0]);
 				} catch (NullPointerException e) {
 					user.sendMessage(ChatColor.RED
 							+ "The group you tried to change is not present in the database!");
 					return;
 				}
-				group.setPrefix(args[1]);
+				group.setPrefix(args[1].replace('_', ' '));
 				user.sendMessage(ChatColor.GREEN
 						+ "The operation completed successfully!");
 			} else if (args[1].startsWith("c:")) {
