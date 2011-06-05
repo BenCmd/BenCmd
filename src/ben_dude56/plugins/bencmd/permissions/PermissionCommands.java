@@ -339,7 +339,7 @@ public class PermissionCommands implements Commands {
 				args[1] = args[1].replaceFirst("p:", "");
 				PermissionGroup group;
 				try {
-					group = new PermissionGroup(plugin, args[0]);
+					group = new PermissionGroup(plugin, args[0].replace('_', ' '));
 				} catch (NullPointerException e) {
 					user.sendMessage(ChatColor.RED
 							+ "The group you tried to change is not present in the database!");
