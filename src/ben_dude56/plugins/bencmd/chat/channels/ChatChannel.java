@@ -2,6 +2,8 @@ package ben_dude56.plugins.bencmd.chat.channels;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Random;
 
 import org.bukkit.ChatColor;
 
@@ -546,6 +548,34 @@ public class ChatChannel {
 			} else {
 				slow.playerAdd(user.getName());
 			}
+		}
+		if(message.toUpperCase(Locale.ENGLISH).equals(message) && !message.toLowerCase(Locale.ENGLISH).equals(message) &&
+				!message.equals(":D") && !message.equals("D:")) {
+			Random rand = new Random();
+			switch(rand.nextInt(7)) {
+			case 0:
+				user.sendMessage(ChatColor.GREEN + user.getName() + "'s Conscience" + ChatColor.GRAY + " has whispered: Every time you type in all caps, a baby kitten DIES.");
+				break;
+			case 1:
+				user.sendMessage(ChatColor.GOLD + "God" + ChatColor.GRAY + " has whispered: Every time you type in all caps, a dolphin gets run over by a jet ski! Save the dolphins!");
+				break;
+			case 2:
+				user.sendMessage(ChatColor.DARK_PURPLE + "Your mother" + ChatColor.GRAY + " has whispered: Talk in all caps, break your mother's poor old back!");
+				break;
+			case 3:
+				user.sendMessage(ChatColor.DARK_BLUE + "Server" + ChatColor.GRAY + " has whispered: Stop talking in all-caps! My ban-hammer is looming over your face!");
+				break;
+			case 4:
+				user.sendMessage(ChatColor.DARK_RED + "ben_dude56" + ChatColor.GRAY + " has whispered: All-caps message + Attitude = BANHAMMER!");
+				break;
+			case 5:
+				user.sendMessage(ChatColor.DARK_RED + "Herobrine" + ChatColor.GRAY + " has whispered: If you keep talking in all-caps, I will haunt you in your dreams!");
+				break;
+			case 6:
+				user.sendMessage(ChatColor.GREEN + "BANHAMMER" + ChatColor.GRAY + " has whispered: THIS IS WHAT YOU LOOK LIKE WHEN YOU TYPE IN ALL-CAPS!");
+				break;
+			}
+			return;
 		}
 		String username = user.getColor() + user.getName();
 		if (isOwner(user)) {
