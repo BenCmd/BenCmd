@@ -15,8 +15,7 @@ public class CreeperListener extends EntityListener {
 	}
 
 	public void onEntityTarget(EntityTargetEvent event) {
-		// TODO For version 1.1.2: Provide option to turn passive Creepers off.
-		if (event.getEntity().toString().equalsIgnoreCase("CraftCreeper"))
+		if (event.getEntity().toString().equalsIgnoreCase("CraftCreeper") && plugin.mainProperties.getBoolean("creepersPassive", true))
 			event.setCancelled(true);
 		if (event.getTarget() instanceof Player
 				&& User.getUser(plugin, (Player) event.getTarget()).isPoofed())

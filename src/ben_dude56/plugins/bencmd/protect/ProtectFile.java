@@ -187,7 +187,7 @@ public class ProtectFile extends Properties {
 				if (init) {
 					value += ",";
 				} else {
-					init = false;
+					init = true;
 				}
 				value += guest.getName();
 			}
