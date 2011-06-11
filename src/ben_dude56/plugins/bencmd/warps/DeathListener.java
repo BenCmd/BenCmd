@@ -5,6 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.block.CraftSign;
+import org.bukkit.craftbukkit.entity.CraftCreeper;
 import org.bukkit.craftbukkit.entity.CraftSkeleton;
 import org.bukkit.craftbukkit.entity.CraftSpider;
 import org.bukkit.craftbukkit.entity.CraftZombie;
@@ -16,6 +17,7 @@ import org.bukkit.inventory.ItemStack;
 
 import ben_dude56.plugins.bencmd.BenCmd;
 import ben_dude56.plugins.bencmd.User;
+import ben_dude56.plugins.bencmd.invtools.kits.Kit;
 
 public class DeathListener extends EntityListener {
 	BenCmd plugin;
@@ -25,17 +27,61 @@ public class DeathListener extends EntityListener {
 	}
 
 	public void onEntityDeath(EntityDeathEvent event) {
-		// TODO For version 1.1.2: Provide options to use kits to control what
-		// monsters drop.
 		if (event.getEntity() instanceof CraftZombie) {
+			if(plugin.mainProperties.getString("zombieDrop", "").isEmpty()) {
+				return;
+			}
+			Kit kit = plugin.kits.getKit(plugin.mainProperties.getString("zombieDrop", ""));
+			if(kit == null) {
+				plugin.log.warning("Kit specified for zombie drops doesn't exist!");
+				return;
+			}
 			event.getDrops().clear();
-			event.getDrops().add(new ItemStack(Material.PAPER, 5));
+			for(ItemStack item : kit.getItems()) {
+				event.getDrops().add(item);
+			}
 		}
 		if (event.getEntity() instanceof CraftSkeleton) {
-			event.getDrops().add(new ItemStack(Material.PAPER, 3));
+			if(plugin.mainProperties.getString("skeletonDrop", "").isEmpty()) {
+				return;
+			}
+			Kit kit = plugin.kits.getKit(plugin.mainProperties.getString("skeletonDrop", ""));
+			if(kit == null) {
+				plugin.log.warning("Kit specified for skeleton drops doesn't exist!");
+				return;
+			}
+			event.getDrops().clear();
+			for(ItemStack item : kit.getItems()) {
+				event.getDrops().add(item);
+			}
 		}
 		if (event.getEntity() instanceof CraftSpider) {
-			event.getDrops().add(new ItemStack(Material.PAPER, 6));
+			if(plugin.mainProperties.getString("spiderDrop", "").isEmpty()) {
+				return;
+			}
+			Kit kit = plugin.kits.getKit(plugin.mainProperties.getString("spiderDrop", ""));
+			if(kit == null) {
+				plugin.log.warning("Kit specified for spider drops doesn't exist!");
+				return;
+			}
+			event.getDrops().clear();
+			for(ItemStack item : kit.getItems()) {
+				event.getDrops().add(item);
+			}
+		}
+		if(event.getEntity() instanceof CraftCreeper) {
+			if(plugin.mainProperties.getString("creeperDrop", "").isEmpty()) {
+				return;
+			}
+			Kit kit = plugin.kits.getKit(plugin.mainProperties.getString("creeperDrop", ""));
+			if(kit == null) {
+				plugin.log.warning("Kit specified for creeper drops doesn't exist!");
+				return;
+			}
+			event.getDrops().clear();
+			for(ItemStack item : kit.getItems()) {
+				event.getDrops().add(item);
+			}
 		}
 		if (!(event.getEntity() instanceof Player)) {
 			return;

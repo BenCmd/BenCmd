@@ -156,4 +156,8 @@ public class Kit {
 	public int getId() {
 		return kitId;
 	}
+	
+	public List<ItemStack> getItems() {
+		return items;
+	}
 }

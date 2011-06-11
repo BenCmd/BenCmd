@@ -18,50 +18,22 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import ben_dude56.plugins.bencmd.chat.ChatCommands;
-import ben_dude56.plugins.bencmd.chat.ChatPlayerListener;
-import ben_dude56.plugins.bencmd.chat.channels.ChatChannelCommands;
-import ben_dude56.plugins.bencmd.chat.channels.ChatChannelController;
-import ben_dude56.plugins.bencmd.invisible.Invisibility;
-import ben_dude56.plugins.bencmd.invisible.InvisibleCommands;
-import ben_dude56.plugins.bencmd.invtools.DispChest;
-import ben_dude56.plugins.bencmd.invtools.InventoryBlockListener;
-import ben_dude56.plugins.bencmd.invtools.InventoryCommands;
-import ben_dude56.plugins.bencmd.invtools.InventoryPlayerListener;
-import ben_dude56.plugins.bencmd.invtools.UnlimitedDisp;
-import ben_dude56.plugins.bencmd.invtools.kits.KitList;
-import ben_dude56.plugins.bencmd.lots.LotBlockListener;
-import ben_dude56.plugins.bencmd.lots.LotCommands;
-import ben_dude56.plugins.bencmd.lots.LotFile;
-import ben_dude56.plugins.bencmd.lots.LotPlayerListener;
-import ben_dude56.plugins.bencmd.maps.MapCommands;
-import ben_dude56.plugins.bencmd.money.MoneyCommands;
-import ben_dude56.plugins.bencmd.money.PriceFile;
-import ben_dude56.plugins.bencmd.nofly.FlyDetect;
-import ben_dude56.plugins.bencmd.permissions.BlockChecker;
-import ben_dude56.plugins.bencmd.permissions.CreeperListener;
-import ben_dude56.plugins.bencmd.permissions.EntityPermListen;
-import ben_dude56.plugins.bencmd.permissions.KickList;
-import ben_dude56.plugins.bencmd.permissions.MainPermissions;
-import ben_dude56.plugins.bencmd.permissions.MaxPlayers;
+import ben_dude56.plugins.bencmd.chat.*;
+import ben_dude56.plugins.bencmd.chat.channels.*;
+import ben_dude56.plugins.bencmd.invisible.*;
+import ben_dude56.plugins.bencmd.invtools.*;
+import ben_dude56.plugins.bencmd.invtools.kits.*;
+import ben_dude56.plugins.bencmd.lots.*;
+import ben_dude56.plugins.bencmd.maps.*;
+import ben_dude56.plugins.bencmd.money.*;
+import ben_dude56.plugins.bencmd.multiworld.*;
+import ben_dude56.plugins.bencmd.nofly.*;
+import ben_dude56.plugins.bencmd.permissions.*;
 import ben_dude56.plugins.bencmd.permissions.MaxPlayers.JoinType;
-import ben_dude56.plugins.bencmd.permissions.PermLoginListener;
-import ben_dude56.plugins.bencmd.permissions.PermissionCommands;
-import ben_dude56.plugins.bencmd.protect.ProtectBlockListener;
-import ben_dude56.plugins.bencmd.protect.ProtectFile;
-import ben_dude56.plugins.bencmd.protect.ProtectPlayerListener;
-import ben_dude56.plugins.bencmd.protect.ProtectedCommands;
-import ben_dude56.plugins.bencmd.reporting.ReportCommands;
-import ben_dude56.plugins.bencmd.reporting.ReportFile;
-import ben_dude56.plugins.bencmd.warps.DeathListener;
-import ben_dude56.plugins.bencmd.warps.HomeWarps;
-import ben_dude56.plugins.bencmd.warps.Jail;
-import ben_dude56.plugins.bencmd.warps.PreWarp;
-import ben_dude56.plugins.bencmd.warps.WarpCommands;
-import ben_dude56.plugins.bencmd.warps.WarpList;
-import ben_dude56.plugins.bencmd.weather.WeatherBinding;
-import ben_dude56.plugins.bencmd.weather.WeatherCommands;
-import ben_dude56.plugins.bencmd.weather.WeatherPListener;
+import ben_dude56.plugins.bencmd.protect.*;
+import ben_dude56.plugins.bencmd.reporting.*;
+import ben_dude56.plugins.bencmd.warps.*;
+import ben_dude56.plugins.bencmd.weather.*;
 
 /**
  * BenCmd for Bukkit
@@ -84,7 +56,8 @@ public class BenCmd extends JavaPlugin {
 	private final EntityPermListen entListen = new EntityPermListen(this);
 	public final LotPlayerListener lotListener = new LotPlayerListener(this);
 	public final LotBlockListener lotBListener = new LotBlockListener(this);
-	private final WeatherPListener wpListen = new WeatherPListener(this);
+	public final WeatherPListener wpListen = new WeatherPListener(this);
+	public final PortalListener portalListen = new PortalListener(this);
 	public final HashMap<Player, Boolean> godmode = new HashMap<Player, Boolean>();
 	public final List<Player> invisible = new ArrayList<Player>();
 	public final List<Player> noinvisible = new ArrayList<Player>();
@@ -346,6 +319,8 @@ public class BenCmd extends JavaPlugin {
 		pm.registerEvent(Event.Type.EXPLOSION_PRIME, this.entListen,
 				Event.Priority.Highest, this);
 		pm.registerEvent(Event.Type.PLAYER_INTERACT, this.wpListen,
+				Event.Priority.Highest, this);
+		pm.registerEvent(Event.Type.PLAYER_PORTAL, this.portalListen,
 				Event.Priority.Highest, this);
 		PluginDescriptionFile pdfFile = this.getDescription();
 		// Prepare the time lock timer
