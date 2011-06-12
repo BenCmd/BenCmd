@@ -34,6 +34,6 @@ public class PortalListener extends PlayerListener {
 		}
 		event.useTravelAgent(false);
 		event.setTo(portal.getWarp().loc);
-		//plugin.checkpoints.SetPreWarp(event.getPlayer());
+		plugin.checkpoints.SetPreWarp(event.getPlayer());
 	}
 }

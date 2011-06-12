@@ -108,7 +108,7 @@ public class PortalFile extends Properties {
 		loc = Portal.getHandleBlock(loc);
 		for(int i = 0; i < portals.size(); i++) {
 			Location key = (Location) portals.keySet().toArray()[i];
-			if(key.getBlockX() == loc.getBlockX() && key.getBlockY() == loc.getBlockY() && key.getBlockY() == loc.getBlockY()) {
+			if(key.getBlockX() == loc.getBlockX() && key.getBlockY() == loc.getBlockY() && key.getBlockZ() == loc.getBlockZ() && key.getWorld().getName().equals(loc.getWorld().getName())) {
 				return portals.get(key);
 			}
 		}
