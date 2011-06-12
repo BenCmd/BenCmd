@@ -101,7 +101,7 @@ public class BuyableItem {
 					.getInventory().all(currency.getMaterial());
 			for (Integer pos : matches.keySet()) {
 				ItemStack item = user.getHandle().getInventory().getItem(pos);
-				if(item.getDurability() != this.durability) {
+				if (item.getDurability() != this.durability) {
 					continue;
 				}
 				if (item.getTypeId() == this.getItemId()
@@ -225,7 +225,7 @@ public class BuyableItem {
 		HashMap<Integer, ? extends ItemStack> matches = user.getHandle()
 				.getInventory().all(this.getMaterial());
 		for (ItemStack iStack : matches.values()) {
-			if(iStack.getDurability() != this.durability) {
+			if (iStack.getDurability() != this.durability) {
 				continue;
 			}
 			amountHas += iStack.getAmount();
@@ -235,7 +235,7 @@ public class BuyableItem {
 		}
 		for (int i = 0; i < matches.size(); i++) {
 			ItemStack iStack = (ItemStack) matches.values().toArray()[i];
-			if(iStack.getDurability() != this.durability) {
+			if (iStack.getDurability() != this.durability) {
 				continue;
 			}
 			Integer slot = (Integer) matches.keySet().toArray()[i];

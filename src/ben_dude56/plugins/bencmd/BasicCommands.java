@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.TreeType;
 import org.bukkit.World;
@@ -75,6 +76,14 @@ public class BasicCommands implements Commands {
 		} else if (commandLabel.equalsIgnoreCase("spawnmob")
 				&& user.hasPerm("canSpawnMobs")) {
 			SpawnMob(args, user);
+			return true;
+		} else if (commandLabel.equalsIgnoreCase("rechunk")) {
+			Chunk chunk = user.getHandle().getWorld().getChunkAt(user.getHandle().getLocation());
+			int chunkx = chunk.getX();
+			int chunkz = chunk.getZ();
+			user.getHandle().getWorld().unloadChunk(chunkx, chunkz);
+			user.getHandle().getWorld().loadChunk(chunkx, chunkz);
+			user.getHandle().getWorld().refreshChunk(chunkx, chunkz);
 			return true;
 		}
 		return false;

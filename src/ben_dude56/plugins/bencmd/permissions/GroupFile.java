@@ -434,13 +434,11 @@ public class GroupFile extends Properties {
 						+ this.getPrefix(group) + "/" + color.getCode());
 		save();
 	}
-	
+
 	public void setPrefix(String group, String prefix) {
-		this.put(
-				group,
-				this.getProperty(group).split("/")[2] + "/"
-						+ this.getProperty(group).split("/")[1] + "/"
-						+ prefix + "/" + getColor(group).getCode());
+		this.put(group, this.getProperty(group).split("/")[2] + "/"
+				+ this.getProperty(group).split("/")[1] + "/" + prefix + "/"
+				+ getColor(group).getCode());
 		save();
 	}
 }

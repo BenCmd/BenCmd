@@ -118,9 +118,9 @@ public class PermissionUser {
 		}
 		return perm.userFile.getColor(name);
 	}
-	
+
 	public void setColor(ChatColor color) {
-		if(name.equalsIgnoreCase("*")) {
+		if (name.equalsIgnoreCase("*")) {
 			return;
 		}
 		perm.userFile.setColor(name, color);
@@ -131,6 +131,13 @@ public class PermissionUser {
 			return true;
 		}
 		return (plugin.perm.userFile.userInGroup(name, groupName));
+	}
+
+	public boolean inGroup(PermissionGroup group) {
+		if (name.equalsIgnoreCase("*")) {
+			return true;
+		}
+		return (plugin.perm.userFile.userInGroup(name, group.getName()));
 	}
 
 	public PermissionUser getPermissionUser() {

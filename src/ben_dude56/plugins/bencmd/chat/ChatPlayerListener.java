@@ -135,7 +135,8 @@ public class ChatPlayerListener extends PlayerListener {
 			user.sendMessage(ChatColor.RED
 					+ "There are unread reports! Use /ticket list to see them!");
 		}
-		plugin.getServer().dispatchCommand(user.getHandle(), "channel join general");
+		plugin.getServer().dispatchCommand(user.getHandle(),
+				"channel join general");
 		event.setJoinMessage(user.getColor() + user.getName() + ChatColor.WHITE
 				+ " has joined the game...");
 	}

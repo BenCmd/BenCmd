@@ -1,5 +1,5 @@
 name: BenCmd
-version: 1.1.2
+version: 1.2.0
 main: ben_dude56.plugins.bencmd.BenCmd
 commands:
     slow:
@@ -191,3 +191,9 @@ commands:
     map:
         usage:
         description: Deals with maps
+    rechunk:
+        usage:
+        description: Resends the chunk a player is standing in
+    setportal:
+        usage:
+        description: Sets the end of a portal

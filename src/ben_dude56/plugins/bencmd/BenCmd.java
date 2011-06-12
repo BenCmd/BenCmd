@@ -73,6 +73,7 @@ public class BenCmd extends JavaPlugin {
 	public final File chatFile = new File(propDir + "channels.db");
 	public final File ticketFile = new File(propDir + "tickets.db");
 	public final File pricesFile = new File(propDir + "prices.db");
+	public final File portalFile = new File(propDir + "portals.db");
 	public PluginProperties mainProperties;
 	public PluginProperties itemAliases;
 	public LotFile lots;
@@ -100,6 +101,7 @@ public class BenCmd extends JavaPlugin {
 	public WeatherBinding strikeBind;
 	public PriceFile prices;
 	public KickList kicked;
+	public PortalFile portals;
 	public Logger log = Logger.getLogger("minecraft");
 
 	public boolean checkID(int id) {
@@ -218,6 +220,14 @@ public class BenCmd extends JavaPlugin {
 				e.printStackTrace();
 			}
 		}
+		if (!portalFile.exists()) {
+			try {
+				portalFile.createNewFile();
+			} catch (IOException e) {
+				System.out.println("BenCmd had a problem:");
+				e.printStackTrace();
+			}
+		}
 		// Get some static methods ready
 		User.finalizeAll();
 		// Start loading classes
@@ -249,6 +259,7 @@ public class BenCmd extends JavaPlugin {
 		strikeBind = new WeatherBinding(this);
 		prices = new PriceFile(this, propDir + "prices.db");
 		kicked = new KickList(this);
+		portals = new PortalFile(this, propDir + "portals.db");
 		// SANITY CHECK
 		if (!sanityCheck()) {
 			this.getServer().getPluginManager().disablePlugin(this);
@@ -468,6 +479,9 @@ public class BenCmd extends JavaPlugin {
 				commandLabel, args)) {
 			return true;
 		} else if (new MapCommands(this).onCommand(sender, command,
+				commandLabel, args)) {
+			return true;
+		} else if (new PortalCommands(this).onCommand(sender, command,
 				commandLabel, args)) {
 			return true;
 		} else {

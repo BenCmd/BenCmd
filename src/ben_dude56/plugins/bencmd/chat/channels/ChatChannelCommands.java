@@ -160,8 +160,8 @@ public class ChatChannelCommands implements Commands {
 					user.sendMessage(ChatColor.RED + "You're not in a channel!");
 				}
 			} else if (args[0].equalsIgnoreCase("remove")) {
-				if(user.inChannel()) {
-					if(user.getActiveChannel().isOwner(user)) {
+				if (user.inChannel()) {
+					if (user.getActiveChannel().isOwner(user)) {
 						plugin.channels.removeChannel(user.getActiveChannel());
 					} else {
 						user.sendMessage(ChatColor.RED
@@ -268,12 +268,13 @@ public class ChatChannelCommands implements Commands {
 					user.sendMessage(ChatColor.RED + "You're not in a channel!");
 					return;
 				}
-				if (!user.getActiveChannel().isMod(user) && !user.getActiveChannel().isOwner(user)) {
+				if (!user.getActiveChannel().isMod(user)
+						&& !user.getActiveChannel().isOwner(user)) {
 					user.sendMessage(ChatColor.RED
 							+ "You must be a mod to do that!");
 					return;
 				}
-				if(user.getActiveChannel().isPaused()) {
+				if (user.getActiveChannel().isPaused()) {
 					user.getActiveChannel().disablePause();
 				} else {
 					user.getActiveChannel().enablePause();
@@ -291,14 +292,15 @@ public class ChatChannelCommands implements Commands {
 							|| user.getActiveChannel().isOwner(user)) {
 						String newMotd = "";
 						for (int i = 1; i < args.length; i++) {
-							if(newMotd.isEmpty()) {
+							if (newMotd.isEmpty()) {
 								newMotd += args[i];
 							} else {
 								newMotd += " " + args[i];
 							}
 						}
-						if(newMotd.contains("`")) {
-							user.sendMessage(ChatColor.RED + "MOTDs cannot contain the special character: `");
+						if (newMotd.contains("`")) {
+							user.sendMessage(ChatColor.RED
+									+ "MOTDs cannot contain the special character: `");
 							return;
 						}
 						user.getActiveChannel().setMotd(newMotd);
@@ -395,7 +397,7 @@ public class ChatChannelCommands implements Commands {
 							+ "That channel couldn't be found!");
 				}
 			} else if (args[0].equalsIgnoreCase("add")) {
-				if(!user.hasPerm("canAddChannels")) {
+				if (!user.hasPerm("canAddChannels")) {
 					user.sendMessage(ChatColor.RED
 							+ "You don't have permission to do that!");
 					return;
@@ -418,18 +420,20 @@ public class ChatChannelCommands implements Commands {
 					if (user.getActiveChannel().isOwner(user)) {
 						String newName = "";
 						for (int i = 1; i < args.length; i++) {
-							if(newName.isEmpty()) {
+							if (newName.isEmpty()) {
 								newName += args[i];
 							} else {
 								newName += " " + args[i];
 							}
 						}
-						if(newName.contains("`")) {
-							user.sendMessage(ChatColor.RED + "Display namess cannot contain the special character: `");
+						if (newName.contains("`")) {
+							user.sendMessage(ChatColor.RED
+									+ "Display namess cannot contain the special character: `");
 							return;
 						}
 						user.getActiveChannel().setDisplayName(newName);
-						user.sendMessage(ChatColor.GREEN + "The display name was successfully set.");
+						user.sendMessage(ChatColor.GREEN
+								+ "The display name was successfully set.");
 					} else {
 						user.sendMessage(ChatColor.RED
 								+ "You must be the channel owner to do that!");

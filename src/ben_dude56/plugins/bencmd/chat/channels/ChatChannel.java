@@ -198,7 +198,8 @@ public class ChatChannel {
 			}
 			value += muted.get(i).getName();
 		}
-		value += "/" + motd.replace("/", "`") + "/" + displayName.replace("/", "`") + "/";
+		value += "/" + motd.replace("/", "`") + "/"
+				+ displayName.replace("/", "`") + "/";
 		switch (defLevel) {
 		case BANNED:
 			value += "b";
@@ -213,18 +214,18 @@ public class ChatChannel {
 	public String getName() {
 		return name;
 	}
-	
+
 	public String getDisplayName() {
 		return displayName;
 	}
-	
+
 	public void setDisplayName(String displayName) {
 		this.displayName = displayName;
 		control.saveChannel(this);
 	}
-	
+
 	public boolean hasDisplayName() {
-		return(!displayName.isEmpty() && !displayName.equals(name));
+		return (!displayName.isEmpty() && !displayName.equals(name));
 	}
 
 	// Level-checking functions
@@ -323,17 +324,18 @@ public class ChatChannel {
 	public boolean isSlow() {
 		return slow.isEnabled();
 	}
-	
+
 	public void enablePause() {
 		paused = true;
-		this.broadcastMessage(ChatColor.GRAY + "Pause mode has been enabled. Only mods can talk.");
+		this.broadcastMessage(ChatColor.GRAY
+				+ "Pause mode has been enabled. Only mods can talk.");
 	}
-	
+
 	public void disablePause() {
 		paused = false;
 		this.broadcastMessage(ChatColor.GRAY + "Pause mode has been disabled.");
 	}
-	
+
 	public boolean isPaused() {
 		return paused;
 	}
@@ -369,8 +371,9 @@ public class ChatChannel {
 			user.sendMessage(ChatColor.YELLOW + motd);
 			user.sendMessage(ChatColor.RED
 					+ "Please note that you are muted on this channel...");
-			if(this.isPaused()) {
-				user.sendMessage(ChatColor.GRAY + "Please note that pause mode is enabled. Only mods can talk.");
+			if (this.isPaused()) {
+				user.sendMessage(ChatColor.GRAY
+						+ "Please note that pause mode is enabled. Only mods can talk.");
 			}
 			forceJoin(user);
 			break;
@@ -378,8 +381,9 @@ public class ChatChannel {
 			user.sendMessage(ChatColor.WHITE + "You have joined "
 					+ ChatColor.GREEN + this.displayName);
 			user.sendMessage(ChatColor.YELLOW + motd);
-			if(this.isPaused()) {
-				user.sendMessage(ChatColor.GRAY + "Please note that pause mode is enabled. Only mods can talk.");
+			if (this.isPaused()) {
+				user.sendMessage(ChatColor.GRAY
+						+ "Please note that pause mode is enabled. Only mods can talk.");
 			}
 			if (user.hasPerm("isUniversalMod") && !isMod(user)
 					&& !isOwner(user)) {
@@ -430,7 +434,7 @@ public class ChatChannel {
 			return false;
 		}
 	}
-	
+
 	private void KillKick(User user) {
 		if (isOnline(user) != null) {
 			user.leaveChannel();
@@ -438,18 +442,18 @@ public class ChatChannel {
 					+ "Your active chat channel was shut down.");
 		}
 	}
-	
+
 	private void KillUnspy(User user) {
 		user.unspyChannel(this);
 		user.sendMessage(ChatColor.RED
 				+ "Your active chat channel was shut down.");
 	}
-	
+
 	protected void prepDelete() {
-		while(!inChannel.isEmpty()) {
+		while (!inChannel.isEmpty()) {
 			KillKick(inChannel.get(0));
 		}
-		while(!spies.isEmpty()) {
+		while (!spies.isEmpty()) {
 			KillUnspy(spies.get(0));
 		}
 	}
@@ -521,7 +525,8 @@ public class ChatChannel {
 	// Messaging methods
 	public void sendChat(User user, String message) {
 		if (!isOwner(user) && !isMod(user) && paused) {
-			user.sendMessage(ChatColor.GRAY + "You can't talk while pause mode is enabled.");
+			user.sendMessage(ChatColor.GRAY
+					+ "You can't talk while pause mode is enabled.");
 			return;
 		}
 		if (isMuted(user)) {
@@ -549,30 +554,53 @@ public class ChatChannel {
 				slow.playerAdd(user.getName());
 			}
 		}
-		if(message.toUpperCase(Locale.ENGLISH).equals(message) && !message.toLowerCase(Locale.ENGLISH).equals(message) &&
-				!message.equals(":D") && !message.equals("D:")) {
+		if (message.toUpperCase(Locale.ENGLISH).equals(message)
+				&& !message.toLowerCase(Locale.ENGLISH).equals(message)
+				&& !message.equals(":D") && !message.equals("D:")) {
 			Random rand = new Random();
-			switch(rand.nextInt(7)) {
+			switch (rand.nextInt(7)) {
 			case 0:
-				user.sendMessage(ChatColor.GREEN + user.getName() + "'s Conscience" + ChatColor.GRAY + " has whispered: Every time you type in all caps, a baby kitten DIES.");
+				user.sendMessage(ChatColor.GREEN
+						+ user.getName()
+						+ "'s Conscience"
+						+ ChatColor.GRAY
+						+ " has whispered: Every time you type in all caps, a baby kitten DIES.");
 				break;
 			case 1:
-				user.sendMessage(ChatColor.GOLD + "God" + ChatColor.GRAY + " has whispered: Every time you type in all caps, a dolphin gets run over by a jet ski! Save the dolphins!");
+				user.sendMessage(ChatColor.GOLD
+						+ "God"
+						+ ChatColor.GRAY
+						+ " has whispered: Every time you type in all caps, a dolphin gets run over by a jet ski! Save the dolphins!");
 				break;
 			case 2:
-				user.sendMessage(ChatColor.DARK_PURPLE + "Your mother" + ChatColor.GRAY + " has whispered: Talk in all caps, break your mother's poor old back!");
+				user.sendMessage(ChatColor.DARK_PURPLE
+						+ "Your mother"
+						+ ChatColor.GRAY
+						+ " has whispered: Talk in all caps, break your mother's poor old back!");
 				break;
 			case 3:
-				user.sendMessage(ChatColor.DARK_BLUE + "Server" + ChatColor.GRAY + " has whispered: Stop talking in all-caps! My ban-hammer is looming over your face!");
+				user.sendMessage(ChatColor.DARK_BLUE
+						+ "Server"
+						+ ChatColor.GRAY
+						+ " has whispered: Stop talking in all-caps! My ban-hammer is looming over your face!");
 				break;
 			case 4:
-				user.sendMessage(ChatColor.DARK_RED + "ben_dude56" + ChatColor.GRAY + " has whispered: All-caps message + Attitude = BANHAMMER!");
+				user.sendMessage(ChatColor.DARK_RED
+						+ "ben_dude56"
+						+ ChatColor.GRAY
+						+ " has whispered: All-caps message + Attitude = BANHAMMER!");
 				break;
 			case 5:
-				user.sendMessage(ChatColor.DARK_RED + "Herobrine" + ChatColor.GRAY + " has whispered: If you keep talking in all-caps, I will haunt you in your dreams!");
+				user.sendMessage(ChatColor.DARK_RED
+						+ "Herobrine"
+						+ ChatColor.GRAY
+						+ " has whispered: If you keep talking in all-caps, I will haunt you in your dreams!");
 				break;
 			case 6:
-				user.sendMessage(ChatColor.GREEN + "BANHAMMER" + ChatColor.GRAY + " has whispered: THIS IS WHAT YOU LOOK LIKE WHEN YOU TYPE IN ALL-CAPS!");
+				user.sendMessage(ChatColor.GREEN
+						+ "BANHAMMER"
+						+ ChatColor.GRAY
+						+ " has whispered: THIS IS WHAT YOU LOOK LIKE WHEN YOU TYPE IN ALL-CAPS!");
 				break;
 			}
 			return;
@@ -596,7 +624,8 @@ public class ChatChannel {
 	}
 
 	protected void broadcastMessage(String message) {
-		control.plugin.log.info("(" + displayName + ") " + ChatColor.stripColor(message));
+		control.plugin.log.info("(" + displayName + ") "
+				+ ChatColor.stripColor(message));
 		for (User user : inChannel) {
 			user.sendMessage(ChatColor.YELLOW + "(" + this.displayName + ") "
 					+ ChatColor.WHITE + message);
@@ -624,16 +653,16 @@ public class ChatChannel {
 	// Permission-changing functions
 	protected void changeOwner(PermissionUser user) {
 		PermissionUser oldowner = owner;
-		if(isMod(user)) {
+		if (isMod(user)) {
 			Unmod(user);
 		}
-		if(isGuested(user)) {
+		if (isGuested(user)) {
 			Unguest(user);
 		}
-		if(isMuted(user)) {
+		if (isMuted(user)) {
 			Unmute(user);
 		}
-		if(isBanned(user)) {
+		if (isBanned(user)) {
 			Unban(user);
 		}
 		owner = user;

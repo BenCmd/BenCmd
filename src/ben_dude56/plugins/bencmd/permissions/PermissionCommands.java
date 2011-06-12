@@ -161,7 +161,8 @@ public class PermissionCommands implements Commands {
 					}
 				}
 				PermissionUser user2;
-				if((user2 = PermissionUser.matchUserIgnoreCase(args[0], plugin)) == null) {
+				if ((user2 = PermissionUser
+						.matchUserIgnoreCase(args[0], plugin)) == null) {
 					user.sendMessage(ChatColor.RED
 							+ "The user you tried to change is not present in the database!");
 					return;

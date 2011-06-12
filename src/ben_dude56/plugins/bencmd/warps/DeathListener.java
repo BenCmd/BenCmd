@@ -28,58 +28,66 @@ public class DeathListener extends EntityListener {
 
 	public void onEntityDeath(EntityDeathEvent event) {
 		if (event.getEntity() instanceof CraftZombie) {
-			if(plugin.mainProperties.getString("zombieDrop", "").isEmpty()) {
+			if (plugin.mainProperties.getString("zombieDrop", "").isEmpty()) {
 				return;
 			}
-			Kit kit = plugin.kits.getKit(plugin.mainProperties.getString("zombieDrop", ""));
-			if(kit == null) {
-				plugin.log.warning("Kit specified for zombie drops doesn't exist!");
+			Kit kit = plugin.kits.getKit(plugin.mainProperties.getString(
+					"zombieDrop", ""));
+			if (kit == null) {
+				plugin.log
+						.warning("Kit specified for zombie drops doesn't exist!");
 				return;
 			}
 			event.getDrops().clear();
-			for(ItemStack item : kit.getItems()) {
+			for (ItemStack item : kit.getItems()) {
 				event.getDrops().add(item);
 			}
 		}
 		if (event.getEntity() instanceof CraftSkeleton) {
-			if(plugin.mainProperties.getString("skeletonDrop", "").isEmpty()) {
+			if (plugin.mainProperties.getString("skeletonDrop", "").isEmpty()) {
 				return;
 			}
-			Kit kit = plugin.kits.getKit(plugin.mainProperties.getString("skeletonDrop", ""));
-			if(kit == null) {
-				plugin.log.warning("Kit specified for skeleton drops doesn't exist!");
+			Kit kit = plugin.kits.getKit(plugin.mainProperties.getString(
+					"skeletonDrop", ""));
+			if (kit == null) {
+				plugin.log
+						.warning("Kit specified for skeleton drops doesn't exist!");
 				return;
 			}
 			event.getDrops().clear();
-			for(ItemStack item : kit.getItems()) {
+			for (ItemStack item : kit.getItems()) {
 				event.getDrops().add(item);
 			}
 		}
 		if (event.getEntity() instanceof CraftSpider) {
-			if(plugin.mainProperties.getString("spiderDrop", "").isEmpty()) {
+			if (plugin.mainProperties.getString("spiderDrop", "").isEmpty()) {
 				return;
 			}
-			Kit kit = plugin.kits.getKit(plugin.mainProperties.getString("spiderDrop", ""));
-			if(kit == null) {
-				plugin.log.warning("Kit specified for spider drops doesn't exist!");
+			Kit kit = plugin.kits.getKit(plugin.mainProperties.getString(
+					"spiderDrop", ""));
+			if (kit == null) {
+				plugin.log
+						.warning("Kit specified for spider drops doesn't exist!");
 				return;
 			}
 			event.getDrops().clear();
-			for(ItemStack item : kit.getItems()) {
+			for (ItemStack item : kit.getItems()) {
 				event.getDrops().add(item);
 			}
 		}
-		if(event.getEntity() instanceof CraftCreeper) {
-			if(plugin.mainProperties.getString("creeperDrop", "").isEmpty()) {
+		if (event.getEntity() instanceof CraftCreeper) {
+			if (plugin.mainProperties.getString("creeperDrop", "").isEmpty()) {
 				return;
 			}
-			Kit kit = plugin.kits.getKit(plugin.mainProperties.getString("creeperDrop", ""));
-			if(kit == null) {
-				plugin.log.warning("Kit specified for creeper drops doesn't exist!");
+			Kit kit = plugin.kits.getKit(plugin.mainProperties.getString(
+					"creeperDrop", ""));
+			if (kit == null) {
+				plugin.log
+						.warning("Kit specified for creeper drops doesn't exist!");
 				return;
 			}
 			event.getDrops().clear();
-			for(ItemStack item : kit.getItems()) {
+			for (ItemStack item : kit.getItems()) {
 				event.getDrops().add(item);
 			}
 		}

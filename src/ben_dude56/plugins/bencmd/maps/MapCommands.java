@@ -12,7 +12,7 @@ import ben_dude56.plugins.bencmd.User;
 
 public class MapCommands implements Commands {
 	BenCmd plugin;
-	
+
 	public MapCommands(BenCmd instance) {
 		plugin = instance;
 	}
@@ -25,7 +25,7 @@ public class MapCommands implements Commands {
 		} catch (ClassCastException e) {
 			user = User.getUser(plugin);
 		}
-		if(commandLabel.equalsIgnoreCase("map")
+		if (commandLabel.equalsIgnoreCase("map")
 				&& user.hasPerm("canChangeMaps")) {
 			Map(args, user);
 			return true;
@@ -34,19 +34,21 @@ public class MapCommands implements Commands {
 	}
 
 	public void Map(String[] args, User user) {
-		if(args.length == 0) {
+		if (args.length == 0) {
 			return;
 		}
-		if(user.getHandle().getItemInHand().getType() != Material.MAP) {
+		if (user.getHandle().getItemInHand().getType() != Material.MAP) {
 			return;
 		}
-		BCMap map = new BCMap(user.getHandle().getItemInHand().getDurability(), ((CraftWorld) user.getHandle().getWorld()).getHandle());
-		if(args[0].equalsIgnoreCase("zoomin")) {
+		BCMap map = new BCMap(user.getHandle().getItemInHand().getDurability(),
+				((CraftWorld) user.getHandle().getWorld()).getHandle());
+		if (args[0].equalsIgnoreCase("zoomin")) {
 			map.zoomIn();
 		} else if (args[0].equalsIgnoreCase("zoomout")) {
 			map.zoomOut();
 		} else if (args[0].equalsIgnoreCase("center")) {
-			map.setCenter(user.getHandle().getLocation().getBlockX(), user.getHandle().getLocation().getBlockZ());
+			map.setCenter(user.getHandle().getLocation().getBlockX(), user
+					.getHandle().getLocation().getBlockZ());
 		}
 	}
 }

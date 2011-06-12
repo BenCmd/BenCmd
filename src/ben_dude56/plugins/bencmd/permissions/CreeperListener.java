@@ -15,7 +15,8 @@ public class CreeperListener extends EntityListener {
 	}
 
 	public void onEntityTarget(EntityTargetEvent event) {
-		if (event.getEntity().toString().equalsIgnoreCase("CraftCreeper") && plugin.mainProperties.getBoolean("creepersPassive", true))
+		if (event.getEntity().toString().equalsIgnoreCase("CraftCreeper")
+				&& plugin.mainProperties.getBoolean("creepersPassive", true))
 			event.setCancelled(true);
 		if (event.getTarget() instanceof Player
 				&& User.getUser(plugin, (Player) event.getTarget()).isPoofed())

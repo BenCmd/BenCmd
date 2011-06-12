@@ -59,14 +59,16 @@ public class ChatChannelController extends Properties {
 		for (ChatChannel channel : channels) {
 			if (channel.getLevel(user) != ChatLevel.BANNED) {
 				if (value.isEmpty()) {
-					if(channel.hasDisplayName()) {
-						value += channel.getName() + " (" + channel.getDisplayName() + ")";
+					if (channel.hasDisplayName()) {
+						value += channel.getName() + " ("
+								+ channel.getDisplayName() + ")";
 					} else {
 						value += channel.getName();
 					}
 				} else {
-					if(channel.hasDisplayName()) {
-						value += ", " + channel.getName() + " (" + channel.getDisplayName() + ")";
+					if (channel.hasDisplayName()) {
+						value += ", " + channel.getName() + " ("
+								+ channel.getDisplayName() + ")";
 					} else {
 						value += ", " + channel.getName();
 					}
@@ -94,7 +96,7 @@ public class ChatChannelController extends Properties {
 		saveChannel(channel);
 		owner.joinChannel(channel);
 	}
-	
+
 	protected void removeChannel(ChatChannel channel) {
 		channel.prepDelete();
 		channels.remove(channel);
