@@ -8,6 +8,8 @@ import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockListener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import ben_dude56.plugins.bencmd.*;
+import ben_dude56.plugins.bencmd.multiworld.Portal;
+import ben_dude56.plugins.bencmd.warps.Warp;
 
 import java.util.logging.Logger;
 
@@ -25,6 +27,11 @@ public class BlockChecker extends BlockListener {
 			event.setCancelled(true);
 			user.sendMessage(ChatColor.RED
 					+ "You don't have permission to build.");
+			return;
+		}
+		Warp warpTo;
+		if(event.getBlockPlaced().getType() == Material.PORTAL && (warpTo = plugin.warps.getWarp(plugin.mainProperties.getString("defaultPortalWarp", "portals"))) != null) {
+			plugin.portals.addPortal(new Portal(Portal.getHandleBlock(event.getBlockPlaced().getLocation()), null, warpTo));
 		}
 	}
 

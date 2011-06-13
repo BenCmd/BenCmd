@@ -6,8 +6,8 @@ import org.bukkit.entity.Player;
 import ben_dude56.plugins.bencmd.*;
 
 public class HomeWarps {
-	BenCmd plugin;
-	HomeList homes;
+	private BenCmd plugin;
+	public HomeList homes;
 
 	public HomeWarps(BenCmd instance) {
 		plugin = instance;

@@ -7,6 +7,7 @@ import org.bukkit.event.player.PlayerPortalEvent;
 
 import ben_dude56.plugins.bencmd.BenCmd;
 import ben_dude56.plugins.bencmd.User;
+import ben_dude56.plugins.bencmd.warps.Warp;
 
 public class PortalListener extends PlayerListener {
 	BenCmd plugin;
@@ -33,7 +34,17 @@ public class PortalListener extends PlayerListener {
 			return;
 		}
 		event.useTravelAgent(false);
-		event.setTo(portal.getWarp().loc);
+		if(portal instanceof HomePortal) {
+			Warp warp;
+			if((warp = ((HomePortal)portal).getWarp(User.getUser(plugin, event.getPlayer()))) != null) {
+				event.setTo(warp.loc);
+			} else {
+				event.setCancelled(true);
+				event.getPlayer().sendMessage(ChatColor.RED + "You haven't set a home #" + ((HomePortal)portal).getHomeNumber() + " yet!");
+			}
+		} else {
+			event.setTo(portal.getWarp().loc);
+		}
 		plugin.checkpoints.SetPreWarp(event.getPlayer());
 	}
 }

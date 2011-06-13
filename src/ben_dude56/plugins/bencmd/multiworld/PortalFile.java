@@ -61,8 +61,9 @@ public class PortalFile extends Properties {
 			int z;
 			World world;
 			Location location;
-			Warp warp;
+			Warp warp = null;
 			PermissionGroup group;
+			Integer homeNum = null;
 			try {
 				x = Integer.parseInt(key.split(",")[1]);
 				y = Integer.parseInt(key.split(",")[2]);
@@ -83,13 +84,19 @@ public class PortalFile extends Properties {
 			}
 			location = new Location(world, x, y, z);
 			try {
-				if ((warp = plugin.warps.getWarp(this.getProperty(key).split(
+				if(this.getProperty(key).split("/")[1].startsWith("home")) {
+					homeNum = Integer.parseInt(this.getProperty(key).split("/")[1].replaceFirst("home", ""));
+				} else if ((warp = plugin.warps.getWarp(this.getProperty(key).split(
 						"/")[1])) == null) {
 					plugin.log.warning("Portal (" + this.keySet().toArray()[i]
 							+ ")'s warp name is invalid or has been removed!");
 					continue;
 				}
 			} catch (IndexOutOfBoundsException e) {
+				plugin.log.warning("Portal (" + this.keySet().toArray()[i]
+				            + ")'s warp name is invalid or has been removed!");
+				continue;
+			} catch (NumberFormatException e) {
 				plugin.log.warning("Portal (" + this.keySet().toArray()[i]
 				            + ")'s warp name is invalid or has been removed!");
 				continue;
@@ -100,7 +107,11 @@ public class PortalFile extends Properties {
 			} catch (NullPointerException e) {
 				group = null;
 			}
-			portals.put(location, new Portal(location, group, warp));
+			if(homeNum == null) {
+				portals.put(location, new Portal(location, group, warp));
+			} else {
+				portals.put(location, new HomePortal(plugin, location, group, homeNum));
+			}
 		}
 	}
 
@@ -123,10 +134,17 @@ public class PortalFile extends Properties {
 		} else {
 			groupname = portal.getGroup().getName();
 		}
-		this.put(
-				loc.getWorld().getName() + "," + loc.getBlockX() + ","
+		if(portal instanceof HomePortal) {
+			this.put(
+					loc.getWorld().getName() + "," + loc.getBlockX() + ","
 						+ loc.getBlockY() + "," + loc.getBlockZ(),
-				groupname + "/" + portal.getWarp().warpName);
+						groupname + "/home" + ((HomePortal)portal).getHomeNumber());
+		} else {
+			this.put(
+					loc.getWorld().getName() + "," + loc.getBlockX() + ","
+						+ loc.getBlockY() + "," + loc.getBlockZ(),
+						groupname + "/" + portal.getWarp().warpName);
+		}
 		saveFile();
 	}
 

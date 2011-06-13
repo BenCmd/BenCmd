@@ -48,8 +48,16 @@ public class PortalCommands implements Commands {
 				user.sendMessage(ChatColor.RED + "You're not pointing at a portal!");
 			}
 			Location handle = Portal.getHandleBlock(pointedAt.getLocation());
-			Warp warp;
-			if((warp = plugin.warps.getWarp(args[0])) == null) {
+			Warp warp = null;
+			Integer homeNumber = null;
+			if(args[0].startsWith("home")) {
+				try {
+					homeNumber = Integer.parseInt(args[0].replaceFirst("home", ""));
+				} catch (NumberFormatException e) {
+					user.sendMessage(ChatColor.RED + args[0].replaceFirst("home", "") + " cannot be converted into a number!");
+					return;
+				}
+			} else if((warp = plugin.warps.getWarp(args[0])) == null) {
 				user.sendMessage(ChatColor.RED + "That warp doesn't exist!");
 				return;
 			}
@@ -62,8 +70,13 @@ public class PortalCommands implements Commands {
 					return;
 				}
 			}
-			plugin.portals.addPortal(new Portal(handle, group, warp));
-			user.sendMessage(ChatColor.GREEN + "That portal has been set to warp " + warp.warpName + "!");
+			if(homeNumber == null) {
+				plugin.portals.addPortal(new Portal(handle, group, warp));
+				user.sendMessage(ChatColor.GREEN + "That portal has been set to warp " + warp.warpName + "!");
+			} else {
+				plugin.portals.addPortal(new HomePortal(plugin, handle, group, homeNumber));
+				user.sendMessage(ChatColor.GREEN + "That portal has been set to home #" + homeNumber + "!");
+			}
 		}
 	}
 
