@@ -79,6 +79,8 @@ public class HomeList {
 	}
 
 	public boolean LoadHomes() {
+		warpString.clear();
+		warps.clear();
 		File warpFile;
 		warpFile = new File(plugin.propDir + "homes.db");
 		String str = "";
