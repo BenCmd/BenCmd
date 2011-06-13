@@ -61,6 +61,8 @@ public class WarpList {
 	}
 
 	public boolean LoadWarps() {
+		warpString.clear();
+		warps.clear();
 		File warpFile;
 		warpFile = new File(plugin.propDir + "warps.db");
 		String str = "";
