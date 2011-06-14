@@ -129,6 +129,55 @@ public class BasicCommands implements Commands {
 				} else {
 					user.getHandle().getWorld().setTime(15000);
 				}
+			} else if (args[0].equalsIgnoreCase("set")) {
+				int time;
+				try {
+					time = Integer.parseInt(args[1]);
+					}
+				catch (NumberFormatException e) {
+					user.sendMessage(ChatColor.RED + "Invaled time.");
+					return;
+				}
+				log.info("BenCmd: " + user.getName() + " has set time to " + time);
+				if (user.isServer()) {
+					for (World world : plugin.getServer().getWorlds()) {
+						world.setTime(time);
+					}
+				} else {
+					user.getHandle().getWorld().setTime(time);
+				}
+			} else if (args[0].equalsIgnoreCase("dawn") || args[0].equalsIgnoreCase("sunrise")) {
+				if (user.isServer()) {
+					for (World world : plugin.getServer().getWorlds()) {
+						world.setTime(23000);
+					}
+				} else {
+					user.getHandle().getWorld().setTime(23000);
+				}
+			} else if (args[0].equalsIgnoreCase("noon")) {
+				if (user.isServer()) {
+					for (World world : plugin.getServer().getWorlds()) {
+						world.setTime(6000);
+					}
+				} else {
+					user.getHandle().getWorld().setTime(6000);
+				}
+			} else if (args[0].equalsIgnoreCase("dusk") || args[0].equalsIgnoreCase("sunset")) {
+				if (user.isServer()) {
+					for (World world : plugin.getServer().getWorlds()) {
+						world.setTime(12000);
+					}
+				} else {
+					user.getHandle().getWorld().setTime(12000);
+				}
+			} else if (args[0].equalsIgnoreCase("midnight")) {
+				if (user.isServer()) {
+					for (World world : plugin.getServer().getWorlds()) {
+						world.setTime(18000);
+					}
+				} else {
+					user.getHandle().getWorld().setTime(18000);
+				}
 			} else if (args[0].equalsIgnoreCase("lock")) {
 				if (plugin.timeRunning) {
 					log.info("BenCmd: " + user.getName() + " has frozen time!");
