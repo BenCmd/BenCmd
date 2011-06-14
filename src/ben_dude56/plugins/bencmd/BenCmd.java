@@ -34,6 +34,7 @@ import ben_dude56.plugins.bencmd.protect.*;
 import ben_dude56.plugins.bencmd.reporting.*;
 import ben_dude56.plugins.bencmd.warps.*;
 import ben_dude56.plugins.bencmd.weather.*;
+import ben_dude56.plugins.bencmd.advanced.*;
 
 /**
  * BenCmd for Bukkit
@@ -58,6 +59,8 @@ public class BenCmd extends JavaPlugin {
 	public final LotBlockListener lotBListener = new LotBlockListener(this);
 	public final WeatherPListener wpListen = new WeatherPListener(this);
 	public final PortalListener portalListen = new PortalListener(this);
+	public final ShelfPListener shelflp = new ShelfPListener(this);
+	public final ShelfBListener shelflb = new ShelfBListener(this);
 	public final HashMap<Player, Boolean> godmode = new HashMap<Player, Boolean>();
 	public final List<Player> invisible = new ArrayList<Player>();
 	public final List<Player> noinvisible = new ArrayList<Player>();
@@ -74,6 +77,7 @@ public class BenCmd extends JavaPlugin {
 	public final File ticketFile = new File(propDir + "tickets.db");
 	public final File pricesFile = new File(propDir + "prices.db");
 	public final File portalFile = new File(propDir + "portals.db");
+	public final File shelfFile = new File(propDir + "shelves.db");
 	public PluginProperties mainProperties;
 	public PluginProperties itemAliases;
 	public LotFile lots;
@@ -102,6 +106,7 @@ public class BenCmd extends JavaPlugin {
 	public PriceFile prices;
 	public KickList kicked;
 	public PortalFile portals;
+	public ShelfFile shelff;
 	public Logger log = Logger.getLogger("minecraft");
 
 	public boolean checkID(int id) {
@@ -228,6 +233,14 @@ public class BenCmd extends JavaPlugin {
 				e.printStackTrace();
 			}
 		}
+		if (!shelfFile.exists()) {
+			try {
+				shelfFile.createNewFile();
+			} catch (IOException e) {
+				System.out.println("BenCmd had a problem:");
+				e.printStackTrace();
+			}
+		}
 		// Get some static methods ready
 		User.finalizeAll();
 		// Start loading classes
@@ -260,6 +273,7 @@ public class BenCmd extends JavaPlugin {
 		prices = new PriceFile(this, propDir + "prices.db");
 		kicked = new KickList(this);
 		portals = new PortalFile(this, propDir + "portals.db");
+		shelff = new ShelfFile(this, propDir + "shelves.db");
 		// SANITY CHECK
 		if (!sanityCheck()) {
 			this.getServer().getPluginManager().disablePlugin(this);
@@ -333,6 +347,10 @@ public class BenCmd extends JavaPlugin {
 				Event.Priority.Highest, this);
 		pm.registerEvent(Event.Type.PLAYER_PORTAL, this.portalListen,
 				Event.Priority.Highest, this);
+		pm.registerEvent(Event.Type.PLAYER_INTERACT, this.shelflp,
+				Event.Priority.Highest, this);
+		pm.registerEvent(Event.Type.BLOCK_BREAK, this.shelflb,
+				Event.Priority.Monitor, this);
 		PluginDescriptionFile pdfFile = this.getDescription();
 		// Prepare the time lock timer
 		FreezeTimer.schedule(new TimeFreeze(this), 0, 100);
@@ -483,6 +501,8 @@ public class BenCmd extends JavaPlugin {
 			return true;
 		} else if (new PortalCommands(this).onCommand(sender, command,
 				commandLabel, args)) {
+			return true;
+		} else if (new AdvancedCommands(this).onCommand(sender, command, commandLabel, args)) {
 			return true;
 		} else {
 			User user;

@@ -221,3 +221,6 @@ commands:
     setportal:
         usage:
         description: Sets the end of a portal
+    write:
+        usage:
+        description: Writes text to a bookshelf
