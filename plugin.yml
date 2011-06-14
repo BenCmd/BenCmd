@@ -20,6 +20,30 @@ commands:
     time:
         usage:
         description: Sets the time of day...
+    day:
+        usage:
+        description: dispatches /time day
+    sunrise:
+        usage:
+        description: dispatches /time sunrise
+    dawn:
+        usage:
+        description: dispatches /time dawn
+    noon:
+        usage:
+        description: dispatches /time noon
+    dusk:
+        usage:
+        description: dispatches /time dusk
+    sunset:
+        usage:
+        description: dispatches /time sunset
+    night:
+        usage:
+        description: dispatches /time night
+    midnight:
+        usage:
+        description: dispatches /time midnight
     item:
         usage:
         description: Spawns items.
