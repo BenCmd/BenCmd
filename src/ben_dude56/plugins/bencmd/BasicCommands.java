@@ -141,17 +141,21 @@ public class BasicCommands implements Commands {
 				if (user.isServer()) {
 					for (World world : plugin.getServer().getWorlds()) {
 						world.setTime(0);
+						plugin.lastTime = world.getFullTime();
 					}
 				} else {
 					user.getHandle().getWorld().setTime(0);
+					plugin.lastTime = user.getHandle().getWorld().getFullTime();
 				}
 			} else if (args[0].equalsIgnoreCase("night")) {
 				if (user.isServer()) {
 					for (World world : plugin.getServer().getWorlds()) {
 						world.setTime(15000);
+						plugin.lastTime = world.getFullTime();
 					}
 				} else {
 					user.getHandle().getWorld().setTime(15000);
+					plugin.lastTime = user.getHandle().getWorld().getFullTime();
 				}
 			} else if (args[0].equalsIgnoreCase("set")) {
 				int time;
@@ -166,57 +170,71 @@ public class BasicCommands implements Commands {
 				if (user.isServer()) {
 					for (World world : plugin.getServer().getWorlds()) {
 						world.setTime(time);
+						plugin.lastTime = world.getFullTime();
 					}
 				} else {
 					user.getHandle().getWorld().setTime(time);
+					plugin.lastTime = user.getHandle().getWorld().getFullTime();
 				}
 			} else if (args[0].equalsIgnoreCase("dawn")) {
 				if (user.isServer()) {
 					for (World world : plugin.getServer().getWorlds()) {
 						world.setTime(23000);
+						plugin.lastTime = world.getFullTime();
 					}
 				} else {
 					user.getHandle().getWorld().setTime(23000);
+					plugin.lastTime = user.getHandle().getWorld().getFullTime();
 				}
 			} else if (args[0].equalsIgnoreCase("sunrise")) {
 				if (user.isServer()) {
 					for (World world : plugin.getServer().getWorlds()) {
 						world.setTime(22500);
+						plugin.lastTime = world.getFullTime();
 					}
 				} else {
 					user.getHandle().getWorld().setTime(22500);
+					plugin.lastTime = user.getHandle().getWorld().getFullTime();
 				}
 			} else if (args[0].equalsIgnoreCase("noon")) {
 				if (user.isServer()) {
 					for (World world : plugin.getServer().getWorlds()) {
 						world.setTime(6000);
+						plugin.lastTime = world.getFullTime();
 					}
 				} else {
 					user.getHandle().getWorld().setTime(6000);
+					plugin.lastTime = user.getHandle().getWorld().getFullTime();
 				}
 			} else if (args[0].equalsIgnoreCase("dusk")) {
 				if (user.isServer()) {
 					for (World world : plugin.getServer().getWorlds()) {
 						world.setTime(13000);
+						plugin.lastTime = world.getFullTime();
 					}
 				} else {
 					user.getHandle().getWorld().setTime(13000);
+					plugin.lastTime = user.getHandle().getWorld().getFullTime();
 				}
 			} else if (args[0].equalsIgnoreCase("sunset")) {
 				if (user.isServer()) {
 					for (World world : plugin.getServer().getWorlds()) {
 						world.setTime(12000);
+						plugin.lastTime = world.getFullTime();
 					}
 				} else {
 					user.getHandle().getWorld().setTime(12000);
+					plugin.lastTime = user.getHandle().getWorld().getFullTime();
 				}
 			} else if (args[0].equalsIgnoreCase("midnight")) {
 				if (user.isServer()) {
 					for (World world : plugin.getServer().getWorlds()) {
 						world.setTime(18000);
+						plugin.lastTime = world.getFullTime();
 					}
 				} else {
 					user.getHandle().getWorld().setTime(18000);
+					plugin.lastTime = user.getHandle().getWorld().getFullTime();
 				}
 			} else if (args[0].equalsIgnoreCase("lock")) {
 				if (plugin.timeRunning) {

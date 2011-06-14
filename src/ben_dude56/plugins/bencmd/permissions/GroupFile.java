@@ -12,6 +12,9 @@ import java.util.logging.Logger;
 import org.bukkit.ChatColor;
 
 public class GroupFile extends Properties {
+	
+	// TODO For version 1.2.1 : Overhaul group system.
+	
 	private static final long serialVersionUID = 0L;
 	File file;
 	MainPermissions mainPerm;

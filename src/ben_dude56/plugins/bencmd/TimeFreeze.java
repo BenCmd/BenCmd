@@ -19,17 +19,18 @@ public class TimeFreeze extends TimerTask {
 			}
 		} else {
 			if (plugin.lastTime == 0) {
-				plugin.lastTime = plugin.getServer().getWorlds().get(0).getTime();
+				plugin.lastTime = plugin.getServer().getWorlds().get(0).getFullTime();
 				return;
 			}
 			for (World world : plugin.getServer().getWorlds()) {
 				if (world.getTime() >= 0 && world.getTime() < 12000) {
-					world.setTime(plugin.lastTime + plugin.mainProperties.getInteger("daySpeed", 100));
+					world.setFullTime(plugin.lastTime + plugin.mainProperties.getInteger("daySpeed", 100));
 				}
 				else {
-					world.setTime(plugin.lastTime + plugin.mainProperties.getInteger("nightSpeed", 100));
+					world.setFullTime(plugin.lastTime + plugin.mainProperties.getInteger("nightSpeed", 100));
 				}
 			}
+			plugin.lastTime = plugin.getServer().getWorlds().get(0).getFullTime();
 		}
 	}
 
