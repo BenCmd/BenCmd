@@ -83,6 +83,7 @@ public class BenCmd extends JavaPlugin {
 	public LotFile lots;
 	private Timer FreezeTimer = new Timer();
 	public boolean timeRunning = true;
+	public long lastTime = 0;
 	public long timeFrozenAt = 0;
 	public boolean heroActive = false;
 	public MainPermissions perm;
