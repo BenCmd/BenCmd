@@ -82,11 +82,11 @@ public class GroupFile extends Properties {
 	}
 
 	public void removeGroup(PermissionGroup group) {
-		groups.remove(group.getName());
-		this.remove(group.getName());
 		for (PermissionGroup group2 : getGroupGroups(group)) {
 			group2.removeGroup(group);
 		}
+		this.remove(group.getName());
+		groups.remove(group.getName());
 		saveFile();
 	}
 
@@ -169,6 +169,7 @@ public class GroupFile extends Properties {
 		List<PermissionGroup> toCheck = groups;
 		while (!toCheck.isEmpty()) {
 			toCheck.addAll(getGroupGroups(toCheck.get(0)));
+			groups.add(toCheck.get(0));
 			toCheck.remove(0);
 		}
 		return groups;

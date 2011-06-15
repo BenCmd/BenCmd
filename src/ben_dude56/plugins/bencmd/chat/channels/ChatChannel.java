@@ -138,7 +138,7 @@ public class ChatChannel {
 					+ " encountered a minor error while loading:");
 			control.plugin.log
 					.warning("\""
-							+ value.split("/")
+							+ value.split("/")[7]
 							+ "\" is not a valid value for Default Join Type. Assumed \"d\".");
 			joinType = ChatLevel.DEFAULT;
 		}
@@ -203,10 +203,13 @@ public class ChatChannel {
 		switch (defLevel) {
 		case BANNED:
 			value += "b";
+			break;
 		case MUTED:
 			value += "m";
+			break;
 		default:
 			value += "d";
+			break;
 		}
 		return value;
 	}
