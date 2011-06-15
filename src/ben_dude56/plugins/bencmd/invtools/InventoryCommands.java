@@ -80,11 +80,11 @@ public class InventoryCommands implements Commands {
 			user.sendMessage(ChatColor.RED + "Invalid item ID or damage!");
 			return;
 		}
-		if (!user.getGroup().canSpawnItem(Item.getMaterial())) {
+		/*if (!user.getGroup().canSpawnItem(Item.getMaterial())) {
 			user.sendMessage(ChatColor.RED
 					+ "You're not allowed to spawn that item!");
 			return;
-		}
+		}*/
 		plugin.dispensers.addDispenser(
 				blockToAdd.getLocation(),
 				String.valueOf(Item.getMaterial().getId()) + ":"
@@ -146,11 +146,11 @@ public class InventoryCommands implements Commands {
 			}
 		}
 		Material mat = Item.getMaterial();
-		if (user.getGroup() != null && !user.getGroup().canSpawnItem(mat)) {
+		/*if (user.getGroup() != null && !user.getGroup().canSpawnItem(mat)) {
 			user.sendMessage(ChatColor.RED
 					+ "You're not allowed to spawn that item!");
 			return;
-		}
+		}*/
 		int ItemDamage = Item.getDamage();
 		if (args.length == 3) {
 			User user2;

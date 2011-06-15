@@ -13,6 +13,7 @@ import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.inventory.ItemStack;
 
 import ben_dude56.plugins.bencmd.BenCmd;
+import ben_dude56.plugins.bencmd.User;
 
 public class InventoryBlockListener extends BlockListener {
 	BenCmd plugin;
@@ -32,8 +33,7 @@ public class InventoryBlockListener extends BlockListener {
 		Player player = event.getPlayer();
 		if (block.getType() == Material.DISPENSER
 				&& plugin.dispensers.isUnlimitedDispenser(block.getLocation())) {
-			if (!plugin.perm.userFile.hasPermission(player.getName(),
-					"canDeleteUnlDisp", true, true)) {
+			if (!User.getUser(plugin, player).hasPerm("canDeleteUnlDisp")) {
 				player.sendMessage(ChatColor.RED
 						+ "You can't destroy unlimited dispensers!");
 				event.setCancelled(true);
@@ -45,8 +45,7 @@ public class InventoryBlockListener extends BlockListener {
 		}
 		if (block.getType() == Material.CHEST
 				&& plugin.chests.isDisposalChest(block.getLocation())) {
-			if (!plugin.perm.userFile.hasPermission(player.getName(),
-					"canDeleteDispChest", true, true)) {
+			if (!User.getUser(plugin, player).hasPerm("canDeleteDispChest")) {
 				player.sendMessage(ChatColor.RED
 						+ "You can't destroy disposal chest!");
 				event.setCancelled(true);

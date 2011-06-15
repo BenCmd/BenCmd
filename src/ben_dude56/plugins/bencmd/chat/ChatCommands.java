@@ -87,19 +87,9 @@ public class ChatCommands implements Commands {
 			user.sendMessage(ChatColor.RED + "That user doesn't exist!");
 			return;
 		}
-		switch (user2.addPermission("isMuted")) {
-		case DBTargetNotExist:
-			user.sendMessage(ChatColor.RED + "That user doesn't exist!");
-			break;
-		case DBAlreadyHas:
+		if(user.hasPerm("isMuted", false)) {
 			user.sendMessage(ChatColor.RED + "That user is already muted!");
-			break;
-		case MalformedPermissions:
-			user.sendMessage(ChatColor.RED
-					+ "The user permissions file is broken! Please contact your server admin!");
-			log.warning("Permissions file corrupt!");
-			break;
-		case Success:
+		} else {
 			user.sendMessage(ChatColor.GREEN + "That user was muted!");
 			log.info("User " + args[0] + " has been muted by " + user.getName()
 					+ ".");
@@ -107,7 +97,6 @@ public class ChatCommands implements Commands {
 			if ((user3 = User.matchUser(user2.getName(), plugin)) != null) {
 				user3.sendMessage(ChatColor.RED + "You have been muted.");
 			}
-			break;
 		}
 	}
 
@@ -142,19 +131,7 @@ public class ChatCommands implements Commands {
 			user.sendMessage(ChatColor.RED + "That user doesn't exist!");
 			return;
 		}
-		switch (user2.deletePermission("isMuted")) {
-		case DBTargetNotExist:
-			user.sendMessage(ChatColor.RED + "That user doesn't exist!");
-			break;
-		case DBNotHave:
-			user.sendMessage(ChatColor.RED + "That user is not muted!");
-			break;
-		case MalformedPermissions:
-			user.sendMessage(ChatColor.RED
-					+ "The user permissions file is broken! Please contact your server admin!");
-			log.warning("Permissions file corrupt!");
-			break;
-		case Success:
+		if(user2.hasPerm("isMuted", false)) {
 			user.sendMessage(ChatColor.GREEN + "That user was unmuted!");
 			log.info("User " + args[0] + " has been unmuted by "
 					+ user.getName() + ".");
@@ -162,7 +139,8 @@ public class ChatCommands implements Commands {
 			if ((user3 = User.matchUser(user2.getName(), plugin)) != null) {
 				user3.sendMessage(ChatColor.GREEN + "You have been unmuted.");
 			}
-			break;
+		} else {
+			user.sendMessage(ChatColor.RED + "That user isn't muted!");
 		}
 	}
 
@@ -194,8 +172,7 @@ public class ChatCommands implements Commands {
 		}
 		long slowTimeLeft = plugin.chatListen.slow
 				.playerBlocked(user.getName());
-		if ((!plugin.perm.userFile.hasPermission(user.getName(),
-				"ignoreSlowMode", true, true))
+		if (!user.hasPerm("ignoreSlowMode")
 				&& plugin.chatListen.slow.isEnabled()) {
 			if (slowTimeLeft > 0) {
 				user.sendMessage(ChatColor.GRAY
@@ -256,8 +233,7 @@ public class ChatCommands implements Commands {
 		}
 		long slowTimeLeft = plugin.chatListen.slow
 				.playerBlocked(user.getName());
-		if ((!plugin.perm.userFile.hasPermission(user.getName(),
-				"ignoreSlowMode", true, true))
+		if (!user.hasPerm("ignoreSlowMode")
 				&& plugin.chatListen.slow.isEnabled()) {
 			if (slowTimeLeft > 0) {
 				user.sendMessage(ChatColor.GRAY

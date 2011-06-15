@@ -1,5 +1,7 @@
 package ben_dude56.plugins.bencmd.permissions;
 
+import java.util.ArrayList;
+
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerLoginEvent;
@@ -20,7 +22,7 @@ public class PermLoginListener extends PlayerListener {
 
 	public void onPlayerLogin(PlayerLoginEvent event) {
 		if (!plugin.perm.userFile.userExists(event.getPlayer().getName())) {
-			plugin.perm.userFile.addUser(event.getPlayer().getName());
+			plugin.perm.userFile.addUser(new PermissionUser(plugin, event.getPlayer().getName(), new ArrayList<String>()));
 		}
 		if ((new ActionableUser(plugin, event.getPlayer())).hasPerm("isBanned",
 				false)) {

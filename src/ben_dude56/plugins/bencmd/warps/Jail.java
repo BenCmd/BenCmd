@@ -7,6 +7,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import ben_dude56.plugins.bencmd.BenCmd;
+import ben_dude56.plugins.bencmd.User;
 
 public class Jail {
 	Warp jailWarp;
@@ -51,12 +52,12 @@ public class Jail {
 	}
 
 	public boolean SendToJail(Player player) {
-		if (plugin.perm.userFile.hasPermission(player.getName(),
-				"cannotBeJailed", true, true)) {
+		User user = User.getUser(plugin, player);
+		if (user.hasPerm("cannotBeJailed")) {
 			return false;
 		}
 		jailWarp.WarpHere(new WarpableUser(plugin, player));
-		plugin.perm.userFile.addPermission(player.getName(), "isJailed");
+		user.addPermission("isJailed");
 		player.sendMessage(ChatColor.RED
 				+ plugin.mainProperties.getString("jailMessage",
 						"You have been sent to jail!"));
@@ -65,8 +66,9 @@ public class Jail {
 	}
 
 	public void LeaveJail(Player player) {
+		User user = User.getUser(plugin, player);
 		player.teleport(player.getWorld().getSpawnLocation());
-		plugin.perm.userFile.removePermission(player.getName(), "isJailed");
+		user.removePermission("isJailed");
 		player.sendMessage(ChatColor.GREEN
 				+ plugin.mainProperties.getString("unjailMessage",
 						"You have been released..."));

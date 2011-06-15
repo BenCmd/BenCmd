@@ -1,85 +1,130 @@
 package ben_dude56.plugins.bencmd.permissions;
 
+import java.util.List;
+
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 
 import ben_dude56.plugins.bencmd.BenCmd;
 
 public class PermissionGroup {
-	private BenCmd plugin;
-	private MainPermissions perm;
-	private String name;
+	private InternalGroup group;
 
-	public PermissionGroup(BenCmd instance, String groupName)
-			throws NullPointerException {
-		plugin = instance;
-		perm = plugin.perm;
-		if (perm.groupFile.groupExists(groupName)) {
-			name = groupName;
-		} else {
-			throw new NullPointerException("Group not in database");
-		}
+	protected PermissionGroup(InternalGroup internal) {
+		group = internal;
 	}
 
-	public boolean canSpawnItem(Material material) {
-		return perm.itemList.canSpawn(material, name);
+	public PermissionGroup(BenCmd instance, String groupName,
+			List<String> permissions, List<String> users, List<String> groups,
+			String prefix, Integer color, Integer level) {
+		group = new InternalGroup(instance, groupName, permissions, users,
+				groups, prefix, color, level);
 	}
 
-	public boolean hasPerm(String permission) {
-		return perm.groupFile.hasPermission(name, permission, true, true);
+	private void updateInternal() {
+		group = group.plugin.perm.groupFile.getInternal(group.getName());
 	}
 
-	public boolean hasPerm(String permission, boolean testStar) {
-		return perm.groupFile.hasPermission(name, permission, testStar, true);
+	public boolean userInGroup(PermissionUser user) {
+		updateInternal();
+		return group.userInGroup(user);
 	}
 
-	public boolean hasPerm(String permission, boolean testStar,
-			boolean testGroup) {
-		return perm.groupFile.hasPermission(name, permission, testStar,
-				testGroup);
+	public boolean groupInGroup(PermissionGroup group) {
+		updateInternal();
+		return this.group.groupInGroup(group);
+	}
+	
+	public boolean groupInGroup(InternalGroup group) {
+		updateInternal();
+		return group.groupInGroup(group);
 	}
 
-	public PermChangeResult addPermission(String permission) {
-		return perm.groupFile.addPermission(name, permission);
+	public boolean hasPerm(String perm) {
+		updateInternal();
+		return group.hasPerm(perm, true, true);
 	}
 
-	public PermChangeResult deletePermission(String permission) {
-		return perm.groupFile.removePermission(name, permission);
+	public boolean hasPerm(String perm, boolean testStar) {
+		updateInternal();
+		return group.hasPerm(perm, testStar, true);
 	}
-
-	public String getPrefix() {
-		return perm.groupFile.getPrefix(name);
-	}
-
-	public void setPrefix(String prefix) {
-		perm.groupFile.setPrefix(name, prefix);
-	}
-
-	public ChatColor getPrefixColor() {
-		return perm.groupFile.getColor(name);
-	}
-
-	public void setPrefixColor(ChatColor color) {
-		perm.groupFile.setColor(name, color);
-	}
-
-	public PermissionGroup getGroup() {
-		try {
-			return new PermissionGroup(plugin, perm.groupFile.getGroup(name));
-		} catch (NullPointerException e) {
-			return null;
-		}
-	}
-
-	public PermChangeResult changeGroup(String groupName) {
-		return perm.groupFile.changeGroup(name, groupName);
-	}
-
-	public PermChangeResult changeGroup(PermissionGroup group) {
-		return perm.groupFile.changeGroup(name, group.getName());
+	
+	public boolean hasPerm(String perm, boolean testStar, boolean testGroup) {
+		updateInternal();
+		return group.hasPerm(perm, testStar, testGroup);
 	}
 
 	public String getName() {
-		return name;
+		updateInternal();
+		return group.getName();
+	}
+
+	public String getPrefix() {
+		updateInternal();
+		return group.getPrefix();
+	}
+
+	public Integer getColorCode() {
+		updateInternal();
+		return group.getColorCode();
+	}
+
+	public ChatColor getColor() {
+		updateInternal();
+		return group.getColor();
+	}
+	
+	public Integer getLevel() {
+		updateInternal();
+		return group.getLevel();
+	}
+
+	protected InternalGroup getInternal() {
+		return group;
+	}
+
+	public void setPrefix(String value) {
+		updateInternal();
+		group.setPrefix(value);
+	}
+
+	public void setColor(Integer value) {
+		updateInternal();
+		group.setColor(value);
+	}
+	
+	public void setLevel(Integer value) {
+		updateInternal();
+		group.setLevel(value);
+	}
+
+	public void addUser(PermissionUser user) {
+		updateInternal();
+		group.addUser(user.getName());
+	}
+
+	public void removeUser(PermissionUser user) {
+		updateInternal();
+		group.remUser(user.getName());
+	}
+
+	public void addGroup(PermissionGroup group) {
+		updateInternal();
+		this.group.addGroup(group.getName());
+	}
+
+	public void removeGroup(PermissionGroup group) {
+		updateInternal();
+		this.group.remGroup(group.getName());
+	}
+
+	public void addPermission(String permission) {
+		updateInternal();
+		group.addPerm(permission);
+	}
+
+	public void removePermission(String permission) {
+		updateInternal();
+		group.remPerm(permission);
 	}
 }

@@ -1,5 +1,6 @@
 package ben_dude56.plugins.bencmd.warps;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -16,18 +17,16 @@ public class WarpableUser extends PermissionUser {
 	private boolean isConsole;
 	Logger log = Logger.getLogger("minecraft");
 
-	@SuppressWarnings("deprecation")
 	public WarpableUser(BenCmd instance, Player entity)
 			throws NullPointerException {
-		super(instance, entity.getName());
+		super(instance, entity.getName(), new ArrayList<String>());
 		plugin = instance;
 		player = entity;
 		isConsole = false;
 	}
 
-	@SuppressWarnings("deprecation")
 	public WarpableUser(BenCmd instance) {
-		super(instance, "*");
+		super(instance, "*", new ArrayList<String>());
 		plugin = instance;
 		isConsole = true;
 	}

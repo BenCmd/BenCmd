@@ -5,7 +5,6 @@ import java.util.logging.Logger;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import ben_dude56.plugins.bencmd.permissions.PermChangeResult;
 import ben_dude56.plugins.bencmd.warps.WarpableUser;
 
 public class ActionableUser extends WarpableUser {
@@ -245,22 +244,12 @@ public class ActionableUser extends WarpableUser {
 		return this.hasPerm("isMuted", false);
 	}
 
-	/**
-	 * Mutes the user
-	 * 
-	 * @return Returns the result of the permission change
-	 */
-	public PermChangeResult Mute() {
-		return this.addPermission("isMuted");
+	public void Mute() {
+		this.addPermission("isMuted");
 	}
 
-	/**
-	 * Unmutes the user
-	 * 
-	 * @return Returns the result of the permission change
-	 */
-	public PermChangeResult Unmute() {
-		return this.deletePermission("isMuted");
+	public void Unmute() {
+		this.removePermission("isMuted");
 	}
 
 	/**

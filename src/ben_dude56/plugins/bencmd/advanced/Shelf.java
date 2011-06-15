@@ -14,7 +14,7 @@ public class Shelf {
 	public String getText() {
 		return value;
 	}
-	
+
 	public Location getLocation() {
 		return loc;
 	}

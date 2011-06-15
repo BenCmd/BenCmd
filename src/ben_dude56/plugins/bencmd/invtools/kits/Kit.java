@@ -120,7 +120,7 @@ public class Kit {
 		if (user.hasPerm("allKit")) {
 			return true;
 		}
-		return (user.inGroup(group));
+		return (user.inGroup(plugin.perm.groupFile.getGroup(group)));
 	}
 
 	public boolean giveKit(User user) {

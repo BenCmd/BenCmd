@@ -99,11 +99,6 @@ public class ItemBW extends Properties {
 				}
 				matList.add(mat);
 			}
-			if (this.getSetting(group) == BWSetting.BWWhite
-					&& mainPerm.groupFile.groupExists(mainPerm.groupFile
-							.getGroup(group))) {
-				matList.addAll(getListed(mainPerm.groupFile.getGroup(group)));
-			}
 		} catch (IndexOutOfBoundsException e) {
 		}
 		return matList;

@@ -30,8 +30,11 @@ public class BlockChecker extends BlockListener {
 			return;
 		}
 		Warp warpTo;
-		if(event.getBlockPlaced().getType() == Material.PORTAL && (warpTo = plugin.warps.getWarp(plugin.mainProperties.getString("defaultPortalWarp", "portals"))) != null) {
-			plugin.portals.addPortal(new Portal(Portal.getHandleBlock(event.getBlockPlaced().getLocation()), null, warpTo));
+		if (event.getBlockPlaced().getType() == Material.PORTAL
+				&& (warpTo = plugin.warps.getWarp(plugin.mainProperties
+						.getString("defaultPortalWarp", "portals"))) != null) {
+			plugin.portals.addPortal(new Portal(Portal.getHandleBlock(event
+					.getBlockPlaced().getLocation()), null, warpTo));
 		}
 	}
 

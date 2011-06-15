@@ -1,5 +1,5 @@
 name: BenCmd
-version: 1.2.0
+version: 1.2.1
 main: ben_dude56.plugins.bencmd.BenCmd
 commands:
     slow:

@@ -93,8 +93,7 @@ public class Warp {
 		if (mustInheritGroup == "") {
 			return true;
 		}
-		if (plugin.perm.userFile
-				.userInGroup(player.getName(), mustInheritGroup)) {
+		if (plugin.perm.groupFile.getGroup(mustInheritGroup).userInGroup(player)) {
 			return true;
 		}
 		if (player.hasPerm("canWarpAnywhere")) {

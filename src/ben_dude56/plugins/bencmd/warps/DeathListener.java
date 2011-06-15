@@ -94,31 +94,29 @@ public class DeathListener extends EntityListener {
 		if (!(event.getEntity() instanceof Player)) {
 			return;
 		}
-		Player player = (Player) event.getEntity();
-		if (plugin.perm.userFile.hasPermission(player.getName(), "canWarp",
-				true, true)
-				&& plugin.perm.userFile.hasPermission(player.getName(),
-						"canBackOnDeath", true, true)) {
-			plugin.checkpoints.SetPreWarp(player);
-			player.sendMessage(ChatColor.RED
+		User user = User.getUser(plugin,(Player) event.getEntity());
+		if (user.hasPerm("canWarp")
+				&& user.hasPerm("canBackOnDeath")) {
+			plugin.checkpoints.SetPreWarp(user.getHandle());
+			user.sendMessage(ChatColor.RED
 					+ "Use /back to return to your death point...");
 		}
 		if (plugin.mainProperties.getBoolean("gravesEnabled", true)) {
-			Location graveLoc = new Location(player.getWorld(), player
-					.getLocation().getBlockX(), player.getLocation()
-					.getBlockY(), player.getLocation().getBlockZ());
-			Block grave = player.getWorld().getBlockAt(graveLoc);
+			Location graveLoc = new Location(user.getHandle().getWorld(), user.getHandle()
+					.getLocation().getBlockX(), user.getHandle().getLocation()
+					.getBlockY(), user.getHandle().getLocation().getBlockZ());
+			Block grave = user.getHandle().getWorld().getBlockAt(graveLoc);
 			while (grave.getType() != Material.AIR) {
 				if (graveLoc.getBlockY() == 1) {
 					return;
 				}
 				graveLoc.setY(graveLoc.getY() + 1);
-				grave = player.getWorld().getBlockAt(graveLoc);
+				grave = user.getHandle().getWorld().getBlockAt(graveLoc);
 			}
 			grave.setType(Material.SIGN_POST);
 			CraftSign graveSign = new CraftSign(grave);
 			graveSign.setLine(1, "R.I.P.");
-			graveSign.setLine(2, player.getName());
+			graveSign.setLine(2, user.getName());
 			graveSign.update();
 		}
 	}

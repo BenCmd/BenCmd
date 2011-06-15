@@ -503,7 +503,8 @@ public class BenCmd extends JavaPlugin {
 		} else if (new PortalCommands(this).onCommand(sender, command,
 				commandLabel, args)) {
 			return true;
-		} else if (new AdvancedCommands(this).onCommand(sender, command, commandLabel, args)) {
+		} else if (new AdvancedCommands(this).onCommand(sender, command,
+				commandLabel, args)) {
 			return true;
 		} else {
 			User user;

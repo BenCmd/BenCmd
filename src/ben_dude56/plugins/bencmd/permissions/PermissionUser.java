@@ -1,143 +1,122 @@
 package ben_dude56.plugins.bencmd.permissions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.ChatColor;
 
 import ben_dude56.plugins.bencmd.BenCmd;
 
 public class PermissionUser {
-	private BenCmd plugin;
-	private MainPermissions perm;
-	private String name;
+	private InternalUser user;
 
 	public static PermissionUser matchUserIgnoreCase(String name,
 			BenCmd instance) {
-		for (String user : instance.perm.userFile.listUsers().keySet()) {
-			if (user.equalsIgnoreCase(name)) {
-				return new PermissionUser(instance, user);
+		for(Object oUser : instance.perm.userFile.listUsers().values()) {
+			if(((InternalUser) oUser).getName().equalsIgnoreCase(name)) {
+				return new PermissionUser((InternalUser)oUser);
 			}
 		}
 		return null;
 	}
 
 	public static PermissionUser matchUser(String name, BenCmd instance) {
-		try {
-			return new PermissionUser(instance, name);
-		} catch (NullPointerException e) {
-			return null;
+		for(Object oUser : instance.perm.userFile.listUsers().values()) {
+			if(((InternalUser) oUser).getName().equals(name)) {
+				return new PermissionUser((InternalUser)oUser);
+			}
 		}
+		return null;
 	}
-
-	/**
-	 * @deprecated Use PermissionUser.matchUserIgnoreCase()
-	 */
-	public PermissionUser(BenCmd instance, String userName)
-			throws NullPointerException {
-		plugin = instance;
-		perm = plugin.perm;
-		if (perm.userFile.userExists(userName)
-				|| userName.equalsIgnoreCase("*")) {
-			name = userName;
-		} else {
-			throw new NullPointerException("User not in database");
-		}
+	
+	public PermissionUser(BenCmd instance) {
+		user = new InternalUser(instance, "*", new ArrayList<String>());
 	}
-
-	public boolean isServer() {
-		return (name.equalsIgnoreCase("*"));
+	
+	public PermissionUser(InternalUser internal) {
+		user = internal;
 	}
-
-	public boolean hasPerm(String permission) {
-		if (name.equalsIgnoreCase("*")) {
-			return true;
-		}
-		return perm.userFile.hasPermission(name, permission, true, true);
+	
+	protected PermissionUser(BenCmd instance, String name, List<String> permissions) {
+		user = new InternalUser(instance, name, permissions);
 	}
-
-	public boolean hasPerm(String permission, boolean testStar) {
-		if (name.equalsIgnoreCase("*")) {
-			return (testStar) ? true : false;
+	
+	private void updateInternal() {
+		if(user.isServer()) {
+			return;
 		}
-		return perm.userFile.hasPermission(name, permission, testStar, true);
-	}
-
-	public boolean hasPerm(String permission, boolean testStar,
-			boolean testGroup) {
-		if (name.equalsIgnoreCase("*")) {
-			return (testStar) ? true : false;
-		}
-		return perm.userFile.hasPermission(name, permission, testStar,
-				testGroup);
-	}
-
-	public PermChangeResult addPermission(String permission) {
-		if (name.equalsIgnoreCase("*")) {
-			return PermChangeResult.DBTargetNotExist;
-		}
-		return perm.userFile.addPermission(name, permission);
-	}
-
-	public PermChangeResult deletePermission(String permission) {
-		if (name.equalsIgnoreCase("*")) {
-			return PermChangeResult.DBTargetNotExist;
-		}
-		return perm.userFile.removePermission(name, permission);
-	}
-
-	public PermissionGroup getGroup() {
-		if (name.equalsIgnoreCase("*")) {
-			return null;
-		}
-		try {
-			return new PermissionGroup(plugin, perm.userFile.getGroup(name));
-		} catch (NullPointerException e) {
-			return null;
-		}
-	}
-
-	public PermChangeResult changeGroup(String groupName) {
-		if (name.equalsIgnoreCase("*")) {
-			return PermChangeResult.DBTargetNotExist;
-		}
-		return perm.userFile.changeGroup(name, groupName);
-	}
-
-	public PermChangeResult changeGroup(PermissionGroup group) {
-		if (name.equalsIgnoreCase("*")) {
-			return PermChangeResult.DBTargetNotExist;
-		}
-		return perm.userFile.changeGroup(name, group.getName());
+		user = user.plugin.perm.userFile.getInternal(user.getName());
 	}
 
 	public String getName() {
-		return (name.equalsIgnoreCase("*")) ? "Server" : name;
+		updateInternal();
+		return user.getName();
 	}
-
-	public ChatColor getColor() {
-		if (name.equalsIgnoreCase("*")) {
-			return ChatColor.DARK_BLUE;
-		}
-		return perm.userFile.getColor(name);
+	
+	public boolean hasPerm(String perm) {
+		updateInternal();
+		return user.hasPerm(perm, true, true);
 	}
-
-	public void setColor(ChatColor color) {
-		if (name.equalsIgnoreCase("*")) {
-			return;
-		}
-		perm.userFile.setColor(name, color);
+	
+	public boolean hasPerm(String perm, boolean testStar) {
+		updateInternal();
+		return user.hasPerm(perm, testStar, true);
 	}
-
-	public boolean inGroup(String groupName) {
-		if (name.equalsIgnoreCase("*")) {
-			return true;
-		}
-		return (plugin.perm.userFile.userInGroup(name, groupName));
+	
+	public boolean hasPerm(String perm, boolean testStar, boolean testGroup) {
+		updateInternal();
+		return user.hasPerm(perm, testStar, testGroup);
 	}
-
+	
+	public void addPermission(String permission) {
+		updateInternal();
+		user.addPerm(permission);
+	}
+	
+	public void removePermission(String permission) {
+		updateInternal();
+		user.remPerm(permission);
+	}
+	
 	public boolean inGroup(PermissionGroup group) {
-		if (name.equalsIgnoreCase("*")) {
-			return true;
+		updateInternal();
+		return user.inGroup(group);
+	}
+	
+	public String getPrefix() {
+		List<InternalGroup> hasPrefix = new ArrayList<InternalGroup>();
+		for(PermissionGroup group : user.plugin.perm.groupFile.getUserGroups(user)) {
+			if(!group.getPrefix().isEmpty()) {
+				hasPrefix.add(group.getInternal());
+			}
 		}
-		return (plugin.perm.userFile.userInGroup(name, group.getName()));
+		if(hasPrefix.isEmpty()) {
+			return "";
+		} else {
+			return InternalGroup.highestLevel(hasPrefix).getPrefix();
+		}
+	}
+	
+	public ChatColor getColor() {
+		List<InternalGroup> hasColor = new ArrayList<InternalGroup>();
+		for(PermissionGroup group : user.plugin.perm.groupFile.getUserGroups(user)) {
+			if(group.getColor() != ChatColor.YELLOW) {
+				hasColor.add(group.getInternal());
+			}
+		}
+		if(hasColor.isEmpty()) {
+			return ChatColor.YELLOW;
+		} else {
+			return InternalGroup.highestLevel(hasColor).getColor();
+		}
+	}
+	
+	public boolean isServer() {
+		return user.isServer();
+	}
+	
+	protected InternalUser getInternal() {
+		return user;
 	}
 
 	public PermissionUser getPermissionUser() {

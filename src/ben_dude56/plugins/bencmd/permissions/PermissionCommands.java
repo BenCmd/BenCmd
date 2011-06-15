@@ -1,5 +1,6 @@
 package ben_dude56.plugins.bencmd.permissions;
 
+import java.util.ArrayList;
 import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
@@ -57,194 +58,52 @@ public class PermissionCommands implements Commands {
 			user.sendMessage(ChatColor.YELLOW
 					+ "   -Use add to add a user, and remove to delete one.");
 			user.sendMessage(ChatColor.YELLOW
-					+ "   -Use g:<group> to change the group that a user belongs to.");
-			user.sendMessage(ChatColor.YELLOW
-					+ "   -Use c:<color> to change the color that the player's name shows up as.");
-			user.sendMessage(ChatColor.YELLOW
 					+ "   -Otherwise, type +<permission> or -<permission> to add/remove permissions.");
 			return;
 		}
-		switch (args.length) {
-		case 1:
-			user.sendMessage(ChatColor.YELLOW
-					+ "Proper use is: /user <name> {add|remove|g:<group>|<permissions>}");
-			user.sendMessage(ChatColor.YELLOW
-					+ "Type /perm help for additionnal information.");
-			break;
-		case 2:
-			if (args[1].equalsIgnoreCase("remove")) {
-				if (!plugin.perm.userFile.userExists(args[0])) {
-					user.sendMessage(ChatColor.RED + "User doesn't exist!");
-				} else {
-					for (Player p : plugin.getServer().getOnlinePlayers()) {
-						if (p.getName().equalsIgnoreCase(args[0])) {
-							user.sendMessage(ChatColor.RED
-									+ "You cannot remove a player that is currently logged in!");
-							return;
-						}
-					}
-					if (plugin.perm.userFile.removeUser(args[0])) {
-						user.sendMessage(ChatColor.GREEN
-								+ "User successfully removed!");
-						log.info("User " + args[0]
-								+ " has been removed from the database.");
-					} else {
-						user.sendMessage(ChatColor.RED
-								+ "An unknown error occured while removing this user!");
-					}
-				}
-				break;
-			} else if (args[1].equalsIgnoreCase("add")) {
-				if (!plugin.perm.userFile.userExists(args[0])) {
-					if (plugin.perm.userFile.addUser(args[0])) {
-						user.sendMessage(ChatColor.GREEN
-								+ "User successfully added!");
-						log.info("User " + args[0]
-								+ " has been added to the database.");
-					} else {
-						user.sendMessage(ChatColor.RED
-								+ "An unknown error occured while adding this user!");
-					}
-				} else {
-					user.sendMessage(ChatColor.RED
-							+ "That user is already in the database!");
-				}
-				break;
-			} else if (args[1].startsWith("g:")) {
-				PermissionUser user2;
-				if ((user2 = PermissionUser
-						.matchUserIgnoreCase(args[0], plugin)) == null) {
-					user.sendMessage(ChatColor.RED
-							+ "That player doesn't exist!");
-					return;
-				}
-				switch (user2.changeGroup(args[1].replaceFirst("g:", ""))) {
-				case AlreadyInGroup:
-					user.sendMessage(ChatColor.RED
-							+ "That user is already a child of "
-							+ args[1].replaceFirst("g:", "") + "!");
-					break;
-				case DBTargetNotExist:
-					user.sendMessage(ChatColor.RED
-							+ "The user you tried to change is not present in the database!");
-					break;
-				case DBGroupNotExist:
-					user.sendMessage(ChatColor.RED
-							+ "The group you tried to inherit from is not present in the database!");
-					break;
-				case MalformedPermissions:
-					user.sendMessage(ChatColor.RED
-							+ "The user permissions file is broken! Please contact your server admin!");
-					log.warning("User permissions file malformed!");
-					break;
-				case Success:
-					user.sendMessage(ChatColor.GREEN
-							+ "The operation completed successfully!");
-					break;
-				}
-				break;
-			} else if (args[1].startsWith("p:")) {
-				user.sendMessage(ChatColor.RED
-						+ "You can only do that for groups!");
-				return;
-			} else if (args[1].startsWith("c:")) {
-				args[1] = args[1].replaceFirst("c:", "");
-				int colorid;
-				try {
-					colorid = Integer.parseInt(args[1]);
-				} catch (NumberFormatException e) {
-					try {
-						colorid = Integer.parseInt(args[1], 16);
-					} catch (NumberFormatException e2) {
-						user.sendMessage(ChatColor.RED + "Invalid color ID!");
-						return;
-					}
-				}
-				PermissionUser user2;
-				if ((user2 = PermissionUser
-						.matchUserIgnoreCase(args[0], plugin)) == null) {
-					user.sendMessage(ChatColor.RED
-							+ "The user you tried to change is not present in the database!");
-					return;
-				}
-				user2.setColor(ChatColor.getByCode(colorid));
-				user.sendMessage(ChatColor.GREEN
-						+ "The operation completed successfully!");
-				return;
+		PermissionUser user2 = plugin.perm.userFile.getUser(args[0]);
+		if(args[1].equalsIgnoreCase("remove")) {
+			if (user2 == null) {
+				user.sendMessage(ChatColor.RED + "That user doesn't exist!");
 			} else {
-				if (args[1].startsWith("+")) {
-					// Fall-through
-				} else if (args[1].startsWith("-")) {
-					// Fall-through
+				plugin.perm.userFile.removeUser(user2);
+				user.sendMessage(ChatColor.GREEN
+						+ "User " + args[0] + " was successfully removed!");
+				plugin.log.info("User " + args[0] + " has been removed!");
+			}
+		} else if (args[1].equalsIgnoreCase("add")) {
+			if (user2 != null) {
+				user.sendMessage(ChatColor.RED + "That user already exists!");
+			} else {
+				plugin.perm.userFile.addUser(new PermissionUser(plugin,
+						args[0], new ArrayList<String>()));
+				user.sendMessage(ChatColor.GREEN + "User " + args[0] + " was successfully created!");
+				plugin.log.info("User " + args[0] + " has been created!");
+			}
+		} else if (args[1].startsWith("+")) {
+			args[1] = args[1].replaceFirst("\\+", "");
+			if(user2 == null) {
+				user.sendMessage(ChatColor.RED + "That user doesn't exist!");
+			} else {
+				if(user2.hasPerm(args[1], false, false)) {
+					user.sendMessage(ChatColor.RED + "That user can already do that!");
+				} else {
+					user2.addPermission(args[1]);
+					user.sendMessage(ChatColor.GREEN + "That user now has the specified permission!");
+					plugin.log.info("User " + args[0] + " now has permission " + args[1]);
 				}
 			}
-		default:
-			boolean commandsReady = false;
-			for (String str : args) {
-				if (!commandsReady) {
-					commandsReady = true;
-					continue;
-				}
-				if (str.startsWith("+")) {
-					str = str.replaceFirst("\\+", "");
-					PermissionUser user2;
-					if ((user2 = PermissionUser.matchUserIgnoreCase(args[0],
-							plugin)) == null) {
-						user.sendMessage(ChatColor.RED
-								+ "That player doesn't exist!");
-						return;
-					}
-					switch (user2.addPermission(str)) {
-					case DBTargetNotExist:
-						user.sendMessage(ChatColor.RED
-								+ "That user doesn't exist!");
-						break;
-					case DBAlreadyHas:
-						user.sendMessage(ChatColor.RED
-								+ "That user can already do that!");
-						break;
-					case MalformedPermissions:
-						user.sendMessage(ChatColor.RED
-								+ "The user permissions file is broken! Please contact your server admin!");
-						log.warning("User permissions file malformed!");
-						break;
-					case Success:
-						user.sendMessage(ChatColor.GREEN
-								+ "The operation completed successfully!");
-						log.info("User " + args[0] + " has been given the "
-								+ str + " permission.");
-						break;
-					}
-				} else if (str.startsWith("-")) {
-					str = str.replaceFirst("-", "");
-					PermissionUser user2;
-					if ((user2 = PermissionUser.matchUserIgnoreCase(args[0],
-							plugin)) == null) {
-						user.sendMessage(ChatColor.RED
-								+ "That player doesn't exist!");
-						return;
-					}
-					switch (user2.deletePermission(str)) {
-					case DBTargetNotExist:
-						user.sendMessage(ChatColor.RED
-								+ "That user doesn't exist!");
-						break;
-					case DBNotHave:
-						user.sendMessage(ChatColor.RED
-								+ "That user can't do that!");
-						break;
-					case MalformedPermissions:
-						user.sendMessage(ChatColor.RED
-								+ "The user permissions file is broken! Please contact your server admin!");
-						log.warning("User permissions file malformed!");
-						break;
-					case Success:
-						user.sendMessage(ChatColor.GREEN
-								+ "The operation completed successfully!");
-						log.info("User " + args[0] + " has lost the " + str
-								+ " permission.");
-						break;
-					}
+		} else if (args[1].startsWith("-")) {
+			args[1] = args[1].replaceFirst("-", "");
+			if(user2 == null) {
+				user.sendMessage(ChatColor.RED + "That user doesn't exist!");
+			} else {
+				if(!user2.hasPerm(args[1], false, false)) {
+					user.sendMessage(ChatColor.RED + "That user can't do that!");
+				} else {
+					user2.removePermission(args[1]);
+					user.sendMessage(ChatColor.GREEN + "That user has now lost the specified permission!");
+					plugin.log.info("User " + args[0] + " has lost permission " + args[1]);
 				}
 			}
 		}
@@ -253,7 +112,7 @@ public class PermissionCommands implements Commands {
 	public void Group(String[] args, User user) {
 		if (args.length == 0 || args[0].equalsIgnoreCase("help")) {
 			user.sendMessage(ChatColor.YELLOW
-					+ "Proper use is: /group <name> {add|remove|g:<group>|c:<color>|p:<prefix>|<permissions>}");
+					+ "Proper use is: /group <name> {add|remove|c:<color>|p:<prefix>|<permissions>}");
 			user.sendMessage(ChatColor.YELLOW
 					+ "   -<name> is the name of the group.");
 			user.sendMessage(ChatColor.YELLOW
@@ -268,172 +127,171 @@ public class PermissionCommands implements Commands {
 					+ "   -Otherwise, type +<permission> or -<permission> to add/remove permissions.");
 			return;
 		}
-		switch (args.length) {
-		case 1:
-			user.sendMessage(ChatColor.YELLOW
-					+ "Proper use is: /group <name> {add|remove|g:<group>|<permissions>}");
-			user.sendMessage(ChatColor.YELLOW
-					+ "Type /group help for additionnal information.");
-			break;
-		case 2:
-			if (args[1].equalsIgnoreCase("remove")) {
-				if (!plugin.perm.groupFile.groupExists(args[0])) {
-					user.sendMessage(ChatColor.RED + "Group doesn't exist!");
-				} else {
-					if (plugin.perm.groupFile.removeGroup(args[0])) {
-						user.sendMessage(ChatColor.GREEN
-								+ "Group successfully removed!");
-						log.info("Group " + args[0]
-								+ " has been removed from the database.");
-					} else {
-						user.sendMessage(ChatColor.RED
-								+ "An unknown error occured while removing this group!");
-					}
-				}
-				break;
-			} else if (args[1].equalsIgnoreCase("add")) {
-				if (!plugin.perm.groupFile.groupExists(args[0])) {
-					if (plugin.perm.groupFile.addGroup(args[0])) {
-						user.sendMessage(ChatColor.GREEN
-								+ "Group successfully added!");
-						log.info("Group " + args[0]
-								+ " has been added to the database.");
-					} else {
-						user.sendMessage(ChatColor.RED
-								+ "An unknown error occured while adding this user!");
-					}
-				} else {
-					user.sendMessage(ChatColor.RED
-							+ "That group is already in the database!");
-				}
-				break;
-			} else if (args[1].startsWith("g:")) {
-				switch (plugin.perm.groupFile.changeGroup(args[0],
-						args[1].replaceFirst("g:", ""))) {
-				case AlreadyInGroup:
-					user.sendMessage(ChatColor.RED
-							+ "That group is already a child of "
-							+ args[1].replaceFirst("g:", "") + "!");
-					break;
-				case DBTargetNotExist:
-					user.sendMessage(ChatColor.RED
-							+ "The group you tried to change is not present in the database!");
-					break;
-				case DBGroupNotExist:
-					user.sendMessage(ChatColor.RED
-							+ "The group you tried to inherit from is not present in the database!");
-					break;
-				case MalformedPermissions:
-					user.sendMessage(ChatColor.RED
-							+ "The group permissions file is broken! Please contact your server admin!");
-					log.warning("Group permissions file malformed!");
-					break;
-				case Success:
-					user.sendMessage(ChatColor.GREEN
-							+ "The operation completed successfully!");
-					log.info("Group " + args[0] + " has been moved into group "
-							+ args[1] + ".");
-					break;
-				}
-				break;
-			} else if (args[1].startsWith("p:")) {
-				args[1] = args[1].replaceFirst("p:", "");
-				PermissionGroup group;
-				try {
-					group = new PermissionGroup(plugin, args[0]);
-				} catch (NullPointerException e) {
-					user.sendMessage(ChatColor.RED
-							+ "The group you tried to change is not present in the database!");
-					return;
-				}
-				group.setPrefix(args[1].replace('_', ' '));
-				user.sendMessage(ChatColor.GREEN
-						+ "The operation completed successfully!");
-			} else if (args[1].startsWith("c:")) {
-				args[1] = args[1].replaceFirst("c:", "");
-				PermissionGroup group;
-				try {
-					group = new PermissionGroup(plugin, args[0]);
-				} catch (NullPointerException e) {
-					user.sendMessage(ChatColor.RED
-							+ "The group you tried to change is not present in the database!");
-					return;
-				}
-				int colorid;
-				try {
-					colorid = Integer.parseInt(args[1]);
-				} catch (NumberFormatException e) {
-					try {
-						colorid = Integer.parseInt(args[1], 16);
-					} catch (NumberFormatException e2) {
-						user.sendMessage(ChatColor.RED + "Invalid color ID!");
-						return;
-					}
-				}
-				group.setPrefixColor(ChatColor.getByCode(colorid));
-				user.sendMessage(ChatColor.GREEN
-						+ "The operation completed successfully!");
+		PermissionGroup group = plugin.perm.groupFile.getGroup(args[0]);
+		if (args[1].equalsIgnoreCase("remove")) {
+			if (group == null) {
+				user.sendMessage(ChatColor.RED + "That group doesn't exist!");
 			} else {
-				if (args[1].startsWith("+")) {
-					// Fall-through
-				} else if (args[1].startsWith("-")) {
-					// Fall-through
+				plugin.perm.groupFile.removeGroup(group);
+				user.sendMessage(ChatColor.GREEN
+						+ "Group " + args[0] + " was successfully removed!");
+				plugin.log.info("Group " + args[0] + " has been removed!");
+			}
+		} else if (args[1].equalsIgnoreCase("add")) {
+			if (group != null) {
+				user.sendMessage(ChatColor.RED + "That group already exists!");
+			} else {
+				plugin.perm.groupFile.addGroup(new PermissionGroup(plugin,
+						args[0], new ArrayList<String>(),
+						new ArrayList<String>(), new ArrayList<String>(), "",
+						-1, 0));
+				user.sendMessage(ChatColor.GREEN + "Group " + args[0] + " was successfully created!");
+				plugin.log.info("Group " + args[0] + " has been created!");
+			}
+		} else if (args[1].equalsIgnoreCase("adduser")) {
+			if (args.length != 3) {
+				user.sendMessage(ChatColor.YELLOW
+						+ "Proper use is: /group <name> adduser <user>");
+			} else {
+				if(group == null) {
+					user.sendMessage(ChatColor.RED + "That group doesn't exist!");
+				} else {
+					PermissionUser user2 = PermissionUser.matchUserIgnoreCase(args[2], plugin);
+					if(user2 == null) {
+						user.sendMessage(ChatColor.RED + "That user doesn't exist!");
+					} else {
+						if(group.userInGroup(user2)) {
+							user.sendMessage(ChatColor.RED + user2.getName() + " is already part of " + group.getName() + "!");
+						} else {
+							group.addUser(user2);
+							user.sendMessage(ChatColor.GREEN + user2.getName() + " is now a part of group " + group.getName());
+							plugin.log.info(user2.getName() + " is now a part of group " + group.getName());
+						}
+					}
 				}
 			}
-		default:
-			boolean commandsReady = false;
-			for (String str : args) {
-				if (!commandsReady) {
-					commandsReady = true;
-					continue;
+		} else if (args[1].equalsIgnoreCase("remuser")) {
+			if (args.length != 3) {
+				user.sendMessage(ChatColor.YELLOW
+						+ "Proper use is: /group <name> remuser <user>");
+			} else {
+				if(group == null) {
+					user.sendMessage(ChatColor.RED + "That group doesn't exist!");
+				} else {
+					PermissionUser user2 = PermissionUser.matchUserIgnoreCase(args[2], plugin);
+					if(user2 == null) {
+						user.sendMessage(ChatColor.RED + "That user doesn't exist!");
+					} else {
+						if(!group.userInGroup(user2)) {
+							user.sendMessage(ChatColor.RED + user2.getName() + " is not part of " + group.getName() + "!");
+						} else {
+							group.removeUser(user2);
+							user.sendMessage(ChatColor.GREEN + user2.getName() + " is no longer a part of group " + group.getName());
+							plugin.log.info(user2.getName() + " is no longer a part of group " + group.getName());
+						}
+					}
 				}
-				if (str.startsWith("+")) {
-					str = str.replaceFirst("\\+", "");
-					switch (plugin.perm.groupFile.addPermission(args[0], str)) {
-					case DBTargetNotExist:
-						user.sendMessage(ChatColor.RED
-								+ "That group doesn't exist!");
-						break;
-					case DBAlreadyHas:
-						user.sendMessage(ChatColor.RED
-								+ "That group can already do that!");
-						break;
-					case MalformedPermissions:
-						user.sendMessage(ChatColor.RED
-								+ "The group permissions file is broken! Please contact your server admin!");
-						log.warning("Group permissions file malformed!");
-						break;
-					case Success:
-						user.sendMessage(ChatColor.GREEN
-								+ "The operation completed successfully!");
-						log.info("Group " + args[0] + " has been given the "
-								+ str + " permission.");
-						break;
+			}
+		} else if (args[1].equalsIgnoreCase("addgroup")) {
+			if (args.length != 3) {
+				user.sendMessage(ChatColor.YELLOW
+						+ "Proper use is: /group <name> addgroup <group>");
+			} else {
+				if(group == null) {
+					user.sendMessage(ChatColor.RED + "That group doesn't exist!");
+				} else {
+					PermissionGroup group2 = plugin.perm.groupFile.getGroup(args[2]);
+					if(group2 == null) {
+						user.sendMessage(ChatColor.RED + "That group doesn't exist!");
+					} else {
+						if(group.groupInGroup(group2)) {
+							user.sendMessage(ChatColor.RED + group2.getName() + " is already part of " + group.getName() + "!");
+						} else {
+							group.addGroup(group2);
+							user.sendMessage(ChatColor.GREEN + group2.getName() + " is now a part of group " + group.getName());
+							plugin.log.info(group2.getName() + " is now a part of group " + group.getName());
+						}
 					}
-				} else if (str.startsWith("-")) {
-					str = str.replaceFirst("-", "");
-					switch (plugin.perm.groupFile
-							.removePermission(args[0], str)) {
-					case DBTargetNotExist:
-						user.sendMessage(ChatColor.RED
-								+ "That group doesn't exist!");
-						break;
-					case DBNotHave:
-						user.sendMessage(ChatColor.RED
-								+ "That group can't do that!");
-						break;
-					case MalformedPermissions:
-						user.sendMessage(ChatColor.RED
-								+ "The group permissions file is broken! Please contact your server admin!");
-						log.warning("Group permissions file malformed!");
-						break;
-					case Success:
-						user.sendMessage(ChatColor.GREEN
-								+ "The operation completed successfully!");
-						log.info("Group " + args[0] + " has lost the " + str
-								+ " permission.");
-						break;
+				}
+			}
+		} else if (args[1].equalsIgnoreCase("remgroup")) {
+			if (args.length != 3) {
+				user.sendMessage(ChatColor.YELLOW
+						+ "Proper use is: /group <name> remgroup <group>");
+			} else {
+				if(group == null) {
+					user.sendMessage(ChatColor.RED + "That group doesn't exist!");
+				} else {
+					PermissionGroup group2 = plugin.perm.groupFile.getGroup(args[2]);
+					if(group2 == null) {
+						user.sendMessage(ChatColor.RED + "That group doesn't exist!");
+					} else {
+						if(!group.groupInGroup(group2)) {
+							user.sendMessage(ChatColor.RED + group2.getName() + " is not part of " + group.getName() + "!");
+						} else {
+							group.removeGroup(group2);
+							user.sendMessage(ChatColor.GREEN + group2.getName() + " is no longer a part of group " + group.getName());
+							plugin.log.info(group2.getName() + " is no longer a part of group " + group.getName());
+						}
 					}
+				}
+			}
+		} else if (args[1].startsWith("p:")) {
+			if(group == null) {
+				user.sendMessage(ChatColor.RED + "That group doesn't exist!");
+			} else {
+				group.setPrefix(args[1].replaceFirst("p:", "").replace("_", " "));
+				user.sendMessage(ChatColor.GREEN + "The prefix was successfully updated!");
+				plugin.log.info("The prefix of group " + args[0] + " was changed to " + args[1].replaceFirst("p:", "").replace("_", " "));
+			}
+		} else if (args[1].startsWith("c:")) {
+			if(group == null) {
+				user.sendMessage(ChatColor.RED + "That group doesn't exist!");
+			} else {
+				try {
+					group.setColor(Integer.parseInt(args[1].replaceFirst("c:", ""), 16));
+					user.sendMessage(ChatColor.GREEN + "The color was successfully updated!");
+					plugin.log.info("The color of group " + args[0] + " was changed to " + args[1].replaceFirst("c:", ""));
+				} catch (NumberFormatException e) {
+					user.sendMessage(ChatColor.RED + "Are you sure that's a hex number?");
+				}
+			}
+		} else if (args[1].startsWith("l:")) {
+			if(group == null) {
+				user.sendMessage(ChatColor.RED + "That group doesn't exist!");
+			} else {
+				try {
+					group.setLevel(Integer.parseInt(args[1].replaceFirst("l:", "")));
+					user.sendMessage(ChatColor.GREEN + "The level was successfully updated!");
+					plugin.log.info("The level of group " + args[0] + " was changed to " + args[1].replaceFirst("l:", ""));
+				} catch (NumberFormatException e) {
+					user.sendMessage(ChatColor.RED + "Are you sure that's a number?");
+				}
+			}
+		} else if (args[1].startsWith("+")) {
+			args[1] = args[1].replaceFirst("\\+", "");
+			if(group == null) {
+				user.sendMessage(ChatColor.RED + "That group doesn't exist!");
+			} else {
+				if(group.hasPerm(args[1], false, false)) {
+					user.sendMessage(ChatColor.RED + "That group can already do that!");
+				} else {
+					group.addPermission(args[1]);
+					user.sendMessage(ChatColor.GREEN + "That group now has the specified permission!");
+					plugin.log.info("Group " + args[0] + " now has permission " + args[1]);
+				}
+			}
+		} else if (args[1].startsWith("-")) {
+			args[1] = args[1].replaceFirst("-", "");
+			if(group == null) {
+				user.sendMessage(ChatColor.RED + "That group doesn't exist!");
+			} else {
+				if(!group.hasPerm(args[1], false, false)) {
+					user.sendMessage(ChatColor.RED + "That group can't do that!");
+				} else {
+					group.removePermission(args[1]);
+					user.sendMessage(ChatColor.GREEN + "That group has now lost the specified permission!");
+					plugin.log.info("Group " + args[0] + " has lost permission " + args[1]);
 				}
 			}
 		}

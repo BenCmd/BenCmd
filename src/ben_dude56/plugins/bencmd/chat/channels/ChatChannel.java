@@ -612,9 +612,8 @@ public class ChatChannel {
 			username = ChatColor.GRAY + "*" + username;
 		}
 		String prefix;
-		if (user.getGroup() != null
-				&& !(prefix = user.getGroup().getPrefix()).isEmpty()) {
-			message = user.getGroup().getPrefixColor() + "[" + prefix + "] "
+		if (!(prefix = user.getPrefix()).isEmpty()) {
+			message = user.getColor() + "[" + prefix + "] "
 					+ username + ": " + ChatColor.WHITE + message;
 			this.broadcastMessage(message);
 		} else {

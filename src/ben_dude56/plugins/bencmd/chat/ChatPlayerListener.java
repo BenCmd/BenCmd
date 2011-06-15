@@ -85,10 +85,9 @@ public class ChatPlayerListener extends PlayerListener {
 		}
 		String prefix;
 		log.info(user.getName() + ": " + message);
-		if (user.getGroup() != null
-				&& !(prefix = user.getGroup().getPrefix()).isEmpty()) {
-			message = user.getGroup().getPrefixColor() + "[" + prefix + "] "
-					+ user.getColor() + user.getName() + ": " + ChatColor.WHITE
+		if (!(prefix = user.getPrefix()).isEmpty()) {
+			message = user.getColor() + "[" + prefix + "] "
+					+ user.getName() + ": " + ChatColor.WHITE
 					+ message;
 			plugin.getServer().broadcastMessage(message);
 			event.setCancelled(true);
@@ -113,9 +112,7 @@ public class ChatPlayerListener extends PlayerListener {
 					if (User.getUser(plugin, player2).isOffline()) {
 						continue;
 					}
-					playerString += plugin.perm.groupFile
-							.getColor(plugin.perm.userFile.getGroup(player2
-									.getName()))
+					playerString += User.getUser(plugin, player2).getColor()
 							+ player2.getName() + ChatColor.WHITE + ", ";
 				}
 				user.sendMessage("The following players are online: "

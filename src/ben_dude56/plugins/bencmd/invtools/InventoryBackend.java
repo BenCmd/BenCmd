@@ -8,7 +8,6 @@ import org.bukkit.craftbukkit.block.CraftDispenser;
 import org.bukkit.inventory.ItemStack;
 
 import ben_dude56.plugins.bencmd.BenCmd;
-import ben_dude56.plugins.bencmd.permissions.PermissionGroup;
 
 public class InventoryBackend {
 	BenCmd plugin;
@@ -18,23 +17,6 @@ public class InventoryBackend {
 
 	public InventoryBackend(BenCmd instance) {
 		plugin = instance;
-	}
-
-	/**
-	 * 
-	 * @deprecated Use directly from instance of PermissionGroup.
-	 */
-	public boolean canSpawnItem(Material mat, String group) {
-		return new PermissionGroup(plugin, group).canSpawnItem(mat);
-	}
-
-	/**
-	 * 
-	 * @deprecated Use directly from instance of PermissionGroup.
-	 */
-	public boolean canSpawnItem(int id, String group) {
-		return new PermissionGroup(plugin, group).canSpawnItem(Material
-				.getMaterial(id));
 	}
 
 	public int getStackNumber(int id) {

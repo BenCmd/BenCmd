@@ -13,11 +13,11 @@ import ben_dude56.plugins.bencmd.User;
 public class AdvancedCommands implements Commands {
 
 	private BenCmd plugin;
-	
+
 	public AdvancedCommands(BenCmd instance) {
 		plugin = instance;
 	}
-	
+
 	public boolean onCommand(CommandSender sender, Command command,
 			String commandLabel, String[] args) {
 		User user;
@@ -26,7 +26,7 @@ public class AdvancedCommands implements Commands {
 		} catch (ClassCastException e) {
 			user = User.getUser(plugin);
 		}
-		if(commandLabel.equalsIgnoreCase("write")) {
+		if (commandLabel.equalsIgnoreCase("write")) {
 			Write(args, user);
 			return true;
 		}
@@ -34,8 +34,9 @@ public class AdvancedCommands implements Commands {
 	}
 
 	public void Write(String[] args, User user) {
-		if(user.getHandle().getTargetBlock(null, 4).getType() != Material.BOOKSHELF) {
-			user.sendMessage(ChatColor.RED + "You're not pointing at a bookshelf!");
+		if (user.getHandle().getTargetBlock(null, 4).getType() != Material.BOOKSHELF) {
+			user.sendMessage(ChatColor.RED
+					+ "You're not pointing at a bookshelf!");
 			return;
 		}
 		String message = "";
@@ -47,7 +48,9 @@ public class AdvancedCommands implements Commands {
 				message += " " + word;
 			}
 		}
-		plugin.shelff.addShelf(new Shelf(user.getHandle().getTargetBlock(null, 4).getLocation(), message));
-		user.sendMessage(ChatColor.GREEN + "Magically, writing appears on that shelf.");
+		plugin.shelff.addShelf(new Shelf(user.getHandle()
+				.getTargetBlock(null, 4).getLocation(), message));
+		user.sendMessage(ChatColor.GREEN
+				+ "Magically, writing appears on that shelf.");
 	}
 }

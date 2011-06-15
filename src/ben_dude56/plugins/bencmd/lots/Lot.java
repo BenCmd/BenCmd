@@ -137,7 +137,7 @@ public class Lot {
 		}
 		if (isOwner(player) || isGuest(player.getName())
 				|| user.hasPerm("isLandlord")
-				|| user.getGroup().getName().equalsIgnoreCase(group)) {
+				|| user.inGroup(plugin.perm.groupFile.getGroup(group))) {
 			return true;
 		} else
 			return false;

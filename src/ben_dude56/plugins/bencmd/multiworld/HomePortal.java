@@ -11,13 +11,14 @@ public class HomePortal extends Portal {
 
 	private BenCmd plugin;
 	private int num;
-	
-	public HomePortal(BenCmd instance, Location location, PermissionGroup allowableGroup, int homeNumber) {
+
+	public HomePortal(BenCmd instance, Location location,
+			PermissionGroup allowableGroup, int homeNumber) {
 		super(location, allowableGroup, null);
 		plugin = instance;
 		num = homeNumber;
 	}
-	
+
 	public Warp getWarp() {
 		return null;
 	}
@@ -25,7 +26,7 @@ public class HomePortal extends Portal {
 	public Warp getWarp(User user) {
 		return plugin.homes.homes.getHome(user.getName() + num);
 	}
-	
+
 	public Integer getHomeNumber() {
 		return num;
 	}

@@ -39,28 +39,36 @@ public class BasicCommands implements Commands {
 				&& user.hasPerm("canChangeTime")) {
 			Time(args, user);
 			return true;
-		} if (commandLabel.equalsIgnoreCase("day")) {
+		}
+		if (commandLabel.equalsIgnoreCase("day")) {
 			plugin.getServer().dispatchCommand(sender, "time day");
 			return true;
-		} if (commandLabel.equalsIgnoreCase("dawn")) {
+		}
+		if (commandLabel.equalsIgnoreCase("dawn")) {
 			plugin.getServer().dispatchCommand(sender, "time dawn");
 			return true;
-		} if (commandLabel.equalsIgnoreCase("noon")) {
+		}
+		if (commandLabel.equalsIgnoreCase("noon")) {
 			plugin.getServer().dispatchCommand(sender, "time noon");
 			return true;
-		} if (commandLabel.equalsIgnoreCase("dusk")) {
+		}
+		if (commandLabel.equalsIgnoreCase("dusk")) {
 			plugin.getServer().dispatchCommand(sender, "time dusk");
 			return true;
-		} if (commandLabel.equalsIgnoreCase("sunrise")) {
+		}
+		if (commandLabel.equalsIgnoreCase("sunrise")) {
 			plugin.getServer().dispatchCommand(sender, "time sunrise");
 			return true;
-		} if (commandLabel.equalsIgnoreCase("sunset")) {
+		}
+		if (commandLabel.equalsIgnoreCase("sunset")) {
 			plugin.getServer().dispatchCommand(sender, "time sunset");
 			return true;
-		} if (commandLabel.equalsIgnoreCase("night")) {
+		}
+		if (commandLabel.equalsIgnoreCase("night")) {
 			plugin.getServer().dispatchCommand(sender, "time night");
 			return true;
-		} if (commandLabel.equalsIgnoreCase("midnight")) {
+		}
+		if (commandLabel.equalsIgnoreCase("midnight")) {
 			plugin.getServer().dispatchCommand(sender, "time midnight");
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("spawn")
@@ -102,7 +110,8 @@ public class BasicCommands implements Commands {
 			SpawnMob(args, user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("rechunk")) {
-			Chunk chunk = user.getHandle().getWorld().getChunkAt(user.getHandle().getLocation());
+			Chunk chunk = user.getHandle().getWorld()
+					.getChunkAt(user.getHandle().getLocation());
 			int chunkx = chunk.getX();
 			int chunkz = chunk.getZ();
 			user.getHandle().getWorld().unloadChunk(chunkx, chunkz);
@@ -161,12 +170,12 @@ public class BasicCommands implements Commands {
 				int time;
 				try {
 					time = Integer.parseInt(args[1]);
-					}
-				catch (NumberFormatException e) {
+				} catch (NumberFormatException e) {
 					user.sendMessage(ChatColor.RED + "Invaled time.");
 					return;
 				}
-				log.info("BenCmd: " + user.getName() + " has set time to " + time);
+				log.info("BenCmd: " + user.getName() + " has set time to "
+						+ time);
 				if (user.isServer()) {
 					for (World world : plugin.getServer().getWorlds()) {
 						world.setTime(time);
@@ -387,8 +396,10 @@ public class BasicCommands implements Commands {
 		}
 		if ((args[0].equalsIgnoreCase("reload") || args[0]
 				.equalsIgnoreCase("rel")) && user.hasPerm("canReloadConfig")) {
-			plugin.perm.userFile.reload();
-			plugin.perm.groupFile.reload();
+			plugin.perm.userFile.loadFile();
+			plugin.perm.userFile.loadUsers();
+			plugin.perm.groupFile.loadFile();
+			plugin.perm.groupFile.loadGroups();
 			plugin.itemAliases.loadFile();
 			plugin.mainProperties.loadFile();
 			plugin.checkpoints.ClearWarps();

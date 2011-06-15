@@ -27,20 +27,26 @@ public class PortalListener extends PlayerListener {
 			event.setCancelled(true);
 			return;
 		}
-		if(portal.getGroup() != null && !User.getUser(plugin, event.getPlayer()).inGroup(portal.getGroup())) {
+		if (portal.getGroup() != null
+				&& !User.getUser(plugin, event.getPlayer()).inGroup(
+						portal.getGroup())) {
 			event.getPlayer().sendMessage(
 					ChatColor.RED + "You're not allowed to use that portal!");
 			event.setCancelled(true);
 			return;
 		}
 		event.useTravelAgent(false);
-		if(portal instanceof HomePortal) {
+		if (portal instanceof HomePortal) {
 			Warp warp;
-			if((warp = ((HomePortal)portal).getWarp(User.getUser(plugin, event.getPlayer()))) != null) {
+			if ((warp = ((HomePortal) portal).getWarp(User.getUser(plugin,
+					event.getPlayer()))) != null) {
 				event.setTo(warp.loc);
 			} else {
 				event.setCancelled(true);
-				event.getPlayer().sendMessage(ChatColor.RED + "You haven't set a home #" + ((HomePortal)portal).getHomeNumber() + " yet!");
+				event.getPlayer().sendMessage(
+						ChatColor.RED + "You haven't set a home #"
+								+ ((HomePortal) portal).getHomeNumber()
+								+ " yet!");
 			}
 		} else {
 			event.setTo(portal.getWarp().loc);
