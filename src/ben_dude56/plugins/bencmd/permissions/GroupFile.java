@@ -165,8 +165,8 @@ public class GroupFile extends Properties {
 	}
 
 	public List<PermissionGroup> getAllUserGroups(PermissionUser user) {
-		List<PermissionGroup> groups = getUserGroups(user);
-		List<PermissionGroup> toCheck = groups;
+		List<PermissionGroup> groups = new ArrayList<PermissionGroup>();
+		List<PermissionGroup> toCheck = getUserGroups(user);
 		while (!toCheck.isEmpty()) {
 			toCheck.addAll(getGroupGroups(toCheck.get(0)));
 			groups.add(toCheck.get(0));
