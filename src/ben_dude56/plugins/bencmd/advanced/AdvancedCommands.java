@@ -39,6 +39,10 @@ public class AdvancedCommands implements Commands {
 					+ "You're not pointing at a bookshelf!");
 			return;
 		}
+		if(!plugin.lots.canBuildHere(user.getHandle(), user.getHandle().getTargetBlock(null, 4).getLocation())) {
+			user.sendMessage(ChatColor.RED + "You're not allowed to do that here!");
+			return;
+		}
 		String message = "";
 		for (int i = 0; i < args.length; i++) {
 			String word = args[i];
