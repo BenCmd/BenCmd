@@ -12,8 +12,6 @@ import java.util.Properties;
 
 public class GroupFile extends Properties {
 
-	// TODO For version 1.2.1 : Overhaul group system.
-
 	private static final long serialVersionUID = 0L;
 	private MainPermissions mainPerm;
 	HashMap<String, InternalGroup> groups = new HashMap<String, InternalGroup>();

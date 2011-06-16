@@ -4,6 +4,7 @@ import java.util.Timer;
 import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -12,6 +13,7 @@ import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import ben_dude56.plugins.bencmd.*;
+import ben_dude56.plugins.bencmd.advanced.ViewableInventory;
 
 public class ChatPlayerListener extends PlayerListener {
 	BenCmd plugin;
@@ -100,6 +102,7 @@ public class ChatPlayerListener extends PlayerListener {
 	}
 
 	public void onPlayerJoin(PlayerJoinEvent event) {
+		ViewableInventory.replInv((CraftPlayer) event.getPlayer());
 		User user = User.getUser(plugin, event.getPlayer());
 		Player[] playerList = plugin.getServer().getOnlinePlayers();
 		if (user.hasPerm("canListPlayers")) {

@@ -224,3 +224,6 @@ commands:
     write:
         usage:
         description: Writes text to a bookshelf
+    inv:
+        usage:
+        description: Looks into or edits another player's inventory
