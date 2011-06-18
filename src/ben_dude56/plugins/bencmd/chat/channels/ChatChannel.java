@@ -347,12 +347,12 @@ public class ChatChannel {
 	private void forceJoin(User user) {
 		if (isOwner(user)) {
 			broadcastMessage(ChatColor.GOLD + "*" + user.getColor()
-					+ user.getName() + ChatColor.WHITE + " has joined the chat");
+					+ user.getDisplayName() + ChatColor.WHITE + " has joined the chat");
 		} else if (isMod(user)) {
 			broadcastMessage(ChatColor.GRAY + "*" + user.getColor()
-					+ user.getName() + ChatColor.WHITE + " has joined the chat");
+					+ user.getDisplayName() + ChatColor.WHITE + " has joined the chat");
 		} else {
-			broadcastMessage(user.getColor() + user.getName() + ChatColor.WHITE
+			broadcastMessage(user.getColor() + user.getDisplayName() + ChatColor.WHITE
 					+ " has joined the chat");
 		}
 		inChannel.add(user);
@@ -404,14 +404,14 @@ public class ChatChannel {
 				inChannel.remove(i);
 				if (isOwner(user)) {
 					broadcastMessage(ChatColor.GOLD + "*" + user.getColor()
-							+ user.getName() + ChatColor.WHITE
+							+ user.getDisplayName() + ChatColor.WHITE
 							+ " has left the chat");
 				} else if (isMod(user)) {
 					broadcastMessage(ChatColor.GRAY + "*" + user.getColor()
-							+ user.getName() + ChatColor.WHITE
+							+ user.getDisplayName() + ChatColor.WHITE
 							+ " has left the chat");
 				} else {
-					broadcastMessage(user.getColor() + user.getName()
+					broadcastMessage(user.getColor() + user.getDisplayName()
 							+ ChatColor.WHITE + " has left the chat");
 				}
 				user.sendMessage(ChatColor.GRAY
@@ -564,7 +564,7 @@ public class ChatChannel {
 			switch (rand.nextInt(7)) {
 			case 0:
 				user.sendMessage(ChatColor.GREEN
-						+ user.getName()
+						+ user.getDisplayName()
 						+ "'s Conscience"
 						+ ChatColor.GRAY
 						+ " has whispered: Every time you type in all caps, a baby kitten DIES.");
@@ -608,7 +608,7 @@ public class ChatChannel {
 			}
 			return;
 		}
-		String username = user.getColor() + user.getName();
+		String username = user.getColor() + user.getDisplayName();
 		if (isOwner(user)) {
 			username = ChatColor.GOLD + "*" + username;
 		} else if (isMod(user)) {
@@ -642,9 +642,9 @@ public class ChatChannel {
 		String value = "";
 		for (User online : inChannel) {
 			if (value.isEmpty()) {
-				value += online.getName();
+				value += online.getColor() + online.getDisplayName();
 			} else {
-				value += ", " + online.getName();
+				value += ChatColor.WHITE + ", " + online.getColor() + online.getDisplayName();
 			}
 		}
 		user.sendMessage(ChatColor.GRAY

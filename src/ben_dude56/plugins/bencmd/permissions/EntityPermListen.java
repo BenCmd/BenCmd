@@ -26,18 +26,18 @@ public class EntityPermListen extends EntityListener {
 					+ event.getEntity().getLocation().getBlockX() + "  Y:"
 					+ event.getEntity().getLocation().getBlockZ() + ". ";
 			Player nearPlayer = nearestPlayer(event.getEntity().getLocation());
-			logMessage += "Nearest detected player: " + nearPlayer.getName();
+			logMessage += "Nearest detected player: " + nearPlayer.getDisplayName();
 			plugin.getServer()
 					.broadcastMessage(
 							ChatColor.RED
 									+ "Attempted redstone TNT detonation detected! Nearest player:  "
-									+ nearPlayer.getName());
+									+ nearPlayer.getDisplayName());
 			Logger.getLogger("minecraft").info(logMessage);
 			if (plugin.mainProperties.getBoolean("attemptRedstoneTntKick",
 					false)) {
 				User user = User.getUser(plugin, nearPlayer);
 				plugin.getServer().broadcastMessage(
-						ChatColor.RED + user.getName()
+						ChatColor.RED + user.getDisplayName()
 								+ " tried to detonate TNT!");
 				user.Kick(plugin.mainProperties.getString("TNTKick",
 						"You can't detonate TNT!"));

@@ -39,7 +39,7 @@ public class ProtectBlockListener extends BlockListener {
 				String x = String.valueOf(loc.getX());
 				String y = String.valueOf(loc.getY());
 				String z = String.valueOf(loc.getZ());
-				log.info(user.getName() + " removed "
+				log.info(user.getDisplayName() + " removed "
 						+ block.getOwner().getName()
 						+ "'s protected chest (id: "
 						+ String.valueOf(block.GetId()) + ") at position (" + w

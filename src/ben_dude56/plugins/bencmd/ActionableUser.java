@@ -123,11 +123,11 @@ public class ActionableUser extends WarpableUser {
 	 */
 	public void Kick(String reason, User sender) {
 		if (isConsole) {
-			log.info(sender.getName() + " attempted to kick the server!");
+			log.info(sender.getDisplayName() + " attempted to kick the server!");
 			return;
 		}
 		plugin.kicked.addUser(this);
-		player.kickPlayer("You have been kicked by user: " + sender.getName()
+		player.kickPlayer("You have been kicked by user: " + sender.getDisplayName()
 				+ ". Reason: " + reason + ".");
 	}
 
@@ -154,11 +154,11 @@ public class ActionableUser extends WarpableUser {
 	 */
 	public void Kick(User sender) {
 		if (isConsole) {
-			log.info(sender.getName() + " attempted to kick the server!");
+			log.info(sender.getDisplayName() + " attempted to kick the server!");
 			return;
 		}
 		plugin.kicked.addUser(this);
-		player.kickPlayer("You have been kicked by user: " + sender.getName()
+		player.kickPlayer("You have been kicked by user: " + sender.getDisplayName()
 				+ ".");
 	}
 
@@ -290,7 +290,7 @@ public class ActionableUser extends WarpableUser {
 	 */
 	public void goOffline() {
 		plugin.getServer().broadcastMessage(
-				this.getColor() + this.getName() + ChatColor.WHITE
+				this.getColor() + this.getDisplayName() + ChatColor.WHITE
 						+ " has left the game...");
 		plugin.offline.add(this);
 	}
@@ -306,7 +306,7 @@ public class ActionableUser extends WarpableUser {
 			}
 		}
 		plugin.getServer().broadcastMessage(
-				this.getColor() + this.getName() + ChatColor.WHITE
+				this.getColor() + this.getDisplayName() + ChatColor.WHITE
 						+ " has joined the game...");
 	}
 
@@ -321,5 +321,9 @@ public class ActionableUser extends WarpableUser {
 				plugin.offline.remove(i);
 			}
 		}
+	}
+	
+	public String getDisplayName() {
+		return player.getDisplayName();
 	}
 }

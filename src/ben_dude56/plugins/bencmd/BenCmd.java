@@ -9,6 +9,7 @@ import java.util.Timer;
 import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -108,12 +109,26 @@ public class BenCmd extends JavaPlugin {
 	public KickList kicked;
 	public PortalFile portals;
 	public ShelfFile shelff;
+	public List<Location> canSpread = new ArrayList<Location>();
 	public Logger log = Logger.getLogger("minecraft");
 
 	public boolean checkID(int id) {
 		for (Material item : Material.values()) {
 			if (item.getId() == id) {
 				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean canIgnite(Location loc) {
+		for(Location loc2 : canSpread) {
+			if(loc.getBlockX() < loc2.getBlockX() + 2 && loc.getBlockX() > loc2.getBlockX() - 2) {
+				if(loc.getBlockY() < loc2.getBlockY() + 2 && loc.getBlockY() > loc2.getBlockY() - 2) {
+					if(loc.getBlockX() < loc2.getBlockZ() + 2 && loc.getBlockZ() > loc2.getBlockZ() - 2) {
+						return true;
+					}
+				}
 			}
 		}
 		return false;

@@ -61,7 +61,7 @@ public class Jail {
 		player.sendMessage(ChatColor.RED
 				+ plugin.mainProperties.getString("jailMessage",
 						"You have been sent to jail!"));
-		log.info(player.getName() + " has been jailed.");
+		log.info(player.getDisplayName() + " has been jailed.");
 		return true;
 	}
 
@@ -72,6 +72,6 @@ public class Jail {
 		player.sendMessage(ChatColor.GREEN
 				+ plugin.mainProperties.getString("unjailMessage",
 						"You have been released..."));
-		log.info(player.getName() + " has been unjailed.");
+		log.info(player.getDisplayName() + " has been unjailed.");
 	}
 }

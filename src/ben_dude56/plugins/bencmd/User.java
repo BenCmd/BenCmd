@@ -20,7 +20,7 @@ public class User extends ActionableUser {
 
 	public static User matchUser(String name, BenCmd instance) {
 		for (Player online : instance.getServer().getOnlinePlayers()) {
-			if (online.getName().equalsIgnoreCase(name)) {
+			if (online.getName().equalsIgnoreCase(name) || online.getDisplayName().equalsIgnoreCase(name)) {
 				return User.getUser(instance, online);
 			}
 		}

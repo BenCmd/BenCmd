@@ -116,7 +116,7 @@ public class DeathListener extends EntityListener {
 			grave.setType(Material.SIGN_POST);
 			CraftSign graveSign = new CraftSign(grave);
 			graveSign.setLine(1, "R.I.P.");
-			graveSign.setLine(2, user.getName());
+			graveSign.setLine(2, user.getDisplayName());
 			graveSign.update();
 		}
 	}

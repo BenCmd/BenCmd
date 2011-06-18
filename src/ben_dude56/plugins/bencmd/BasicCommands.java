@@ -118,6 +118,13 @@ public class BasicCommands implements Commands {
 			user.getHandle().getWorld().loadChunk(chunkx, chunkz);
 			user.getHandle().getWorld().refreshChunk(chunkx, chunkz);
 			return true;
+		} else if (commandLabel.equalsIgnoreCase("fire")
+				&& user.hasPerm("canBurn")) {
+			Location loc = user.getHandle().getTargetBlock(null, 4).getLocation();
+			plugin.canSpread.add(loc);
+		} else if (commandLabel.equalsIgnoreCase("nofire")
+				&& user.hasPerm("canBurn")) {
+			plugin.canSpread.clear();
 		}
 		return false;
 	}
@@ -174,7 +181,7 @@ public class BasicCommands implements Commands {
 					user.sendMessage(ChatColor.RED + "Invaled time.");
 					return;
 				}
-				log.info("BenCmd: " + user.getName() + " has set time to "
+				log.info("BenCmd: " + user.getDisplayName() + " has set time to "
 						+ time);
 				if (user.isServer()) {
 					for (World world : plugin.getServer().getWorlds()) {
@@ -247,7 +254,7 @@ public class BasicCommands implements Commands {
 				}
 			} else if (args[0].equalsIgnoreCase("lock")) {
 				if (plugin.timeRunning) {
-					log.info("BenCmd: " + user.getName() + " has frozen time!");
+					log.info("BenCmd: " + user.getDisplayName() + " has frozen time!");
 					if (user.isServer()) {
 						plugin.timeFrozenAt = plugin.getServer().getWorlds()
 								.get(0).getTime();
@@ -257,14 +264,14 @@ public class BasicCommands implements Commands {
 					}
 					plugin.timeRunning = false;
 					plugin.getServer().broadcastMessage(
-							ChatColor.DARK_BLUE + user.getName()
+							ChatColor.DARK_BLUE + user.getDisplayName()
 									+ " has stopped the clock!");
 				} else {
-					log.info("BenCmd: " + user.getName()
+					log.info("BenCmd: " + user.getDisplayName()
 							+ " has unfrozen time!");
 					plugin.timeRunning = true;
 					plugin.getServer().broadcastMessage(
-							ChatColor.DARK_BLUE + user.getName()
+							ChatColor.DARK_BLUE + user.getDisplayName()
 									+ " has restarted time!");
 				}
 			}
@@ -290,13 +297,13 @@ public class BasicCommands implements Commands {
 				user.makeNonGod(); // Delete them from the list
 				user.sendMessage(ChatColor.GOLD
 						+ "You are no longer in god mode!");
-				log.info("BenCmd: " + user.getName()
-						+ " has been made a non-god by " + user.getName() + "!");
+				log.info("BenCmd: " + user.getDisplayName()
+						+ " has been made a non-god by " + user.getDisplayName() + "!");
 			} else { // If they're not a god
 				user.makeGod(); // Add them to the list
 				user.sendMessage(ChatColor.GOLD + "You are now in god mode!");
-				log.info("BenCmd: " + user.getName()
-						+ " has been made a god by " + user.getName() + "!");
+				log.info("BenCmd: " + user.getDisplayName()
+						+ " has been made a god by " + user.getDisplayName() + "!");
 			}
 		} else if (args.length == 1) {
 			User user2;
@@ -308,15 +315,15 @@ public class BasicCommands implements Commands {
 										// list
 					user2.sendMessage(ChatColor.GOLD
 							+ "You are no longer in god mode!");
-					log.info("BenCmd: " + user2.getName()
-							+ " has been made a non-god by " + user.getName()
+					log.info("BenCmd: " + user2.getDisplayName()
+							+ " has been made a non-god by " + user.getDisplayName()
 							+ "!");
 				} else { // If they're not a god
 					user2.makeGod(); // Add them to the list
 					user2.sendMessage(ChatColor.GOLD
 							+ "You are now in god mode!");
-					log.info("BenCmd: " + user2.getName()
-							+ " has been made a god by " + user.getName() + "!");
+					log.info("BenCmd: " + user2.getDisplayName()
+							+ " has been made a god by " + user.getDisplayName() + "!");
 				}
 			}
 		} else {
@@ -334,8 +341,8 @@ public class BasicCommands implements Commands {
 			// Heal the player
 			user.Heal();
 			user.sendMessage(ChatColor.GREEN + "You have been healed.");
-			log.info("BenCmd: " + user.getName() + " has healed "
-					+ user.getName());
+			log.info("BenCmd: " + user.getDisplayName() + " has healed "
+					+ user.getDisplayName());
 		} else {
 			// Heal the other player
 			User user2;
@@ -343,8 +350,8 @@ public class BasicCommands implements Commands {
 				user2 = User.matchUser(args[0], plugin);
 				user2.Heal();
 				user2.sendMessage(ChatColor.GREEN + "You have been healed.");
-				log.info("BenCmd: " + user.getName() + " has healed "
-						+ user2.getName());
+				log.info("BenCmd: " + user.getDisplayName() + " has healed "
+						+ user2.getDisplayName());
 			} else {
 				user.sendMessage(ChatColor.RED + args[0]
 						+ " doesn't exist or is not online.");
@@ -376,7 +383,7 @@ public class BasicCommands implements Commands {
 								targetBlock.getX(), targetBlock.getY() + 1,
 								targetBlock.getZ()), TreeType.TREE)) {
 			// It sprouted properly!
-			log.info("BenCmd: " + user.getName() + " has sprouted a tree at ("
+			log.info("BenCmd: " + user.getDisplayName() + " has sprouted a tree at ("
 					+ targetBlock.getX() + "," + targetBlock.getY() + 1 + ","
 					+ targetBlock.getZ() + ")!");
 			user.sendMessage(ChatColor.GREEN + "Tree created successfully!");
@@ -415,7 +422,7 @@ public class BasicCommands implements Commands {
 			plugin.timeRunning = true;
 			user.sendMessage(ChatColor.GREEN
 					+ "BenCmd Config Successfully reloaded!");
-			log.warning(user.getName()
+			log.warning(user.getDisplayName()
 					+ " has reloaded the BenCmd configuration.");
 		}
 		if (args[0].equalsIgnoreCase("disable") && user.hasPerm("canDisable")) {
@@ -438,7 +445,7 @@ public class BasicCommands implements Commands {
 		}
 		Location newSpawn = user.getHandle().getLocation();
 		user.sendMessage(ChatColor.GREEN + "The spawn location has been set!");
-		log.info(user.getName() + " has set the spawn location to ("
+		log.info(user.getDisplayName() + " has set the spawn location to ("
 				+ newSpawn.getBlockX() + ", " + newSpawn.getBlockY() + ", "
 				+ newSpawn.getBlockZ() + ")");
 		user.getHandle()

@@ -2,9 +2,12 @@ package ben_dude56.plugins.bencmd.chat;
 
 import java.util.logging.Logger;
 
+import net.minecraft.server.EntityHuman;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import ben_dude56.plugins.bencmd.BenCmd;
@@ -39,6 +42,21 @@ public class ChatCommands implements Commands {
 				&& user.hasPerm("canListPlayers")) {
 			list(args, user);
 			return true;
+		} else if (commandLabel.equalsIgnoreCase("display")
+				&& user.hasPerm("canChangeDisplayName")) {
+			user.sendMessage("TEST");
+			User user2 = User.matchUser(args[0], plugin);
+			String message = "";
+			for (int i = 1; i < args.length; i++) {
+				String word = args[i];
+				if (message == "") {
+					message += word;
+				} else {
+					message += " " + word;
+				}
+			}
+			user2.getHandle().setDisplayName(message);
+			((EntityHuman)((CraftPlayer)user2.getHandle()).getHandle()).name = message;
 		}
 		if (channelsEnabled()) {
 			return false;
@@ -134,7 +152,7 @@ public class ChatCommands implements Commands {
 		if(user2.hasPerm("isMuted", false)) {
 			user.sendMessage(ChatColor.GREEN + "That user was unmuted!");
 			log.info("User " + args[0] + " has been unmuted by "
-					+ user.getName() + ".");
+					+ user.getDisplayName() + ".");
 			User user3;
 			if ((user3 = User.matchUser(user2.getName(), plugin)) != null) {
 				user3.sendMessage(ChatColor.GREEN + "You have been unmuted.");
@@ -184,7 +202,7 @@ public class ChatCommands implements Commands {
 				plugin.chatListen.slow.playerAdd(user.getName());
 			}
 		}
-		message = ChatColor.WHITE + "*" + user.getColor() + user.getName()
+		message = ChatColor.WHITE + "*" + user.getColor() + user.getDisplayName()
 				+ " " + ChatColor.WHITE + message;
 		plugin.getServer().broadcastMessage(message);
 		User.getUser(plugin).sendMessage(message);
@@ -245,11 +263,11 @@ public class ChatCommands implements Commands {
 				plugin.chatListen.slow.playerAdd(user.getName());
 			}
 		}
-		user2.sendMessage(user.getColor() + user.getName() + ChatColor.GRAY
+		user2.sendMessage(user.getColor() + user.getDisplayName() + ChatColor.GRAY
 				+ " has whispered: " + message);
-		user.sendMessage(ChatColor.GREEN + "Your PM to " + user2.getName()
+		user.sendMessage(ChatColor.GREEN + "Your PM to " + user2.getDisplayName()
 				+ " was sent!");
-		log.info("(" + user.getName() + " => " + user2.getName() + ") "
+		log.info("(" + user.getDisplayName() + " => " + user2.getDisplayName() + ") "
 				+ message);
 	}
 }

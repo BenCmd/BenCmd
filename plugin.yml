@@ -227,3 +227,12 @@ commands:
     inv:
         usage:
         description: Looks into or edits another player's inventory
+    fire:
+        usage:
+        description: Allows fire spread near the pointed at block
+    nofire:
+        usage:
+        description: Clears all spread allowances caused by /fire
+    display:
+        usage:
+        description: Changes a user's display name

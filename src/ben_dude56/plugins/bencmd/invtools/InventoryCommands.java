@@ -174,10 +174,10 @@ public class InventoryCommands implements Commands {
 											(short) ItemDamage));
 				}
 			}
-			user2.sendMessage(ChatColor.GREEN + user.getName()
+			user2.sendMessage(ChatColor.GREEN + user.getDisplayName()
 					+ " has sent you a gift.");
 			user.sendMessage("Your gift has been sent!");
-			log.info("BenCmd: " + user.getName() + " gave " + user2.getName()
+			log.info("BenCmd: " + user.getDisplayName() + " gave " + user2.getDisplayName()
 					+ " an item. (id: " + String.valueOf(mat.getId())
 					+ ", amount: " + String.valueOf(fullAmount) + ", damage: "
 					+ String.valueOf(ItemDamage) + ")");
@@ -202,8 +202,8 @@ public class InventoryCommands implements Commands {
 											(short) ItemDamage));
 				}
 			}
-			user.sendMessage(ChatColor.GREEN + "Enjoy, " + user.getName() + "!");
-			log.info("BenCmd: " + user.getName() + " gave " + user.getName()
+			user.sendMessage(ChatColor.GREEN + "Enjoy, " + user.getDisplayName() + "!");
+			log.info("BenCmd: " + user.getDisplayName() + " gave " + user.getDisplayName()
 					+ " an item. (id: " + String.valueOf(mat.getId())
 					+ ", amount: " + String.valueOf(fullAmount) + ", damage: "
 					+ String.valueOf(ItemDamage) + ")");
@@ -218,13 +218,13 @@ public class InventoryCommands implements Commands {
 			}
 			user.getHandle().getInventory().clear(); // Clear the player's
 														// inventory
-			log.info(user.getName() + " has cleared their own inventory.");
+			log.info(user.getDisplayName() + " has cleared their own inventory.");
 		} else if (args.length == 1) {
 			// Clear the other player's inventory
 			User user2;
 			if ((user2 = User.matchUser(args[0], plugin)) != null) {
 				user2.getHandle().getInventory().clear();
-				log.info(user.getName() + " has cleared " + args[0]
+				log.info(user.getDisplayName() + " has cleared " + args[0]
 						+ "'s inventory.");
 			} else {
 				user.sendMessage(ChatColor.RED + args[0]
@@ -262,8 +262,8 @@ public class InventoryCommands implements Commands {
 				if (plugin.kits.canUseKit(user, args[0])) {
 					plugin.kits.giveKit(user, args[0]);
 					user.sendMessage(ChatColor.GREEN + "Enjoy, "
-							+ user.getName() + "!");
-					log.info("User " + user.getName() + " has spawned kit "
+							+ user.getDisplayName() + "!");
+					log.info("User " + user.getDisplayName() + " has spawned kit "
 							+ args[0] + "!");
 				} else {
 					user.sendMessage(ChatColor.RED
@@ -284,11 +284,11 @@ public class InventoryCommands implements Commands {
 						return;
 					}
 					plugin.kits.giveKit(user, args[1]);
-					user2.sendMessage(ChatColor.GREEN + user.getName()
+					user2.sendMessage(ChatColor.GREEN + user.getDisplayName()
 							+ " has sent you a gift.");
-					user.sendMessage("Your gift has been sent!");
-					log.info("User " + user.getName() + " has spawned kit "
-							+ args[1] + " for user " + user2.getName() + "!");
+					user.sendMessage(ChatColor.GREEN + "Your gift has been sent!");
+					log.info("User " + user.getDisplayName() + " has spawned kit "
+							+ args[1] + " for user " + user2.getDisplayName() + "!");
 				} else {
 					user.sendMessage(ChatColor.RED
 							+ "That kit doesn't exist or you don't have permission to use it!");

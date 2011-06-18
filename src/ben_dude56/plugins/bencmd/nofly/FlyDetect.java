@@ -81,7 +81,7 @@ public class FlyDetect {
 							+ "Flying detected. Stop, or you will be kicked in 3...");
 					break;
 				}
-				log.info("Possible flying from " + player.getName());
+				log.info("Possible flying from " + player.getDisplayName());
 			} else if (time == 4000) {
 				player.sendMessage(ChatColor.RED + "2...");
 			} else if (time == 5000) {
@@ -92,14 +92,14 @@ public class FlyDetect {
 					User.getUser(plugin, player).Spawn();
 					plugin.checkpoints.RemovePreWarp(player);
 					plugin.getServer().broadcastMessage(
-							ChatColor.RED + player.getName()
+							ChatColor.RED + player.getDisplayName()
 									+ " was sent to spawn for flying!");
 					break;
 				case 1:
 					User.getUser(plugin, player).Kick(
 							"You were auto-detected flying!");
 					plugin.getServer().broadcastMessage(
-							ChatColor.RED + player.getName()
+							ChatColor.RED + player.getDisplayName()
 									+ " was kicked for flying!");
 					break;
 				case 2:
@@ -107,7 +107,7 @@ public class FlyDetect {
 							.hasPerm("isJailed", false)) {
 						User.getUser(plugin, player).toggleJail();
 						plugin.getServer().broadcastMessage(
-								ChatColor.RED + player.getName()
+								ChatColor.RED + player.getDisplayName()
 										+ " was jailed for flying!");
 					}
 					break;
@@ -115,11 +115,11 @@ public class FlyDetect {
 					User.getUser(plugin, player).Kick(
 							"You were auto-detected flying!");
 					plugin.getServer().broadcastMessage(
-							ChatColor.RED + player.getName()
+							ChatColor.RED + player.getDisplayName()
 									+ " was kicked for flying!");
 					break;
 				}
-				log.warning("Action taken on " + player.getName()
+				log.warning("Action taken on " + player.getDisplayName()
 						+ " for flying!");
 				addOffence(player);
 			}

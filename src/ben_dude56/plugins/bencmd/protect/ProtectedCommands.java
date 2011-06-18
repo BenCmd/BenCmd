@@ -131,26 +131,26 @@ public class ProtectedCommands implements Commands {
 						pointedAt.getLocation(), ProtectionType.Chest);
 				user.sendMessage(ChatColor.GREEN
 						+ "Protected chest created with owner "
-						+ user.getName() + ".");
+						+ user.getDisplayName() + ".");
 				String w = pointedAt.getWorld().getName();
 				String x = String.valueOf(pointedAt.getX());
 				String y = String.valueOf(pointedAt.getY());
 				String z = String.valueOf(pointedAt.getX());
-				log.info(user.getName() + " created protected chest (id: " + id
-						+ ") with owner " + user.getName() + " at position ("
+				log.info(user.getDisplayName() + " created protected chest (id: " + id
+						+ ") with owner " + user.getDisplayName() + " at position ("
 						+ w + "," + x + "," + y + "," + z + ")");
 			} else if (pointedAt.getType() == Material.WOODEN_DOOR) {
 				int id = plugin.protectFile.addProtection(user,
 						pointedAt.getLocation(), ProtectionType.Door);
 				user.sendMessage(ChatColor.GREEN
-						+ "Protected door created with owner " + user.getName()
+						+ "Protected door created with owner " + user.getDisplayName()
 						+ ".");
 				String w = pointedAt.getWorld().getName();
 				String x = String.valueOf(pointedAt.getX());
 				String y = String.valueOf(pointedAt.getY());
 				String z = String.valueOf(pointedAt.getX());
-				log.info(user.getName() + " created protected door (id: " + id
-						+ ") with owner " + user.getName() + " at position ("
+				log.info(user.getDisplayName() + " created protected door (id: " + id
+						+ ") with owner " + user.getDisplayName() + " at position ("
 						+ w + "," + x + "," + y + "," + z + ")");
 			}
 		} else if (args.length == 2) {
@@ -169,7 +169,7 @@ public class ProtectedCommands implements Commands {
 				String x = String.valueOf(pointedAt.getX());
 				String y = String.valueOf(pointedAt.getY());
 				String z = String.valueOf(pointedAt.getX());
-				log.info(user.getName() + " created protected chest (id: " + id
+				log.info(user.getDisplayName() + " created protected chest (id: " + id
 						+ ") with owner " + user2.getName() + " at position ("
 						+ w + "," + x + "," + y + "," + z + ")");
 			} else if (pointedAt.getType() == Material.WOODEN_DOOR) {
@@ -182,7 +182,7 @@ public class ProtectedCommands implements Commands {
 				String x = String.valueOf(pointedAt.getX());
 				String y = String.valueOf(pointedAt.getY());
 				String z = String.valueOf(pointedAt.getX());
-				log.info(user.getName() + " created protected door (id: " + id
+				log.info(user.getDisplayName() + " created protected door (id: " + id
 						+ ") with owner " + user2.getName() + " at position ("
 						+ w + "," + x + "," + y + "," + z + ")");
 			}
@@ -220,27 +220,27 @@ public class ProtectedCommands implements Commands {
 				int id = plugin.protectFile.addProtection(user,
 						pointedAt.getLocation(), ProtectionType.PChest);
 				user.sendMessage(ChatColor.GREEN
-						+ "Public chest created with owner " + user.getName()
+						+ "Public chest created with owner " + user.getDisplayName()
 						+ ".");
 				String w = pointedAt.getWorld().getName();
 				String x = String.valueOf(pointedAt.getX());
 				String y = String.valueOf(pointedAt.getY());
 				String z = String.valueOf(pointedAt.getX());
-				log.info(user.getName() + " created public chest (id: " + id
-						+ ") with owner " + user.getName() + " at position ("
+				log.info(user.getDisplayName() + " created public chest (id: " + id
+						+ ") with owner " + user.getDisplayName() + " at position ("
 						+ w + "," + x + "," + y + "," + z + ")");
 			} else if (pointedAt.getType() == Material.WOODEN_DOOR) {
 				int id = plugin.protectFile.addProtection(user,
 						pointedAt.getLocation(), ProtectionType.PDoor);
 				user.sendMessage(ChatColor.GREEN
-						+ "Public door created with owner " + user.getName()
+						+ "Public door created with owner " + user.getDisplayName()
 						+ ".");
 				String w = pointedAt.getWorld().getName();
 				String x = String.valueOf(pointedAt.getX());
 				String y = String.valueOf(pointedAt.getY());
 				String z = String.valueOf(pointedAt.getX());
-				log.info(user.getName() + " created public door (id: " + id
-						+ ") with owner " + user.getName() + " at position ("
+				log.info(user.getDisplayName() + " created public door (id: " + id
+						+ ") with owner " + user.getDisplayName() + " at position ("
 						+ w + "," + x + "," + y + "," + z + ")");
 			}
 		} else if (args.length == 2) {
@@ -259,7 +259,7 @@ public class ProtectedCommands implements Commands {
 				String x = String.valueOf(pointedAt.getX());
 				String y = String.valueOf(pointedAt.getY());
 				String z = String.valueOf(pointedAt.getX());
-				log.info(user.getName() + " created public chest (id: " + id
+				log.info(user.getDisplayName() + " created public chest (id: " + id
 						+ ") with owner " + user2.getName() + " at position ("
 						+ w + "," + x + "," + y + "," + z + ")");
 			} else if (pointedAt.getType() == Material.WOODEN_DOOR) {
@@ -272,7 +272,7 @@ public class ProtectedCommands implements Commands {
 				String x = String.valueOf(pointedAt.getX());
 				String y = String.valueOf(pointedAt.getY());
 				String z = String.valueOf(pointedAt.getX());
-				log.info(user.getName() + " created public door (id: " + id
+				log.info(user.getDisplayName() + " created public door (id: " + id
 						+ ") with owner " + user2.getName() + " at position ("
 						+ w + "," + x + "," + y + "," + z + ")");
 			}
@@ -305,7 +305,7 @@ public class ProtectedCommands implements Commands {
 						String x = String.valueOf(pointedAt.getX());
 						String y = String.valueOf(pointedAt.getY());
 						String z = String.valueOf(pointedAt.getZ());
-						log.info(user.getName() + " removed "
+						log.info(user.getDisplayName() + " removed "
 								+ block.getOwner().getName()
 								+ "'s protected chest (id: "
 								+ String.valueOf(block.GetId())
@@ -332,7 +332,7 @@ public class ProtectedCommands implements Commands {
 						String x = String.valueOf(pointedAt.getX());
 						String y = String.valueOf(pointedAt.getY());
 						String z = String.valueOf(pointedAt.getZ());
-						log.info(user.getName() + " removed "
+						log.info(user.getDisplayName() + " removed "
 								+ block.getOwner().getName()
 								+ "'s protected chest (id: "
 								+ String.valueOf(block.GetId())
@@ -371,7 +371,7 @@ public class ProtectedCommands implements Commands {
 					String x = String.valueOf(pointedAt.getX());
 					String y = String.valueOf(pointedAt.getY());
 					String z = String.valueOf(pointedAt.getZ());
-					log.info(user.getName() + " removed "
+					log.info(user.getDisplayName() + " removed "
 							+ block.getOwner().getName()
 							+ "'s protected chest (id: "
 							+ String.valueOf(block.GetId()) + ") at position ("
@@ -391,7 +391,7 @@ public class ProtectedCommands implements Commands {
 					String x = String.valueOf(pointedAt.getX());
 					String y = String.valueOf(pointedAt.getY());
 					String z = String.valueOf(pointedAt.getZ());
-					log.info(user.getName() + " removed "
+					log.info(user.getDisplayName() + " removed "
 							+ block.getOwner().getName()
 							+ "'s protected door (id: "
 							+ String.valueOf(block.GetId()) + ") at position ("
@@ -450,7 +450,7 @@ public class ProtectedCommands implements Commands {
 							+ "That player doesn't exist!");
 					return;
 				}
-				log.info(user.getName() + " has changed the owner of "
+				log.info(user.getDisplayName() + " has changed the owner of "
 						+ block.getOwner().getName()
 						+ "'s protected block (id: " + block.GetId() + ") to "
 						+ args[1]);
@@ -482,7 +482,7 @@ public class ProtectedCommands implements Commands {
 				user.sendMessage(ChatColor.RED + "That player doesn't exist!");
 				return;
 			}
-			log.info(user.getName() + " has changed the owner of "
+			log.info(user.getDisplayName() + " has changed the owner of "
 					+ block.getOwner().getName() + "'s protected block (id: "
 					+ block.GetId() + ") to " + args[1]);
 			user.sendMessage(ChatColor.GREEN
@@ -512,7 +512,7 @@ public class ProtectedCommands implements Commands {
 							+ "That player doesn't exist!");
 					return;
 				}
-				log.info(user.getName() + " has added " + newOwner.getName()
+				log.info(user.getDisplayName() + " has added " + newOwner.getName()
 						+ " to the guest list of " + block.getOwner().getName()
 						+ "'s protected block (id: " + block.GetId() + ")");
 				user.sendMessage(ChatColor.GREEN + newOwner.getName()
@@ -537,7 +537,7 @@ public class ProtectedCommands implements Commands {
 				user.sendMessage(ChatColor.RED + "That player doesn't exist!");
 				return;
 			}
-			log.info(user.getName() + " has added " + newOwner.getName()
+			log.info(user.getDisplayName() + " has added " + newOwner.getName()
 					+ " to the guest list of " + block.getOwner().getName()
 					+ "'s protected block (id: " + block.GetId() + ")");
 			user.sendMessage(ChatColor.GREEN + newOwner.getName()
@@ -566,7 +566,7 @@ public class ProtectedCommands implements Commands {
 							+ "That player doesn't exist!");
 					return;
 				}
-				log.info(user.getName() + " has removed " + newOwner.getName()
+				log.info(user.getDisplayName() + " has removed " + newOwner.getName()
 						+ " from the guest list of "
 						+ block.getOwner().getName()
 						+ "'s protected block (id: " + block.GetId() + ")");
@@ -592,7 +592,7 @@ public class ProtectedCommands implements Commands {
 				user.sendMessage(ChatColor.RED + "That player doesn't exist!");
 				return;
 			}
-			log.info(user.getName() + " has removed " + newOwner.getName()
+			log.info(user.getDisplayName() + " has removed " + newOwner.getName()
 					+ " from the guest list of " + block.getOwner().getName()
 					+ "'s protected block (id: " + block.GetId() + ")");
 			user.sendMessage(ChatColor.GREEN + newOwner.getName()

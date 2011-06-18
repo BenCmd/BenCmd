@@ -91,8 +91,8 @@ public class MoneyCommands implements Commands {
 					+ bitem.getSupply() + ")");
 			break;
 		case SUCCESS:
-			user.sendMessage(ChatColor.GREEN + "Enjoy, " + user.getName() + "!");
-			log.info(user.getName() + " bought an item. (id: "
+			user.sendMessage(ChatColor.GREEN + "Enjoy, " + user.getDisplayName() + "!");
+			log.info(user.getDisplayName() + " bought an item. (id: "
 					+ item.getMaterial().getId() + ", amount: " + Amount
 					+ ", damage: " + item.getDamage() + ")");
 			break;
@@ -129,8 +129,8 @@ public class MoneyCommands implements Commands {
 			return;
 		}
 		if (bitem.sellItem(user, Amount)) {
-			user.sendMessage(ChatColor.GREEN + "Enjoy, " + user.getName() + "!");
-			plugin.log.info(user.getName() + " has sold " + Amount
+			user.sendMessage(ChatColor.GREEN + "Enjoy, " + user.getDisplayName() + "!");
+			plugin.log.info(user.getDisplayName() + " has sold " + Amount
 					+ " of item. (ID: " + bitem.getMaterial().getId() + ")");
 		} else {
 			user.sendMessage(ChatColor.RED
@@ -287,7 +287,7 @@ public class MoneyCommands implements Commands {
 			if (bitem instanceof Currency) {
 				if (price == 0) {
 					plugin.prices.remPrice(bitem);
-					plugin.log.info(user.getName()
+					plugin.log.info(user.getDisplayName()
 							+ " has deleted a currency. (ID: "
 							+ bitem.getItemId() + "," + bitem.getDurability()
 							+ ")");
@@ -296,7 +296,7 @@ public class MoneyCommands implements Commands {
 				} else {
 					bitem.setPrice(price);
 					plugin.prices.savePrice(bitem);
-					plugin.log.info(user.getName()
+					plugin.log.info(user.getDisplayName()
 							+ " has updated the price of a currency (ID: "
 							+ bitem.getItemId() + "," + bitem.getDurability()
 							+ ") to " + price);
@@ -312,7 +312,7 @@ public class MoneyCommands implements Commands {
 							bitem.getDurability(), price, -1, 0, plugin.prices);
 					plugin.prices.remPrice(bitem);
 					plugin.prices.savePrice(currency);
-					plugin.log.info(user.getName()
+					plugin.log.info(user.getDisplayName()
 							+ " has converted an item into a currency (ID: "
 							+ bitem.getItemId() + "," + bitem.getDurability()
 							+ ") with a price of " + price);
@@ -324,7 +324,7 @@ public class MoneyCommands implements Commands {
 			Currency currency = new Currency(item.getMaterial().getId(),
 					item.getDamage(), price, -1, 0, plugin.prices);
 			plugin.prices.savePrice(currency);
-			plugin.log.info(user.getName() + " has created a currency (ID: "
+			plugin.log.info(user.getDisplayName() + " has created a currency (ID: "
 					+ currency.getItemId() + "," + currency.getDurability()
 					+ ") with a price of " + price);
 			user.sendMessage(ChatColor.GREEN
@@ -360,7 +360,7 @@ public class MoneyCommands implements Commands {
 							bitem.getDurability(), price, 0, 0, plugin.prices);
 					plugin.prices.remPrice(bitem);
 					plugin.prices.savePrice(newitem);
-					plugin.log.info(user.getName()
+					plugin.log.info(user.getDisplayName()
 							+ " has converted an currency into an item (ID: "
 							+ bitem.getItemId() + "," + bitem.getDurability()
 							+ ") with a price of " + price);
@@ -370,7 +370,7 @@ public class MoneyCommands implements Commands {
 			} else {
 				if (price == 0) {
 					plugin.prices.remPrice(bitem);
-					plugin.log.info(user.getName()
+					plugin.log.info(user.getDisplayName()
 							+ " has deleted an item. (ID: " + bitem.getItemId()
 							+ "," + bitem.getDurability() + ")");
 					user.sendMessage(ChatColor.GREEN
@@ -378,7 +378,7 @@ public class MoneyCommands implements Commands {
 				} else {
 					bitem.setPrice(price);
 					plugin.prices.savePrice(bitem);
-					plugin.log.info(user.getName()
+					plugin.log.info(user.getDisplayName()
 							+ " has updated the price of an item (ID: "
 							+ bitem.getItemId() + "," + bitem.getDurability()
 							+ ") to " + price);
@@ -390,7 +390,7 @@ public class MoneyCommands implements Commands {
 			BuyableItem newItem = new BuyableItem(item.getMaterial().getId(),
 					item.getDamage(), price, 0, 0, plugin.prices);
 			plugin.prices.savePrice(newItem);
-			plugin.log.info(user.getName() + " has created a currency (ID: "
+			plugin.log.info(user.getDisplayName() + " has created a currency (ID: "
 					+ newItem.getItemId() + "," + newItem.getDurability()
 					+ ") with a price of " + price);
 			user.sendMessage(ChatColor.GREEN
@@ -424,7 +424,7 @@ public class MoneyCommands implements Commands {
 			} else {
 				bitem.setSupply(supply);
 				plugin.prices.savePrice(bitem);
-				plugin.log.info(user.getName()
+				plugin.log.info(user.getDisplayName()
 						+ " has changed the supply of an item (ID: "
 						+ bitem.getItemId() + "," + bitem.getDurability()
 						+ ") with a supply of " + supply);

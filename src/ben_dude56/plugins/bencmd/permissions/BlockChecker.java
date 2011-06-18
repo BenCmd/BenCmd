@@ -5,8 +5,10 @@ import org.bukkit.Material;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
+import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
 import org.bukkit.event.block.BlockListener;
 import org.bukkit.event.block.BlockPlaceEvent;
+
 import ben_dude56.plugins.bencmd.*;
 import ben_dude56.plugins.bencmd.multiworld.Portal;
 import ben_dude56.plugins.bencmd.warps.Warp;
@@ -45,13 +47,13 @@ public class BlockChecker extends BlockListener {
 			event.getBlock().setType(Material.AIR);
 			event.setCancelled(true);
 		} else if (event.getBlock().getType() == Material.TNT) {
-			String logMessage = user.getName() + " tried to detonate TNT at X:"
+			String logMessage = user.getDisplayName() + " tried to detonate TNT at X:"
 					+ event.getBlock().getX() + "  Y:"
 					+ event.getBlock().getY() + "  Z:"
 					+ event.getBlock().getZ();
 			log.info(logMessage);
 			plugin.getServer().broadcastMessage(
-					ChatColor.RED + user.getName() + " tried to detonate TNT!");
+					ChatColor.RED + user.getDisplayName() + " tried to detonate TNT!");
 			user.Kick(plugin.mainProperties.getString("TNTKick",
 					"You can't detonate TNT!"));
 			event.setCancelled(true);
@@ -70,6 +72,15 @@ public class BlockChecker extends BlockListener {
 	}
 
 	public void onBlockIgnite(BlockIgniteEvent event) {
+		if(event.getCause() == IgniteCause.SPREAD) {
+			if(plugin.canIgnite(event.getBlock().getLocation())) {
+				plugin.canSpread.add(event.getBlock().getLocation());
+				event.setCancelled(false);
+			} else {
+				event.setCancelled(true);
+			}
+			return;
+		}
 		try {
 			User user = User.getUser(plugin, event.getPlayer());
 			Material material = user

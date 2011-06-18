@@ -27,7 +27,7 @@ public class ProtectPlayerListener extends PlayerListener {
 				event.getPlayer().sendMessage(
 						ChatColor.RED
 								+ "Did you really think that would work!?");
-				log.info(event.getPlayer().getName()
+				log.info(event.getPlayer().getDisplayName()
 						+ " attempted to use a bed in the Nether.");
 				event.setCancelled(true);
 			}
@@ -51,7 +51,7 @@ public class ProtectPlayerListener extends PlayerListener {
 			} else {
 				if (!user.getName()
 						.equalsIgnoreCase(block.getOwner().getName())) {
-					log.info(user.getName() + " has accessed "
+					log.info(user.getDisplayName() + " has accessed "
 							+ block.getOwner().getName()
 							+ "'s protected block. (" + block.GetId() + ")");
 				}

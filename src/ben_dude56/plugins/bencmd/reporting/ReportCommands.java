@@ -69,7 +69,7 @@ public class ReportCommands implements Commands {
 		plugin.reports.addTicket(new Report(plugin, id, user, reported,
 				Report.ReportStatus.UNREAD, reason, "", 0,
 				new ArrayList<String>()));
-		log.info(user.getName() + " opened ticket #" + id.toString() + "!");
+		log.info(user.getDisplayName() + " opened ticket #" + id.toString() + "!");
 		user.sendMessage(ChatColor.GREEN + "Thank you for your report");
 		user.sendMessage(ChatColor.GREEN
 				+ "You can check the status of your report using /ticket " + id
@@ -200,7 +200,7 @@ public class ReportCommands implements Commands {
 					}
 					if (args.length == 2) {
 						report.closeTicket("Ticket closed by admin");
-						log.info(user.getName() + " closed ticket #"
+						log.info(user.getDisplayName() + " closed ticket #"
 								+ id.toString() + "!");
 						user.sendMessage(ChatColor.GREEN + "Ticket (ID: "
 								+ report.getId()
@@ -215,7 +215,7 @@ public class ReportCommands implements Commands {
 							}
 						}
 						report.closeTicket(reason);
-						log.info(user.getName() + " closed ticket #"
+						log.info(user.getDisplayName() + " closed ticket #"
 								+ id.toString() + "! Reason: " + reason);
 						user.sendMessage(ChatColor.GREEN + "Ticket (ID: "
 								+ report.getId()
@@ -237,7 +237,7 @@ public class ReportCommands implements Commands {
 						user.sendMessage(ChatColor.GREEN + "Ticket (ID: "
 								+ report.getId()
 								+ ") has been successfully closed!");
-						log.info(user.getName() + " closed ticket #"
+						log.info(user.getDisplayName() + " closed ticket #"
 								+ id.toString() + "!");
 					} else {
 						user.sendMessage(ChatColor.RED
@@ -257,7 +257,7 @@ public class ReportCommands implements Commands {
 						return;
 					}
 					report.reopenTicket(true);
-					log.info(user.getName() + " re-opened ticket #"
+					log.info(user.getDisplayName() + " re-opened ticket #"
 							+ id.toString() + "!");
 					user.sendMessage(ChatColor.GREEN
 							+ "That ticket has been re-opened!");
@@ -273,7 +273,7 @@ public class ReportCommands implements Commands {
 						return;
 					}
 					if (report.reopenTicket(false)) {
-						log.info(user.getName() + " re-opened ticket #"
+						log.info(user.getDisplayName() + " re-opened ticket #"
 								+ id.toString() + "!");
 						user.sendMessage(ChatColor.GREEN
 								+ "That ticket has been re-opened!");
@@ -311,7 +311,7 @@ public class ReportCommands implements Commands {
 					}
 					user.sendMessage(ChatColor.GREEN
 							+ "That ticket has been locked!");
-					log.info(user.getName() + " locked ticket #"
+					log.info(user.getDisplayName() + " locked ticket #"
 							+ id.toString() + "!");
 				} else {
 					user.sendMessage(ChatColor.RED
@@ -327,7 +327,7 @@ public class ReportCommands implements Commands {
 					report.InvestigateTicket();
 					user.sendMessage(ChatColor.GREEN
 							+ "That ticket has been marked as under investigation!");
-					log.info(user.getName() + " is investigating #"
+					log.info(user.getDisplayName() + " is investigating #"
 							+ id.toString() + "!");
 				} else {
 					user.sendMessage(ChatColor.RED
@@ -343,7 +343,7 @@ public class ReportCommands implements Commands {
 					report.UninvestigateTicket();
 					user.sendMessage(ChatColor.GREEN
 							+ "That ticket has been marked as read!");
-					log.info(user.getName() + " is no longer investigating #"
+					log.info(user.getDisplayName() + " is no longer investigating #"
 							+ id.toString() + "!");
 				} else {
 					user.sendMessage(ChatColor.RED
@@ -389,7 +389,7 @@ public class ReportCommands implements Commands {
 					}
 					user.sendMessage(ChatColor.GREEN
 							+ "The info has been added successfully!");
-					log.info(user.getName()
+					log.info(user.getDisplayName()
 							+ " has added information to ticket #"
 							+ id.toString() + "!");
 					if (user.hasPerm("isTicketAdmin")) {

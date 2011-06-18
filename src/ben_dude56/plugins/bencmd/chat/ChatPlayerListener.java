@@ -30,12 +30,12 @@ public class ChatPlayerListener extends PlayerListener {
 	public void ToggleSlow(User user) {
 		if (slow.isEnabled()) {
 			slow.DisableSlow();
-			log.info(user.getName() + " has disabled slow mode.");
+			log.info(user.getDisplayName() + " has disabled slow mode.");
 			plugin.getServer().broadcastMessage(
 					ChatColor.GRAY + "Slow mode has been disabled.");
 		} else {
 			slow.EnableSlow();
-			log.info(user.getName() + " has enabled slow mode.");
+			log.info(user.getDisplayName() + " has enabled slow mode.");
 			plugin.getServer().broadcastMessage(
 					ChatColor.GRAY
 							+ "Slow mode has been enabled. You must wait "
@@ -86,15 +86,15 @@ public class ChatPlayerListener extends PlayerListener {
 			}
 		}
 		String prefix;
-		log.info(user.getName() + ": " + message);
+		log.info(user.getDisplayName() + ": " + message);
 		if (!(prefix = user.getPrefix()).isEmpty()) {
 			message = user.getColor() + "[" + prefix + "] "
-					+ user.getName() + ": " + ChatColor.WHITE
+					+ user.getDisplayName() + ": " + ChatColor.WHITE
 					+ message;
 			plugin.getServer().broadcastMessage(message);
 			event.setCancelled(true);
 		} else {
-			message = user.getColor() + user.getName() + ": " + ChatColor.WHITE
+			message = user.getColor() + user.getDisplayName() + ": " + ChatColor.WHITE
 					+ message;
 			plugin.getServer().broadcastMessage(message);
 			event.setCancelled(true);
@@ -116,7 +116,7 @@ public class ChatPlayerListener extends PlayerListener {
 						continue;
 					}
 					playerString += User.getUser(plugin, player2).getColor()
-							+ player2.getName() + ChatColor.WHITE + ", ";
+							+ player2.getDisplayName() + ChatColor.WHITE + ", ";
 				}
 				user.sendMessage("The following players are online: "
 						+ playerString);
@@ -137,7 +137,7 @@ public class ChatPlayerListener extends PlayerListener {
 		}
 		plugin.getServer().dispatchCommand(user.getHandle(),
 				"channel join general");
-		event.setJoinMessage(user.getColor() + user.getName() + ChatColor.WHITE
+		event.setJoinMessage(user.getColor() + user.getDisplayName() + ChatColor.WHITE
 				+ " has joined the game...");
 	}
 
@@ -147,7 +147,7 @@ public class ChatPlayerListener extends PlayerListener {
 			user.goOnlineNoMsg();
 			event.setQuitMessage("");
 		} else {
-			event.setQuitMessage(user.getColor() + user.getName()
+			event.setQuitMessage(user.getColor() + user.getDisplayName()
 					+ ChatColor.WHITE + " has left the game...");
 		}
 		plugin.maxPlayers.leave(user);
@@ -170,7 +170,7 @@ public class ChatPlayerListener extends PlayerListener {
 			user.goOnlineNoMsg();
 			event.setLeaveMessage("");
 		} else {
-			event.setLeaveMessage(user.getColor() + user.getName()
+			event.setLeaveMessage(user.getColor() + user.getDisplayName()
 					+ ChatColor.WHITE + " has left the game...");
 		}
 		plugin.maxPlayers.leave(user);
