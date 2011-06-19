@@ -28,21 +28,37 @@ public class InternalUser {
 		if(isServer()) {
 			return testStar;
 		}
+		boolean isStarred = false;
+		boolean isJailed = false;
+		boolean isDenied = false;
+		boolean isAllowed = false;
 		List<String> perms = new ArrayList<String>(permissions);
 		if(testGroup) {
 			for(PermissionGroup group : plugin.perm.groupFile.getAllUserGroups(this)) {
 				perms.addAll(group.getInternal().getPermissions(true));
 			}
 		}
-		if(testStar && perms.contains("*")) {
-			return true;
-		}
 		for(String perm2 : perms) {
+			if(perm2.equals("*") && testStar) {
+				isStarred = true;
+			}
+			if(perm2.equalsIgnoreCase("-" + perm)) {
+				isDenied = true;
+			}
+			if(perm2.equalsIgnoreCase("isJailed")) {
+				isJailed = true;
+			}
 			if(perm.equalsIgnoreCase(perm2)) {
-				return true;
+				isAllowed = true;
 			}
 		}
-		return false;
+		if((isDenied || isJailed) && testGroup) {
+			return false;
+		} else if (isStarred) {
+			return true;
+		} else {
+			return isAllowed;
+		}
 	}
 	
 	public void addPerm(String perm) {
