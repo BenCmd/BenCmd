@@ -31,6 +31,22 @@ public class ChatChannelCommands implements Commands {
 		if (commandLabel.equalsIgnoreCase("channel")) {
 			Channel(args, user);
 			return true;
+		} else if (commandLabel.equalsIgnoreCase("mute")) {
+			String arguments = "";
+			for (int i=0 ; i<args.length ; i++) {
+				arguments += " " + args[0];
+			}
+			plugin.getServer().dispatchCommand(sender, "channel mute " + arguments);
+			return true;
+		} else if(commandLabel.equalsIgnoreCase("unmute")) {
+			String arguments = "";
+			for (int i=0 ; i<args.length ; i++) {
+				arguments += " " + args[0];
+			}
+			plugin.getServer().dispatchCommand(sender, "channel unmute " + arguments);
+			return true;
+		} else if(commandLabel.equalsIgnoreCase("pause")) {
+			plugin.getServer().dispatchCommand(sender, "channel pause");
 		}
 		return false;
 	}

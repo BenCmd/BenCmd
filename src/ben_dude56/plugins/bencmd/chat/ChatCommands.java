@@ -228,7 +228,7 @@ public class ChatCommands implements Commands {
 		}
 		if (user2.getName().equalsIgnoreCase(user.getName())) {
 			user.sendMessage(ChatColor.RED
-					+ "Are you trying to talk to yourself!?");
+					+ "Are you trying to talk to yourself? Weirdo...");
 			return;
 		}
 		String message = "";
@@ -266,8 +266,8 @@ public class ChatCommands implements Commands {
 		}
 		user2.sendMessage(user.getColor() + user.getDisplayName() + ChatColor.GRAY
 				+ " has whispered: " + message);
-		user.sendMessage(ChatColor.GREEN + "Your PM to " + user2.getDisplayName()
-				+ " was sent!");
+		user.sendMessage(ChatColor.GREEN + "You wispered to " + user2.getColor() + user2.getDisplayName()
+				+ ChatColor.GREEN + ": " + ChatColor.GRAY + message);
 		log.info("(" + user.getDisplayName() + " => " + user2.getDisplayName() + ") "
 				+ message);
 	}
