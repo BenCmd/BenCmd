@@ -33,15 +33,23 @@ public class ChatChannelCommands implements Commands {
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("mute")) {
 			String arguments = "";
-			for (int i=0 ; i<=args.length ; i++) {
-				arguments += " " + args[0];
+			for (int i=0 ; i<args.length ; i++) {
+				if (i==0) {
+					arguments += args[0];
+				} else {
+					arguments += " " + args[i];
+				}
 			}
 			plugin.getServer().dispatchCommand(sender, "channel mute " + arguments);
 			return true;
 		} else if(commandLabel.equalsIgnoreCase("unmute")) {
 			String arguments = "";
-			for (int i=0 ; i<=args.length ; i++) {
-				arguments += " " + args[0];
+			for (int i=0 ; i<args.length ; i++) {
+				if(i==0) {
+					arguments += args[0];
+				} else {
+					arguments += " " + args[i];
+				}
 			}
 			plugin.getServer().dispatchCommand(sender, "channel guest " + arguments);
 			return true;
@@ -49,8 +57,8 @@ public class ChatChannelCommands implements Commands {
 			plugin.getServer().dispatchCommand(sender, "channel pause");
 		} else if (commandLabel.equalsIgnoreCase("me")) {
 			String message = "";
-			for (int i=0 ; i<=args.length ; i++) {
-				if(message.isEmpty()) {
+			for (int i=0 ; i<args.length ; i++) {
+				if(i==0) {
 					message += args[i];
 				} else {
 					message += " " + args[i];
