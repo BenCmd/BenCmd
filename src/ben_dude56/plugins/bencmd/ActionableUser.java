@@ -80,7 +80,7 @@ public class ActionableUser extends WarpableUser {
 	 */
 	public void UnNoPoof() {
 		if (isConsole) {
-			log.info("his code should NEVER be reached...");
+			log.info("This code should NEVER be reached...");
 			return;
 		}
 		plugin.inv.remNoInv(player);
@@ -244,10 +244,16 @@ public class ActionableUser extends WarpableUser {
 		return this.hasPerm("isMuted", false);
 	}
 
+	/**
+	 * @deprecated Instead use {@link PermissionUser#addPermission(String)} with permission "isMuted"
+	 */
 	public void Mute() {
 		this.addPermission("isMuted");
 	}
 
+	/**
+	 * @deprecated Instead use {@link PermissionUser#removePermission(String)} with permission "isMuted"
+	 */
 	public void Unmute() {
 		this.removePermission("isMuted");
 	}

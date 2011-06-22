@@ -108,6 +108,7 @@ public class ChatCommands implements Commands {
 		if(user.hasPerm("isMuted", false)) {
 			user.sendMessage(ChatColor.RED + "That user is already muted!");
 		} else {
+			user2.addPermission("isMuted");
 			user.sendMessage(ChatColor.GREEN + "That user was muted!");
 			log.info("User " + args[0] + " has been muted by " + user.getName()
 					+ ".");
