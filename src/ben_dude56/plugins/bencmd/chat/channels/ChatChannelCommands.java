@@ -43,10 +43,25 @@ public class ChatChannelCommands implements Commands {
 			for (int i=0 ; i<args.length ; i++) {
 				arguments += " " + args[0];
 			}
-			plugin.getServer().dispatchCommand(sender, "channel unmute " + arguments);
+			plugin.getServer().dispatchCommand(sender, "channel guest " + arguments);
 			return true;
 		} else if(commandLabel.equalsIgnoreCase("pause")) {
 			plugin.getServer().dispatchCommand(sender, "channel pause");
+		} else if (commandLabel.equalsIgnoreCase("me")) {
+			String message = "";
+			for (int i=0 ; i<args.length ; i++) {
+				if(message.isEmpty()) {
+					message += args[i];
+				} else {
+					message += " " + args[i];
+				}
+			}
+			if(!user.inChannel()) {
+				user.sendMessage(ChatColor.RED + "You're not in a channel!");
+			} else {
+				user.getActiveChannel().Me(user, message);
+			}
+			return true;
 		}
 		return false;
 	}
