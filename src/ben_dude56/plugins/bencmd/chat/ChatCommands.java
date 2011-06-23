@@ -268,14 +268,11 @@ public class ChatCommands implements Commands {
 				+ message);
 		user.sendMessage(ChatColor.GRAY + "(You => " + user2.getColor() + user2.getDisplayName()
 				+ ChatColor.GRAY + ") " + message);
-		for(String sspy : plugin.perm.userFile.allWithPerm("hearAllMessages")) {
-			if(sspy.equals(user.getName()) || sspy.equals(user2.getName())) {
+		for(User spy : plugin.perm.userFile.allWithPerm("hearAllMessages")) {
+			if(spy.getName().equals(user.getName()) || spy.getName().equals(user2.getName())) {
 				continue;
 			}
-			User spy;
-			if((spy = User.matchUser(sspy, plugin)) != null) {
-				spy.sendMessage(ChatColor.GRAY + "(" + user.getColor() + user.getDisplayName() + ChatColor.GRAY + " => " + user2.getColor() + user2.getDisplayName() + ChatColor.GRAY + ") " + message);
-			}
+			spy.sendMessage(ChatColor.GRAY + "(" + user.getColor() + user.getDisplayName() + ChatColor.GRAY + " => " + user2.getColor() + user2.getDisplayName() + ChatColor.GRAY + ") " + message);
 		}
 		log.info("(" + user.getDisplayName() + " => " + user2.getDisplayName() + ") "
 				+ message);

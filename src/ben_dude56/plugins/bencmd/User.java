@@ -26,6 +26,10 @@ public class User extends ActionableUser {
 		}
 		return null;
 	}
+	
+	public static HashMap<String, User> getActiveUsers() {
+		return activeUsers;
+	}
 
 	public static User matchUserIgnoreCase(String name, BenCmd instance) {
 		return User.matchUser(name, instance);

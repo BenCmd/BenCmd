@@ -16,6 +16,8 @@ import java.util.logging.Logger;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
+import ben_dude56.plugins.bencmd.User;
+
 @SuppressWarnings("unused")
 public class UserFile extends Properties {
 	private static final long serialVersionUID = 0L;
@@ -135,11 +137,11 @@ public class UserFile extends Properties {
 		updateUser(user.getInternal());
 	}
 	
-	public List<String> allWithPerm(String perm) {
-		List<String> users = new ArrayList<String>();
-		for(InternalUser user : this.users.values()) {
+	public List<User> allWithPerm(String perm) {
+		List<User> users = new ArrayList<User>();
+		for(User user : User.getActiveUsers().values()) {
 			if(user.hasPerm(perm, true, true)) {
-				users.add(user.getName());
+				users.add(user);
 			}
 		}
 		return users;
