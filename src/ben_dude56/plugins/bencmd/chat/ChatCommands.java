@@ -264,10 +264,19 @@ public class ChatCommands implements Commands {
 				plugin.chatListen.slow.playerAdd(user.getName());
 			}
 		}
-		user2.sendMessage(user.getColor() + user.getDisplayName() + ChatColor.GRAY
-				+ " has whispered: " + message);
-		user.sendMessage(ChatColor.GRAY + "You wispered to " + user2.getColor() + user2.getDisplayName()
-				+ ChatColor.GREEN + ": " + ChatColor.GRAY + message);
+		user2.sendMessage(ChatColor.GRAY + "(" + user.getColor() + user.getDisplayName() + ChatColor.GRAY + " => You) "
+				+ message);
+		user.sendMessage(ChatColor.GRAY + "(You => " + user2.getColor() + user2.getDisplayName()
+				+ ChatColor.GRAY + ") " + message);
+		for(String sspy : plugin.perm.userFile.allWithPerm("hearAllMessages")) {
+			if(sspy.equals(user.getName()) || sspy.equals(user2.getName())) {
+				continue;
+			}
+			User spy;
+			if((spy = User.matchUser(sspy, plugin)) != null) {
+				spy.sendMessage(ChatColor.GRAY + "(" + user.getColor() + user.getDisplayName() + ChatColor.GRAY + " => " + user2.getColor() + user2.getDisplayName() + ChatColor.GRAY + ") " + message);
+			}
+		}
 		log.info("(" + user.getDisplayName() + " => " + user2.getDisplayName() + ") "
 				+ message);
 	}

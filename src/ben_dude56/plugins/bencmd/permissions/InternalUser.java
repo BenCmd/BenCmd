@@ -78,6 +78,9 @@ public class InternalUser {
 	}
 	
 	public boolean inGroup(PermissionGroup group) {
+		if(isServer()) {
+			return false;
+		}
 		for(PermissionGroup group2 : plugin.perm.groupFile.getAllUserGroups(this)) {
 			if(group.getName().equals(group2.getName())) {
 				return true;

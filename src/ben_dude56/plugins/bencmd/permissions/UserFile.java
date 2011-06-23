@@ -134,4 +134,14 @@ public class UserFile extends Properties {
 	public void addUser(PermissionUser user) {
 		updateUser(user.getInternal());
 	}
+	
+	public List<String> allWithPerm(String perm) {
+		List<String> users = new ArrayList<String>();
+		for(InternalUser user : this.users.values()) {
+			if(user.hasPerm(perm, true, true)) {
+				users.add(user.getName());
+			}
+		}
+		return users;
+	}
 }

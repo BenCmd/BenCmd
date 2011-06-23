@@ -98,6 +98,9 @@ public class PermissionUser {
 	}
 	
 	public ChatColor getColor() {
+		if(isServer()) {
+			return ChatColor.BLUE;
+		}
 		List<InternalGroup> hasColor = new ArrayList<InternalGroup>();
 		for(PermissionGroup group : user.plugin.perm.groupFile.getUserGroups(user)) {
 			if(group.getColor() != ChatColor.YELLOW) {

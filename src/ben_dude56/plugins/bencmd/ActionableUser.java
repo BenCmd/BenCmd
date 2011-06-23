@@ -330,6 +330,9 @@ public class ActionableUser extends WarpableUser {
 	}
 	
 	public String getDisplayName() {
+		if(isServer()) {
+			return "Server";
+		}
 		return player.getDisplayName();
 	}
 }
