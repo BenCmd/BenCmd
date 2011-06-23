@@ -266,7 +266,7 @@ public class ChatCommands implements Commands {
 		}
 		user2.sendMessage(user.getColor() + user.getDisplayName() + ChatColor.GRAY
 				+ " has whispered: " + message);
-		user.sendMessage(ChatColor.GREEN + "You wispered to " + user2.getColor() + user2.getDisplayName()
+		user.sendMessage(ChatColor.GRAY + "You wispered to " + user2.getColor() + user2.getDisplayName()
 				+ ChatColor.GREEN + ": " + ChatColor.GRAY + message);
 		log.info("(" + user.getDisplayName() + " => " + user2.getDisplayName() + ") "
 				+ message);

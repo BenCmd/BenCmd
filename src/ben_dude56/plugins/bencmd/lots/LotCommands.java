@@ -896,7 +896,7 @@ public class LotCommands implements Commands {
 				Lot lot = plugin.lots.getLot(LotID);
 				lot.setGroup(group);
 				user.sendMessage(ChatColor.GREEN + "Lot " + LotID.split(",")[0]
-						+ "'s group has been seet to '" + group + "'.");
+						+ "'s group has been set to '" + group + "'.");
 				return;
 			} else if (args.length >= 3) {
 				group = args[1];
@@ -940,7 +940,7 @@ public class LotCommands implements Commands {
 				lot.setGroup(group);
 				LotID = lot.getLotID();
 				user.sendMessage(ChatColor.GREEN + "Lot " + LotID
-						+ "'s group has been seet to '" + group + "'.");
+						+ "'s group has been set to '" + group + "'.");
 				return;
 			} else {
 				user.sendMessage(ChatColor.RED

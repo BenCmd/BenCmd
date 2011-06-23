@@ -29,6 +29,18 @@ public class ChatChannelCommands implements Commands {
 			return false;
 		}
 		if (commandLabel.equalsIgnoreCase("channel")) {
+			if (args[0].equalsIgnoreCase("unmute")) {
+				String arguments = "";
+				for (int i=1 ; i<args.length ; i++) {
+					if(i==0) {
+						arguments += args[0];
+					} else {
+						arguments += " " + args[i];
+					}
+				}
+				plugin.getServer().dispatchCommand(sender, "channel guest " + arguments);
+				return true;
+			}
 			Channel(args, user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("mute")) {
@@ -156,6 +168,8 @@ public class ChatChannelCommands implements Commands {
 								return;
 							}
 							user.getActiveChannel().Mute(mutee);
+							user.sendMessage(mutee.getColor() + mutee.getName() +
+									ChatColor.GREEN + "Has been muted from the " + user.getActiveChannel().getName() + " channel!");
 						} else {
 							user.sendMessage(ChatColor.RED
 									+ "That user couldn't be found!");
