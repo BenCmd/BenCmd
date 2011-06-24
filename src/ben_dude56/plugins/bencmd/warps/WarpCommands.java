@@ -373,6 +373,10 @@ public class WarpCommands implements Commands {
 						+ "What the hell do you think you're doing!?");
 				return;
 			}
+			if(user2.hasPerm("isJailed", false, true)) {
+				user.sendMessage(ChatColor.RED + "That user is already jailed!");
+				return;
+			}
 			user2.toggleJail();
 			plugin.getServer().broadcastMessage(
 					ChatColor.RED + user2.getName() + " has been jailed!");
@@ -386,6 +390,10 @@ public class WarpCommands implements Commands {
 			User user2;
 			if ((user2 = User.matchUser(args[0], plugin)) == null) {
 				user.sendMessage(ChatColor.RED + "That player doesn't exist!");
+				return;
+			}
+			if(!user2.hasPerm("isJailed", false, true)) {
+				user.sendMessage(ChatColor.RED + "That user isn't already jailed!");
 				return;
 			}
 			user2.toggleJail();

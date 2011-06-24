@@ -39,7 +39,7 @@ public class InternalUser {
 			}
 		}
 		for(String perm2 : perms) {
-			if(perm2.equals("*") && testStar) {
+			if(perm2.equals("*")) {
 				isStarred = true;
 			}
 			if(perm2.equalsIgnoreCase("-" + perm)) {
@@ -52,9 +52,9 @@ public class InternalUser {
 				isAllowed = true;
 			}
 		}
-		if((isDenied || isJailed) && testGroup) {
+		if((isDenied || isJailed) && testStar) {
 			return false;
-		} else if (isStarred) {
+		} else if (isStarred && testStar) {
 			return true;
 		} else {
 			return isAllowed;
