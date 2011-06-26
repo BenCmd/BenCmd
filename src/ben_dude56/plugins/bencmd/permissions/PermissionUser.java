@@ -53,6 +53,21 @@ public class PermissionUser {
 		return user.getName();
 	}
 	
+	public Action isMuted() {
+		updateInternal();
+		return user.isMuted();
+	}
+	
+	public Action isJailed() {
+		updateInternal();
+		return user.isJailed();
+	}
+	
+	public Action isBanned() {
+		updateInternal();
+		return user.isBanned();
+	}
+	
 	public boolean hasPerm(String perm) {
 		updateInternal();
 		return user.hasPerm(perm, true, true);

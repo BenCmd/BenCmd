@@ -79,6 +79,7 @@ public class BenCmd extends JavaPlugin {
 	public final File pricesFile = new File(propDir + "prices.db");
 	public final File portalFile = new File(propDir + "portals.db");
 	public final File shelfFile = new File(propDir + "shelves.db");
+	public final File actionFile = new File(propDir + "action.db");
 	public PluginProperties mainProperties;
 	public PluginProperties itemAliases;
 	public LotFile lots;
@@ -109,6 +110,7 @@ public class BenCmd extends JavaPlugin {
 	public KickList kicked;
 	public PortalFile portals;
 	public ShelfFile shelff;
+	public ActionFile actions;
 	public List<Location> canSpread = new ArrayList<Location>();
 	public Logger log = Logger.getLogger("minecraft");
 
@@ -257,6 +259,14 @@ public class BenCmd extends JavaPlugin {
 				e.printStackTrace();
 			}
 		}
+		if (!actionFile.exists()) {
+			try {
+				actionFile.createNewFile();
+			} catch (IOException e) {
+				System.out.println("BenCmd had a problem:");
+				e.printStackTrace();
+			}
+		}
 		// Get some static methods ready
 		User.finalizeAll();
 		// Start loading classes
@@ -290,6 +300,7 @@ public class BenCmd extends JavaPlugin {
 		kicked = new KickList(this);
 		portals = new PortalFile(this, propDir + "portals.db");
 		shelff = new ShelfFile(this, propDir + "shelves.db");
+		actions = new ActionFile(this);
 		// SANITY CHECK
 		if (!sanityCheck()) {
 			this.getServer().getPluginManager().disablePlugin(this);

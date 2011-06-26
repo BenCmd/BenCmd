@@ -13,7 +13,6 @@ import org.bukkit.entity.Player;
 import ben_dude56.plugins.bencmd.BenCmd;
 import ben_dude56.plugins.bencmd.Commands;
 import ben_dude56.plugins.bencmd.User;
-import ben_dude56.plugins.bencmd.permissions.PermissionUser;
 
 public class ChatCommands implements Commands {
 	BenCmd plugin;
@@ -65,14 +64,6 @@ public class ChatCommands implements Commands {
 				&& user.hasPerm("canSlowMode")) {
 			slowMode(args, user);
 			return true;
-		} else if (commandLabel.equalsIgnoreCase("mute")
-				&& user.hasPerm("canMute")) {
-			mute(args, user);
-			return true;
-		} else if (commandLabel.equalsIgnoreCase("unmute")
-				&& user.hasPerm("canMute")) {
-			unmute(args, user);
-			return true;
 		} else if (commandLabel.equalsIgnoreCase("me")) {
 			me(args, user);
 			return true;
@@ -92,30 +83,6 @@ public class ChatCommands implements Commands {
 			plugin.chatListen.slow.EnableSlow(millis);
 		} else {
 			plugin.chatListen.ToggleSlow(user);
-		}
-	}
-
-	public void mute(String[] args, User user) {
-		if (args.length != 1) {
-			user.sendMessage(ChatColor.YELLOW + "Proper usage: /mute <player>");
-			return;
-		}
-		PermissionUser user2;
-		if ((user2 = PermissionUser.matchUserIgnoreCase(args[0], plugin)) == null) {
-			user.sendMessage(ChatColor.RED + "That user doesn't exist!");
-			return;
-		}
-		if(user.hasPerm("isMuted", false)) {
-			user.sendMessage(ChatColor.RED + "That user is already muted!");
-		} else {
-			user2.addPermission("isMuted");
-			user.sendMessage(ChatColor.GREEN + "That user was muted!");
-			log.info("User " + args[0] + " has been muted by " + user.getName()
-					+ ".");
-			User user3;
-			if ((user3 = User.matchUser(user2.getName(), plugin)) != null) {
-				user3.sendMessage(ChatColor.RED + "You have been muted.");
-			}
 		}
 	}
 
@@ -139,36 +106,12 @@ public class ChatCommands implements Commands {
 		}
 	}
 
-	public void unmute(String[] args, User user) {
-		if (args.length != 1) {
-			user.sendMessage(ChatColor.YELLOW
-					+ "Proper usage: /unmute <player>");
-			return;
-		}
-		PermissionUser user2;
-		if ((user2 = PermissionUser.matchUserIgnoreCase(args[0], plugin)) == null) {
-			user.sendMessage(ChatColor.RED + "That user doesn't exist!");
-			return;
-		}
-		if(user2.hasPerm("isMuted", false)) {
-			user.sendMessage(ChatColor.GREEN + "That user was unmuted!");
-			log.info("User " + args[0] + " has been unmuted by "
-					+ user.getDisplayName() + ".");
-			User user3;
-			if ((user3 = User.matchUser(user2.getName(), plugin)) != null) {
-				user3.sendMessage(ChatColor.GREEN + "You have been unmuted.");
-			}
-		} else {
-			user.sendMessage(ChatColor.RED + "That user isn't muted!");
-		}
-	}
-
 	public void me(String[] args, User user) {
 		if (args.length == 0) {
 			user.sendMessage(ChatColor.YELLOW + "Proper usage: /me <message>");
 			return;
 		}
-		if (user.isMuted()) {
+		if (user.isMuted() != null) {
 			user.sendMessage(ChatColor.GRAY
 					+ plugin.mainProperties.getString("muteMessage",
 							"You are muted..."));
@@ -215,7 +158,7 @@ public class ChatCommands implements Commands {
 					+ "Proper usage: /tell <player> <message>");
 			return;
 		}
-		if (user.isMuted()) {
+		if (user.isMuted() != null) {
 			user.sendMessage(ChatColor.GRAY
 					+ plugin.mainProperties.getString("muteMessage",
 							"You are muted..."));

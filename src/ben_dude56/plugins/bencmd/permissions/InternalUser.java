@@ -24,12 +24,24 @@ public class InternalUser {
 		return permissions;
 	}
 	
+	public Action isMuted() {
+		return plugin.actions.isMuted(new PermissionUser(this));
+	}
+	
+	public Action isJailed() {
+		return plugin.actions.isJailed(new PermissionUser(this));
+	}
+	
+	public Action isBanned() {
+		return plugin.actions.isBanned(new PermissionUser(this));
+	}
+	
 	public boolean hasPerm(String perm, boolean testStar, boolean testGroup) {
 		if(isServer()) {
 			return testStar;
 		}
 		boolean isStarred = false;
-		boolean isJailed = false;
+		boolean isJailed = isJailed() != null;
 		boolean isDenied = false;
 		boolean isAllowed = false;
 		List<String> perms = new ArrayList<String>(permissions);
@@ -45,9 +57,11 @@ public class InternalUser {
 			if(perm2.equalsIgnoreCase("-" + perm)) {
 				isDenied = true;
 			}
+			// LEGACY CODE START
 			if(perm2.equalsIgnoreCase("isJailed")) {
 				isJailed = true;
 			}
+			// LEGACY CODE END
 			if(perm.equalsIgnoreCase(perm2)) {
 				isAllowed = true;
 			}

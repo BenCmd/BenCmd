@@ -2,7 +2,6 @@ package ben_dude56.plugins.bencmd.warps;
 
 import java.util.logging.Logger;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -57,21 +56,6 @@ public class Jail {
 			return false;
 		}
 		jailWarp.WarpHere(new WarpableUser(plugin, player));
-		user.addPermission("isJailed");
-		player.sendMessage(ChatColor.RED
-				+ plugin.mainProperties.getString("jailMessage",
-						"You have been sent to jail!"));
-		log.info(player.getDisplayName() + " has been jailed.");
 		return true;
-	}
-
-	public void LeaveJail(Player player) {
-		User user = User.getUser(plugin, player);
-		player.teleport(player.getWorld().getSpawnLocation());
-		user.removePermission("isJailed");
-		player.sendMessage(ChatColor.GREEN
-				+ plugin.mainProperties.getString("unjailMessage",
-						"You have been released..."));
-		log.info(player.getDisplayName() + " has been unjailed.");
 	}
 }

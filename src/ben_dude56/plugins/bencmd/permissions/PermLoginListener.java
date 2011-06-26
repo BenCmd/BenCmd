@@ -8,7 +8,6 @@ import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 
-import ben_dude56.plugins.bencmd.ActionableUser;
 import ben_dude56.plugins.bencmd.BenCmd;
 import ben_dude56.plugins.bencmd.User;
 
@@ -30,8 +29,7 @@ public class PermLoginListener extends PlayerListener {
 		if(plugin.perm.groupFile.getAllUserGroups(user).isEmpty()) {
 			plugin.perm.groupFile.getGroup(plugin.mainProperties.getString("defaultGroup", "group")).addUser(user);
 		}
-		if ((new ActionableUser(plugin, event.getPlayer())).hasPerm("isBanned",
-				false)) {
+		if ((User.getUser(plugin, event.getPlayer())).isBanned() != null) {
 			event.disallow(Result.KICK_BANNED,
 					"You are currently banned from this server!");
 			return;

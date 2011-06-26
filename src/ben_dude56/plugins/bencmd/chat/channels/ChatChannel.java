@@ -532,6 +532,12 @@ public class ChatChannel {
 					+ "You can't talk while pause mode is enabled.");
 			return;
 		}
+		if (user.isMuted() != null) {
+			user.sendMessage(ChatColor.GRAY
+					+ control.plugin.mainProperties.getString("muteMessage",
+							"You are muted..."));
+			return;
+		}
 		if (isMuted(user)) {
 			user.sendMessage(ChatColor.GRAY
 					+ control.plugin.mainProperties.getString("muteMessage",
@@ -629,6 +635,12 @@ public class ChatChannel {
 		if (!isOwner(user) && !isMod(user) && paused) {
 			user.sendMessage(ChatColor.GRAY
 					+ "You can't talk while pause mode is enabled.");
+			return;
+		}
+		if (user.isMuted() != null) {
+			user.sendMessage(ChatColor.GRAY
+					+ control.plugin.mainProperties.getString("muteMessage",
+							"You are muted..."));
 			return;
 		}
 		if (isMuted(user)) {

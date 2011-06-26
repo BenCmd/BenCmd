@@ -55,14 +55,6 @@ public class WarpCommands implements Commands {
 				&& user.hasPerm("canWarp")) {
 			Back(user);
 			return true;
-		} else if (commandLabel.equalsIgnoreCase("jail")
-				&& user.hasPerm("canJail")) {
-			Jail(args, user);
-			return true;
-		} else if (commandLabel.equalsIgnoreCase("unjail")
-				&& user.hasPerm("canJail")) {
-			Unjail(args, user);
-			return true;
 		} else if (commandLabel.equalsIgnoreCase("setjail")
 				&& user.hasPerm("canJail")) {
 			SetJail(user);
@@ -358,50 +350,6 @@ public class WarpCommands implements Commands {
 				user.sendMessage(ChatColor.YELLOW
 						+ "Proper use is: /delhome <number>");
 			}
-		}
-	}
-
-	public void Jail(String[] args, User user) {
-		if (args.length == 1) {
-			User user2;
-			if ((user2 = User.matchUser(args[0], plugin)) == null) {
-				user.sendMessage(ChatColor.RED + "That player doesn't exist!");
-				return;
-			}
-			if (user.getName() == user2.getName()) {
-				user.sendMessage(ChatColor.RED
-						+ "What the hell do you think you're doing!?");
-				return;
-			}
-			if(user2.hasPerm("isJailed", false, true)) {
-				user.sendMessage(ChatColor.RED + "That user is already jailed!");
-				return;
-			}
-			user2.toggleJail();
-			plugin.getServer().broadcastMessage(
-					ChatColor.RED + user2.getName() + " has been jailed!");
-		} else {
-			user.sendMessage(ChatColor.YELLOW + "Proper use is: /jail <player>");
-		}
-	}
-
-	public void Unjail(String[] args, User user) {
-		if (args.length == 1) {
-			User user2;
-			if ((user2 = User.matchUser(args[0], plugin)) == null) {
-				user.sendMessage(ChatColor.RED + "That player doesn't exist!");
-				return;
-			}
-			if(!user2.hasPerm("isJailed", false, true)) {
-				user.sendMessage(ChatColor.RED + "That user isn't already jailed!");
-				return;
-			}
-			user2.toggleJail();
-			plugin.getServer().broadcastMessage(
-					ChatColor.RED + user2.getName() + " has been unjailed!");
-		} else {
-			user.sendMessage(ChatColor.YELLOW
-					+ "Proper use is: /unjail <player>");
 		}
 	}
 

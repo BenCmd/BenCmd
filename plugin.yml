@@ -239,3 +239,12 @@ commands:
     display:
         usage:
         description: Changes a user's display name
+    ban:
+        usage:
+        description: Bans a player
+    pardon:
+        usage:
+        description: Unbans a player
+    unban:
+        usage:
+        description: Same as pardon

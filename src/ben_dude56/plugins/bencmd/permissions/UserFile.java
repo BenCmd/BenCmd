@@ -21,7 +21,6 @@ import ben_dude56.plugins.bencmd.User;
 @SuppressWarnings("unused")
 public class UserFile extends Properties {
 	private static final long serialVersionUID = 0L;
-	File file;
 	MainPermissions mainPerm;
 	HashMap<String, InternalUser> users = new HashMap<String, InternalUser>();
 
@@ -33,7 +32,7 @@ public class UserFile extends Properties {
 
 
 	public void loadFile() {
-		file = new File("plugins/BenCmd/users.db"); // Prepare the file
+		File file = new File("plugins/BenCmd/users.db"); // Prepare the file
 		if (!file.exists()) {
 			try {
 				file.createNewFile(); // If the file doesn't exist, create it!
@@ -88,7 +87,7 @@ public class UserFile extends Properties {
 	}
 
 	public void saveFile() {
-		file = new File("plugins/BenCmd/users.db"); // Prepare the file
+		File file = new File("plugins/BenCmd/users.db"); // Prepare the file
 		if (!file.exists()) {
 			try {
 				file.createNewFile(); // If the file doesn't exist, create it!

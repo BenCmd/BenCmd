@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 
 import ben_dude56.plugins.bencmd.BenCmd;
 import ben_dude56.plugins.bencmd.User;
+import ben_dude56.plugins.bencmd.permissions.Action.ActionType;
 
 public class FlyDetect {
 	public BenCmd plugin;
@@ -34,7 +35,7 @@ public class FlyDetect {
 	}
 
 	public int getOffences(Player player) {
-		if (User.getUser(plugin, player).hasPerm("isJailed", false)) {
+		if (User.getUser(plugin, player).isJailed() == null) {
 			return 3;
 		}
 		if (offenders.containsKey(player.getName())) {
@@ -103,12 +104,12 @@ public class FlyDetect {
 									+ " was kicked for flying!");
 					break;
 				case 2:
-					if (!User.getUser(plugin, player)
-							.hasPerm("isJailed", false)) {
-						User.getUser(plugin, player).toggleJail();
+					if (User.getUser(plugin, player).isJailed() == null) {
+						plugin.actions.addAction(User.getUser(plugin, player), ActionType.JAIL, 3600000);
+						plugin.jail.SendToJail(player);
 						plugin.getServer().broadcastMessage(
 								ChatColor.RED + player.getDisplayName()
-										+ " was jailed for flying!");
+										+ " was jailed for 1 hour for flying!");
 					}
 					break;
 				default:

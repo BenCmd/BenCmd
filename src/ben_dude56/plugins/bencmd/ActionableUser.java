@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
+import ben_dude56.plugins.bencmd.permissions.Action.ActionType;
 import ben_dude56.plugins.bencmd.warps.WarpableUser;
 
 public class ActionableUser extends WarpableUser {
@@ -235,27 +236,12 @@ public class ActionableUser extends WarpableUser {
 		return plugin.isGod(player);
 	}
 
-	/**
-	 * Checks if the user is muted
-	 * 
-	 * @return True if muted, false otherwise
-	 */
-	public boolean isMuted() {
-		return this.hasPerm("isMuted", false);
+	public void Mute(long duration) {
+		plugin.actions.addAction(this, ActionType.ALLMUTE, duration);
 	}
-
-	/**
-	 * @deprecated Instead use {@link PermissionUser#addPermission(String)} with permission "isMuted"
-	 */
-	public void Mute() {
-		this.addPermission("isMuted");
-	}
-
-	/**
-	 * @deprecated Instead use {@link PermissionUser#removePermission(String)} with permission "isMuted"
-	 */
+	
 	public void Unmute() {
-		this.removePermission("isMuted");
+		plugin.actions.removeAction(this.isMuted());
 	}
 
 	/**

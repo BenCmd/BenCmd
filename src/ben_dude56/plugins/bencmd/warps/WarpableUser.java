@@ -109,28 +109,6 @@ public class WarpableUser extends PermissionUser {
 		plugin.homes.SetOtherHome(player, homeOf.getName(), homeNumber);
 	}
 
-	public void toggleJail() {
-		if (isConsole) {
-			return;
-		}
-		if (this.hasPerm("isJailed", false)) {
-			plugin.jail.LeaveJail(player);
-		} else {
-			plugin.jail.SendToJail(player);
-		}
-	}
-
-	public void setJail(boolean jailState) {
-		if (isConsole) {
-			return;
-		}
-		if (jailState) {
-			plugin.jail.SendToJail(player);
-		} else {
-			plugin.jail.LeaveJail(player);
-		}
-	}
-
 	public void Spawn() {
 		if (isConsole) {
 			return;

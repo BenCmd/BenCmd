@@ -47,6 +47,13 @@ public class ChatPlayerListener extends PlayerListener {
 	public void onPlayerChat(PlayerChatEvent event) {
 		String message = event.getMessage();
 		User user = User.getUser(plugin, event.getPlayer());
+		if (user.isMuted() != null) {
+			event.setCancelled(true);
+			user.sendMessage(ChatColor.GRAY
+					+ plugin.mainProperties.getString("muteMessage",
+							"You are muted..."));
+			return;
+		}
 		if (plugin.mainProperties.getBoolean("channelsEnabled", false)) {
 			if (user.inChannel()) {
 				user.getActiveChannel().sendChat(user, message);
@@ -55,13 +62,6 @@ public class ChatPlayerListener extends PlayerListener {
 						+ "You must be in a chat channel to talk!");
 			}
 			event.setCancelled(true);
-			return;
-		}
-		if (user.isMuted()) {
-			event.setCancelled(true);
-			user.sendMessage(ChatColor.GRAY
-					+ plugin.mainProperties.getString("muteMessage",
-							"You are muted..."));
 			return;
 		}
 		boolean blocked = ChatChecker.checkBlocked(message, plugin);
@@ -122,7 +122,7 @@ public class ChatPlayerListener extends PlayerListener {
 						+ playerString);
 			}
 		}
-		if (user.isMuted()) {
+		if (user.isMuted() != null) {
 			user.sendMessage(ChatColor.RED
 					+ "Please note that you are currently muted and cannot speak.");
 		} else if (slow.isEnabled()) {
@@ -139,6 +139,13 @@ public class ChatPlayerListener extends PlayerListener {
 				"channel join general");
 		event.setJoinMessage(user.getColor() + user.getDisplayName() + ChatColor.WHITE
 				+ " has joined the game...");
+		if(plugin.actions.isUnjailed(user) != null) {
+			user.Spawn();
+			plugin.actions.removeAction(plugin.actions.isUnjailed(user));
+		}
+		if(user.isJailed() != null) {
+			plugin.jail.SendToJail(event.getPlayer());
+		}
 	}
 
 	public void onPlayerQuit(PlayerQuitEvent event) {

@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import ben_dude56.plugins.bencmd.BenCmd;
 import ben_dude56.plugins.bencmd.Commands;
 import ben_dude56.plugins.bencmd.User;
+import ben_dude56.plugins.bencmd.permissions.Action.ActionType;
 import ben_dude56.plugins.bencmd.reporting.Report;
 import ben_dude56.plugins.bencmd.reporting.Report.ReportStatus;
 
@@ -44,6 +45,30 @@ public class PermissionCommands implements Commands {
 		} else if (commandLabel.equalsIgnoreCase("kick")
 				&& user.hasPerm("canKick")) {
 			Kick(args, user);
+			return true;
+		} else if (commandLabel.equalsIgnoreCase("mute")
+				&& user.hasPerm("canMute")) {
+			Mute(args, user);
+			return true;
+		} else if (commandLabel.equalsIgnoreCase("unmute")
+				&& user.hasPerm("canMute")) {
+			Unmute(args, user);
+			return true;
+		} else if (commandLabel.equalsIgnoreCase("jail")
+				&& user.hasPerm("canJail")) {
+			Jail(args, user);
+			return true;
+		} else if (commandLabel.equalsIgnoreCase("unjail")
+				&& user.hasPerm("canJail")) {
+			Unjail(args, user);
+			return true;
+		} else if (commandLabel.equalsIgnoreCase("ban")
+				&& user.hasPerm("canBan")) {
+			Ban(args, user);
+			return true;
+		} else if ((commandLabel.equalsIgnoreCase("pardon") || commandLabel.equalsIgnoreCase("pardon"))
+				&& user.hasPerm("canBan")) {
+			Unban(args, user);
 			return true;
 		}
 		return false;
@@ -319,8 +344,9 @@ public class PermissionCommands implements Commands {
 					+ "Proper use is: /status [player]");
 			return;
 		}
-		boolean jailed = puser2.hasPerm("isJailed", false);
-		boolean muted = puser2.hasPerm("isMuted", false);
+		boolean banned = puser2.isBanned() != null;
+		boolean jailed = puser2.isJailed() != null;
+		boolean muted = puser2.isMuted() != null;
 		boolean reported = false;
 		for (Report ticket : plugin.reports.getReports()) {
 			if (ticket.getAccused().getName()
@@ -332,6 +358,11 @@ public class PermissionCommands implements Commands {
 			}
 		}
 		user.sendMessage(ChatColor.GRAY + "Status of " + puser2.getName() + ":");
+		if (banned) {
+			user.sendMessage(ChatColor.RED + "   -Banned: YES");
+		} else {
+			user.sendMessage(ChatColor.GRAY + "   -Banned: NO");
+		}
 		if (jailed) {
 			user.sendMessage(ChatColor.RED + "   -Jailed: YES");
 		} else {
@@ -422,5 +453,240 @@ public class PermissionCommands implements Commands {
 				toKick.Kick(reason, user);
 			}
 		}
+	}
+	
+	public void Mute(String[] args, User user) {
+		if(args.length < 1 || args.length > 2) {
+			user.sendMessage(ChatColor.YELLOW
+					+ "Proper use is: /mute <player> [time{s|m|h|d}]");
+			return;
+		}
+		PermissionUser puser2;
+		if((puser2 = PermissionUser.matchUser(args[0], plugin)) == null) {
+			user.sendMessage(ChatColor.RED + "That user could not be found!");
+			return;
+		}
+		if(puser2.isMuted() != null) {
+			user.sendMessage(ChatColor.RED + "That user is already muted!");
+			return;
+		}
+		long duration = -1;
+		TimeType durationType;
+		if(args.length == 2) {
+			if(args[1].endsWith("s")) {
+				durationType = TimeType.SECOND;
+			} else if(args[1].endsWith("m")) {
+				durationType = TimeType.MINUTE;
+			} else if(args[1].endsWith("h")) {
+				durationType = TimeType.HOUR;
+			} else if(args[1].endsWith("d")) {
+				durationType = TimeType.DAY;
+			} else {
+				user.sendMessage(ChatColor.YELLOW
+						+ "Proper use is: /mute <player> [time{s|m|h|d}]");
+				return;
+			}
+			args[1] = args[1].substring(0, args[1].length() - 1);
+			try {
+				duration = Long.parseLong(args[1]);
+			} catch (NumberFormatException e) {
+				user.sendMessage(ChatColor.YELLOW
+						+ "Proper use is: /mute <player> [<amount>{s|m|h|d}]");
+				return;
+			}
+			duration *= getValue(durationType);
+		}
+		plugin.actions.addAction(puser2, ActionType.ALLMUTE, duration);
+		User user2;
+		if((user2 = User.matchUser(args[0], plugin)) != null) {
+			user2.sendMessage(ChatColor.RED + "You've been muted!");
+		}
+		user.sendMessage(ChatColor.RED + "That user has been muted!");
+	}
+	
+	public void Unmute(String[] args, User user) {
+		if(args.length != 1) {
+			user.sendMessage(ChatColor.YELLOW
+					+ "Proper use is: /unmute <player>");
+			return;
+		}
+		PermissionUser puser2;
+		if((puser2 = PermissionUser.matchUser(args[0], plugin)) == null) {
+			user.sendMessage(ChatColor.RED + "That user could not be found!");
+			return;
+		}
+		if(puser2.isMuted() == null) {
+			user.sendMessage(ChatColor.RED + "That user isn't muted!");
+			return;
+		}
+		plugin.actions.removeAction(puser2.isMuted());
+		User user2;
+		if((user2 = User.matchUser(args[0], plugin)) != null) {
+			user2.sendMessage(ChatColor.GREEN + "You've been unmuted!");
+		}
+		user.sendMessage(ChatColor.GREEN + "That user has been unmuted!");
+	}
+	
+	public void Jail(String[] args, User user) {
+		if(args.length < 1 || args.length > 2) {
+			user.sendMessage(ChatColor.YELLOW
+					+ "Proper use is: /jail <player> [time{s|m|h|d}]");
+			return;
+		}
+		PermissionUser puser2;
+		if((puser2 = PermissionUser.matchUser(args[0], plugin)) == null) {
+			user.sendMessage(ChatColor.RED + "That user could not be found!");
+			return;
+		}
+		if(puser2.isJailed() != null) {
+			user.sendMessage(ChatColor.RED + "That user is already jailed!");
+			return;
+		}
+		long duration = -1;
+		TimeType durationType;
+		if(args.length == 2) {
+			if(args[1].endsWith("s")) {
+				durationType = TimeType.SECOND;
+			} else if(args[1].endsWith("m")) {
+				durationType = TimeType.MINUTE;
+			} else if(args[1].endsWith("h")) {
+				durationType = TimeType.HOUR;
+			} else if(args[1].endsWith("d")) {
+				durationType = TimeType.DAY;
+			} else {
+				user.sendMessage(ChatColor.YELLOW
+						+ "Proper use is: /jail <player> [time{s|m|h|d}]");
+				return;
+			}
+			args[1] = args[1].substring(0, args[1].length() - 1);
+			try {
+				duration = Long.parseLong(args[1]);
+			} catch (NumberFormatException e) {
+				user.sendMessage(ChatColor.YELLOW
+						+ "Proper use is: /jail <player> [<amount>{s|m|h|d}]");
+				return;
+			}
+			duration *= getValue(durationType);
+		}
+		plugin.actions.addAction(puser2, ActionType.JAIL, duration);
+		User user2;
+		if((user2 = User.matchUser(args[0], plugin)) != null) {
+			plugin.jail.SendToJail(user2.getHandle());
+			user2.sendMessage(ChatColor.RED + "You've been jailed!");
+		}
+		user.sendMessage(ChatColor.RED + "That user has been jailed!");
+	}
+	
+	public void Unjail(String[] args, User user) {
+		if(args.length != 1) {
+			user.sendMessage(ChatColor.YELLOW
+					+ "Proper use is: /unjail <player>");
+			return;
+		}
+		PermissionUser puser2;
+		if((puser2 = PermissionUser.matchUser(args[0], plugin)) == null) {
+			user.sendMessage(ChatColor.RED + "That user could not be found!");
+			return;
+		}
+		if(puser2.isJailed() == null) {
+			user.sendMessage(ChatColor.RED + "That user isn't jailed!");
+			return;
+		}
+		plugin.actions.removeAction(puser2.isJailed());
+		User user2;
+		if((user2 = User.matchUser(args[0], plugin)) != null) {
+			user2.sendMessage(ChatColor.GREEN + "You've been unjailed!");
+			user2.Spawn();
+		} else {
+			plugin.actions.addAction(puser2, ActionType.LEAVEJAIL, -1);
+		}
+		user.sendMessage(ChatColor.GREEN + "That user has been unjailed!");
+	}
+	
+	public void Ban(String[] args, User user) {
+		if(args.length < 1 || args.length > 2) {
+			user.sendMessage(ChatColor.YELLOW
+					+ "Proper use is: /ban <player> [time{s|m|h|d}]");
+			return;
+		}
+		PermissionUser puser2;
+		if((puser2 = PermissionUser.matchUser(args[0], plugin)) == null) {
+			user.sendMessage(ChatColor.RED + "That user could not be found!");
+			return;
+		}
+		if(puser2.isBanned() != null) {
+			user.sendMessage(ChatColor.RED + "That user is already banned!");
+			return;
+		}
+		long duration = -1;
+		TimeType durationType;
+		if(args.length == 2) {
+			if(args[1].endsWith("s")) {
+				durationType = TimeType.SECOND;
+			} else if(args[1].endsWith("m")) {
+				durationType = TimeType.MINUTE;
+			} else if(args[1].endsWith("h")) {
+				durationType = TimeType.HOUR;
+			} else if(args[1].endsWith("d")) {
+				durationType = TimeType.DAY;
+			} else {
+				user.sendMessage(ChatColor.YELLOW
+						+ "Proper use is: /ban <player> [time{s|m|h|d}]");
+				return;
+			}
+			args[1] = args[1].substring(0, args[1].length() - 1);
+			try {
+				duration = Long.parseLong(args[1]);
+			} catch (NumberFormatException e) {
+				user.sendMessage(ChatColor.YELLOW
+						+ "Proper use is: /ban <player> [<amount>{s|m|h|d}]");
+				return;
+			}
+			duration *= getValue(durationType);
+		}
+		plugin.actions.addAction(puser2, ActionType.BAN, duration);
+		User user2;
+		if((user2 = User.matchUser(args[0], plugin)) != null) {
+			user2.Kick("You've been banned!");
+		}
+		user.sendMessage(ChatColor.RED + "That user has been banned!");
+	}
+	
+	public void Unban(String[] args, User user) {
+		if(args.length != 1) {
+			user.sendMessage(ChatColor.YELLOW
+					+ "Proper use is: /unban <player>");
+			return;
+		}
+		PermissionUser puser2;
+		if((puser2 = PermissionUser.matchUser(args[0], plugin)) == null) {
+			user.sendMessage(ChatColor.RED + "That user could not be found!");
+			return;
+		}
+		if(puser2.isBanned() == null) {
+			user.sendMessage(ChatColor.RED + "That user isn't banned!");
+			return;
+		}
+		plugin.actions.removeAction(puser2.isBanned());
+		user.sendMessage(ChatColor.GREEN + "That user has been unjailed!");
+	}
+	
+	private long getValue(TimeType tt) {
+		switch(tt) {
+		case SECOND:
+			return 1000L;
+		case MINUTE:
+			return 60000L;
+		case HOUR:
+			return 3600000L;
+		case DAY:
+			return 86400000L;
+		default:
+			return 0L;
+		}
+	}
+	
+	enum TimeType {
+		SECOND, MINUTE, HOUR, DAY
 	}
 }
