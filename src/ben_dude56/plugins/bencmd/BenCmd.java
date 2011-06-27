@@ -332,6 +332,8 @@ public class BenCmd extends JavaPlugin {
 				Event.Priority.Highest, this);
 		pm.registerEvent(Event.Type.BLOCK_IGNITE, this.blockCheck,
 				Event.Priority.Highest, this);
+		pm.registerEvent(Event.Type.SIGN_CHANGE, this.blockCheck,
+				Event.Priority.Monitor, this);
 		pm.registerEvent(Event.Type.PLAYER_INTERACT, this.invPlayerListen,
 				Event.Priority.Normal, this);
 		pm.registerEvent(Event.Type.BLOCK_BREAK, this.invBlockListen,
