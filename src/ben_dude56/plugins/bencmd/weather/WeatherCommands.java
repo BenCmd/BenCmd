@@ -34,7 +34,7 @@ public class WeatherCommands implements Commands {
 			Storm(args, user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("strike")
-				&& user.hasPerm("canControlWeather")) {
+				&& user.hasPerm("canStrike")) {
 			Strike(args, user);
 			return true;
 		}

@@ -45,22 +45,6 @@ public class BlockChecker extends BlockListener {
 
 	public void onBlockBreak(BlockBreakEvent event) {
 		User user = User.getUser(plugin, event.getPlayer());
-		if (event.getBlock().getType() == Material.TNT
-				&& user.getHandle().getItemInHand().getType() == Material.WATER) {
-			event.getBlock().setType(Material.AIR);
-			event.setCancelled(true);
-		} else if (event.getBlock().getType() == Material.TNT) {
-			String logMessage = user.getDisplayName() + " tried to detonate TNT at X:"
-					+ event.getBlock().getX() + "  Y:"
-					+ event.getBlock().getY() + "  Z:"
-					+ event.getBlock().getZ();
-			log.info(logMessage);
-			plugin.getServer().broadcastMessage(
-					ChatColor.RED + user.getDisplayName() + " tried to detonate TNT!");
-			user.Kick(plugin.mainProperties.getString("TNTKick",
-					"You can't detonate TNT!"));
-			event.setCancelled(true);
-		}
 		if (!user.canBuild()) {
 			event.setCancelled(true);
 			user.sendMessage(ChatColor.RED

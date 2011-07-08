@@ -125,9 +125,9 @@ public class BenCmd extends JavaPlugin {
 	
 	public boolean canIgnite(Location loc) {
 		for(Location loc2 : canSpread) {
-			if(loc.getBlockX() < loc2.getBlockX() + 2 && loc.getBlockX() > loc2.getBlockX() - 2) {
-				if(loc.getBlockY() < loc2.getBlockY() + 2 && loc.getBlockY() > loc2.getBlockY() - 2) {
-					if(loc.getBlockX() < loc2.getBlockZ() + 2 && loc.getBlockZ() > loc2.getBlockZ() - 2) {
+			if(loc.getBlockX() < loc2.getBlockX() + 3 && loc.getBlockX() > loc2.getBlockX() - 3) {
+				if(loc.getBlockY() < loc2.getBlockY() + 3 && loc.getBlockY() > loc2.getBlockY() - 3) {
+					if(loc.getBlockX() < loc2.getBlockZ() + 3 && loc.getBlockZ() > loc2.getBlockZ() - 3) {
 						return true;
 					}
 				}

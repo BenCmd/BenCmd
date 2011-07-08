@@ -51,7 +51,7 @@ public class PermissionCommands implements Commands {
 			Mute(args, user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("unmute")
-				&& user.hasPerm("canMute")) {
+				&& user.hasPerm("canUnmute")) {
 			Unmute(args, user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("jail")
@@ -59,7 +59,7 @@ public class PermissionCommands implements Commands {
 			Jail(args, user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("unjail")
-				&& user.hasPerm("canJail")) {
+				&& user.hasPerm("canUnjail")) {
 			Unjail(args, user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("ban")
@@ -67,7 +67,7 @@ public class PermissionCommands implements Commands {
 			Ban(args, user);
 			return true;
 		} else if ((commandLabel.equalsIgnoreCase("pardon") || commandLabel.equalsIgnoreCase("pardon"))
-				&& user.hasPerm("canBan")) {
+				&& user.hasPerm("canUnban")) {
 			Unban(args, user);
 			return true;
 		}

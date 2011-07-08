@@ -43,7 +43,6 @@ public class ChatCommands implements Commands {
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("display")
 				&& user.hasPerm("canChangeDisplayName")) {
-			user.sendMessage("TEST");
 			User user2 = User.matchUser(args[0], plugin);
 			String message = "";
 			for (int i = 1; i < args.length; i++) {
@@ -56,6 +55,7 @@ public class ChatCommands implements Commands {
 			}
 			user2.getHandle().setDisplayName(message);
 			((EntityHuman)((CraftPlayer)user2.getHandle()).getHandle()).name = message;
+			return true;
 		}
 		if (channelsEnabled()) {
 			return false;
