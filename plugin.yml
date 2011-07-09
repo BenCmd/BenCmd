@@ -1,5 +1,5 @@
 name: BenCmd
-version: 1.2.1
+version: 1.2.2
 main: ben_dude56.plugins.bencmd.BenCmd
 commands:
     slow:
@@ -248,3 +248,9 @@ commands:
     unban:
         usage:
         description: Same as pardon
+    debug:
+        usage:
+        description:
+    allpoof:
+        usage:
+        description: Makes the player invisible to players using /nopoof

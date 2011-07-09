@@ -54,7 +54,7 @@ public class ChatCommands implements Commands {
 				}
 			}
 			user2.getHandle().setDisplayName(message);
-			((EntityHuman)((CraftPlayer)user2.getHandle()).getHandle()).name = message;
+			((EntityHuman) ((CraftPlayer) user2.getHandle()).getHandle()).name = message;
 			return true;
 		}
 		if (channelsEnabled()) {
@@ -146,8 +146,8 @@ public class ChatCommands implements Commands {
 				plugin.chatListen.slow.playerAdd(user.getName());
 			}
 		}
-		message = ChatColor.WHITE + "*" + user.getColor() + user.getDisplayName()
-				+ " " + ChatColor.WHITE + message;
+		message = ChatColor.WHITE + "*" + user.getColor()
+				+ user.getDisplayName() + " " + ChatColor.WHITE + message;
 		plugin.getServer().broadcastMessage(message);
 		User.getUser(plugin).sendMessage(message);
 	}
@@ -207,17 +207,22 @@ public class ChatCommands implements Commands {
 				plugin.chatListen.slow.playerAdd(user.getName());
 			}
 		}
-		user2.sendMessage(ChatColor.GRAY + "(" + user.getColor() + user.getDisplayName() + ChatColor.GRAY + " => You) "
+		user2.sendMessage(ChatColor.GRAY + "(" + user.getColor()
+				+ user.getDisplayName() + ChatColor.GRAY + " => You) "
 				+ message);
-		user.sendMessage(ChatColor.GRAY + "(You => " + user2.getColor() + user2.getDisplayName()
-				+ ChatColor.GRAY + ") " + message);
-		for(User spy : plugin.perm.userFile.allWithPerm("hearAllMessages")) {
-			if(spy.getName().equals(user.getName()) || spy.getName().equals(user2.getName())) {
+		user.sendMessage(ChatColor.GRAY + "(You => " + user2.getColor()
+				+ user2.getDisplayName() + ChatColor.GRAY + ") " + message);
+		for (User spy : plugin.perm.userFile.allWithPerm("hearAllMessages")) {
+			if (spy.getName().equals(user.getName())
+					|| spy.getName().equals(user2.getName())) {
 				continue;
 			}
-			spy.sendMessage(ChatColor.GRAY + "(" + user.getColor() + user.getDisplayName() + ChatColor.GRAY + " => " + user2.getColor() + user2.getDisplayName() + ChatColor.GRAY + ") " + message);
+			spy.sendMessage(ChatColor.GRAY + "(" + user.getColor()
+					+ user.getDisplayName() + ChatColor.GRAY + " => "
+					+ user2.getColor() + user2.getDisplayName()
+					+ ChatColor.GRAY + ") " + message);
 		}
-		log.info("(" + user.getDisplayName() + " => " + user2.getDisplayName() + ") "
-				+ message);
+		log.info("(" + user.getDisplayName() + " => " + user2.getDisplayName()
+				+ ") " + message);
 	}
 }

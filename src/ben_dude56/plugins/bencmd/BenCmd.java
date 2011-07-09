@@ -65,6 +65,7 @@ public class BenCmd extends JavaPlugin {
 	public final HashMap<Player, Boolean> godmode = new HashMap<Player, Boolean>();
 	public final List<Player> invisible = new ArrayList<Player>();
 	public final List<Player> noinvisible = new ArrayList<Player>();
+	public final List<Player> allinvisible = new ArrayList<Player>();
 	public final List<ActionableUser> offline = new ArrayList<ActionableUser>();
 	public final String propDir = "plugins/BenCmd/";
 	public final File mainProp = new File(propDir + "main.properties");
@@ -122,12 +123,15 @@ public class BenCmd extends JavaPlugin {
 		}
 		return false;
 	}
-	
+
 	public boolean canIgnite(Location loc) {
-		for(Location loc2 : canSpread) {
-			if(loc.getBlockX() < loc2.getBlockX() + 3 && loc.getBlockX() > loc2.getBlockX() - 3) {
-				if(loc.getBlockY() < loc2.getBlockY() + 3 && loc.getBlockY() > loc2.getBlockY() - 3) {
-					if(loc.getBlockX() < loc2.getBlockZ() + 3 && loc.getBlockZ() > loc2.getBlockZ() - 3) {
+		for (Location loc2 : canSpread) {
+			if (loc.getBlockX() < loc2.getBlockX() + 3
+					&& loc.getBlockX() > loc2.getBlockX() - 3) {
+				if (loc.getBlockY() < loc2.getBlockY() + 3
+						&& loc.getBlockY() > loc2.getBlockY() - 3) {
+					if (loc.getBlockZ() < loc2.getBlockZ() + 3
+							&& loc.getBlockZ() > loc2.getBlockZ() - 3) {
 						return true;
 					}
 				}

@@ -69,9 +69,12 @@ public class GroupFile extends Properties {
 				groups += "," + groupn;
 			}
 		}
-		this.put(group.getName(), permissions + "/" + users + "/" + groups
-				+ "/" + group.getPrefix() + "/"
-				+ Integer.toString(group.getColorCode(), 16) + "/" + group.getLevel().toString());
+		this.put(
+				group.getName(),
+				permissions + "/" + users + "/" + groups + "/"
+						+ group.getPrefix() + "/"
+						+ Integer.toString(group.getColorCode(), 16) + "/"
+						+ group.getLevel().toString());
 		saveFile();
 	}
 
@@ -172,7 +175,7 @@ public class GroupFile extends Properties {
 		}
 		return groups;
 	}
-	
+
 	public List<PermissionGroup> getAllUserGroups(InternalUser user) {
 		List<PermissionGroup> groups = new ArrayList<PermissionGroup>();
 		List<PermissionGroup> toCheck = getUserGroups(user);
@@ -193,7 +196,7 @@ public class GroupFile extends Properties {
 		}
 		return groups;
 	}
-	
+
 	public List<PermissionGroup> getUserGroups(InternalUser user) {
 		List<PermissionGroup> groups = new ArrayList<PermissionGroup>();
 		for (InternalGroup internal : this.groups.values()) {
@@ -207,7 +210,7 @@ public class GroupFile extends Properties {
 	public List<PermissionGroup> getGroupGroups(PermissionGroup group) {
 		List<PermissionGroup> groups = new ArrayList<PermissionGroup>();
 		for (InternalGroup internal : this.groups.values()) {
-			if(internal.getName().equals(group.getName())) {
+			if (internal.getName().equals(group.getName())) {
 				continue;
 			}
 			if (internal.groupInGroup(group)) {

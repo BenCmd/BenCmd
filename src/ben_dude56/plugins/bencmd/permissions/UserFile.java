@@ -30,7 +30,6 @@ public class UserFile extends Properties {
 		loadUsers();
 	}
 
-
 	public void loadFile() {
 		File file = new File("plugins/BenCmd/users.db"); // Prepare the file
 		if (!file.exists()) {
@@ -51,11 +50,11 @@ public class UserFile extends Properties {
 			ex.printStackTrace();
 		}
 	}
-	
+
 	public void updateUser(InternalUser user) {
 		String value = "";
-		for(String perm : user.getPerms()) {
-			if(value.isEmpty()) {
+		for (String perm : user.getPerms()) {
+			if (value.isEmpty()) {
 				value += perm;
 			} else {
 				value += "," + perm;
@@ -65,23 +64,25 @@ public class UserFile extends Properties {
 		users.put(user.getName(), user);
 		saveFile();
 	}
-	
+
 	public void removeUser(PermissionUser user) {
 		this.remove(user.getName());
 		users.remove(user.getName());
 		saveFile();
 	}
-	
+
 	public void loadUsers() {
 		users.clear();
-		for(int i = 0; i < this.size(); i++) {
+		for (int i = 0; i < this.size(); i++) {
 			String name = (String) this.keySet().toArray()[i];
 			List<String> permissions = new ArrayList<String>();
-			permissions.addAll(Arrays.asList(this.getProperty(name).split(",")));
-			users.put(name, new InternalUser(mainPerm.plugin, name, permissions));
+			permissions
+					.addAll(Arrays.asList(this.getProperty(name).split(",")));
+			users.put(name,
+					new InternalUser(mainPerm.plugin, name, permissions));
 		}
 	}
-	
+
 	public HashMap<String, InternalUser> listUsers() {
 		return users;
 	}
@@ -108,7 +109,6 @@ public class UserFile extends Properties {
 		}
 	}
 
-
 	protected InternalUser getInternal(String userName) {
 		for (InternalUser user : users.values()) {
 			if (user.getName().equalsIgnoreCase(userName)) {
@@ -117,7 +117,6 @@ public class UserFile extends Properties {
 		}
 		return null;
 	}
-
 
 	public PermissionUser getUser(String userName) {
 		for (InternalUser user : users.values()) {
@@ -131,15 +130,15 @@ public class UserFile extends Properties {
 	public boolean userExists(String userName) {
 		return getUser(userName) != null;
 	}
-	
+
 	public void addUser(PermissionUser user) {
 		updateUser(user.getInternal());
 	}
-	
+
 	public List<User> allWithPerm(String perm) {
 		List<User> users = new ArrayList<User>();
-		for(User user : User.getActiveUsers().values()) {
-			if(user.hasPerm(perm, true, true)) {
+		for (User user : User.getActiveUsers().values()) {
+			if (user.hasPerm(perm, true, true)) {
 				users.add(user);
 			}
 		}

@@ -16,11 +16,11 @@ class InternalGroup {
 	private String prefix;
 	private Integer color;
 	private Integer level;
-	
+
 	static InternalGroup highestLevel(List<InternalGroup> groups) {
 		InternalGroup highest = null;
-		for(InternalGroup group : groups) {
-			if(highest == null || group.getLevel() > highest.getLevel()) {
+		for (InternalGroup group : groups) {
+			if (highest == null || group.getLevel() > highest.getLevel()) {
 				highest = group;
 			}
 		}
@@ -57,7 +57,7 @@ class InternalGroup {
 		}
 		return false;
 	}
-	
+
 	protected boolean groupInGroup(InternalGroup group) {
 		for (String sgroup : groups) {
 			if (group.getName().equalsIgnoreCase(sgroup)) {
@@ -66,12 +66,13 @@ class InternalGroup {
 		}
 		return false;
 	}
-	
+
 	public List<String> getPermissions(boolean testGroup) {
 		List<String> perms = new ArrayList<String>();
 		perms.addAll(permissions);
-		if(testGroup) {
-			for(InternalGroup group : plugin.perm.groupFile.getGroupGroups(this)) {
+		if (testGroup) {
+			for (InternalGroup group : plugin.perm.groupFile
+					.getGroupGroups(this)) {
 				perms.addAll(group.getPermissions(true));
 			}
 		}
@@ -104,14 +105,15 @@ class InternalGroup {
 	}
 
 	public String getPrefix() {
-		if(prefix.isEmpty()) {
+		if (prefix.isEmpty()) {
 			List<InternalGroup> possibleGroups = new ArrayList<InternalGroup>();
-			for(InternalGroup group : plugin.perm.groupFile.getGroupGroups(this)) {
-				if(!group.getPrefix().isEmpty()) {
+			for (InternalGroup group : plugin.perm.groupFile
+					.getGroupGroups(this)) {
+				if (!group.getPrefix().isEmpty()) {
 					possibleGroups.add(group);
 				}
 			}
-			if(possibleGroups.isEmpty()) {
+			if (possibleGroups.isEmpty()) {
 				return "";
 			} else {
 				return InternalGroup.highestLevel(possibleGroups).getPrefix();
@@ -126,14 +128,15 @@ class InternalGroup {
 	}
 
 	public ChatColor getColor() {
-		if(color == -1) {
+		if (color == -1) {
 			List<InternalGroup> possibleGroups = new ArrayList<InternalGroup>();
-			for(InternalGroup group : plugin.perm.groupFile.getGroupGroups(this)) {
-				if(group.getColor() != ChatColor.YELLOW) {
+			for (InternalGroup group : plugin.perm.groupFile
+					.getGroupGroups(this)) {
+				if (group.getColor() != ChatColor.YELLOW) {
 					possibleGroups.add(group);
 				}
 			}
-			if(possibleGroups.isEmpty()) {
+			if (possibleGroups.isEmpty()) {
 				return ChatColor.YELLOW;
 			} else {
 				return InternalGroup.highestLevel(possibleGroups).getColor();
@@ -142,7 +145,7 @@ class InternalGroup {
 			return ChatColor.getByCode(color);
 		}
 	}
-	
+
 	public Integer getLevel() {
 		return level;
 	}
@@ -156,7 +159,7 @@ class InternalGroup {
 		color = value;
 		plugin.perm.groupFile.updateGroup(this);
 	}
-	
+
 	public void setLevel(Integer value) {
 		level = value;
 		plugin.perm.groupFile.updateGroup(this);

@@ -87,6 +87,22 @@ public class ActionableUser extends WarpableUser {
 		plugin.inv.remNoInv(player);
 	}
 
+	public void AllPoof() {
+		if (isConsole) {
+			log.info("The server is already invisible, doofus!");
+			return;
+		}
+		plugin.inv.addAInv(player);
+	}
+	
+	public void UnAllPoof() {
+		if (isConsole) {
+			log.info("This code should NEVER be reached...");
+			return;
+		}
+		plugin.inv.remAInv(player);
+	}
+
 	/**
 	 * Gets whether or not the ActionableUser is invisible
 	 * 
@@ -113,6 +129,14 @@ public class ActionableUser extends WarpableUser {
 			return plugin.noinvisible.contains(player);
 		}
 	}
+	
+	public boolean isAllPoofed() {
+		if (isConsole) {
+			return false;
+		} else {
+			return plugin.allinvisible.contains(player);
+		}
+	}
 
 	/**
 	 * Kicks the user
@@ -128,8 +152,8 @@ public class ActionableUser extends WarpableUser {
 			return;
 		}
 		plugin.kicked.addUser(this);
-		player.kickPlayer("You have been kicked by user: " + sender.getDisplayName()
-				+ ". Reason: " + reason + ".");
+		player.kickPlayer("You have been kicked by user: "
+				+ sender.getDisplayName() + ". Reason: " + reason + ".");
 	}
 
 	/**
@@ -159,8 +183,8 @@ public class ActionableUser extends WarpableUser {
 			return;
 		}
 		plugin.kicked.addUser(this);
-		player.kickPlayer("You have been kicked by user: " + sender.getDisplayName()
-				+ ".");
+		player.kickPlayer("You have been kicked by user: "
+				+ sender.getDisplayName() + ".");
 	}
 
 	/**
@@ -239,7 +263,7 @@ public class ActionableUser extends WarpableUser {
 	public void Mute(long duration) {
 		plugin.actions.addAction(this, ActionType.ALLMUTE, duration);
 	}
-	
+
 	public void Unmute() {
 		plugin.actions.removeAction(this.isMuted());
 	}
@@ -314,9 +338,9 @@ public class ActionableUser extends WarpableUser {
 			}
 		}
 	}
-	
+
 	public String getDisplayName() {
-		if(isServer()) {
+		if (isServer()) {
 			return "Server";
 		}
 		return player.getDisplayName();

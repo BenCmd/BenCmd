@@ -347,13 +347,15 @@ public class ChatChannel {
 	private void forceJoin(User user) {
 		if (isOwner(user)) {
 			broadcastMessage(ChatColor.GOLD + "*" + user.getColor()
-					+ user.getDisplayName() + ChatColor.WHITE + " has joined the chat");
+					+ user.getDisplayName() + ChatColor.WHITE
+					+ " has joined the chat");
 		} else if (isMod(user)) {
 			broadcastMessage(ChatColor.GRAY + "*" + user.getColor()
-					+ user.getDisplayName() + ChatColor.WHITE + " has joined the chat");
-		} else {
-			broadcastMessage(user.getColor() + user.getDisplayName() + ChatColor.WHITE
+					+ user.getDisplayName() + ChatColor.WHITE
 					+ " has joined the chat");
+		} else {
+			broadcastMessage(user.getColor() + user.getDisplayName()
+					+ ChatColor.WHITE + " has joined the chat");
 		}
 		inChannel.add(user);
 	}
@@ -622,15 +624,15 @@ public class ChatChannel {
 		}
 		String prefix;
 		if (!(prefix = user.getPrefix()).isEmpty()) {
-			message = user.getColor() + "[" + prefix + "] "
-					+ username + ": " + ChatColor.WHITE + message;
+			message = user.getColor() + "[" + prefix + "] " + username + ": "
+					+ ChatColor.WHITE + message;
 			this.broadcastMessage(message);
 		} else {
 			message = username + ": " + ChatColor.WHITE + message;
 			this.broadcastMessage(message);
 		}
 	}
-	
+
 	public void Me(User user, String message) {
 		if (!isOwner(user) && !isMod(user) && paused) {
 			user.sendMessage(ChatColor.GRAY
@@ -727,8 +729,8 @@ public class ChatChannel {
 		}
 		String prefix;
 		if (!(prefix = user.getPrefix()).isEmpty()) {
-			message = user.getColor() + "[" + prefix + "] "
-					+ username + " " + ChatColor.WHITE + message;
+			message = user.getColor() + "[" + prefix + "] " + username + " "
+					+ ChatColor.WHITE + message;
 			this.broadcastMessage(message);
 		} else {
 			message = username + " " + ChatColor.WHITE + message;
@@ -754,7 +756,8 @@ public class ChatChannel {
 			if (value.isEmpty()) {
 				value += online.getColor() + online.getDisplayName();
 			} else {
-				value += ChatColor.WHITE + ", " + online.getColor() + online.getDisplayName();
+				value += ChatColor.WHITE + ", " + online.getColor()
+						+ online.getDisplayName();
 			}
 		}
 		user.sendMessage(ChatColor.GRAY

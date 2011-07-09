@@ -22,12 +22,16 @@ public class PermLoginListener extends PlayerListener {
 	public void onPlayerLogin(PlayerLoginEvent event) {
 		PermissionUser user;
 		if (!plugin.perm.userFile.userExists(event.getPlayer().getName())) {
-			plugin.perm.userFile.addUser(user = new PermissionUser(plugin, event.getPlayer().getName(), new ArrayList<String>()));
+			plugin.perm.userFile.addUser(user = new PermissionUser(plugin,
+					event.getPlayer().getName(), new ArrayList<String>()));
 		} else {
-			user = PermissionUser.matchUser(event.getPlayer().getName(), plugin);
+			user = PermissionUser
+					.matchUser(event.getPlayer().getName(), plugin);
 		}
-		if(plugin.perm.groupFile.getAllUserGroups(user).isEmpty()) {
-			plugin.perm.groupFile.getGroup(plugin.mainProperties.getString("defaultGroup", "group")).addUser(user);
+		if (plugin.perm.groupFile.getAllUserGroups(user).isEmpty()) {
+			plugin.perm.groupFile.getGroup(
+					plugin.mainProperties.getString("defaultGroup", "group"))
+					.addUser(user);
 		}
 		if ((User.getUser(plugin, event.getPlayer())).isBanned() != null) {
 			event.disallow(Result.KICK_BANNED,

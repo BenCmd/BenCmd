@@ -91,7 +91,8 @@ public class MoneyCommands implements Commands {
 					+ bitem.getSupply() + ")");
 			break;
 		case SUCCESS:
-			user.sendMessage(ChatColor.GREEN + "Enjoy, " + user.getDisplayName() + "!");
+			user.sendMessage(ChatColor.GREEN + "Enjoy, "
+					+ user.getDisplayName() + "!");
 			log.info(user.getDisplayName() + " bought an item. (id: "
 					+ item.getMaterial().getId() + ", amount: " + Amount
 					+ ", damage: " + item.getDamage() + ")");
@@ -129,7 +130,8 @@ public class MoneyCommands implements Commands {
 			return;
 		}
 		if (bitem.sellItem(user, Amount)) {
-			user.sendMessage(ChatColor.GREEN + "Enjoy, " + user.getDisplayName() + "!");
+			user.sendMessage(ChatColor.GREEN + "Enjoy, "
+					+ user.getDisplayName() + "!");
 			plugin.log.info(user.getDisplayName() + " has sold " + Amount
 					+ " of item. (ID: " + bitem.getMaterial().getId() + ")");
 		} else {
@@ -324,9 +326,10 @@ public class MoneyCommands implements Commands {
 			Currency currency = new Currency(item.getMaterial().getId(),
 					item.getDamage(), price, -1, 0, plugin.prices);
 			plugin.prices.savePrice(currency);
-			plugin.log.info(user.getDisplayName() + " has created a currency (ID: "
-					+ currency.getItemId() + "," + currency.getDurability()
-					+ ") with a price of " + price);
+			plugin.log.info(user.getDisplayName()
+					+ " has created a currency (ID: " + currency.getItemId()
+					+ "," + currency.getDurability() + ") with a price of "
+					+ price);
 			user.sendMessage(ChatColor.GREEN
 					+ "That currency was successfully created!");
 		}
@@ -390,9 +393,10 @@ public class MoneyCommands implements Commands {
 			BuyableItem newItem = new BuyableItem(item.getMaterial().getId(),
 					item.getDamage(), price, 0, 0, plugin.prices);
 			plugin.prices.savePrice(newItem);
-			plugin.log.info(user.getDisplayName() + " has created a currency (ID: "
-					+ newItem.getItemId() + "," + newItem.getDurability()
-					+ ") with a price of " + price);
+			plugin.log.info(user.getDisplayName()
+					+ " has created a currency (ID: " + newItem.getItemId()
+					+ "," + newItem.getDurability() + ") with a price of "
+					+ price);
 			user.sendMessage(ChatColor.GREEN
 					+ "That item was successfully created!");
 		}

@@ -47,9 +47,23 @@ public class Invisibility {
 		plugin.invisible.add(player);
 	}
 
+	public void addAInv(Player player) {
+		plugin.allinvisible.add(player);
+	}
+
+	public void remAInv(Player player) {
+		plugin.invisible.remove(player);
+		for (Player appearTo : plugin.noinvisible) {
+			if (player != appearTo) {
+				uninvisible(player, appearTo);
+			}
+		}
+	}
+
 	public void showAll(Player player) {
 		for (Player appear : plugin.invisible) {
-			if (player != appear) {
+			if (player != appear
+					&& !plugin.allinvisible.contains(appear)) {
 				uninvisible(appear, player);
 			}
 		}

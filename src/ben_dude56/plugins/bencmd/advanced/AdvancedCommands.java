@@ -44,8 +44,10 @@ public class AdvancedCommands implements Commands {
 					+ "You're not pointing at a bookshelf!");
 			return;
 		}
-		if(!plugin.lots.canBuildHere(user.getHandle(), user.getHandle().getTargetBlock(null, 4).getLocation())) {
-			user.sendMessage(ChatColor.RED + "You're not allowed to do that here!");
+		if (!plugin.lots.canBuildHere(user.getHandle(), user.getHandle()
+				.getTargetBlock(null, 4).getLocation())) {
+			user.sendMessage(ChatColor.RED
+					+ "You're not allowed to do that here!");
 			return;
 		}
 		String message = "";
@@ -62,20 +64,21 @@ public class AdvancedCommands implements Commands {
 		user.sendMessage(ChatColor.GREEN
 				+ "Magically, writing appears on that shelf.");
 	}
-	
+
 	public void Inv(String[] args, User user) {
-		if(args.length != 1) {
+		if (args.length != 1) {
 			user.sendMessage(ChatColor.YELLOW + "Proper usage: /inv <player>");
 			return;
 		}
 		User target;
-		if((target = User.matchUserIgnoreCase(args[0], plugin)) == null) {
+		if ((target = User.matchUserIgnoreCase(args[0], plugin)) == null) {
 			user.sendMessage(ChatColor.RED + "That player isn't online!");
 			return;
 		}
-		if(!(((CraftPlayer)target.getHandle()).getHandle().inventory instanceof ViewableInventory)) {
+		if (!(((CraftPlayer) target.getHandle()).getHandle().inventory instanceof ViewableInventory)) {
 			ViewableInventory.replInv((CraftPlayer) target.getHandle());
 		}
-		((CraftPlayer)user.getHandle()).getHandle().a(((CraftPlayer)target.getHandle()).getHandle().inventory);
+		((CraftPlayer) user.getHandle()).getHandle().a(
+				((CraftPlayer) target.getHandle()).getHandle().inventory);
 	}
 }

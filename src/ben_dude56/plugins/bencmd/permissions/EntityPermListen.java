@@ -26,7 +26,8 @@ public class EntityPermListen extends EntityListener {
 					+ event.getEntity().getLocation().getBlockX() + "  Y:"
 					+ event.getEntity().getLocation().getBlockZ() + ". ";
 			Player nearPlayer = nearestPlayer(event.getEntity().getLocation());
-			logMessage += "Nearest detected player: " + nearPlayer.getDisplayName();
+			logMessage += "Nearest detected player: "
+					+ nearPlayer.getDisplayName();
 			plugin.getServer()
 					.broadcastMessage(
 							ChatColor.RED

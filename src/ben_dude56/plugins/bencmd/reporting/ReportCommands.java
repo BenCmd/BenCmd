@@ -69,7 +69,8 @@ public class ReportCommands implements Commands {
 		plugin.reports.addTicket(new Report(plugin, id, user, reported,
 				Report.ReportStatus.UNREAD, reason, "", 0,
 				new ArrayList<String>()));
-		log.info(user.getDisplayName() + " opened ticket #" + id.toString() + "!");
+		log.info(user.getDisplayName() + " opened ticket #" + id.toString()
+				+ "!");
 		user.sendMessage(ChatColor.GREEN + "Thank you for your report");
 		user.sendMessage(ChatColor.GREEN
 				+ "You can check the status of your report using /ticket " + id
@@ -343,8 +344,9 @@ public class ReportCommands implements Commands {
 					report.UninvestigateTicket();
 					user.sendMessage(ChatColor.GREEN
 							+ "That ticket has been marked as read!");
-					log.info(user.getDisplayName() + " is no longer investigating #"
-							+ id.toString() + "!");
+					log.info(user.getDisplayName()
+							+ " is no longer investigating #" + id.toString()
+							+ "!");
 				} else {
 					user.sendMessage(ChatColor.RED
 							+ "You must be an admin to do that!");

@@ -59,8 +59,8 @@ public class BlockChecker extends BlockListener {
 	}
 
 	public void onBlockIgnite(BlockIgniteEvent event) {
-		if(event.getCause() == IgniteCause.SPREAD) {
-			if(plugin.canIgnite(event.getBlock().getLocation())) {
+		if (event.getCause() == IgniteCause.SPREAD) {
+			if (plugin.canIgnite(event.getBlock().getLocation())) {
 				plugin.canSpread.add(event.getBlock().getLocation());
 				event.setCancelled(false);
 			} else {
@@ -94,27 +94,30 @@ public class BlockChecker extends BlockListener {
 			return;
 		}
 	}
-	
+
 	public void onSignChange(SignChangeEvent event) {
 		Location l = event.getBlock().getLocation();
 		Player p = event.getPlayer();
 		String[] ls = event.getLines();
-		plugin.log.info(p.getDisplayName() + " put a sign at (" + l.getBlockX() + ", " + l.getBlockY() + ", " + l.getBlockZ() + ", " + l.getWorld().getName() + "):");
+		plugin.log.info(p.getDisplayName() + " put a sign at (" + l.getBlockX()
+				+ ", " + l.getBlockY() + ", " + l.getBlockZ() + ", "
+				+ l.getWorld().getName() + "):");
 		int firstLine = -1;
-		for(int i = 0; i < ls.length; i++) {
+		for (int i = 0; i < ls.length; i++) {
 			String line = ls[i];
-			if(!line.isEmpty()) {
-				if(firstLine == -1) {
+			if (!line.isEmpty()) {
+				if (firstLine == -1) {
 					firstLine = i;
 				}
 				plugin.log.info("Line " + String.valueOf(i) + ": " + line);
 			}
 		}
-		for(User spy : plugin.perm.userFile.allWithPerm("hearAllSigns")) {
-			if(spy.getName().equals(p.getName()) || firstLine == -1) {
+		for (User spy : plugin.perm.userFile.allWithPerm("hearAllSigns")) {
+			if (spy.getName().equals(p.getName()) || firstLine == -1) {
 				continue;
 			}
-			spy.sendMessage(ChatColor.GRAY + p.getName() + " placed a sign: " + ls[firstLine]);
+			spy.sendMessage(ChatColor.GRAY + p.getName() + " placed a sign: "
+					+ ls[firstLine]);
 		}
 	}
 }

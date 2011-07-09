@@ -415,8 +415,11 @@ public class LotCommands implements Commands {
 				}
 				if (!plugin.perm.groupFile.groupExists(plugin.mainProperties
 						.getString("AdminGroup", "admin"))) {
-					plugin.perm.groupFile.addGroup(new PermissionGroup(plugin, plugin.mainProperties
-							.getString("AdminGroup", "admin"), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), "", -1, 0));
+					plugin.perm.groupFile.addGroup(new PermissionGroup(plugin,
+							plugin.mainProperties.getString("AdminGroup",
+									"admin"), new ArrayList<String>(),
+							new ArrayList<String>(), new ArrayList<String>(),
+							"", -1, 0));
 				}
 				group = plugin.mainProperties.getString("AdminGroup", "admin");
 				plugin.lots.addLot(LotID, corner1, corner2, owner, group);
@@ -537,8 +540,11 @@ public class LotCommands implements Commands {
 				}
 				if (!plugin.perm.groupFile.groupExists(plugin.mainProperties
 						.getString("AdminGroup", "admin"))) {
-					plugin.perm.groupFile.addGroup(new PermissionGroup(plugin, plugin.mainProperties
-							.getString("AdminGroup", "admin"), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), "", -1, 0));
+					plugin.perm.groupFile.addGroup(new PermissionGroup(plugin,
+							plugin.mainProperties.getString("AdminGroup",
+									"admin"), new ArrayList<String>(),
+							new ArrayList<String>(), new ArrayList<String>(),
+							"", -1, 0));
 				}
 				group = plugin.mainProperties.getString("AdminGroup", "admin");
 				plugin.lots.addLot(LotID, corner1, corner2, owner, group);

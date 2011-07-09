@@ -120,11 +120,16 @@ public class BasicCommands implements Commands {
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("fire")
 				&& user.hasPerm("canBurn")) {
-			Location loc = user.getHandle().getTargetBlock(null, 4).getLocation();
+			Location loc = user.getHandle().getTargetBlock(null, 4)
+					.getLocation();
 			plugin.canSpread.add(loc);
+			return true;
 		} else if (commandLabel.equalsIgnoreCase("nofire")
 				&& user.hasPerm("canBurn")) {
 			plugin.canSpread.clear();
+			return true;
+		} else if (commandLabel.equalsIgnoreCase("debug")) {
+			return true;
 		}
 		return false;
 	}
@@ -181,8 +186,8 @@ public class BasicCommands implements Commands {
 					user.sendMessage(ChatColor.RED + "Invaled time.");
 					return;
 				}
-				log.info("BenCmd: " + user.getDisplayName() + " has set time to "
-						+ time);
+				log.info("BenCmd: " + user.getDisplayName()
+						+ " has set time to " + time);
 				if (user.isServer()) {
 					for (World world : plugin.getServer().getWorlds()) {
 						world.setTime(time);
@@ -254,7 +259,8 @@ public class BasicCommands implements Commands {
 				}
 			} else if (args[0].equalsIgnoreCase("lock")) {
 				if (plugin.timeRunning) {
-					log.info("BenCmd: " + user.getDisplayName() + " has frozen time!");
+					log.info("BenCmd: " + user.getDisplayName()
+							+ " has frozen time!");
 					if (user.isServer()) {
 						plugin.timeFrozenAt = plugin.getServer().getWorlds()
 								.get(0).getTime();
@@ -298,12 +304,14 @@ public class BasicCommands implements Commands {
 				user.sendMessage(ChatColor.GOLD
 						+ "You are no longer in god mode!");
 				log.info("BenCmd: " + user.getDisplayName()
-						+ " has been made a non-god by " + user.getDisplayName() + "!");
+						+ " has been made a non-god by "
+						+ user.getDisplayName() + "!");
 			} else { // If they're not a god
 				user.makeGod(); // Add them to the list
 				user.sendMessage(ChatColor.GOLD + "You are now in god mode!");
 				log.info("BenCmd: " + user.getDisplayName()
-						+ " has been made a god by " + user.getDisplayName() + "!");
+						+ " has been made a god by " + user.getDisplayName()
+						+ "!");
 			}
 		} else if (args.length == 1) {
 			User user2;
@@ -316,14 +324,15 @@ public class BasicCommands implements Commands {
 					user2.sendMessage(ChatColor.GOLD
 							+ "You are no longer in god mode!");
 					log.info("BenCmd: " + user2.getDisplayName()
-							+ " has been made a non-god by " + user.getDisplayName()
-							+ "!");
+							+ " has been made a non-god by "
+							+ user.getDisplayName() + "!");
 				} else { // If they're not a god
 					user2.makeGod(); // Add them to the list
 					user2.sendMessage(ChatColor.GOLD
 							+ "You are now in god mode!");
 					log.info("BenCmd: " + user2.getDisplayName()
-							+ " has been made a god by " + user.getDisplayName() + "!");
+							+ " has been made a god by "
+							+ user.getDisplayName() + "!");
 				}
 			}
 		} else {
@@ -383,9 +392,9 @@ public class BasicCommands implements Commands {
 								targetBlock.getX(), targetBlock.getY() + 1,
 								targetBlock.getZ()), TreeType.TREE)) {
 			// It sprouted properly!
-			log.info("BenCmd: " + user.getDisplayName() + " has sprouted a tree at ("
-					+ targetBlock.getX() + "," + targetBlock.getY() + 1 + ","
-					+ targetBlock.getZ() + ")!");
+			log.info("BenCmd: " + user.getDisplayName()
+					+ " has sprouted a tree at (" + targetBlock.getX() + ","
+					+ targetBlock.getY() + 1 + "," + targetBlock.getZ() + ")!");
 			user.sendMessage(ChatColor.GREEN + "Tree created successfully!");
 		} else {
 			// There was a problem

@@ -89,13 +89,12 @@ public class ChatPlayerListener extends PlayerListener {
 		log.info(user.getDisplayName() + ": " + message);
 		if (!(prefix = user.getPrefix()).isEmpty()) {
 			message = user.getColor() + "[" + prefix + "] "
-					+ user.getDisplayName() + ": " + ChatColor.WHITE
-					+ message;
+					+ user.getDisplayName() + ": " + ChatColor.WHITE + message;
 			plugin.getServer().broadcastMessage(message);
 			event.setCancelled(true);
 		} else {
-			message = user.getColor() + user.getDisplayName() + ": " + ChatColor.WHITE
-					+ message;
+			message = user.getColor() + user.getDisplayName() + ": "
+					+ ChatColor.WHITE + message;
 			plugin.getServer().broadcastMessage(message);
 			event.setCancelled(true);
 		}
@@ -137,13 +136,13 @@ public class ChatPlayerListener extends PlayerListener {
 		}
 		plugin.getServer().dispatchCommand(user.getHandle(),
 				"channel join general");
-		event.setJoinMessage(user.getColor() + user.getDisplayName() + ChatColor.WHITE
-				+ " has joined the game...");
-		if(plugin.actions.isUnjailed(user) != null) {
+		event.setJoinMessage(user.getColor() + user.getDisplayName()
+				+ ChatColor.WHITE + " has joined the game...");
+		if (plugin.actions.isUnjailed(user) != null) {
 			user.Spawn();
 			plugin.actions.removeAction(plugin.actions.isUnjailed(user));
 		}
-		if(user.isJailed() != null) {
+		if (user.isJailed() != null) {
 			plugin.jail.SendToJail(event.getPlayer());
 		}
 	}

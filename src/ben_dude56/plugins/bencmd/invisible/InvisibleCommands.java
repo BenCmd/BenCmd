@@ -31,6 +31,10 @@ public class InvisibleCommands implements Commands {
 				&& user.hasPerm("canNoPoof")) {
 			NoPoof(user);
 			return true;
+		} else if (commandLabel.equalsIgnoreCase("allpoof")
+				&& user.hasPerm("canAllPoof")) {
+			AllPoof(user);
+			return true;
 		} else if (commandLabel.equalsIgnoreCase("offline")
 				&& user.hasPerm("canOffline")) {
 			Offline(user);
@@ -52,9 +56,28 @@ public class InvisibleCommands implements Commands {
 				user.sendMessage(ChatColor.RED
 						+ "You cannot unpoof while offline!");
 				return;
+			} else if  (user.isAllPoofed()) {
+				user.UnAllPoof();
+				user.UnPoof();
+				user.sendMessage(ChatColor.GREEN + "REVERSE POOF!");
+			} else {
+				user.UnPoof();
+				user.sendMessage(ChatColor.GREEN + "REVERSE POOF!");
 			}
-			user.UnPoof();
-			user.sendMessage(ChatColor.GREEN + "REVERSE POOF!");
+		}
+	}
+
+	public void AllPoof(User user) {
+		if(!user.isPoofed()) {
+			user.Poof();
+			user.AllPoof();
+			user.sendMessage(ChatColor.GREEN + "ALLPOOF!");
+		} else if (!user.isAllPoofed()) {
+			user.AllPoof();
+			user.sendMessage(ChatColor.GREEN + "ALLPOOF!");
+		} else {
+			user.UnAllPoof();
+			user.sendMessage(ChatColor.GREEN + "REVERSE ALLPOOF! (STILL POOFED!)");
 		}
 	}
 

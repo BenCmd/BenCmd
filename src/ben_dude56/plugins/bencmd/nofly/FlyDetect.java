@@ -105,7 +105,8 @@ public class FlyDetect {
 					break;
 				case 2:
 					if (User.getUser(plugin, player).isJailed() == null) {
-						plugin.actions.addAction(User.getUser(plugin, player), ActionType.JAIL, 3600000);
+						plugin.actions.addAction(User.getUser(plugin, player),
+								ActionType.JAIL, 3600000);
 						plugin.jail.SendToJail(player);
 						plugin.getServer().broadcastMessage(
 								ChatColor.RED + player.getDisplayName()

@@ -31,30 +31,31 @@ public class ChatChannelCommands implements Commands {
 		if (commandLabel.equalsIgnoreCase("channel")) {
 			if (args[0].equalsIgnoreCase("unmute")) {
 				String arguments = "";
-				for (int i=1 ; i<args.length ; i++) {
-					if(i==0) {
+				for (int i = 1; i < args.length; i++) {
+					if (i == 0) {
 						arguments += args[0];
 					} else {
 						arguments += " " + args[i];
 					}
 				}
-				plugin.getServer().dispatchCommand(sender, "channel guest " + arguments);
+				plugin.getServer().dispatchCommand(sender,
+						"channel guest " + arguments);
 				return true;
 			}
 			Channel(args, user);
 			return true;
-		} else if(commandLabel.equalsIgnoreCase("pause")) {
+		} else if (commandLabel.equalsIgnoreCase("pause")) {
 			plugin.getServer().dispatchCommand(sender, "channel pause");
 		} else if (commandLabel.equalsIgnoreCase("me")) {
 			String message = "";
-			for (int i=0 ; i<args.length ; i++) {
-				if(i==0) {
+			for (int i = 0; i < args.length; i++) {
+				if (i == 0) {
 					message += args[i];
 				} else {
 					message += " " + args[i];
 				}
 			}
-			if(!user.inChannel()) {
+			if (!user.inChannel()) {
 				user.sendMessage(ChatColor.RED + "You're not in a channel!");
 			} else {
 				user.getActiveChannel().Me(user, message);
@@ -146,8 +147,11 @@ public class ChatChannelCommands implements Commands {
 								return;
 							}
 							user.getActiveChannel().Mute(mutee);
-							user.sendMessage(mutee.getColor() + mutee.getName() +
-									ChatColor.GREEN + "Has been muted from the " + user.getActiveChannel().getName() + " channel!");
+							user.sendMessage(mutee.getColor() + mutee.getName()
+									+ ChatColor.GREEN
+									+ "Has been muted from the "
+									+ user.getActiveChannel().getName()
+									+ " channel!");
 						} else {
 							user.sendMessage(ChatColor.RED
 									+ "That user couldn't be found!");

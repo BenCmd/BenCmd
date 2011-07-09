@@ -33,7 +33,7 @@ public class PermissionGroup {
 		updateInternal();
 		return this.group.groupInGroup(group);
 	}
-	
+
 	public boolean groupInGroup(InternalGroup group) {
 		updateInternal();
 		return group.groupInGroup(group);
@@ -48,7 +48,7 @@ public class PermissionGroup {
 		updateInternal();
 		return group.hasPerm(perm, testStar, true);
 	}
-	
+
 	public boolean hasPerm(String perm, boolean testStar, boolean testGroup) {
 		updateInternal();
 		return group.hasPerm(perm, testStar, testGroup);
@@ -73,7 +73,7 @@ public class PermissionGroup {
 		updateInternal();
 		return group.getColor();
 	}
-	
+
 	public Integer getLevel() {
 		updateInternal();
 		return group.getLevel();
@@ -92,7 +92,7 @@ public class PermissionGroup {
 		updateInternal();
 		group.setColor(value);
 	}
-	
+
 	public void setLevel(Integer value) {
 		updateInternal();
 		group.setLevel(value);
