@@ -373,8 +373,9 @@ public class WarpCommands implements Commands {
 				user.sendMessage(ChatColor.RED + args[0] + " isn't online!");
 				return;
 			}
-			if(user2.isAllPoofed()) {
-				user.sendMessage(ChatColor.RED + args[0] + " cannot be teleported to!");
+			if (user2.isAllPoofed()) {
+				user.sendMessage(ChatColor.RED + args[0]
+						+ " cannot be teleported to!");
 				return;
 			}
 			plugin.checkpoints.SetPreWarp(user.getHandle());
@@ -402,8 +403,15 @@ public class WarpCommands implements Commands {
 				user.sendMessage(ChatColor.RED + args[1] + " isn't online!");
 				return;
 			}
-			if(user2.isAllPoofed() && !user2.getName().equalsIgnoreCase(user.getName())) {
-				user.sendMessage(ChatColor.RED + args[0] + " cannot be teleported to!");
+			if (user1.isAllPoofed()
+					&& !user1.getName().equalsIgnoreCase(user.getName())) {
+				user.sendMessage(ChatColor.RED + args[0]
+						+ " cannot be teleported!");
+			}
+			if (user2.isAllPoofed()
+					&& !user2.getName().equalsIgnoreCase(user.getName())) {
+				user.sendMessage(ChatColor.RED + args[0]
+						+ " cannot be teleported to!");
 				return;
 			}
 			plugin.checkpoints.SetPreWarp(user1.getHandle());

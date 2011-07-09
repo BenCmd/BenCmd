@@ -94,7 +94,7 @@ public class ActionableUser extends WarpableUser {
 		}
 		plugin.inv.addAInv(player);
 	}
-	
+
 	public void UnAllPoof() {
 		if (isConsole) {
 			log.info("This code should NEVER be reached...");
@@ -129,7 +129,7 @@ public class ActionableUser extends WarpableUser {
 			return plugin.noinvisible.contains(player);
 		}
 	}
-	
+
 	public boolean isAllPoofed() {
 		if (isConsole) {
 			return false;

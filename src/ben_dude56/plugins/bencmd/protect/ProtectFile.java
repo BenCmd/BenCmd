@@ -58,6 +58,9 @@ public class ProtectFile extends Properties {
 		for (int i = 0; i < this.values().size(); i++) {
 			String value = (String) this.values().toArray()[i];
 			String key = (String) this.keySet().toArray()[i];
+			if (key.startsWith(".")) {
+				continue;
+			}
 			String[] slashsplit = value.split("/");
 			if (slashsplit.length != 4) {
 				log.warning("Entry " + key + " in " + proFile
@@ -131,19 +134,19 @@ public class ProtectFile extends Properties {
 		}
 	}
 
-	public void updateValue(ProtectedBlock block) {
+	public void updateValue(ProtectedBlock block, boolean comment) {
 		if (block instanceof ProtectedChest) {
 			String value;
 			String key;
-			key = String.valueOf(block.GetId());
+			key = ((comment) ? "." : "") + String.valueOf(block.GetId());
 			value = "";
 			value += "c/";
 			boolean init = false;
 			for (PermissionUser guest : block.getGuests()) {
-				if (init) {
+				if (!init) {
 					value += ",";
 				} else {
-					init = false;
+					init = true;
 				}
 				value += guest.getName();
 			}
@@ -157,15 +160,15 @@ public class ProtectFile extends Properties {
 		} else if (block instanceof ProtectedDoor) {
 			String value;
 			String key;
-			key = String.valueOf(block.GetId());
+			key = ((comment) ? "." : "") + String.valueOf(block.GetId());
 			value = "";
 			value += "d/";
 			boolean init = false;
 			for (PermissionUser guest : block.getGuests()) {
-				if (init) {
+				if (!init) {
 					value += ",";
 				} else {
-					init = false;
+					init = true;
 				}
 				value += guest.getName();
 			}
@@ -179,12 +182,12 @@ public class ProtectFile extends Properties {
 		} else if (block instanceof PublicChest) {
 			String value;
 			String key;
-			key = String.valueOf(block.GetId());
+			key = ((comment) ? "." : "") + String.valueOf(block.GetId());
 			value = "";
 			value += "pc/";
 			boolean init = false;
 			for (PermissionUser guest : block.getGuests()) {
-				if (init) {
+				if (!init) {
 					value += ",";
 				} else {
 					init = true;
@@ -201,15 +204,15 @@ public class ProtectFile extends Properties {
 		} else if (block instanceof PublicDoor) {
 			String value;
 			String key;
-			key = String.valueOf(block.GetId());
+			key = ((comment) ? "." : "") + String.valueOf(block.GetId());
 			value = "";
 			value += "pd/";
 			boolean init = false;
 			for (PermissionUser guest : block.getGuests()) {
-				if (init) {
+				if (!init) {
 					value += ",";
 				} else {
-					init = false;
+					init = true;
 				}
 				value += guest.getName();
 			}
@@ -231,6 +234,7 @@ public class ProtectFile extends Properties {
 
 	public int getProtection(Location loc) {
 		int id = -1;
+		List<ProtectedBlock> q = new ArrayList<ProtectedBlock>();
 		for (ProtectedBlock block : protectedBlocks) {
 			if (block.getLocation().equals(loc)) {
 				id = block.GetId();
@@ -261,7 +265,8 @@ public class ProtectFile extends Properties {
 					}
 				} catch (NullPointerException e) {
 					log.warning(block.GetId()
-							+ " has a missing secondary block. Is it the wrong type?");
+							+ " has a missing secondary block. It will be quarantined...");
+					q.add(block);
 				}
 				try {
 					if (((ProtectedDoor) block).getBelowBlock().getLocation()
@@ -271,7 +276,8 @@ public class ProtectFile extends Properties {
 					}
 				} catch (NullPointerException e) {
 					log.warning(block.GetId()
-							+ " has a missing secondary block. Is it the wrong type?");
+							+ " has a missing secondary block. It will be quarantined...");
+					q.add(block);
 				}
 			}
 			if (block instanceof PublicDoor) {
@@ -283,7 +289,8 @@ public class ProtectFile extends Properties {
 					}
 				} catch (NullPointerException e) {
 					log.warning(block.GetId()
-							+ " has a missing secondary block. Is it the wrong type?");
+							+ " has a missing secondary block. It will be quarantined...");
+					q.add(block);
 				}
 				try {
 					if (((PublicDoor) block).getBelowBlock().getLocation()
@@ -293,9 +300,14 @@ public class ProtectFile extends Properties {
 					}
 				} catch (NullPointerException e) {
 					log.warning(block.GetId()
-							+ " has a missing secondary block. Is it the wrong type?");
+							+ " has a missing secondary block. It will be quarantined...");
+					q.add(block);
 				}
 			}
+		}
+		for (ProtectedBlock block : q) {
+			removeProtection(block.getLocation());
+			updateValue(block, true);
 		}
 		return id;
 	}
@@ -349,7 +361,7 @@ public class ProtectFile extends Properties {
 			break;
 
 		}
-		updateValue(protect);
+		updateValue(protect, false);
 		return id;
 	}
 

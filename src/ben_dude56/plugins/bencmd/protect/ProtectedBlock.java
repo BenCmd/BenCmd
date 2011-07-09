@@ -57,7 +57,7 @@ public class ProtectedBlock {
 			return false;
 		} else {
 			blockOwner = user;
-			plugin.protectFile.updateValue(this);
+			plugin.protectFile.updateValue(this, false);
 			return true;
 		}
 	}
@@ -65,7 +65,7 @@ public class ProtectedBlock {
 	public boolean addGuest(PermissionUser guest) {
 		if (isGuest(guest) == -1) {
 			blockGuests.add(guest);
-			plugin.protectFile.updateValue(this);
+			plugin.protectFile.updateValue(this, false);
 			return true;
 		} else {
 			return false;
@@ -86,7 +86,7 @@ public class ProtectedBlock {
 		int id;
 		if ((id = isGuest(guest)) != -1) {
 			blockGuests.remove(id);
-			plugin.protectFile.updateValue(this);
+			plugin.protectFile.updateValue(this, false);
 			return true;
 		} else {
 			return false;

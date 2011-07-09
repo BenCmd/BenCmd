@@ -62,8 +62,7 @@ public class Invisibility {
 
 	public void showAll(Player player) {
 		for (Player appear : plugin.invisible) {
-			if (player != appear
-					&& !plugin.allinvisible.contains(appear)) {
+			if (player != appear && !plugin.allinvisible.contains(appear)) {
 				uninvisible(appear, player);
 			}
 		}

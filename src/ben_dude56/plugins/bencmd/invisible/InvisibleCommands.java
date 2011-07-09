@@ -56,7 +56,7 @@ public class InvisibleCommands implements Commands {
 				user.sendMessage(ChatColor.RED
 						+ "You cannot unpoof while offline!");
 				return;
-			} else if  (user.isAllPoofed()) {
+			} else if (user.isAllPoofed()) {
 				user.UnAllPoof();
 				user.UnPoof();
 				user.sendMessage(ChatColor.GREEN + "REVERSE POOF!");
@@ -68,7 +68,7 @@ public class InvisibleCommands implements Commands {
 	}
 
 	public void AllPoof(User user) {
-		if(!user.isPoofed()) {
+		if (!user.isPoofed()) {
 			user.Poof();
 			user.AllPoof();
 			user.sendMessage(ChatColor.GREEN + "ALLPOOF!");
@@ -77,7 +77,8 @@ public class InvisibleCommands implements Commands {
 			user.sendMessage(ChatColor.GREEN + "ALLPOOF!");
 		} else {
 			user.UnAllPoof();
-			user.sendMessage(ChatColor.GREEN + "REVERSE ALLPOOF! (STILL POOFED!)");
+			user.sendMessage(ChatColor.GREEN
+					+ "REVERSE ALLPOOF! (STILL POOFED!)");
 		}
 	}
 

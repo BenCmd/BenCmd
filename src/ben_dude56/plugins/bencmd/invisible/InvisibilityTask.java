@@ -24,8 +24,8 @@ public class InvisibilityTask extends TimerTask {
 				continue;
 			}
 			for (Player hideFrom : parent.plugin.getServer().getOnlinePlayers()) {
-				if ((!parent.plugin.noinvisible.contains(hideFrom)
-						&& toHide != hideFrom) || parent.plugin.allinvisible.contains(toHide)) {
+				if ((!parent.plugin.noinvisible.contains(hideFrom) && toHide != hideFrom)
+						|| parent.plugin.allinvisible.contains(toHide)) {
 					parent.invisible(toHide, hideFrom);
 				}
 			}
