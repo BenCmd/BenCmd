@@ -19,8 +19,6 @@ public class PortalListener extends PlayerListener {
 	public void onPlayerPortal(PlayerPortalEvent event) {
 		Portal portal;
 		Location loc = event.getPlayer().getLocation();
-		loc.setX(loc.getX() * 8);
-		loc.setZ(loc.getZ() * 8);
 		if ((portal = plugin.portals.getPortalAt(loc)) == null) {
 			event.getPlayer().sendMessage(
 					ChatColor.RED + "That portal doesn't lead anywhere!");

@@ -15,7 +15,7 @@ CHANGELOG (STARTING FROM v1.2.2):
         -Warns players when entering and exiting (child of Message SPArea)
       -Message SPArea added
         -Provides messages on entry and exit
-        -Messages can be disable by setting them to blank ("`" in the db file)
+        -Messages can be disabled by setting them to blank ("`" in the db file)
     -Added timed graves
       -Players cannot destroy other players' gravestones
       -Last for 3 minutes, by default, before deleting themselves
