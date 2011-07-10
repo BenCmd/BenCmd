@@ -1,6 +1,7 @@
 package ben_dude56.plugins.bencmd.lots.sparea;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.ChatColor;
@@ -31,8 +32,8 @@ public class SPAreaEListener extends EntityListener {
 			EntityDamageByEntityEvent event = (EntityDamageByEntityEvent) e;
 			if (event.getDamager() instanceof Player
 					&& event.getEntity() instanceof Player) {
-				event.setCancelled(!(inPVP((Player) event.getDamager()) && inPVP((Player) event
-						.getEntity())));
+				event.setCancelled(!(inPVP((Player) event.getDamager()) != null && inPVP((Player) event
+						.getEntity()) != null));
 			}
 		}
 	}
@@ -42,22 +43,30 @@ public class SPAreaEListener extends EntityListener {
 			return;
 		}
 		User user = User.getUser(plugin, (Player) event.getEntity());
-		if (inPVP(user.getHandle())) {
-			List<ItemStack> realDrops = new ArrayList<ItemStack>();
-			for (ItemStack i : event.getDrops()) {
-				if (plugin.prices.isCurrency(i)) {
-					realDrops.add(i);
+		PVPArea a;
+		if ((a = inPVP(user.getHandle())) != null) {
+			HashMap<ItemStack, PVPArea.DropMode> result = a.getDrops(event
+					.getDrops());
+			List<ItemStack> toReturn = new ArrayList<ItemStack>();
+			event.getDrops().clear();
+			for (int i = 0; i < result.size(); i++) {
+				ItemStack item = (ItemStack) result.keySet().toArray()[i];
+				PVPArea.DropMode mode = result.get(item);
+				if (mode == PVPArea.DropMode.DROP) {
+					event.getDrops().add(item);
+				} else if (mode == PVPArea.DropMode.KEEP) {
+					toReturn.add(item);
 				}
 			}
-			event.getDrops().clear();
-			event.getDrops().addAll(realDrops);
+			plugin.returns.put(user.getHandle(), toReturn);
 			return;
 		}
 		if (plugin.mainProperties.getBoolean("gravesEnabled", true)) {
 			for (int i = 0; i < plugin.graves.size(); i++) {
 				Grave g = plugin.graves.get(i);
 				if (g.getPlayer().equals((Player) event.getEntity())) {
-					if(plugin.mainProperties.getBoolean("newerGraveOverwrites", false)) {
+					if (plugin.mainProperties.getBoolean(
+							"newerGraveOverwrites", false)) {
 						g.delete();
 						plugin.graves.remove(i);
 					} else {
@@ -92,14 +101,14 @@ public class SPAreaEListener extends EntityListener {
 		}
 	}
 
-	public boolean inPVP(Player p) {
+	public PVPArea inPVP(Player p) {
 		for (SPArea a : plugin.spafile.listAreas()) {
 			if (a instanceof PVPArea) {
 				if (a.insideArea(p.getLocation())) {
-					return true;
+					return (PVPArea) a;
 				}
 			}
 		}
-		return false;
+		return null;
 	}
 }

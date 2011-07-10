@@ -10,6 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 
 import ben_dude56.plugins.bencmd.BenCmd;
@@ -24,6 +25,15 @@ public class SPAreaPListener extends PlayerListener {
 		plugin = instance;
 		areas = new HashMap<Player, List<SPArea>>();
 		ignore = new ArrayList<Player>();
+	}
+
+	public void onPlayerRespawn(PlayerRespawnEvent event) {
+		if (plugin.returns.containsKey(event.getPlayer())) {
+			for (ItemStack i : plugin.returns.get(event.getPlayer())) {
+				event.getPlayer().getInventory().addItem(i);
+			}
+			plugin.returns.remove(event.getPlayer());
+		}
 	}
 
 	public void onPlayerMove(PlayerMoveEvent event) {

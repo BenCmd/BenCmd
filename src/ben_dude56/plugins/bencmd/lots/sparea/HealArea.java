@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 import ben_dude56.plugins.bencmd.BenCmd;
 
 public class HealArea extends SPArea {
-	
+
 	private Timer t;
 
 	public HealArea(BenCmd instance, String key, String value)
@@ -17,8 +17,7 @@ public class HealArea extends SPArea {
 			IndexOutOfBoundsException {
 		super(instance, key, value);
 		t = new Timer();
-		t.schedule(new TimerTask()
-		{
+		t.schedule(new TimerTask() {
 			public void run() {
 				heal();
 			}
@@ -29,27 +28,27 @@ public class HealArea extends SPArea {
 			Location corner2) {
 		super(instance, id, corner1, corner2);
 		t = new Timer();
-		t.schedule(new TimerTask()
-		{
+		t.schedule(new TimerTask() {
 			public void run() {
 				heal();
 			}
 		}, 0, 1000);
 	}
-	
+
 	private void heal() {
-		for(Player p : plugin.getServer().getOnlinePlayers()) {
-			if(super.insideArea(p.getLocation()) && p.getHealth() != 20 && !p.isDead()) {
+		for (Player p : plugin.getServer().getOnlinePlayers()) {
+			if (super.insideArea(p.getLocation()) && p.getHealth() != 20
+					&& !p.isDead()) {
 				p.setHealth(p.getHealth() + 1);
 			}
 		}
 	}
-	
+
 	public String getValue() {
 		String internal = super.getInternalValue();
 		return "heal" + internal.substring(0, internal.length() - 1);
 	}
-	
+
 	public void delete() {
 		t.cancel();
 	}

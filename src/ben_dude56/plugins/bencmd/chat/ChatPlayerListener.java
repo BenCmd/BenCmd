@@ -156,6 +156,9 @@ public class ChatPlayerListener extends PlayerListener {
 				plugin.graves.remove(i);
 			}
 		}
+		if (plugin.returns.containsKey(event.getPlayer())) {
+			plugin.returns.remove(event.getPlayer());
+		}
 		User user = User.getUser(plugin, event.getPlayer());
 		if (user.isOffline()) {
 			user.goOnlineNoMsg();

@@ -16,6 +16,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -120,6 +121,7 @@ public class BenCmd extends JavaPlugin {
 	public SPAreaFile spafile;
 	public List<Location> canSpread = new ArrayList<Location>();
 	public List<Grave> graves = new ArrayList<Grave>();
+	public HashMap<Player, List<ItemStack>> returns = new HashMap<Player, List<ItemStack>>();
 	public Logger log = Logger.getLogger("minecraft");
 
 	public boolean checkID(int id) {
@@ -166,7 +168,7 @@ public class BenCmd extends JavaPlugin {
 			g.delete();
 		}
 		graves.clear();
-		for(SPArea a : spafile.listAreas()) {
+		for (SPArea a : spafile.listAreas()) {
 			a.delete();
 		}
 		PluginDescriptionFile pdfFile = this.getDescription();
@@ -408,6 +410,8 @@ public class BenCmd extends JavaPlugin {
 		pm.registerEvent(Event.Type.BLOCK_BREAK, this.shelflb,
 				Event.Priority.Monitor, this);
 		pm.registerEvent(Event.Type.PLAYER_MOVE, this.spaplisten,
+				Event.Priority.Highest, this);
+		pm.registerEvent(Event.Type.PLAYER_RESPAWN, this.spaplisten,
 				Event.Priority.Highest, this);
 		pm.registerEvent(Event.Type.ENTITY_DAMAGE, this.spaelisten,
 				Event.Priority.Highest, this);

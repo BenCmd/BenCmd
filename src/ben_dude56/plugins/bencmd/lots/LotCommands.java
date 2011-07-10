@@ -13,6 +13,9 @@ import org.bukkit.entity.Player;
 import ben_dude56.plugins.bencmd.BenCmd;
 import ben_dude56.plugins.bencmd.Commands;
 import ben_dude56.plugins.bencmd.User;
+import ben_dude56.plugins.bencmd.invtools.BCItem;
+import ben_dude56.plugins.bencmd.invtools.InventoryBackend;
+import ben_dude56.plugins.bencmd.lots.sparea.DropInfo;
 import ben_dude56.plugins.bencmd.lots.sparea.HealArea;
 import ben_dude56.plugins.bencmd.lots.sparea.MsgArea;
 import ben_dude56.plugins.bencmd.lots.sparea.PVPArea;
@@ -1208,7 +1211,7 @@ public class LotCommands implements Commands {
 	public void Area(String[] args, User user) {
 		if (args.length == 0) {
 			user.sendMessage(ChatColor.YELLOW
-					+ "Proper usage: /area {new {pvp|msg|heal} [options]|delete|emsg <message>|lmsg <message>}");
+					+ "Proper usage: /area {new {pvp|msg|heal} [options]|delete|emsg <message>|lmsg <message>|addi <item> <chance> [<min> <max>]|remi <item>|die {d|l|k|-}{d|l|k|-}}");
 			return;
 		}
 		// NEW AREA
@@ -1466,8 +1469,8 @@ public class LotCommands implements Commands {
 					+ "That area has been successfully deleted...");
 		} else if (args[0].equalsIgnoreCase("emsg")) {
 			String msg = "";
-			for(int i = 1; i < args.length; i++) {
-				if(msg.isEmpty()) {
+			for (int i = 1; i < args.length; i++) {
+				if (msg.isEmpty()) {
 					msg += args[i];
 				} else {
 					msg += " " + args[i];
@@ -1489,8 +1492,8 @@ public class LotCommands implements Commands {
 			e.setEnterMessage(args.length > 1 ? msg : "");
 		} else if (args[0].equalsIgnoreCase("lmsg")) {
 			String msg = "";
-			for(int i = 1; i < args.length; i++) {
-				if(msg.isEmpty()) {
+			for (int i = 1; i < args.length; i++) {
+				if (msg.isEmpty()) {
 					msg += args[i];
 				} else {
 					msg += " " + args[i];
@@ -1510,9 +1513,146 @@ public class LotCommands implements Commands {
 				return;
 			}
 			e.setLeaveMessage(args.length > 1 ? msg : "");
+		} else if (args[0].equalsIgnoreCase("addi")) {
+			BCItem item;
+			int chance, max, min;
+			if (args.length == 3) {
+				item = new InventoryBackend(plugin).checkAlias(args[1]);
+				if(item == null) {
+					user.sendMessage(ChatColor.YELLOW + "Proper usage: /area addi <item> <chance> [<min> <max>]");
+					return;
+				}
+				try {
+					chance = Integer.parseInt(args[2]);
+				} catch (NumberFormatException e) {
+					user.sendMessage(ChatColor.YELLOW + "Proper usage: /area addi <item> <chance> [<min> <max>]");
+					return;
+				}
+				max = 1;
+				min = 1;
+			} else if (args.length == 5) {
+				item = new InventoryBackend(plugin).checkAlias(args[1]);
+				if(item == null) {
+					user.sendMessage(ChatColor.YELLOW + "Proper usage: /area addi <item> <chance> [<min> <max>]");
+					return;
+				}
+				try {
+					chance = Integer.parseInt(args[2]);
+					min = Integer.parseInt(args[3]);
+					max = Integer.parseInt(args[4]);
+				} catch (NumberFormatException e) {
+					user.sendMessage(ChatColor.YELLOW + "Proper usage: /area addi <item> <chance> [<min> <max>]");
+					return;
+				}
+			} else {
+				user.sendMessage(ChatColor.YELLOW + "Proper usage: /area addi <item> <chance> [<min> <max>]");
+				return;
+			}
+			PVPArea e = null;
+			for (SPArea a : plugin.spafile.listAreas()) {
+				if (a instanceof PVPArea
+						&& a.insideArea(user.getHandle().getLocation())) {
+					e = (PVPArea) a;
+					break;
+				}
+			}
+			if (e == null) {
+				user.sendMessage(ChatColor.RED
+						+ "You aren't standing inside a pvp area...");
+				return;
+			}
+			e.addDrop(item, new DropInfo(chance, min, max));
+		} else if (args[0].equalsIgnoreCase("remi")) {
+			if(args.length == 2) {
+				BCItem item = null;
+				item = new InventoryBackend(plugin).checkAlias(args[1]);
+				if(item == null) {
+					user.sendMessage(ChatColor.YELLOW + "Proper usage: /area remi <item>");
+					return;
+				}
+				PVPArea e = null;
+				for (SPArea a : plugin.spafile.listAreas()) {
+					if (a instanceof PVPArea
+							&& a.insideArea(user.getHandle().getLocation())) {
+						e = (PVPArea) a;
+						break;
+					}
+				}
+				if (e == null) {
+					user.sendMessage(ChatColor.RED
+							+ "You aren't standing inside a pvp area...");
+					return;
+				}
+				e.remDrop(item);
+			} else {
+				user.sendMessage(ChatColor.YELLOW + "Proper usage: /area remi <item>");
+				return;
+			}
+		} else if (args[0].equalsIgnoreCase("die")) {
+			if(args.length == 2) {
+				if(args[1].length() == 2) {
+					char nc = args[1].charAt(0);
+					char cc = args[1].charAt(1);
+					PVPArea.DropMode n;
+					PVPArea.DropMode c;
+					switch(nc) {
+					case 'd':
+						n = PVPArea.DropMode.DROP;
+						break;
+					case 'l':
+						n = PVPArea.DropMode.LOSE;
+						break;
+					case 'k':
+						n = PVPArea.DropMode.KEEP;
+						break;
+					default:
+						n = null;
+						break;
+					}
+					switch(cc) {
+					case 'd':
+						c = PVPArea.DropMode.DROP;
+						break;
+					case 'l':
+						c = PVPArea.DropMode.LOSE;
+						break;
+					case 'k':
+						c = PVPArea.DropMode.KEEP;
+						break;
+					default:
+						c = null;
+						break;
+					}
+					PVPArea e = null;
+					for (SPArea a : plugin.spafile.listAreas()) {
+						if (a instanceof PVPArea
+								&& a.insideArea(user.getHandle().getLocation())) {
+							e = (PVPArea) a;
+							break;
+						}
+					}
+					if (e == null) {
+						user.sendMessage(ChatColor.RED
+								+ "You aren't standing inside a pvp area...");
+						return;
+					}
+					if(n != null) {
+						e.setNDrop(n);
+					}
+					if(e != null) {
+						e.setCDrop(c);
+					}
+				} else {
+					user.sendMessage(ChatColor.YELLOW + "Proper usage: /area die {d|l|k|-}{d|l|k|-}");
+					return;
+				}
+			} else {
+				user.sendMessage(ChatColor.YELLOW + "Proper usage: /area die {d|l|k|-}{d|l|k|-}");
+				return;
+			}
 		} else {
 			user.sendMessage(ChatColor.YELLOW
-					+ "Proper usage: /area {new {pvp|msg|heal} [options]|delete|emsg <message>|lmsg <message>}");
+					+ "Proper usage: /area {new {pvp|msg|heal} [options]|delete|emsg <message>|lmsg <message>|addi <item> <chance> [<min> <max>]|remi <item>|die {d|l|k|-}{d|l|k|-}}");
 			return;
 		}
 	}

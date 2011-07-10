@@ -32,7 +32,6 @@ public class Grave {
 		t = secondsToPickUp;
 		d = new Timer();
 		d.schedule(new TimerTask() {
-			@Override
 			public void run() {
 				tick();
 			}
@@ -79,7 +78,7 @@ public class Grave {
 		if (p.equals(player)) {
 			for (ItemStack i : this.i) {
 				if (plugin.mainProperties.getBoolean("destroyCurrencyOnDeath",
-						true) && plugin.prices.isCurrency(i)) {
+						false) && plugin.prices.isCurrency(i)) {
 					continue;
 				}
 				p.getInventory().addItem(i);
