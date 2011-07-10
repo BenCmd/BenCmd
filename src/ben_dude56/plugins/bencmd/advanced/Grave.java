@@ -85,12 +85,14 @@ public class Grave {
 				p.getInventory().addItem(i);
 			}
 			delete();
+			plugin.graves.remove(this);
 			p.sendMessage(ChatColor.GREEN
 					+ "You've reached your grave in time and you items are safe!");
 			return true;
 		} else {
 			User user = User.getUser(plugin, player);
 			if (user.hasPerm("canDestroyGraves")) {
+				delete();
 				plugin.graves.remove(this);
 				p.sendMessage(ChatColor.RED
 						+ "Your grave has been crushed by an admin, taking your items along with it...");

@@ -57,8 +57,12 @@ public class SPAreaEListener extends EntityListener {
 			for (int i = 0; i < plugin.graves.size(); i++) {
 				Grave g = plugin.graves.get(i);
 				if (g.getPlayer().equals((Player) event.getEntity())) {
-					g.delete();
-					plugin.graves.remove(i);
+					if(plugin.mainProperties.getBoolean("newerGraveOverwrites", false)) {
+						g.delete();
+						plugin.graves.remove(i);
+					} else {
+						return;
+					}
 				}
 			}
 			Location graveLoc = new Location(user.getHandle().getWorld(), user

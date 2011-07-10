@@ -88,4 +88,8 @@ public class SPArea {
 		}
 		return players;
 	}
+	
+	public void delete() {
+		// Do Nothing
+	}
 }

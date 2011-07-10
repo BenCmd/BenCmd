@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import ben_dude56.plugins.bencmd.BenCmd;
 import ben_dude56.plugins.bencmd.Commands;
 import ben_dude56.plugins.bencmd.User;
+import ben_dude56.plugins.bencmd.lots.sparea.HealArea;
 import ben_dude56.plugins.bencmd.lots.sparea.MsgArea;
 import ben_dude56.plugins.bencmd.lots.sparea.PVPArea;
 import ben_dude56.plugins.bencmd.lots.sparea.SPArea;
@@ -1207,7 +1208,7 @@ public class LotCommands implements Commands {
 	public void Area(String[] args, User user) {
 		if (args.length == 0) {
 			user.sendMessage(ChatColor.YELLOW
-					+ "Proper usage: /area {new {pvp|msg} [options]|delete|emsg <message>|lmsg <message>}");
+					+ "Proper usage: /area {new {pvp|msg|heal} [options]|delete|emsg <message>|lmsg <message>}");
 			return;
 		}
 		// NEW AREA
@@ -1221,7 +1222,7 @@ public class LotCommands implements Commands {
 			}
 			if (args.length == 1) {
 				user.sendMessage(ChatColor.YELLOW
-						+ "Proper usage: /area new {pvp|msg} [options]");
+						+ "Proper usage: /area new {pvp|msg|heal} [options]");
 				return;
 			} else if (args[1].equalsIgnoreCase("msg")) {
 				int up, down;
@@ -1286,6 +1287,69 @@ public class LotCommands implements Commands {
 						.nextId(), c1, c2, "Use /area emsg to change...", ""));
 				user.sendMessage(ChatColor.GREEN
 						+ "That area is now dedicated as a Message Area!");
+			} else if (args[1].equalsIgnoreCase("heal")) {
+				int up, down;
+				Location c1 = plugin.lotListener.corner.get(user.getName()).corner1, c2 = plugin.lotListener.corner
+						.get(user.getName()).corner2;
+				if (args.length == 2) {
+					up = 0;
+					down = 0;
+				} else if (args.length == 4) {
+					try {
+						up = Integer.parseInt(args[2]);
+						down = Integer.parseInt(args[3]);
+					} catch (NumberFormatException e) {
+						user.sendMessage(ChatColor.YELLOW
+								+ "Proper usage: /area new heal [<ext up> <ext down>]");
+						return;
+					}
+				} else {
+					user.sendMessage(ChatColor.YELLOW
+							+ "Proper usage: /area new heal [<ext up> <ext down>]");
+					return;
+				}
+				if (up != 0) {
+					if (c1.getBlockY() > c2.getBlockY()) {
+						if (up == -1) {
+							c1.setY(128);
+						} else if (c1.getBlockX() + up > 128) {
+							c1.setY(128);
+						} else {
+							c1.setY(c1.getBlockX() + up);
+						}
+					} else {
+						if (up == -1) {
+							c2.setY(128);
+						} else if (c2.getBlockX() + up > 128) {
+							c2.setY(128);
+						} else {
+							c2.setY(c2.getBlockX() + up);
+						}
+					}
+				}
+				if (down != 0) {
+					if (c1.getBlockY() > c2.getBlockY()) {
+						if (down == -1) {
+							c2.setY(0);
+						} else if (c2.getBlockX() - down < 0) {
+							c2.setY(0);
+						} else {
+							c2.setY(c1.getBlockX() - down);
+						}
+					} else {
+						if (down == -1) {
+							c1.setY(0);
+						} else if (c1.getBlockX() - down < 0) {
+							c1.setY(0);
+						} else {
+							c1.setY(c1.getBlockX() - down);
+						}
+					}
+				}
+				plugin.spafile.addArea(new HealArea(plugin, plugin.spafile
+						.nextId(), c1, c2));
+				user.sendMessage(ChatColor.GREEN
+						+ "That area is now dedicated as a Healing Area!");
 			} else if (args[1].equalsIgnoreCase("pvp")) {
 				int reqval, up, down;
 				Location c1 = plugin.lotListener.corner.get(user.getName()).corner1, c2 = plugin.lotListener.corner
@@ -1359,7 +1423,7 @@ public class LotCommands implements Commands {
 						+ "That area is now dedicated as a PVP Area!");
 			} else {
 				user.sendMessage(ChatColor.YELLOW
-						+ "Proper usage: /area new {pvp|msg} [options]");
+						+ "Proper usage: /area new {pvp|msg|heal} [options]");
 				return;
 			}
 		} else if (args[0].equalsIgnoreCase("delete")) {
@@ -1401,10 +1465,13 @@ public class LotCommands implements Commands {
 			user.sendMessage(ChatColor.GREEN
 					+ "That area has been successfully deleted...");
 		} else if (args[0].equalsIgnoreCase("emsg")) {
-			if (args.length != 1 && args.length != 2) {
-				user.sendMessage(ChatColor.YELLOW
-						+ "Proper usage: /area emsg <message>");
-				return;
+			String msg = "";
+			for(int i = 1; i < args.length; i++) {
+				if(msg.isEmpty()) {
+					msg += args[i];
+				} else {
+					msg += " " + args[i];
+				}
 			}
 			MsgArea e = null;
 			for (SPArea a : plugin.spafile.listAreas()) {
@@ -1419,12 +1486,15 @@ public class LotCommands implements Commands {
 						+ "You aren't standing inside an area that can have enter/exit messages...");
 				return;
 			}
-			e.setEnterMessage(args.length == 2 ? args[1] : "");
+			e.setEnterMessage(args.length > 1 ? msg : "");
 		} else if (args[0].equalsIgnoreCase("lmsg")) {
-			if (args.length != 1 && args.length != 2) {
-				user.sendMessage(ChatColor.YELLOW
-						+ "Proper usage: /area lmsg <message>");
-				return;
+			String msg = "";
+			for(int i = 1; i < args.length; i++) {
+				if(msg.isEmpty()) {
+					msg += args[i];
+				} else {
+					msg += " " + args[i];
+				}
 			}
 			MsgArea e = null;
 			for (SPArea a : plugin.spafile.listAreas()) {
@@ -1439,10 +1509,10 @@ public class LotCommands implements Commands {
 						+ "You aren't standing inside an area that can have enter/exit messages...");
 				return;
 			}
-			e.setLeaveMessage(args.length == 2 ? args[1] : "");
+			e.setLeaveMessage(args.length > 1 ? msg : "");
 		} else {
 			user.sendMessage(ChatColor.YELLOW
-					+ "Proper usage: /area {new {pvp|msg} [options]|delete|emsg <message>|lmsg <message>}");
+					+ "Proper usage: /area {new {pvp|msg|heal} [options]|delete|emsg <message>|lmsg <message>}");
 			return;
 		}
 	}

@@ -69,6 +69,8 @@ public class SPAreaFile extends Properties {
 					areas.put(id, new PVPArea(plugin, key, value));
 				} else if (type.equals("msg")) {
 					areas.put(id, new MsgArea(plugin, key, value));
+				} else if (type.equals("heal")) {
+					areas.put(id, new HealArea(plugin, key, value));
 				} else {
 					plugin.log.warning("SPArea " + key
 							+ " is invalid and was ignored.");
@@ -115,6 +117,7 @@ public class SPAreaFile extends Properties {
 	}
 
 	public void removeArea(SPArea area) {
+		area.delete();
 		this.remove(area.getAreaID().toString());
 		areas.remove(area.getAreaID());
 		saveFile("--SPECIAL PURPOSE AREAS--");

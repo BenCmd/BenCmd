@@ -166,6 +166,9 @@ public class BenCmd extends JavaPlugin {
 			g.delete();
 		}
 		graves.clear();
+		for(SPArea a : spafile.listAreas()) {
+			a.delete();
+		}
 		PluginDescriptionFile pdfFile = this.getDescription();
 		log.info(pdfFile.getName() + " v" + pdfFile.getVersion()
 				+ " has been disabled!");
