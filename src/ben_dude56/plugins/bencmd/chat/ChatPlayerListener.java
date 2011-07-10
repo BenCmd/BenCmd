@@ -13,6 +13,7 @@ import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import ben_dude56.plugins.bencmd.*;
+import ben_dude56.plugins.bencmd.advanced.Grave;
 import ben_dude56.plugins.bencmd.advanced.ViewableInventory;
 
 public class ChatPlayerListener extends PlayerListener {
@@ -148,6 +149,13 @@ public class ChatPlayerListener extends PlayerListener {
 	}
 
 	public void onPlayerQuit(PlayerQuitEvent event) {
+		for (int i = 0; i < plugin.graves.size(); i++) {
+			Grave g = plugin.graves.get(i);
+			if (g.getPlayer().equals(event.getPlayer())) {
+				g.delete();
+				plugin.graves.remove(i);
+			}
+		}
 		User user = User.getUser(plugin, event.getPlayer());
 		if (user.isOffline()) {
 			user.goOnlineNoMsg();
@@ -171,6 +179,13 @@ public class ChatPlayerListener extends PlayerListener {
 	}
 
 	public void onPlayerKick(PlayerKickEvent event) {
+		for (int i = 0; i < plugin.graves.size(); i++) {
+			Grave g = plugin.graves.get(i);
+			if (g.getPlayer().equals(event.getPlayer())) {
+				g.delete();
+				plugin.graves.remove(i);
+			}
+		}
 		User user = User.getUser(plugin, event.getPlayer());
 		if (user.isOffline()) {
 			user.goOnlineNoMsg();

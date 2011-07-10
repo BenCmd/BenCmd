@@ -13,6 +13,9 @@ import org.bukkit.entity.Player;
 import ben_dude56.plugins.bencmd.BenCmd;
 import ben_dude56.plugins.bencmd.Commands;
 import ben_dude56.plugins.bencmd.User;
+import ben_dude56.plugins.bencmd.lots.sparea.MsgArea;
+import ben_dude56.plugins.bencmd.lots.sparea.PVPArea;
+import ben_dude56.plugins.bencmd.lots.sparea.SPArea;
 import ben_dude56.plugins.bencmd.permissions.PermissionGroup;
 
 public class LotCommands implements Commands {
@@ -33,6 +36,10 @@ public class LotCommands implements Commands {
 		}
 		if (commandLabel.equalsIgnoreCase("lot")) {
 			Lot(args, user);
+			return true;
+		} else if (commandLabel.equalsIgnoreCase("area")
+				&& user.hasPerm("canEditAreas")) {
+			Area(args, user);
 			return true;
 		}
 		if (commandLabel.equalsIgnoreCase("addguest")) {
@@ -1195,5 +1202,248 @@ public class LotCommands implements Commands {
 		user.sendMessage(ChatColor.YELLOW
 				+ "set, advset, delete, guest, info, setowner, group");
 		return;
+	}
+
+	public void Area(String[] args, User user) {
+		if (args.length == 0) {
+			user.sendMessage(ChatColor.YELLOW
+					+ "Proper usage: /area {new {pvp|msg} [options]|delete|emsg <message>|lmsg <message>}");
+			return;
+		}
+		// NEW AREA
+		if (args[0].equalsIgnoreCase("new")) {
+			plugin.lotListener.checkPlayer(user.getName());
+			if (!plugin.lotListener.corner.get(user.getName()).corner1set
+					|| !plugin.lotListener.corner.get(user.getName()).corner2set) {
+				user.sendMessage(ChatColor.RED
+						+ "Your corners aren't set! Make sure you use a wooden shovel!");
+				return;
+			}
+			if (args.length == 1) {
+				user.sendMessage(ChatColor.YELLOW
+						+ "Proper usage: /area new {pvp|msg} [options]");
+				return;
+			} else if (args[1].equalsIgnoreCase("msg")) {
+				int up, down;
+				Location c1 = plugin.lotListener.corner.get(user.getName()).corner1, c2 = plugin.lotListener.corner
+						.get(user.getName()).corner2;
+				if (args.length == 2) {
+					up = 0;
+					down = 0;
+				} else if (args.length == 4) {
+					try {
+						up = Integer.parseInt(args[2]);
+						down = Integer.parseInt(args[3]);
+					} catch (NumberFormatException e) {
+						user.sendMessage(ChatColor.YELLOW
+								+ "Proper usage: /area new msg [<ext up> <ext down>]");
+						return;
+					}
+				} else {
+					user.sendMessage(ChatColor.YELLOW
+							+ "Proper usage: /area new msg [<ext up> <ext down>]");
+					return;
+				}
+				if (up != 0) {
+					if (c1.getBlockY() > c2.getBlockY()) {
+						if (up == -1) {
+							c1.setY(128);
+						} else if (c1.getBlockX() + up > 128) {
+							c1.setY(128);
+						} else {
+							c1.setY(c1.getBlockX() + up);
+						}
+					} else {
+						if (up == -1) {
+							c2.setY(128);
+						} else if (c2.getBlockX() + up > 128) {
+							c2.setY(128);
+						} else {
+							c2.setY(c2.getBlockX() + up);
+						}
+					}
+				}
+				if (down != 0) {
+					if (c1.getBlockY() > c2.getBlockY()) {
+						if (down == -1) {
+							c2.setY(0);
+						} else if (c2.getBlockX() - down < 0) {
+							c2.setY(0);
+						} else {
+							c2.setY(c1.getBlockX() - down);
+						}
+					} else {
+						if (down == -1) {
+							c1.setY(0);
+						} else if (c1.getBlockX() - down < 0) {
+							c1.setY(0);
+						} else {
+							c1.setY(c1.getBlockX() - down);
+						}
+					}
+				}
+				plugin.spafile.addArea(new MsgArea(plugin, plugin.spafile
+						.nextId(), c1, c2, "Use /area emsg to change...", ""));
+				user.sendMessage(ChatColor.GREEN
+						+ "That area is now dedicated as a Message Area!");
+			} else if (args[1].equalsIgnoreCase("pvp")) {
+				int reqval, up, down;
+				Location c1 = plugin.lotListener.corner.get(user.getName()).corner1, c2 = plugin.lotListener.corner
+						.get(user.getName()).corner2;
+				if (args.length == 3) {
+					try {
+						reqval = Integer.parseInt(args[2]);
+					} catch (NumberFormatException e) {
+						user.sendMessage(ChatColor.YELLOW
+								+ "Proper usage: /area new pvp <value needed> [<ext up> <ext down>] ");
+						return;
+					}
+					up = 0;
+					down = 0;
+				} else if (args.length == 5) {
+					try {
+						reqval = Integer.parseInt(args[2]);
+						up = Integer.parseInt(args[3]);
+						down = Integer.parseInt(args[4]);
+					} catch (NumberFormatException e) {
+						user.sendMessage(ChatColor.YELLOW
+								+ "Proper usage: /area new pvp <value needed> [<ext up> <ext down>] ");
+						return;
+					}
+				} else {
+					user.sendMessage(ChatColor.YELLOW
+							+ "Proper usage: /area new pvp <value needed> [<ext up> <ext down>] ");
+					return;
+				}
+				if (up != 0) {
+					if (c1.getBlockY() > c2.getBlockY()) {
+						if (up == -1) {
+							c1.setY(128);
+						} else if (c1.getBlockX() + up > 128) {
+							c1.setY(128);
+						} else {
+							c1.setY(c1.getBlockX() + up);
+						}
+					} else {
+						if (up == -1) {
+							c2.setY(128);
+						} else if (c2.getBlockX() + up > 128) {
+							c2.setY(128);
+						} else {
+							c2.setY(c2.getBlockX() + up);
+						}
+					}
+				}
+				if (down != 0) {
+					if (c1.getBlockY() > c2.getBlockY()) {
+						if (down == -1) {
+							c2.setY(0);
+						} else if (c2.getBlockX() - down < 0) {
+							c2.setY(0);
+						} else {
+							c2.setY(c1.getBlockX() - down);
+						}
+					} else {
+						if (down == -1) {
+							c1.setY(0);
+						} else if (c1.getBlockX() - down < 0) {
+							c1.setY(0);
+						} else {
+							c1.setY(c1.getBlockX() - down);
+						}
+					}
+				}
+				plugin.spafile.addArea(new PVPArea(plugin, plugin.spafile
+						.nextId(), c1, c2, reqval));
+				user.sendMessage(ChatColor.GREEN
+						+ "That area is now dedicated as a PVP Area!");
+			} else {
+				user.sendMessage(ChatColor.YELLOW
+						+ "Proper usage: /area new {pvp|msg} [options]");
+				return;
+			}
+		} else if (args[0].equalsIgnoreCase("delete")) {
+			if (args.length != 1 && args.length != 2) {
+				user.sendMessage(ChatColor.YELLOW
+						+ "Proper usage: /area delete [id]");
+				return;
+			}
+			SPArea d = null;
+			if (args.length == 1) {
+				for (SPArea a : plugin.spafile.listAreas()) {
+					if (a.insideArea(user.getHandle().getLocation())) {
+						d = a;
+						break;
+					}
+				}
+				if (d == null) {
+					user.sendMessage(ChatColor.RED
+							+ "You aren't standing inside an area...");
+					return;
+				}
+			} else {
+				int id;
+				try {
+					id = Integer.parseInt(args[1]);
+				} catch (NumberFormatException e) {
+					user.sendMessage(ChatColor.YELLOW
+							+ "Proper usage: /area delete [id]");
+					return;
+				}
+				d = plugin.spafile.byId(id);
+				if (d == null) {
+					user.sendMessage(ChatColor.RED
+							+ "No area with that ID exists!");
+					return;
+				}
+			}
+			plugin.spafile.removeArea(d);
+			user.sendMessage(ChatColor.GREEN
+					+ "That area has been successfully deleted...");
+		} else if (args[0].equalsIgnoreCase("emsg")) {
+			if (args.length != 1 && args.length != 2) {
+				user.sendMessage(ChatColor.YELLOW
+						+ "Proper usage: /area emsg <message>");
+				return;
+			}
+			MsgArea e = null;
+			for (SPArea a : plugin.spafile.listAreas()) {
+				if (a instanceof MsgArea
+						&& a.insideArea(user.getHandle().getLocation())) {
+					e = (MsgArea) a;
+					break;
+				}
+			}
+			if (e == null) {
+				user.sendMessage(ChatColor.RED
+						+ "You aren't standing inside an area that can have enter/exit messages...");
+				return;
+			}
+			e.setEnterMessage(args.length == 2 ? args[1] : "");
+		} else if (args[0].equalsIgnoreCase("lmsg")) {
+			if (args.length != 1 && args.length != 2) {
+				user.sendMessage(ChatColor.YELLOW
+						+ "Proper usage: /area lmsg <message>");
+				return;
+			}
+			MsgArea e = null;
+			for (SPArea a : plugin.spafile.listAreas()) {
+				if (a instanceof MsgArea
+						&& a.insideArea(user.getHandle().getLocation())) {
+					e = (MsgArea) a;
+					break;
+				}
+			}
+			if (e == null) {
+				user.sendMessage(ChatColor.RED
+						+ "You aren't standing inside an area that can have enter/exit messages...");
+				return;
+			}
+			e.setLeaveMessage(args.length == 2 ? args[1] : "");
+		} else {
+			user.sendMessage(ChatColor.YELLOW
+					+ "Proper usage: /area {new {pvp|msg} [options]|delete|emsg <message>|lmsg <message>}");
+			return;
+		}
 	}
 }

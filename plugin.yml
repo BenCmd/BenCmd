@@ -1,5 +1,5 @@
 name: BenCmd
-version: 1.2.2
+version: 1.2.3
 main: ben_dude56.plugins.bencmd.BenCmd
 commands:
     slow:
@@ -254,3 +254,6 @@ commands:
     allpoof:
         usage:
         description: Makes the player invisible to players using /nopoof
+    area:
+        usage:
+        description: Sets a special purpose area

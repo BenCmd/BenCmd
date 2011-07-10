@@ -13,6 +13,14 @@ public class ShelfBListener extends BlockListener {
 	}
 
 	public void onBlockBreak(BlockBreakEvent event) {
+		for (int i = 0; i < plugin.graves.size(); i++) {
+			if (plugin.graves.get(i).getBlock().getLocation()
+					.equals(event.getBlock().getLocation())) {
+				event.setCancelled(true);
+				plugin.graves.get(i).destroyBy(event.getPlayer());
+				return;
+			}
+		}
 		if (event.isCancelled()) {
 			return;
 		}

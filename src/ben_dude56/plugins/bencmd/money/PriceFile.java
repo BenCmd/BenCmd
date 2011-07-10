@@ -12,6 +12,7 @@ import java.util.Properties;
 import java.util.Timer;
 
 import org.bukkit.ChatColor;
+import org.bukkit.inventory.ItemStack;
 
 import ben_dude56.plugins.bencmd.BenCmd;
 import ben_dude56.plugins.bencmd.invtools.BCItem;
@@ -233,6 +234,15 @@ public class PriceFile extends Properties {
 		long nowTime = new Date().getTime();
 		if (nowTime >= nextUpdate) {
 			ForceUpdate();
+		}
+	}
+
+	public boolean isCurrency(ItemStack i) {
+		BuyableItem bi = getItem(new BCItem(i.getType(), i.getDurability()));
+		if (bi == null) {
+			return false;
+		} else {
+			return (bi instanceof Currency);
 		}
 	}
 

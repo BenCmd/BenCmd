@@ -1,3 +1,27 @@
 CHANGELOG (STARTING FROM v1.2.2):
   1.2.2:
     -Changelog created
+  1.2.3:
+    ** VERY IMPORTANT UPDATE! ADDRESSES PROTECTIONS CORRUPTING! **
+    -Added /allpoof to become invisible from those using /nopoof
+    -LOTS of code cleanup
+    -Fixed protections occasionally corrupting when saved
+    -Made BenCmd stop spamming the chat about protected doors with "Missing secondary blocks"
+    -Added the concept of SPAreas (Special Purpose Areas)
+      -PVP SPArea added
+        -Players only drop *currency* they are carrying on death, and graves are disabled
+        -Ability to limit entry to people with a speicific amount of currency
+        -If players drop currency inside, they are kicked out to the nearest non-PVP area
+        -Warns players when entering and exiting (child of Message SPArea)
+      -Message SPArea added
+        -Provides messages on entry and exit
+        -Messages can be disable by setting them to blank ("`" in the db file)
+    -Added timed graves
+      -Players cannot destroy other players' gravestones
+      -Last for 3 minutes, by default, before deleting themselves
+      -Store all items except currencies (configurable)
+      -Items are lost permanently if the grave is not destroyed before time is up
+      -Provide time estimates automatically to the player
+      -Can be destroyed immediately by admins (Anyone with the "canDestroyGraves" permission)
+      -Automatically deleted if the user logs off or the server is reloaded/turned off
+    -Fixed assorted minor bugs

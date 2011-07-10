@@ -1,10 +1,6 @@
 package ben_dude56.plugins.bencmd.warps;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.block.CraftSign;
 import org.bukkit.craftbukkit.entity.CraftCreeper;
 import org.bukkit.craftbukkit.entity.CraftSkeleton;
 import org.bukkit.craftbukkit.entity.CraftSpider;
@@ -99,25 +95,6 @@ public class DeathListener extends EntityListener {
 			plugin.checkpoints.SetPreWarp(user.getHandle());
 			user.sendMessage(ChatColor.RED
 					+ "Use /back to return to your death point...");
-		}
-		if (plugin.mainProperties.getBoolean("gravesEnabled", true)) {
-			Location graveLoc = new Location(user.getHandle().getWorld(), user
-					.getHandle().getLocation().getBlockX(), user.getHandle()
-					.getLocation().getBlockY(), user.getHandle().getLocation()
-					.getBlockZ());
-			Block grave = user.getHandle().getWorld().getBlockAt(graveLoc);
-			while (grave.getType() != Material.AIR) {
-				if (graveLoc.getBlockY() == 1) {
-					return;
-				}
-				graveLoc.setY(graveLoc.getY() + 1);
-				grave = user.getHandle().getWorld().getBlockAt(graveLoc);
-			}
-			grave.setType(Material.SIGN_POST);
-			CraftSign graveSign = new CraftSign(grave);
-			graveSign.setLine(1, "R.I.P.");
-			graveSign.setLine(2, user.getDisplayName());
-			graveSign.update();
 		}
 	}
 

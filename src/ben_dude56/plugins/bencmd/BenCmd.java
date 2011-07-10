@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -25,6 +26,7 @@ import ben_dude56.plugins.bencmd.invisible.*;
 import ben_dude56.plugins.bencmd.invtools.*;
 import ben_dude56.plugins.bencmd.invtools.kits.*;
 import ben_dude56.plugins.bencmd.lots.*;
+import ben_dude56.plugins.bencmd.lots.sparea.*;
 import ben_dude56.plugins.bencmd.maps.*;
 import ben_dude56.plugins.bencmd.money.*;
 import ben_dude56.plugins.bencmd.multiworld.*;
@@ -62,6 +64,8 @@ public class BenCmd extends JavaPlugin {
 	public final PortalListener portalListen = new PortalListener(this);
 	public final ShelfPListener shelflp = new ShelfPListener(this);
 	public final ShelfBListener shelflb = new ShelfBListener(this);
+	public final SPAreaPListener spaplisten = new SPAreaPListener(this);
+	public final SPAreaEListener spaelisten = new SPAreaEListener(this);
 	public final HashMap<Player, Boolean> godmode = new HashMap<Player, Boolean>();
 	public final List<Player> invisible = new ArrayList<Player>();
 	public final List<Player> noinvisible = new ArrayList<Player>();
@@ -81,6 +85,7 @@ public class BenCmd extends JavaPlugin {
 	public final File portalFile = new File(propDir + "portals.db");
 	public final File shelfFile = new File(propDir + "shelves.db");
 	public final File actionFile = new File(propDir + "action.db");
+	public final File spareaFile = new File(propDir + "sparea.db");
 	public PluginProperties mainProperties;
 	public PluginProperties itemAliases;
 	public LotFile lots;
@@ -112,7 +117,9 @@ public class BenCmd extends JavaPlugin {
 	public PortalFile portals;
 	public ShelfFile shelff;
 	public ActionFile actions;
+	public SPAreaFile spafile;
 	public List<Location> canSpread = new ArrayList<Location>();
+	public List<Grave> graves = new ArrayList<Grave>();
 	public Logger log = Logger.getLogger("minecraft");
 
 	public boolean checkID(int id) {
@@ -155,6 +162,10 @@ public class BenCmd extends JavaPlugin {
 		flyDetect.flyTime.cancel();
 		flyDetect.flyTime = null;
 		kicked.killTimer();
+		for (Grave g : graves) {
+			g.delete();
+		}
+		graves.clear();
 		PluginDescriptionFile pdfFile = this.getDescription();
 		log.info(pdfFile.getName() + " v" + pdfFile.getVersion()
 				+ " has been disabled!");
@@ -271,6 +282,14 @@ public class BenCmd extends JavaPlugin {
 				e.printStackTrace();
 			}
 		}
+		if (!spareaFile.exists()) {
+			try {
+				spareaFile.createNewFile();
+			} catch (IOException e) {
+				System.out.println("BenCmd had a problem:");
+				e.printStackTrace();
+			}
+		}
 		// Get some static methods ready
 		User.finalizeAll();
 		// Start loading classes
@@ -305,6 +324,7 @@ public class BenCmd extends JavaPlugin {
 		portals = new PortalFile(this, propDir + "portals.db");
 		shelff = new ShelfFile(this, propDir + "shelves.db");
 		actions = new ActionFile(this);
+		spafile = new SPAreaFile(this, propDir + "sparea.db");
 		// SANITY CHECK
 		if (!sanityCheck()) {
 			this.getServer().getPluginManager().disablePlugin(this);
@@ -384,11 +404,20 @@ public class BenCmd extends JavaPlugin {
 				Event.Priority.Highest, this);
 		pm.registerEvent(Event.Type.BLOCK_BREAK, this.shelflb,
 				Event.Priority.Monitor, this);
+		pm.registerEvent(Event.Type.PLAYER_MOVE, this.spaplisten,
+				Event.Priority.Highest, this);
+		pm.registerEvent(Event.Type.ENTITY_DAMAGE, this.spaelisten,
+				Event.Priority.Highest, this);
+		pm.registerEvent(Event.Type.ENTITY_DEATH, this.spaelisten,
+				Event.Priority.Highest, this);
 		PluginDescriptionFile pdfFile = this.getDescription();
 		// Prepare the time lock timer
 		FreezeTimer.schedule(new TimeFreeze(this), 0, 5000);
 		log.info(pdfFile.getName() + " v" + pdfFile.getVersion()
 				+ " has been enabled!");
+		for (World w : getServer().getWorlds()) {
+			w.setPVP(true);
+		}
 		if (mainProperties.getBoolean("channelsEnabled", false)) {
 			log.warning("BenCmd Chat Channels (Experimental) are active...");
 		}
