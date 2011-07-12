@@ -12,13 +12,13 @@ public class DropInfo {
 			c = 1;
 		}
 		c = chance;
+		min = minAmt;
+		max = maxAmt;
 		if (min > max) { // Minimum cannot be higher than maximum!!
 			int m = min;
 			min = max;
 			max = m;
 		}
-		min = minAmt;
-		max = maxAmt;
 	}
 
 	public int getChance() {

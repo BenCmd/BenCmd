@@ -101,7 +101,7 @@ public class BuyableItem {
 					.getInventory().all(currency.getMaterial());
 			for (Integer pos : matches.keySet()) {
 				ItemStack item = user.getHandle().getInventory().getItem(pos);
-				if (item.getDurability() != this.durability) {
+				if (item.getDurability() != currency.getDurability()) {
 					continue;
 				}
 				if (item.getTypeId() == this.getItemId()

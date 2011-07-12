@@ -71,6 +71,10 @@ public class SPAreaFile extends Properties {
 					areas.put(id, new MsgArea(plugin, key, value));
 				} else if (type.equals("heal")) {
 					areas.put(id, new HealArea(plugin, key, value));
+				} else if (type.equals("dmg")) {
+					areas.put(id, new DamageArea(plugin, key, value));
+				} else if (type.equals("tr")) {
+					areas.put(id, new TRArea(plugin, key, value));
 				} else {
 					plugin.log.warning("SPArea " + key
 							+ " is invalid and was ignored.");

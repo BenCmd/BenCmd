@@ -118,6 +118,67 @@ public class SPAreaPListener extends PlayerListener {
 					}
 				}
 			}
+			if (a instanceof TRArea) {
+				if(a.insideArea(p.getLocation()) && ((TRArea)a).isLocked(p)) {
+					ignore.add(p);
+					p.sendMessage(ChatColor.RED + "You cannot enter this area at this time!");
+					int c = 1;
+					while (true) {
+						Location f = p.getLocation();
+						f.setX(f.getX() + c);
+						if (!a.insideArea(f)
+								&& f.getBlock().getType() == Material.AIR) {
+							event.setTo(f);
+							event.setCancelled(false);
+							ignore.remove(p);
+							return;
+						}
+						f.setX(f.getX() - (c * 2));
+						if (!a.insideArea(f)
+								&& f.getBlock().getType() == Material.AIR) {
+							event.setTo(f);
+							event.setCancelled(false);
+							ignore.remove(p);
+							return;
+						}
+						f.setX(f.getX() + c);
+						f.setZ(f.getZ() + c);
+						if (!a.insideArea(f)
+								&& f.getBlock().getType() == Material.AIR) {
+							event.setTo(f);
+							event.setCancelled(false);
+							ignore.remove(p);
+							return;
+						}
+						f.setZ(f.getZ() - (c * 2));
+						if (!a.insideArea(f)
+								&& f.getBlock().getType() == Material.AIR) {
+							event.setTo(f);
+							event.setCancelled(false);
+							ignore.remove(p);
+							return;
+						}
+						f.setZ(f.getZ() + c);
+						f.setY(f.getY() + c);
+						if (!a.insideArea(f)
+								&& f.getBlock().getType() == Material.AIR) {
+							event.setTo(f);
+							event.setCancelled(false);
+							ignore.remove(p);
+							return;
+						}
+						f.setY(f.getY() - (c * 2));
+						if (!a.insideArea(f)
+								&& f.getBlock().getType() == Material.AIR) {
+							event.setTo(f);
+							event.setCancelled(false);
+							ignore.remove(p);
+							return;
+						}
+						c += 1;
+					}
+				}
+			}
 			if (a instanceof MsgArea) {
 				if (a.insideArea(p.getLocation())) {
 					if (!areas.get(p).contains(a)) {

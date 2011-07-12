@@ -6,30 +6,31 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import ben_dude56.plugins.bencmd.BenCmd;
+import ben_dude56.plugins.bencmd.User;
 
-public class HealArea extends TimedArea {
+public class DamageArea extends TimedArea {
 
-	public HealArea(BenCmd instance, String key, String value)
+	public DamageArea(BenCmd instance, String key, String value)
 			throws NumberFormatException, NullPointerException,
 			IndexOutOfBoundsException {
 		super(instance, key, value);
 	}
-
-	public HealArea(BenCmd instance, Integer id, Location corner1,
+	
+	public DamageArea(BenCmd instance, Integer id, Location corner1,
 			Location corner2, Integer minimumTime) {
 		super(instance, id, corner1, corner2, minimumTime);
 	}
-
+	
 	public void tick(List<Player> players) {
 		for(Player p : players) {
-			if(p.getHealth() == 20 || p.isDead()) {
+			if(p.isDead() || User.getUser(plugin, p).isGod()) {
 				continue;
 			}
-			p.setHealth(p.getHealth() + 1);
+			p.damage(1);
 		}
 	}
 
 	public String getValue() {
-		return "heal" + super.getInternalValue();
+		return "dmg" + super.getInternalValue();
 	}
 }

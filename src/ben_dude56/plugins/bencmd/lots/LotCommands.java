@@ -15,11 +15,14 @@ import ben_dude56.plugins.bencmd.Commands;
 import ben_dude56.plugins.bencmd.User;
 import ben_dude56.plugins.bencmd.invtools.BCItem;
 import ben_dude56.plugins.bencmd.invtools.InventoryBackend;
+import ben_dude56.plugins.bencmd.lots.sparea.DamageArea;
 import ben_dude56.plugins.bencmd.lots.sparea.DropInfo;
 import ben_dude56.plugins.bencmd.lots.sparea.HealArea;
 import ben_dude56.plugins.bencmd.lots.sparea.MsgArea;
 import ben_dude56.plugins.bencmd.lots.sparea.PVPArea;
 import ben_dude56.plugins.bencmd.lots.sparea.SPArea;
+import ben_dude56.plugins.bencmd.lots.sparea.TRArea;
+import ben_dude56.plugins.bencmd.lots.sparea.TimedArea;
 import ben_dude56.plugins.bencmd.permissions.PermissionGroup;
 
 public class LotCommands implements Commands {
@@ -1211,7 +1214,7 @@ public class LotCommands implements Commands {
 	public void Area(String[] args, User user) {
 		if (args.length == 0) {
 			user.sendMessage(ChatColor.YELLOW
-					+ "Proper usage: /area {new {pvp|msg|heal} [options]|delete|emsg <message>|lmsg <message>|addi <item> <chance> [<min> <max>]|remi <item>|die {d|l|k|-}{d|l|k|-}}");
+					+ "Proper usage: /area {new {pvp|msg|heal|dmg|time} [options]|delete|emsg <message>|lmsg <message>|addi <item> <chance> [<min> <max>]|remi <item>|die {d|l|k|-}{d|l|k|-}|mtime <seconds>}");
 			return;
 		}
 		// NEW AREA
@@ -1225,7 +1228,7 @@ public class LotCommands implements Commands {
 			}
 			if (args.length == 1) {
 				user.sendMessage(ChatColor.YELLOW
-						+ "Proper usage: /area new {pvp|msg|heal} [options]");
+						+ "Proper usage: /area new {pvp|msg|heal|dmg} [options]");
 				return;
 			} else if (args[1].equalsIgnoreCase("msg")) {
 				int up, down;
@@ -1350,9 +1353,72 @@ public class LotCommands implements Commands {
 					}
 				}
 				plugin.spafile.addArea(new HealArea(plugin, plugin.spafile
-						.nextId(), c1, c2));
+						.nextId(), c1, c2, 0));
 				user.sendMessage(ChatColor.GREEN
 						+ "That area is now dedicated as a Healing Area!");
+			} else if (args[1].equalsIgnoreCase("dmg")) {
+				int up, down;
+				Location c1 = plugin.lotListener.corner.get(user.getName()).corner1, c2 = plugin.lotListener.corner
+						.get(user.getName()).corner2;
+				if (args.length == 2) {
+					up = 0;
+					down = 0;
+				} else if (args.length == 4) {
+					try {
+						up = Integer.parseInt(args[2]);
+						down = Integer.parseInt(args[3]);
+					} catch (NumberFormatException e) {
+						user.sendMessage(ChatColor.YELLOW
+								+ "Proper usage: /area new dmg [<ext up> <ext down>]");
+						return;
+					}
+				} else {
+					user.sendMessage(ChatColor.YELLOW
+							+ "Proper usage: /area new dmg [<ext up> <ext down>]");
+					return;
+				}
+				if (up != 0) {
+					if (c1.getBlockY() > c2.getBlockY()) {
+						if (up == -1) {
+							c1.setY(128);
+						} else if (c1.getBlockX() + up > 128) {
+							c1.setY(128);
+						} else {
+							c1.setY(c1.getBlockX() + up);
+						}
+					} else {
+						if (up == -1) {
+							c2.setY(128);
+						} else if (c2.getBlockX() + up > 128) {
+							c2.setY(128);
+						} else {
+							c2.setY(c2.getBlockX() + up);
+						}
+					}
+				}
+				if (down != 0) {
+					if (c1.getBlockY() > c2.getBlockY()) {
+						if (down == -1) {
+							c2.setY(0);
+						} else if (c2.getBlockX() - down < 0) {
+							c2.setY(0);
+						} else {
+							c2.setY(c1.getBlockX() - down);
+						}
+					} else {
+						if (down == -1) {
+							c1.setY(0);
+						} else if (c1.getBlockX() - down < 0) {
+							c1.setY(0);
+						} else {
+							c1.setY(c1.getBlockX() - down);
+						}
+					}
+				}
+				plugin.spafile.addArea(new DamageArea(plugin, plugin.spafile
+						.nextId(), c1, c2, 0));
+				user.sendMessage(ChatColor.GREEN
+						+ "That area is now dedicated as a Damage Area!");
 			} else if (args[1].equalsIgnoreCase("pvp")) {
 				int reqval, up, down;
 				Location c1 = plugin.lotListener.corner.get(user.getName()).corner1, c2 = plugin.lotListener.corner
@@ -1424,9 +1490,80 @@ public class LotCommands implements Commands {
 						.nextId(), c1, c2, reqval));
 				user.sendMessage(ChatColor.GREEN
 						+ "That area is now dedicated as a PVP Area!");
+			} else if (args[1].equalsIgnoreCase("time")) {
+				int time, up, down;
+				Location c1 = plugin.lotListener.corner.get(user.getName()).corner1, c2 = plugin.lotListener.corner
+						.get(user.getName()).corner2;
+				if (args.length == 3) {
+					try {
+						time = Integer.parseInt(args[2]);
+					} catch (NumberFormatException e) {
+						user.sendMessage(ChatColor.YELLOW
+								+ "Proper usage: /area new time <seconds> [<ext up> <ext down>] ");
+						return;
+					}
+					up = 0;
+					down = 0;
+				} else if (args.length == 5) {
+					try {
+						time = Integer.parseInt(args[2]);
+						up = Integer.parseInt(args[3]);
+						down = Integer.parseInt(args[4]);
+					} catch (NumberFormatException e) {
+						user.sendMessage(ChatColor.YELLOW
+								+ "Proper usage: /area new time <seconds> [<ext up> <ext down>] ");
+						return;
+					}
+				} else {
+					user.sendMessage(ChatColor.YELLOW
+							+ "Proper usage: /area new time <seconds> [<ext up> <ext down>] ");
+					return;
+				}
+				if (up != 0) {
+					if (c1.getBlockY() > c2.getBlockY()) {
+						if (up == -1) {
+							c1.setY(128);
+						} else if (c1.getBlockX() + up > 128) {
+							c1.setY(128);
+						} else {
+							c1.setY(c1.getBlockX() + up);
+						}
+					} else {
+						if (up == -1) {
+							c2.setY(128);
+						} else if (c2.getBlockX() + up > 128) {
+							c2.setY(128);
+						} else {
+							c2.setY(c2.getBlockX() + up);
+						}
+					}
+				}
+				if (down != 0) {
+					if (c1.getBlockY() > c2.getBlockY()) {
+						if (down == -1) {
+							c2.setY(0);
+						} else if (c2.getBlockX() - down < 0) {
+							c2.setY(0);
+						} else {
+							c2.setY(c1.getBlockX() - down);
+						}
+					} else {
+						if (down == -1) {
+							c1.setY(0);
+						} else if (c1.getBlockX() - down < 0) {
+							c1.setY(0);
+						} else {
+							c1.setY(c1.getBlockX() - down);
+						}
+					}
+				}
+				plugin.spafile.addArea(new TRArea(plugin, plugin.spafile
+						.nextId(), c1, c2, time));
+				user.sendMessage(ChatColor.GREEN
+						+ "That area is now dedicated as a time-lock Area!");
 			} else {
 				user.sendMessage(ChatColor.YELLOW
-						+ "Proper usage: /area new {pvp|msg|heal} [options]");
+						+ "Proper usage: /area new {pvp|msg|heal|dmg|time} [options]");
 				return;
 			}
 		} else if (args[0].equalsIgnoreCase("delete")) {
@@ -1650,9 +1787,36 @@ public class LotCommands implements Commands {
 				user.sendMessage(ChatColor.YELLOW + "Proper usage: /area die {d|l|k|-}{d|l|k|-}");
 				return;
 			}
+		} else if (args[0].equalsIgnoreCase("mtime")) {
+			if(args.length == 2) {
+				int time;
+				try {
+					time = Integer.parseInt(args[1]);
+				} catch (NumberFormatException e) {
+					user.sendMessage(ChatColor.YELLOW + "Proper usage: /area mtime <seconds>");
+					return;
+				}
+				TimedArea e = null;
+				for (SPArea a : plugin.spafile.listAreas()) {
+					if (a instanceof TimedArea
+							&& a.insideArea(user.getHandle().getLocation())) {
+						e = (TimedArea) a;
+						break;
+					}
+				}
+				if (e == null) {
+					user.sendMessage(ChatColor.RED
+							+ "You aren't standing inside a timeable area...");
+					return;
+				}
+				e.setMinTime(time);
+			} else {
+				user.sendMessage(ChatColor.YELLOW + "Proper usage: /area mtime <seconds>");
+				return;
+			}
 		} else {
 			user.sendMessage(ChatColor.YELLOW
-					+ "Proper usage: /area {new {pvp|msg|heal} [options]|delete|emsg <message>|lmsg <message>|addi <item> <chance> [<min> <max>]|remi <item>|die {d|l|k|-}{d|l|k|-}}");
+					+ "Proper usage: /area {new {pvp|msg|heal|dmg|time} [options]|delete|emsg <message>|lmsg <message>|addi <item> <chance> [<min> <max>]|remi <item>|die {d|l|k|-}{d|l|k|-}|mtime <seconds>}");
 			return;
 		}
 	}
