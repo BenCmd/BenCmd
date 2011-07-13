@@ -25,3 +25,30 @@ CHANGELOG (STARTING FROM v1.2.2):
       -Can be destroyed immediately by admins (Anyone with the "canDestroyGraves" permission)
       -Automatically deleted if the user logs off or the server is reloaded/turned off
     -Fixed assorted minor bugs
+  1.2.4:
+    -Added /user [name] info to get info about a user
+      -What permissions they have (direct in green, indirect in gray)
+      -What groups they're in (direct in green, indirect in gray)
+      -Prefix/color they will inherit
+    -Added /group [name] info to get info about a group
+      -What permissions the group has (direct in green, indirect in gray)
+      -List of sub-groups
+      -List of users (Will not display when 50+ users are in a group)
+      -Prefix/color
+    -Added /area info to get information about an area
+      -Area ID
+      -Type of area
+      -Corner locations
+      -Enter/Leave messages (for areas with messaging capabilities)
+      -Minimum time (for areas with timing capabilities)
+      -PvP drop mode, if applicable
+    -Added /area table to list a PvP area's drop table details
+    -Added heal/damage/time-restrictive areas
+    -Made PvP drops customizable
+      -Can drop/keep/lose currencies or other items
+      -Drop table added that is capable of dropping pre-determined items
+        -Each item can have a 1/x chance of being spawned
+        -Each item can have a minimum/maximum drop amount
+        -Amount will be random between the minimum and maximum
+    -More bugfixes
+    -Cleaned up code

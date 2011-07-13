@@ -75,7 +75,6 @@ public class PermissionCommands implements Commands {
 	}
 
 	public void User(String[] args, User user) {
-		// TODO For v1.2.4: Allow enumeration of user permissions
 		if (args.length == 0 || args[0].equalsIgnoreCase("help")) {
 			user.sendMessage(ChatColor.YELLOW
 					+ "Proper use is: /user <name> {add|remove|g:<group>|c:<color>|<permissions>}");
@@ -106,6 +105,24 @@ public class PermissionCommands implements Commands {
 				user.sendMessage(ChatColor.GREEN + "User " + args[0]
 						+ " was successfully created!");
 				plugin.log.info("User " + args[0] + " has been created!");
+			}
+		} else if (args[1].equalsIgnoreCase("info")) {
+			if (user2 == null) {
+				user.sendMessage(ChatColor.RED + "That user doesn't exist!");
+			} else {
+				user.sendMessage(ChatColor.GRAY + "Information for user \""
+						+ user2.getName() + "\":");
+				user.sendMessage(ChatColor.GRAY + "Permissions: "
+						+ user2.listPermissions());
+				user.sendMessage(ChatColor.GRAY + "Groups: "
+						+ user2.listGroups());
+				if (user2.getPrefix().isEmpty()) {
+					user.sendMessage(ChatColor.GRAY + "Prefix: "
+							+ user2.getColor() + "(None)");
+				} else {
+					user.sendMessage(ChatColor.GRAY + "Prefix: "
+							+ user2.getColor() + user2.getPrefix());
+				}
 			}
 		} else if (args[1].startsWith("+")) {
 			args[1] = args[1].replaceFirst("\\+", "");
@@ -142,7 +159,6 @@ public class PermissionCommands implements Commands {
 	}
 
 	public void Group(String[] args, User user) {
-		// TODO For v1.2.4: Allow enumeration of group permissions, sub-groups, users, color, and prefix
 		if (args.length == 0 || args[0].equalsIgnoreCase("help")) {
 			user.sendMessage(ChatColor.YELLOW
 					+ "Proper use is: /group <name> {add|remove|c:<color>|p:<prefix>|<permissions>}");
@@ -181,6 +197,25 @@ public class PermissionCommands implements Commands {
 				user.sendMessage(ChatColor.GREEN + "Group " + args[0]
 						+ " was successfully created!");
 				plugin.log.info("Group " + args[0] + " has been created!");
+			}
+		} else if (args[1].equalsIgnoreCase("info")) {
+			if (group == null) {
+				user.sendMessage(ChatColor.RED + "That group doesn't exist!");
+			} else {
+				user.sendMessage(ChatColor.GRAY + "Information for group \""
+						+ group.getName() + "\":");
+				user.sendMessage(ChatColor.GRAY + "Permissions: "
+						+ group.listPermissions());
+				user.sendMessage(ChatColor.GRAY + "Users: " + group.listUsers());
+				user.sendMessage(ChatColor.GRAY + "Groups: "
+						+ group.listGroups());
+				if (group.getPrefix().isEmpty()) {
+					user.sendMessage(ChatColor.GRAY + "Prefix: "
+							+ group.getColor() + "(None)");
+				} else {
+					user.sendMessage(ChatColor.GRAY + "Prefix: "
+							+ group.getColor() + group.getPrefix());
+				}
 			}
 		} else if (args[1].equalsIgnoreCase("adduser")) {
 			if (args.length != 3) {
@@ -422,17 +457,6 @@ public class PermissionCommands implements Commands {
 				break;
 			}
 		}
-		String groups = "";
-		for (PermissionGroup group : plugin.perm.groupFile.getAllUserGroups(puser2)) {
-			if (groups.isEmpty()) {
-				groups = group.getName();
-			} else {
-				groups += ", " + group.getName();
-			}
-		}
-		if (groups.isEmpty()) {
-			groups = "(None?)";
-		}
 		user.sendMessage(ChatColor.GRAY + "Status of " + puser2.getName() + ":");
 		if (banned) {
 			user.sendMessage(ChatColor.RED + "   -Banned: YES");
@@ -454,7 +478,6 @@ public class PermissionCommands implements Commands {
 		} else {
 			user.sendMessage(ChatColor.GRAY + "   -Reported: NO");
 		}
-		user.sendMessage(ChatColor.GRAY + "   -Groups: " + groups);
 		if (user.hasPerm("canViewAdvStatus") && user2 != null) {
 			boolean godded = user2.isGod();
 			boolean allpoofed = user2.isNoPoofed();
@@ -462,7 +485,8 @@ public class PermissionCommands implements Commands {
 			boolean nopoofed = user2.isNoPoofed();
 			int health = user2.getHandle().getHealth();
 			if (user.getActiveChannel() != null) {
-				user.sendMessage(ChatColor.GRAY + "   -Chat channel: " + user.getActiveChannel().getDisplayName());
+				user.sendMessage(ChatColor.GRAY + "   -Chat channel: "
+						+ user.getActiveChannel().getDisplayName());
 			}
 			if (godded) {
 				user.sendMessage(ChatColor.GREEN + "   -Godded: YES");

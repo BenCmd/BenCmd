@@ -15,15 +15,15 @@ public class DamageArea extends TimedArea {
 			IndexOutOfBoundsException {
 		super(instance, key, value);
 	}
-	
+
 	public DamageArea(BenCmd instance, Integer id, Location corner1,
 			Location corner2, Integer minimumTime) {
 		super(instance, id, corner1, corner2, minimumTime);
 	}
-	
+
 	public void tick(List<Player> players) {
-		for(Player p : players) {
-			if(p.isDead() || User.getUser(plugin, p).isGod()) {
+		for (Player p : players) {
+			if (p.isDead() || User.getUser(plugin, p).isGod()) {
 				continue;
 			}
 			p.damage(1);

@@ -56,6 +56,7 @@ public class DropTable {
 	}
 
 	public void addItem(BCItem item, DropInfo di) {
+		removeItem(item);
 		drops.put(item, di);
 	}
 

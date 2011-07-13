@@ -43,25 +43,25 @@ public class TimedArea extends SPArea {
 			}
 		}, 0, 1000);
 	}
-	
+
 	public int getMinTime() {
 		return minTime;
 	}
-	
+
 	public void setMinTime(int value) {
 		minTime = value;
 		super.plugin.spafile.updateArea(this);
 	}
-	
+
 	private void preTick() {
 		List<Player> inside = new ArrayList<Player>();
-		for(Player p : super.plugin.getServer().getOnlinePlayers()) {
-			if(super.insideArea(p.getLocation())) {
-				if(minTime == 0 || minTime == 1) {
+		for (Player p : super.plugin.getServer().getOnlinePlayers()) {
+			if (super.insideArea(p.getLocation())) {
+				if (minTime == 0 || minTime == 1) {
 					inside.add(p);
 				} else {
 					if (timing.containsKey(p)) {
-						if(timing.get(p) + 1 >= minTime) {
+						if (timing.get(p) + 1 >= minTime) {
 							inside.add(p);
 						}
 						timing.put(p, timing.get(p) + 1);
@@ -71,8 +71,8 @@ public class TimedArea extends SPArea {
 				}
 			}
 		}
-		for(Player p : timing.keySet()) {
-			if((timing.get(p) > minTime && !inside.contains(p)) || p == null) {
+		for (Player p : timing.keySet()) {
+			if ((timing.get(p) > minTime && !inside.contains(p)) || p == null) {
 				timing.remove(p);
 			}
 		}
@@ -80,13 +80,14 @@ public class TimedArea extends SPArea {
 	}
 
 	protected void tick(List<Player> players) {
-		throw new UnsupportedOperationException("tick(List<Player> players) not overridden!");
+		throw new UnsupportedOperationException(
+				"tick(List<Player> players) not overridden!");
 	}
-	
+
 	public void delete() {
 		t.cancel();
 	}
-	
+
 	public String getInternalValue() {
 		return super.getInternalValue() + minTime;
 	}

@@ -84,6 +84,10 @@ public class PVPArea extends MsgArea {
 		t = new DropTable(instance, "");
 	}
 
+	public DropTable getDropTable() {
+		return t;
+	}
+
 	public HashMap<ItemStack, DropMode> getDrops(List<ItemStack> inv) {
 		HashMap<ItemStack, DropMode> re = new HashMap<ItemStack, DropMode>();
 		for (ItemStack i : inv) {
@@ -144,20 +148,20 @@ public class PVPArea extends MsgArea {
 		r += "/" + t.getValue();
 		return r;
 	}
-	
+
 	public DropMode getCDrop() {
 		return dmc;
 	}
-	
+
 	public DropMode getNDrop() {
 		return dmn;
 	}
-	
+
 	public void setCDrop(DropMode value) {
 		dmc = value;
 		super.plugin.spafile.updateArea(this);
 	}
-	
+
 	public void setNDrop(DropMode value) {
 		dmn = value;
 		super.plugin.spafile.updateArea(this);

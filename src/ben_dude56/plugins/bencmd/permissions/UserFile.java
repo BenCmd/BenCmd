@@ -53,7 +53,7 @@ public class UserFile extends Properties {
 
 	public void updateUser(InternalUser user) {
 		String value = "";
-		for (String perm : user.getPerms()) {
+		for (String perm : user.getPermissions(false)) {
 			if (value.isEmpty()) {
 				value += perm;
 			} else {

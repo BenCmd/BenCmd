@@ -21,8 +21,8 @@ public class HealArea extends TimedArea {
 	}
 
 	public void tick(List<Player> players) {
-		for(Player p : players) {
-			if(p.getHealth() == 20 || p.isDead()) {
+		for (Player p : players) {
+			if (p.getHealth() == 20 || p.isDead()) {
 				continue;
 			}
 			p.setHealth(p.getHealth() + 1);

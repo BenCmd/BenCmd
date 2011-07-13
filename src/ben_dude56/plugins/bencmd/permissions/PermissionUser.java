@@ -143,4 +143,59 @@ public class PermissionUser {
 	public PermissionUser getPermissionUser() {
 		return this;
 	}
+
+	public String listPermissions() {
+		String list = "";
+		for (String s : user.getPermissions(true)) {
+			if (s.isEmpty()) {
+				continue;
+			}
+			if (user.getPermissions(false).contains(s)) {
+				s = ChatColor.GREEN + s + ChatColor.GRAY;
+			} else {
+				s = ChatColor.GRAY + s;
+			}
+			if (list.isEmpty()) {
+				list = s;
+			} else {
+				list += ", " + s;
+			}
+		}
+		if (list.isEmpty()) {
+			return ChatColor.GRAY + "(None)";
+		} else {
+			return list;
+		}
+	}
+
+	public String listGroups() {
+		String groups = "";
+		for (PermissionGroup group : user.plugin.perm.groupFile
+				.getAllUserGroups(this)) {
+			boolean direct = false;
+			for (PermissionGroup group2 : user.plugin.perm.groupFile
+					.getUserGroups(this)) {
+				if (group.getName().equals(group2.getName())) {
+					direct = true;
+					break;
+				}
+			}
+			String gname = group.getName();
+			if (direct) {
+				gname = ChatColor.GREEN + gname + ChatColor.GRAY;
+			} else {
+				gname = ChatColor.GRAY + gname;
+			}
+			if (groups.isEmpty()) {
+				groups = gname;
+			} else {
+				groups += ", " + gname;
+			}
+		}
+		if (groups.isEmpty()) {
+			return "(None)";
+		} else {
+			return groups;
+		}
+	}
 }

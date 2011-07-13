@@ -127,4 +127,72 @@ public class PermissionGroup {
 		updateInternal();
 		group.remPerm(permission);
 	}
+
+	public String listPermissions() {
+		String list = "";
+		for (String s : group.getPermissions(true)) {
+			if (s.isEmpty()) {
+				continue;
+			}
+			if (group.getPermissions(false).contains(s)) {
+				s = ChatColor.GREEN + s + ChatColor.GRAY;
+			} else {
+				s = ChatColor.GRAY + s;
+			}
+			if (list.isEmpty()) {
+				list = s;
+			} else {
+				list += ", " + s;
+			}
+		}
+		if (list.isEmpty()) {
+			return ChatColor.GRAY + "(None)";
+		} else {
+			return list;
+		}
+	}
+
+	public String listUsers() {
+		String list = "";
+		if (group.getUsers().size() >= 50) {
+			return ChatColor.GRAY + "Too many to list...";
+		}
+		for (String s : group.getUsers()) {
+			if (s.isEmpty()) {
+				continue;
+			}
+			if (list.isEmpty()) {
+				list = ChatColor.GRAY + s;
+			} else {
+				list += ", " + s;
+			}
+		}
+		if (list.isEmpty()) {
+			return ChatColor.GRAY + "(None)";
+		} else {
+			return list;
+		}
+	}
+
+	public String listGroups() {
+		String list = "";
+		if (group.getGroups().size() >= 50) {
+			return ChatColor.GRAY + "Too many to list...";
+		}
+		for (String s : group.getGroups()) {
+			if (s.isEmpty()) {
+				continue;
+			}
+			if (list.isEmpty()) {
+				list = ChatColor.GRAY + s;
+			} else {
+				list += ", " + s;
+			}
+		}
+		if (list.isEmpty()) {
+			return ChatColor.GRAY + "(None)";
+		} else {
+			return list;
+		}
+	}
 }

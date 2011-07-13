@@ -119,9 +119,10 @@ public class SPAreaPListener extends PlayerListener {
 				}
 			}
 			if (a instanceof TRArea) {
-				if(a.insideArea(p.getLocation()) && ((TRArea)a).isLocked(p)) {
+				if (a.insideArea(p.getLocation()) && ((TRArea) a).isLocked(p)) {
 					ignore.add(p);
-					p.sendMessage(ChatColor.RED + "You cannot enter this area at this time!");
+					p.sendMessage(ChatColor.RED
+							+ "You cannot enter this area at this time!");
 					int c = 1;
 					while (true) {
 						Location f = p.getLocation();
@@ -182,8 +183,8 @@ public class SPAreaPListener extends PlayerListener {
 			if (a instanceof MsgArea) {
 				if (a.insideArea(p.getLocation())) {
 					if (!areas.get(p).contains(a)) {
-						if (((MsgArea) a).getEnterMessage().equals(
-								ChatColor.YELLOW.toString())) {
+						if (((MsgArea) a).getEnterMessage().startsWith("§")
+								&& ((MsgArea) a).getEnterMessage().length() == 2) {
 							return;
 						}
 						p.sendMessage(((MsgArea) a).getEnterMessage());
@@ -191,8 +192,8 @@ public class SPAreaPListener extends PlayerListener {
 					}
 				} else {
 					if (areas.get(p).contains(a)) {
-						if (((MsgArea) a).getLeaveMessage().equals(
-								ChatColor.YELLOW.toString())) {
+						if (((MsgArea) a).getLeaveMessage().startsWith("§")
+								&& ((MsgArea) a).getLeaveMessage().length() == 2) {
 							return;
 						}
 						p.sendMessage(((MsgArea) a).getLeaveMessage());

@@ -21,8 +21,16 @@ public class InternalUser {
 		return name;
 	}
 
-	protected List<String> getPerms() {
-		return permissions;
+	public List<String> getPermissions(boolean testGroup) {
+		List<String> perms = new ArrayList<String>();
+		perms.addAll(permissions);
+		if (testGroup) {
+			for (PermissionGroup group : plugin.perm.groupFile
+					.getAllUserGroups(this)) {
+				perms.addAll(group.getInternal().getPermissions(false));
+			}
+		}
+		return perms;
 	}
 
 	public Action isMuted() {

@@ -1,5 +1,7 @@
 package ben_dude56.plugins.bencmd.permissions;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.TimerTask;
 
 import org.bukkit.ChatColor;
@@ -16,7 +18,8 @@ public class ActionTask extends TimerTask {
 	}
 
 	public void run() {
-		for (Action action : actions.actions.values()) {
+		List<Action> ac = new ArrayList<Action>(actions.actions.values());
+		for (Action action : ac) {
 			if (action.isExpired()) {
 				if (action.getActionType() == ActionType.JAIL) {
 					User user2;
@@ -40,6 +43,7 @@ public class ActionTask extends TimerTask {
 				actions.removeAction(action);
 			}
 		}
+		ac = null;
 	}
 
 }
