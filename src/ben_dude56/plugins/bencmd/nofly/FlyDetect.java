@@ -35,7 +35,7 @@ public class FlyDetect {
 	}
 
 	public int getOffences(Player player) {
-		if (User.getUser(plugin, player).isJailed() == null) {
+		if (User.getUser(plugin, player).isJailed() != null) {
 			return 3;
 		}
 		if (offenders.containsKey(player.getName())) {
@@ -46,7 +46,7 @@ public class FlyDetect {
 	}
 
 	public void addOffence(Player player) {
-		if (User.getUser(plugin, player).hasPerm("isJailed", false)) {
+		if (User.getUser(plugin, player).isJailed() != null) {
 			return;
 		}
 		if (offenders.containsKey(player.getName())) {
@@ -57,6 +57,7 @@ public class FlyDetect {
 	}
 
 	public void detect(Player player) {
+		// TODO For v1.2.5: Allow more fly detection customization
 		if (User.getUser(plugin, player).hasPerm("canFly")) {
 			return;
 		}

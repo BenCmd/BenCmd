@@ -1212,6 +1212,8 @@ public class LotCommands implements Commands {
 	}
 
 	public void Area(String[] args, User user) {
+		// TODO For v1.2.4: Add /area info to get specific info about an area...
+		// TODO For v1.2.4: Add /area table to check a PvP area's drop table
 		if (args.length == 0) {
 			user.sendMessage(ChatColor.YELLOW
 					+ "Proper usage: /area {new {pvp|msg|heal|dmg|time} [options]|delete|emsg <message>|lmsg <message>|addi <item> <chance> [<min> <max>]|remi <item>|die {d|l|k|-}{d|l|k|-}|mtime <seconds>}");

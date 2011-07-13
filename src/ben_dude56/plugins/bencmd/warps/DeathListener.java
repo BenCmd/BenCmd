@@ -23,6 +23,7 @@ public class DeathListener extends EntityListener {
 	}
 
 	public void onEntityDeath(EntityDeathEvent event) {
+		// TODO For v1.2.5: Switch mob drop data to drop table format
 		if (event.getEntity() instanceof CraftZombie) {
 			if (plugin.mainProperties.getString("zombieDrop", "").isEmpty()) {
 				return;

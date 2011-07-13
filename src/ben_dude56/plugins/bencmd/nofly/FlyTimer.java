@@ -7,6 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 public class FlyTimer extends TimerTask {
+	// TODO For v1.2.6: Change to Bukkit Scheduler
 
 	FlyDetect flyDetect;
 

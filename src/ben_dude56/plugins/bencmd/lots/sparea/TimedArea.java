@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import ben_dude56.plugins.bencmd.BenCmd;
 
 public class TimedArea extends SPArea {
+	// TODO For v1.2.6: Change to Bukkit Scheduler
 	private HashMap<Player, Integer> timing;
 	private int minTime;
 	private Timer t;

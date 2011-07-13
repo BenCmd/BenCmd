@@ -75,6 +75,7 @@ public class PermissionCommands implements Commands {
 	}
 
 	public void User(String[] args, User user) {
+		// TODO For v1.2.4: Allow enumeration of user permissions
 		if (args.length == 0 || args[0].equalsIgnoreCase("help")) {
 			user.sendMessage(ChatColor.YELLOW
 					+ "Proper use is: /user <name> {add|remove|g:<group>|c:<color>|<permissions>}");
@@ -141,6 +142,7 @@ public class PermissionCommands implements Commands {
 	}
 
 	public void Group(String[] args, User user) {
+		// TODO For v1.2.4: Allow enumeration of group permissions, sub-groups, users, color, and prefix
 		if (args.length == 0 || args[0].equalsIgnoreCase("help")) {
 			user.sendMessage(ChatColor.YELLOW
 					+ "Proper use is: /group <name> {add|remove|c:<color>|p:<prefix>|<permissions>}");
@@ -420,6 +422,17 @@ public class PermissionCommands implements Commands {
 				break;
 			}
 		}
+		String groups = "";
+		for (PermissionGroup group : plugin.perm.groupFile.getAllUserGroups(puser2)) {
+			if (groups.isEmpty()) {
+				groups = group.getName();
+			} else {
+				groups += ", " + group.getName();
+			}
+		}
+		if (groups.isEmpty()) {
+			groups = "(None?)";
+		}
 		user.sendMessage(ChatColor.GRAY + "Status of " + puser2.getName() + ":");
 		if (banned) {
 			user.sendMessage(ChatColor.RED + "   -Banned: YES");
@@ -441,17 +454,24 @@ public class PermissionCommands implements Commands {
 		} else {
 			user.sendMessage(ChatColor.GRAY + "   -Reported: NO");
 		}
+		user.sendMessage(ChatColor.GRAY + "   -Groups: " + groups);
 		if (user.hasPerm("canViewAdvStatus") && user2 != null) {
 			boolean godded = user2.isGod();
+			boolean allpoofed = user2.isNoPoofed();
 			boolean poofed = user2.isPoofed();
 			boolean nopoofed = user2.isNoPoofed();
 			int health = user2.getHandle().getHealth();
+			if (user.getActiveChannel() != null) {
+				user.sendMessage(ChatColor.GRAY + "   -Chat channel: " + user.getActiveChannel().getDisplayName());
+			}
 			if (godded) {
 				user.sendMessage(ChatColor.GREEN + "   -Godded: YES");
 			} else {
 				user.sendMessage(ChatColor.GRAY + "   -Godded: NO");
 			}
-			if (poofed) {
+			if (allpoofed) {
+				user.sendMessage(ChatColor.GREEN + "   -Invisible: ALL");
+			} else if (poofed) {
 				user.sendMessage(ChatColor.GREEN + "   -Invisible: YES");
 			} else {
 				user.sendMessage(ChatColor.GRAY + "   -Invisible: NO");

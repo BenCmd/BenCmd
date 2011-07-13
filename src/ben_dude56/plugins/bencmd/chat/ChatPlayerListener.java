@@ -174,6 +174,9 @@ public class ChatPlayerListener extends PlayerListener {
 		if (user.isNoPoofed()) {
 			user.UnNoPoof();
 		}
+		if (user.isAllPoofed()) {
+			user.UnAllPoof();
+		}
 		if (user.inChannel()) {
 			user.leaveChannel();
 		}

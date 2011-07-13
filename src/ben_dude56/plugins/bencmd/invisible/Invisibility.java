@@ -52,7 +52,7 @@ public class Invisibility {
 	}
 
 	public void remAInv(Player player) {
-		plugin.invisible.remove(player);
+		plugin.allinvisible.remove(player);
 		for (Player appearTo : plugin.noinvisible) {
 			if (player != appearTo) {
 				uninvisible(player, appearTo);

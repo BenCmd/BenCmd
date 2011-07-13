@@ -82,6 +82,7 @@ public class SlowMode {
 	}
 
 	public class SlowModeTimer extends TimerTask {
+		// TODO For v1.2.6: Change to Bukkit Scheduler
 		SlowMode parent;
 
 		public SlowModeTimer(SlowMode instance) {

@@ -5,6 +5,7 @@ import java.util.TimerTask;
 import org.bukkit.entity.Player;
 
 public class InvisibilityTask extends TimerTask {
+	// TODO For v1.2.6: Change to Bukkit Scheduler
 	Invisibility parent;
 
 	public InvisibilityTask(Invisibility parentInv) {

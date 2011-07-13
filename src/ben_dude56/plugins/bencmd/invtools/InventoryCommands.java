@@ -146,6 +146,7 @@ public class InventoryCommands implements Commands {
 			}
 		}
 		Material mat = Item.getMaterial();
+		// TODO For v1.2.5: Fix item whitelisting/blacklisting
 		/*
 		 * if (user.getGroup() != null && !user.getGroup().canSpawnItem(mat)) {
 		 * user.sendMessage(ChatColor.RED +
@@ -176,7 +177,7 @@ public class InventoryCommands implements Commands {
 			}
 			user2.sendMessage(ChatColor.GREEN + user.getDisplayName()
 					+ " has sent you a gift.");
-			user.sendMessage("Your gift has been sent!");
+			user.sendMessage(ChatColor.GREEN + "Your gift has been sent!");
 			log.info("BenCmd: " + user.getDisplayName() + " gave "
 					+ user2.getDisplayName() + " an item. (id: "
 					+ String.valueOf(mat.getId()) + ", amount: "

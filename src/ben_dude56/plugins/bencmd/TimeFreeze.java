@@ -5,6 +5,7 @@ import java.util.TimerTask;
 import org.bukkit.World;
 
 public class TimeFreeze extends TimerTask {
+	// TODO For v1.2.6: Change to Bukkit Scheduler
 
 	private BenCmd plugin;
 
