@@ -143,7 +143,7 @@ public class ProtectFile extends Properties {
 			value += "c/";
 			boolean init = false;
 			for (PermissionUser guest : block.getGuests()) {
-				if (!init) {
+				if (init) {
 					value += ",";
 				} else {
 					init = true;
@@ -165,7 +165,7 @@ public class ProtectFile extends Properties {
 			value += "d/";
 			boolean init = false;
 			for (PermissionUser guest : block.getGuests()) {
-				if (!init) {
+				if (init) {
 					value += ",";
 				} else {
 					init = true;
@@ -187,7 +187,7 @@ public class ProtectFile extends Properties {
 			value += "pc/";
 			boolean init = false;
 			for (PermissionUser guest : block.getGuests()) {
-				if (!init) {
+				if (init) {
 					value += ",";
 				} else {
 					init = true;
@@ -209,7 +209,7 @@ public class ProtectFile extends Properties {
 			value += "pd/";
 			boolean init = false;
 			for (PermissionUser guest : block.getGuests()) {
-				if (!init) {
+				if (init) {
 					value += ",";
 				} else {
 					init = true;
