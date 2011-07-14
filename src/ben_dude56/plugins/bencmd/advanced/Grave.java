@@ -86,7 +86,7 @@ public class Grave {
 			delete();
 			plugin.graves.remove(this);
 			p.sendMessage(ChatColor.GREEN
-					+ "You've reached your grave in time and you items are safe!");
+					+ "You've reached your grave in time and your items are safe!");
 			return true;
 		} else {
 			User user = User.getUser(plugin, player);

@@ -96,10 +96,16 @@ public class FlyDetect {
 		switch (action) {
 		case PULLDOWN:
 			Location l = player.getLocation();
-			l.setY(player.getWorld().getHighestBlockYAt(l));
+			while(l.getBlock().getType() == Material.AIR) {
+				if (l.getY() <= 0) {
+					l.setY(l.getWorld().getHighestBlockYAt(l) - 1);
+				} else {
+					l.setY(l.getY() - 1);
+				}
+			}
+			l.setY(l.getY() + 1);
 			player.teleport(l);
 			plugin.log.info(player.getName() + " was sent to ground level for flying!");
-			lastL.put(player, player.getLocation());
 			break;
 		case RESPAWN:
 			User.getUser(plugin, player).Spawn();

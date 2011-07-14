@@ -67,6 +67,7 @@ public class BenCmd extends JavaPlugin {
 	public final ShelfBListener shelflb = new ShelfBListener(this);
 	public final SPAreaPListener spaplisten = new SPAreaPListener(this);
 	public final SPAreaEListener spaelisten = new SPAreaEListener(this);
+	public final FlyListener flyListen = new FlyListener(this);
 	public final HashMap<Player, Boolean> godmode = new HashMap<Player, Boolean>();
 	public final List<Player> invisible = new ArrayList<Player>();
 	public final List<Player> noinvisible = new ArrayList<Player>();
@@ -417,6 +418,10 @@ public class BenCmd extends JavaPlugin {
 				Event.Priority.Highest, this);
 		pm.registerEvent(Event.Type.ENTITY_DEATH, this.spaelisten,
 				Event.Priority.Highest, this);
+		pm.registerEvent(Event.Type.PLAYER_TELEPORT, this.flyListen,
+				Event.Priority.Monitor, this);
+		pm.registerEvent(Event.Type.PLAYER_PORTAL, this.flyListen,
+				Event.Priority.Monitor, this);
 		PluginDescriptionFile pdfFile = this.getDescription();
 		// Prepare the time lock timer
 		FreezeTimer.schedule(new TimeFreeze(this), 0, 5000);
