@@ -12,7 +12,6 @@ public class FlyTimer extends TimerTask {
 	// TODO For v1.2.6: Change to Bukkit Scheduler
 
 	FlyDetect flyDetect;
-	
 
 	public FlyTimer(FlyDetect detect) {
 		flyDetect = detect;
@@ -66,10 +65,11 @@ public class FlyTimer extends TimerTask {
 				return;
 			}
 			Location loc = player.getLocation();
-			if(!flyDetect.lastL.containsKey(player)) {
+			if (!flyDetect.lastL.containsKey(player)) {
 				flyDetect.lastL.put(player, player.getLocation());
 			} else {
-				flyDetect.riseChange(player, player.getLocation().getY() - flyDetect.lastL.get(player).getY());
+				flyDetect.riseChange(player, player.getLocation().getY()
+						- flyDetect.lastL.get(player).getY());
 				flyDetect.lastL.put(player, player.getLocation());
 			}
 			loc.setY(loc.getY() - 1);

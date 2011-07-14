@@ -36,7 +36,8 @@ public class FlyDetect {
 		offenders = new HashMap<String, Integer>();
 		responses = new ArrayList<FlyResponse>();
 		lastL = new HashMap<Player, Location>();
-		for(String s : plugin.mainProperties.getString("flyResponses", "p").split(",")) {
+		for (String s : plugin.mainProperties.getString("flyResponses", "p")
+				.split(",")) {
 			if (s.equalsIgnoreCase("p")) {
 				responses.add(FlyResponse.PULLDOWN);
 			} else if (s.equalsIgnoreCase("r")) {
@@ -66,16 +67,18 @@ public class FlyDetect {
 			jailResponse = FlyResponse.WARN;
 		}
 		if (jailResponse == FlyResponse.RESPAWN) {
-			plugin.log.warning("A jailFlyResponse of 'r' may allow people to escape jail by flying and being respawned!");
+			plugin.log
+					.warning("A jailFlyResponse of 'r' may allow people to escape jail by flying and being respawned!");
 		} else if (jailResponse == FlyResponse.JAIL) {
-			plugin.log.warning("A jailFlyResponse of 'j' will not produce any action when a person in jail flies, as you cannot double-jail someone!");
+			plugin.log
+					.warning("A jailFlyResponse of 'j' will not produce any action when a person in jail flies, as you cannot double-jail someone!");
 		}
 	}
 
 	public boolean isTimeDetected(Player player) {
 		return timed.containsKey(player);
 	}
-	
+
 	public boolean isRiseDetected(Player player) {
 		return rise.containsKey(player);
 	}
@@ -91,12 +94,12 @@ public class FlyDetect {
 			return 0;
 		}
 	}
-	
+
 	public void actionOnce(Player player, FlyResponse action) {
 		switch (action) {
 		case PULLDOWN:
 			Location l = player.getLocation();
-			while(l.getBlock().getType() == Material.AIR) {
+			while (l.getBlock().getType() == Material.AIR) {
 				if (l.getY() <= 0) {
 					l.setY(l.getWorld().getHighestBlockYAt(l) - 1);
 				} else {
@@ -105,29 +108,36 @@ public class FlyDetect {
 			}
 			l.setY(l.getY() + 1);
 			player.teleport(l);
-			plugin.log.info(player.getName() + " was sent to ground level for flying!");
+			plugin.log.info(player.getName()
+					+ " was sent to ground level for flying!");
 			break;
 		case RESPAWN:
 			User.getUser(plugin, player).Spawn();
 			plugin.checkpoints.RemovePreWarp(player);
-			player.sendMessage(ChatColor.RED + "You have been respawned for flying!");
-			plugin.log.info(player.getName() + " was sent to spawn for flying!");
+			player.sendMessage(ChatColor.RED
+					+ "You have been respawned for flying!");
+			plugin.log
+					.info(player.getName() + " was sent to spawn for flying!");
 			lastL.put(player, player.getLocation());
 			break;
 		case KICK:
-			User.getUser(plugin, player).Kick("You have been kicked for flying!");
+			User.getUser(plugin, player).Kick(
+					"You have been kicked for flying!");
 			plugin.log.info(player.getName() + " was kicked for flying!");
 			break;
 		case JAIL:
 			User user = User.getUser(plugin, player);
 			if (user.isJailed() != null) {
-				plugin.log.warning("Cannot jail " + user.getName() + " for flying, because they're already jailed!");
+				plugin.log.warning("Cannot jail " + user.getName()
+						+ " for flying, because they're already jailed!");
 			} else {
 				plugin.actions.addAction(user, ActionType.JAIL, 3600000L);
 				plugin.jail.SendToJail(player);
-				player.sendMessage(ChatColor.RED + "You have been jailed for 1 hour for flying!");
+				player.sendMessage(ChatColor.RED
+						+ "You have been jailed for 1 hour for flying!");
 				lastL.put(player, player.getLocation());
-				plugin.log.info(player.getName() + " was jailed (1hr) for flying!");
+				plugin.log.info(player.getName()
+						+ " was jailed (1hr) for flying!");
 			}
 			break;
 		case BAN:
@@ -137,12 +147,13 @@ public class FlyDetect {
 			plugin.log.info(player.getName() + " was banned (1hr) for flying!");
 			break;
 		case WARN:
-			player.sendMessage(ChatColor.RED + "WARNING: You have been detected flying! Action may be taken...");
+			player.sendMessage(ChatColor.RED
+					+ "WARNING: You have been detected flying! Action may be taken...");
 			plugin.log.info(player.getName() + " has been warned for flying!");
 			break;
 		}
 	}
-	
+
 	public void action(Player player) {
 		if (User.getUser(plugin, player).isJailed() != null) {
 			actionOnce(player, jailResponse);
@@ -166,12 +177,12 @@ public class FlyDetect {
 			offenders.put(player.getName(), 1);
 		}
 	}
-	
+
 	public void riseChange(Player player, Double change) {
-		/*if (lastUpdate + 2000 < new Date().getTime()) {
-			lastUpdate = new Date().getTime();
-			return; // Probably just lag...
-		} else*/ if (change < 0 || onBlock(player.getLocation())) {
+		/*
+		 * if (lastUpdate + 2000 < new Date().getTime()) { lastUpdate = new
+		 * Date().getTime(); return; // Probably just lag... } else
+		 */if (change < 0 || onBlock(player.getLocation())) {
 			lastUpdate = new Date().getTime();
 			if (isRiseDetected(player)) {
 				rise.remove(player);
@@ -189,7 +200,7 @@ public class FlyDetect {
 			}
 		}
 	}
-	
+
 	public boolean onBlock(Location loc) {
 		loc.setX(loc.getX() - 1);
 		loc.setZ(loc.getZ() - 1);
@@ -249,7 +260,7 @@ public class FlyDetect {
 			timed.remove(player);
 		}
 	}
-	
+
 	public enum FlyResponse {
 		PULLDOWN, RESPAWN, KICK, JAIL, BAN, WARN
 	}

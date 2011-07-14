@@ -483,6 +483,9 @@ public class BenCmd extends JavaPlugin {
 			"Permissions", "DeathSigns" };
 
 	public boolean sanityCheck() {
+		if (debug) {
+			log.warning("You are running a version of BenCmd marked for DEBUGGING ONLY! Use of this version may cause world/database corruption. Use at your own risk!");
+		}
 		PluginManager pm = getServer().getPluginManager();
 		int result = -1;
 		for (String plugin : fatalconflicts) {

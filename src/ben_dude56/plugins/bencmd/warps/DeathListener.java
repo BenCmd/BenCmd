@@ -1,5 +1,7 @@
 package ben_dude56.plugins.bencmd.warps;
 
+import java.util.Random;
+
 import org.bukkit.ChatColor;
 import org.bukkit.craftbukkit.entity.CraftCreeper;
 import org.bukkit.craftbukkit.entity.CraftSkeleton;
@@ -13,7 +15,7 @@ import org.bukkit.inventory.ItemStack;
 
 import ben_dude56.plugins.bencmd.BenCmd;
 import ben_dude56.plugins.bencmd.User;
-import ben_dude56.plugins.bencmd.invtools.kits.Kit;
+import ben_dude56.plugins.bencmd.lots.sparea.DropTable;
 
 public class DeathListener extends EntityListener {
 	BenCmd plugin;
@@ -23,20 +25,14 @@ public class DeathListener extends EntityListener {
 	}
 
 	public void onEntityDeath(EntityDeathEvent event) {
-		// TODO For v1.2.5: Switch mob drop data to drop table format
 		if (event.getEntity() instanceof CraftZombie) {
 			if (plugin.mainProperties.getString("zombieDrop", "").isEmpty()) {
 				return;
 			}
-			Kit kit = plugin.kits.getKit(plugin.mainProperties.getString(
-					"zombieDrop", ""));
-			if (kit == null) {
-				plugin.log
-						.warning("Kit specified for zombie drops doesn't exist!");
-				return;
-			}
+			DropTable table = new DropTable(plugin,
+					plugin.mainProperties.getString("zombieDrop", ""));
 			event.getDrops().clear();
-			for (ItemStack item : kit.getItems()) {
+			for (ItemStack item : table.getRandomDrops(new Random())) {
 				event.getDrops().add(item);
 			}
 		}
@@ -44,15 +40,10 @@ public class DeathListener extends EntityListener {
 			if (plugin.mainProperties.getString("skeletonDrop", "").isEmpty()) {
 				return;
 			}
-			Kit kit = plugin.kits.getKit(plugin.mainProperties.getString(
-					"skeletonDrop", ""));
-			if (kit == null) {
-				plugin.log
-						.warning("Kit specified for skeleton drops doesn't exist!");
-				return;
-			}
+			DropTable table = new DropTable(plugin,
+					plugin.mainProperties.getString("skeletonDrop", ""));
 			event.getDrops().clear();
-			for (ItemStack item : kit.getItems()) {
+			for (ItemStack item : table.getRandomDrops(new Random())) {
 				event.getDrops().add(item);
 			}
 		}
@@ -60,15 +51,10 @@ public class DeathListener extends EntityListener {
 			if (plugin.mainProperties.getString("spiderDrop", "").isEmpty()) {
 				return;
 			}
-			Kit kit = plugin.kits.getKit(plugin.mainProperties.getString(
-					"spiderDrop", ""));
-			if (kit == null) {
-				plugin.log
-						.warning("Kit specified for spider drops doesn't exist!");
-				return;
-			}
+			DropTable table = new DropTable(plugin,
+					plugin.mainProperties.getString("spiderDrop", ""));
 			event.getDrops().clear();
-			for (ItemStack item : kit.getItems()) {
+			for (ItemStack item : table.getRandomDrops(new Random())) {
 				event.getDrops().add(item);
 			}
 		}
@@ -76,15 +62,10 @@ public class DeathListener extends EntityListener {
 			if (plugin.mainProperties.getString("creeperDrop", "").isEmpty()) {
 				return;
 			}
-			Kit kit = plugin.kits.getKit(plugin.mainProperties.getString(
-					"creeperDrop", ""));
-			if (kit == null) {
-				plugin.log
-						.warning("Kit specified for creeper drops doesn't exist!");
-				return;
-			}
+			DropTable table = new DropTable(plugin,
+					plugin.mainProperties.getString("creeperDrop", ""));
 			event.getDrops().clear();
-			for (ItemStack item : kit.getItems()) {
+			for (ItemStack item : table.getRandomDrops(new Random())) {
 				event.getDrops().add(item);
 			}
 		}

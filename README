@@ -52,3 +52,13 @@ CHANGELOG (STARTING FROM v1.2.2):
         -Amount will be random between the minimum and maximum
     -More bugfixes
     -Cleaned up code
+  1.2.5:
+    -Fixed item spawn blacklisting/whitelisting
+    -Mobs now use drop tables instead of kits to decide what they drop
+    -Improved the accuracy of the flymod detector
+    -Made flymod actions customizable
+    -Now displays a warning when a server starts up with a DEBUG version of BenCmd
+    -Lotsa bugfixes
+      -Fixed miscellanious spelling errors
+      -Fixed protections occasionally corrupting
+      -Fixed flymod detection system occasionally detecting a player that has teleported as "flying"

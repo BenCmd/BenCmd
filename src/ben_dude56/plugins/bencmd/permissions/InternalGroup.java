@@ -27,6 +27,17 @@ class InternalGroup {
 		return highest;
 	}
 
+	static PermissionGroup highestLevelP(List<PermissionGroup> groups) {
+		InternalGroup highest = null;
+		for (PermissionGroup pgroup : groups) {
+			InternalGroup group = pgroup.getInternal();
+			if (highest == null || group.getLevel() > highest.getLevel()) {
+				highest = group;
+			}
+		}
+		return new PermissionGroup(highest);
+	}
+
 	protected InternalGroup(BenCmd instance, String groupName,
 			List<String> permissions, List<String> users, List<String> groups,
 			String prefix, Integer color, Integer level) {

@@ -49,6 +49,11 @@ public class PermissionUser {
 		user = user.plugin.perm.userFile.getInternal(user.getName());
 	}
 
+	public PermissionGroup highestLevelGroup() {
+		return InternalGroup.highestLevelP(user.plugin.perm.groupFile
+				.getAllUserGroups(this));
+	}
+
 	public String getName() {
 		updateInternal();
 		return user.getName();
