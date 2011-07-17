@@ -257,3 +257,12 @@ commands:
     area:
         usage:
         description: Sets a special purpose area
+    bank:
+        usage:
+        description: Does banking tasks
+    npc:
+        usage:
+        description: Deals with NPCs
+    lever:
+        usage:
+        description: Deals with levers

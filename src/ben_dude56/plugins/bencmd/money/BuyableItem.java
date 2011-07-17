@@ -7,6 +7,7 @@ import java.util.List;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import ben_dude56.plugins.bencmd.BenCmd;
 import ben_dude56.plugins.bencmd.User;
 import ben_dude56.plugins.bencmd.invtools.InventoryBackend;
 
@@ -62,6 +63,115 @@ public class BuyableItem {
 
 	public Integer getSupply() {
 		return supply;
+	}
+	
+	public static boolean hasMoney(User user, Double amountNeeded, BenCmd instance) {
+		Double amountHas = 0.0;
+		HashMap<Double, Currency> sortedCurrencies = new HashMap<Double, Currency>();
+		for (Currency currencyType : instance.prices.getCurrencies()) {
+			sortedCurrencies.put(currencyType.getPrice(), currencyType);
+			HashMap<Integer, ? extends ItemStack> matches = user.getHandle()
+					.getInventory().all(currencyType.getMaterial());
+			for (ItemStack match : matches.values()) {
+				amountHas += currencyType.getPrice() * match.getAmount();
+			}
+		}
+		return amountHas >= amountNeeded;
+	}
+	
+	public static void remMoney(User user, Double amountNeeded, BenCmd instance) {
+		Double amountTaken = 0.0;
+		HashMap<Double, Currency> sortedCurrencies = new HashMap<Double, Currency>();
+		for (Currency currencyType : instance.prices.getCurrencies()) {
+			sortedCurrencies.put(currencyType.getPrice(), currencyType);
+		}
+		Object[] reversedCurrencies = sortedCurrencies.values().toArray();
+		for (int i = 0; i < reversedCurrencies.length / 2; i++) {
+			Currency temp = (Currency) reversedCurrencies[i];
+			reversedCurrencies[i] = reversedCurrencies[reversedCurrencies.length
+					- i - 1];
+			reversedCurrencies[reversedCurrencies.length - i - 1] = temp;
+		}
+		for (Currency currency : sortedCurrencies.values()) {
+			Double value = currency.getPrice();
+			HashMap<Integer, ? extends ItemStack> matches = user.getHandle()
+					.getInventory().all(currency.getMaterial());
+			for (Integer pos : matches.keySet()) {
+				ItemStack item = user.getHandle().getInventory().getItem(pos);
+				if (item.getDurability() != currency.getDurability()) {
+					continue;
+				}
+				if (amountTaken + item.getAmount() * value <= amountNeeded) {
+					amountTaken += item.getAmount() * value;
+					user.getHandle().getInventory().clear(pos);
+				} else if (amountTaken + value <= amountNeeded) {
+					int taken;
+					taken = (int) Math.ceil((amountNeeded - amountTaken)
+							/ value);
+					item.setAmount(item.getAmount() - taken);
+					user.getHandle().getInventory().setItem(pos, item);
+					amountTaken += taken * value;
+					break;
+				} else {
+					break;
+				}
+			}
+		}
+		if (amountTaken < amountNeeded) {
+			for (Currency currency : sortedCurrencies.values()) {
+				HashMap<Integer, ? extends ItemStack> matches = user
+						.getHandle().getInventory().all(currency.getMaterial());
+				if (!matches.isEmpty()) {
+					ItemStack item = (ItemStack) matches.values().toArray()[0];
+					Integer pos = (Integer) matches.keySet().toArray()[0];
+					item.setAmount(item.getAmount() - 1);
+					if (item.getAmount() != 0) {
+						user.getHandle().getInventory().setItem(pos, item);
+					} else {
+						user.getHandle().getInventory().clear(pos);
+					}
+					HashMap<Currency, Integer> currencies = makeChange(
+							currency.getPrice() - (amountNeeded - amountTaken),
+							reversedCurrencies);
+					for (int i = 0; i < currencies.size(); i++) {
+						Currency changeCurrency = (Currency) currencies
+								.keySet().toArray()[i];
+						Integer changeAmount = (Integer) currencies.values()
+								.toArray()[i];
+						List<Integer> splitamount = new ArrayList<Integer>();
+						while (changeAmount > 0) {
+							Integer maxAmount = new InventoryBackend(
+									instance)
+									.getStackNumber(changeCurrency.getItemId());
+							if (changeAmount > maxAmount) {
+								splitamount.add(maxAmount);
+								changeAmount -= maxAmount;
+							} else {
+								splitamount.add(changeAmount);
+								changeAmount = 0;
+							}
+						}
+						for (Integer amt : splitamount) {
+							if (user.getHandle().getInventory().firstEmpty() >= 0) {
+								user.getHandle()
+										.getInventory()
+										.addItem(
+												new ItemStack(changeCurrency
+														.getMaterial(), amt));
+							} else {
+								user.getHandle()
+										.getWorld()
+										.dropItem(
+												user.getHandle().getLocation(),
+												new ItemStack(changeCurrency
+														.getMaterial(), amt));
+							}
+						}
+					}
+					break;
+				}
+			}
+		}
 	}
 
 	public BuyResult buyItem(User user, Integer amount) {
@@ -304,7 +414,7 @@ public class BuyableItem {
 		return true;
 	}
 
-	public HashMap<Currency, Integer> makeChange(Double change,
+	public static HashMap<Currency, Integer> makeChange(Double change,
 			Object[] acceptedCurrencies) {
 		HashMap<Currency, Integer> giveChange = new HashMap<Currency, Integer>();
 		Double given = 0.0;

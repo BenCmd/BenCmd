@@ -60,24 +60,28 @@ public class FlyTimer extends TimerTask {
 
 	@Override
 	public void run() {
-		for (Player player : flyDetect.plugin.getServer().getOnlinePlayers()) {
-			if (User.getUser(flyDetect.plugin, player).hasPerm("canFly")) {
-				return;
+		try {
+			for (Player player : flyDetect.plugin.getServer()
+					.getOnlinePlayers()) {
+				if (User.getUser(flyDetect.plugin, player).hasPerm("canFly")) {
+					return;
+				}
+				Location loc = player.getLocation();
+				if (!flyDetect.lastL.containsKey(player)) {
+					flyDetect.lastL.put(player, player.getLocation());
+				} else {
+					flyDetect.riseChange(player, player.getLocation().getY()
+							- flyDetect.lastL.get(player).getY());
+					flyDetect.lastL.put(player, player.getLocation());
+				}
+				loc.setY(loc.getY() - 1);
+				if (!onBlock(player.getLocation()) && !onBlock(loc)) {
+					flyDetect.timeDetect(player);
+				} else {
+					flyDetect.timeUndetect(player);
+				}
 			}
-			Location loc = player.getLocation();
-			if (!flyDetect.lastL.containsKey(player)) {
-				flyDetect.lastL.put(player, player.getLocation());
-			} else {
-				flyDetect.riseChange(player, player.getLocation().getY()
-						- flyDetect.lastL.get(player).getY());
-				flyDetect.lastL.put(player, player.getLocation());
-			}
-			loc.setY(loc.getY() - 1);
-			if (!onBlock(player.getLocation()) && !onBlock(loc)) {
-				flyDetect.timeDetect(player);
-			} else {
-				flyDetect.timeUndetect(player);
-			}
+		} catch (Exception e) {
 		}
 	}
 

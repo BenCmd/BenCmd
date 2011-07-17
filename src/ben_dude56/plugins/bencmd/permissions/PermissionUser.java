@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.ChatColor;
+import org.bukkit.command.ConsoleCommandSender;
 
 import ben_dude56.plugins.bencmd.BenCmd;
 
 public class PermissionUser {
 	private InternalUser user;
+	private BenCmd plugin;
 
 	public static PermissionUser matchUserIgnoreCase(String name,
 			BenCmd instance) {
@@ -30,15 +32,18 @@ public class PermissionUser {
 	}
 
 	public PermissionUser(BenCmd instance) {
+		plugin = instance;
 		user = new InternalUser(instance, "*", new ArrayList<String>());
 	}
 
 	public PermissionUser(InternalUser internal) {
+		plugin = internal.plugin;
 		user = internal;
 	}
 
 	protected PermissionUser(BenCmd instance, String name,
 			List<String> permissions) {
+		plugin = instance;
 		user = new InternalUser(instance, name, permissions);
 	}
 
@@ -46,7 +51,16 @@ public class PermissionUser {
 		if (user.isServer()) {
 			return;
 		}
-		user = user.plugin.perm.userFile.getInternal(user.getName());
+		InternalUser ouser = user;
+		user = plugin.perm.userFile.getInternal(user.getName());
+		if (user == null && ouser == null) {
+			plugin.log.severe("Missing an internal user...");
+			plugin.getServer().broadcastMessage(ChatColor.RED + "Fatal error: InternalUser missing!");
+			plugin.getServer().broadcastMessage(ChatColor.RED + "Server shutting down...");
+			plugin.getServer().dispatchCommand(new ConsoleCommandSender(plugin.getServer()), "stop");
+		} else if (user ==  null) {
+			user = ouser;
+		}
 	}
 
 	public PermissionGroup highestLevelGroup() {

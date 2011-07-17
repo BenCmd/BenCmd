@@ -39,6 +39,9 @@ import ben_dude56.plugins.bencmd.reporting.*;
 import ben_dude56.plugins.bencmd.warps.*;
 import ben_dude56.plugins.bencmd.weather.*;
 import ben_dude56.plugins.bencmd.advanced.*;
+import ben_dude56.plugins.bencmd.advanced.bank.*;
+import ben_dude56.plugins.bencmd.advanced.npc.*;
+import ben_dude56.plugins.bencmd.advanced.redstone.*;
 
 /**
  * BenCmd for Bukkit
@@ -47,7 +50,7 @@ import ben_dude56.plugins.bencmd.advanced.*;
  * 
  */
 public class BenCmd extends JavaPlugin {
-	public final static boolean debug = false;
+	public final static boolean debug = true;
 	private final PermLoginListener permLoginListener = new PermLoginListener(
 			this);
 	private final InventoryBlockListener invBlockListen = new InventoryBlockListener(
@@ -68,6 +71,8 @@ public class BenCmd extends JavaPlugin {
 	public final SPAreaPListener spaplisten = new SPAreaPListener(this);
 	public final SPAreaEListener spaelisten = new SPAreaEListener(this);
 	public final FlyListener flyListen = new FlyListener(this);
+	public final NPCListener npcl = new NPCListener(this);
+	public final NPCChunkListener npccl = new NPCChunkListener(this);
 	public final HashMap<Player, Boolean> godmode = new HashMap<Player, Boolean>();
 	public final List<Player> invisible = new ArrayList<Player>();
 	public final List<Player> noinvisible = new ArrayList<Player>();
@@ -88,6 +93,9 @@ public class BenCmd extends JavaPlugin {
 	public final File shelfFile = new File(propDir + "shelves.db");
 	public final File actionFile = new File(propDir + "action.db");
 	public final File spareaFile = new File(propDir + "sparea.db");
+	public final File bankFile = new File(propDir + "bank.db");
+	public final File NPCFile = new File(propDir + "npc.db");
+	public final File RFile = new File(propDir + "lever.db");
 	public PluginProperties mainProperties;
 	public PluginProperties itemAliases;
 	public LotFile lots;
@@ -120,6 +128,9 @@ public class BenCmd extends JavaPlugin {
 	public ShelfFile shelff;
 	public ActionFile actions;
 	public SPAreaFile spafile;
+	public BankFile banks;
+	public NPCFile npcs;
+	public RedstoneFile levers;
 	public List<Location> canSpread = new ArrayList<Location>();
 	public List<Grave> graves = new ArrayList<Grave>();
 	public HashMap<Player, List<ItemStack>> returns = new HashMap<Player, List<ItemStack>>();
@@ -171,6 +182,10 @@ public class BenCmd extends JavaPlugin {
 		graves.clear();
 		for (SPArea a : spafile.listAreas()) {
 			a.delete();
+		}
+		banks.saveAll();
+		for(NPC npc : npcs.allNPCs()) {
+			npc.despawn();
 		}
 		PluginDescriptionFile pdfFile = this.getDescription();
 		log.info(pdfFile.getName() + " v" + pdfFile.getVersion()
@@ -296,6 +311,30 @@ public class BenCmd extends JavaPlugin {
 				e.printStackTrace();
 			}
 		}
+		if (!bankFile.exists()) {
+			try {
+				bankFile.createNewFile();
+			} catch (IOException e) {
+				System.out.println("BenCmd had a problem:");
+				e.printStackTrace();
+			}
+		}
+		if (!NPCFile.exists()) {
+			try {
+				NPCFile.createNewFile();
+			} catch (IOException e) {
+				System.out.println("BenCmd had a problem:");
+				e.printStackTrace();
+			}
+		}
+		if (!RFile.exists()) {
+			try {
+				RFile.createNewFile();
+			} catch (IOException e) {
+				System.out.println("BenCmd had a problem:");
+				e.printStackTrace();
+			}
+		}
 		// Get some static methods ready
 		User.finalizeAll();
 		// Start loading classes
@@ -331,6 +370,9 @@ public class BenCmd extends JavaPlugin {
 		shelff = new ShelfFile(this, propDir + "shelves.db");
 		actions = new ActionFile(this);
 		spafile = new SPAreaFile(this, propDir + "sparea.db");
+		banks = new BankFile(this, propDir + "bank.db");
+		npcs = new NPCFile(this, propDir + "npc.db");
+		levers = new RedstoneFile(this, propDir + "lever.db");
 		// SANITY CHECK
 		if (!sanityCheck()) {
 			this.getServer().getPluginManager().disablePlugin(this);
@@ -421,6 +463,14 @@ public class BenCmd extends JavaPlugin {
 		pm.registerEvent(Event.Type.PLAYER_TELEPORT, this.flyListen,
 				Event.Priority.Monitor, this);
 		pm.registerEvent(Event.Type.PLAYER_PORTAL, this.flyListen,
+				Event.Priority.Monitor, this);
+		pm.registerEvent(Event.Type.PLAYER_INTERACT_ENTITY, this.npcl,
+				Event.Priority.Monitor, this);
+		pm.registerEvent(Event.Type.CHUNK_LOAD, this.npccl,
+				Event.Priority.Monitor, this);
+		pm.registerEvent(Event.Type.CHUNK_UNLOAD, this.npccl,
+				Event.Priority.Monitor, this);
+		pm.registerEvent(Event.Type.WORLD_SAVE, this.npccl,
 				Event.Priority.Monitor, this);
 		PluginDescriptionFile pdfFile = this.getDescription();
 		// Prepare the time lock timer
@@ -580,6 +630,15 @@ public class BenCmd extends JavaPlugin {
 				commandLabel, args)) {
 			return true;
 		} else if (new AdvancedCommands(this).onCommand(sender, command,
+				commandLabel, args)) {
+			return true;
+		} else if (new BankCommands(this).onCommand(sender, command,
+				commandLabel, args)) {
+			return true;
+		} else if (new NPCCommands(this).onCommand(sender, command,
+				commandLabel, args)) {
+			return true;
+		} else if (new RedstoneCommands(this).onCommand(sender, command,
 				commandLabel, args)) {
 			return true;
 		} else {

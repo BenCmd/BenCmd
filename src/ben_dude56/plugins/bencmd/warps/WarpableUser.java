@@ -125,12 +125,6 @@ public class WarpableUser extends PermissionUser {
 	}
 
 	public void sendMessage(String message) {
-		if (message.contains("/n")) {
-			for (String newMessage : message.split("/n")) {
-				this.sendMessage(newMessage);
-			}
-			return;
-		}
 		if (isConsole) {
 			message = message.replaceAll("§.", "");
 			log.info(message);
