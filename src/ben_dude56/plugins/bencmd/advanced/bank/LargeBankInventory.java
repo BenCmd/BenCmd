@@ -11,38 +11,38 @@ import ben_dude56.plugins.bencmd.BenCmd;
 public class LargeBankInventory extends BankInventory {
 	protected TileEntityBankChest inv2;
 	protected InventoryLargeChest lc;
-	
+
 	public LargeBankInventory(String player, BenCmd instance) {
 		super(player, instance);
 		inv2 = new TileEntityBankChest();
 		inv2.setName(player + "'s bank");
 		lc = new InventoryLargeChest(player + "'s bank", chest, inv2);
 	}
-	
+
 	public LargeBankInventory(BankInventory inv1) {
 		super(inv1);
 		inv2 = new TileEntityBankChest();
 		inv2.setName(super.p + "'s bank");
 		lc = new InventoryLargeChest(super.p + "'s bank", chest, inv2);
 	}
-	
+
 	@Override
 	public boolean isFull() {
 		return super.isFull() && inv2.isFull();
 	}
-	
+
 	@Override
 	public boolean isEmpty() {
 		return super.isEmpty() && inv2.isEmpty();
 	}
-	
+
 	@Override
 	public void fromValue(String value) {
 		chest.clear();
 		inv2.clear();
-		for(int i = 0; i < lc.getSize() && i < value.split(",").length; i++) {
+		for (int i = 0; i < lc.getSize() && i < value.split(",").length; i++) {
 			String s = value.split(",")[i];
-			if(s.isEmpty()) {
+			if (s.isEmpty()) {
 				continue;
 			}
 			int id = Integer.parseInt(s.split(" ")[0].split(":")[0]);
@@ -51,27 +51,27 @@ public class LargeBankInventory extends BankInventory {
 			lc.setItem(i, new net.minecraft.server.ItemStack(id, amt, dmg));
 		}
 	}
-	
+
 	@Override
 	public String getValue() {
 		return chest.getValue() + "," + inv2.getValue();
 	}
-	
+
 	@Override
 	public boolean isUpgraded() {
 		return true;
 	}
-	
+
 	@Override
 	public void open(Player p) {
-		((CraftPlayer)p).getHandle().a(lc);
+		((CraftPlayer) p).getHandle().a(lc);
 	}
-	
+
 	@Override
 	public void setItem(int index, net.minecraft.server.ItemStack items) {
 		lc.setItem(index, items);
 	}
-	
+
 	@Override
 	public ItemStack getItem(int index) {
 		return new CraftItemStack(lc.getItem(index));

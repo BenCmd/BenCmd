@@ -1,6 +1,5 @@
 package ben_dude56.plugins.bencmd.chat;
 
-import java.util.Timer;
 import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
@@ -19,7 +18,6 @@ import ben_dude56.plugins.bencmd.advanced.ViewableInventory;
 public class ChatPlayerListener extends PlayerListener {
 	BenCmd plugin;
 	Logger log = Logger.getLogger("minecraft");
-	Timer slowMode = new Timer();
 	public SlowMode slow;
 
 	public ChatPlayerListener(BenCmd instance) {

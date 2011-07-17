@@ -1,8 +1,6 @@
 package ben_dude56.plugins.bencmd.money;
 
-import java.util.TimerTask;
-
-public class UpdateTimer extends TimerTask {
+public class UpdateTimer implements Runnable {
 	PriceFile priceFile;
 
 	public UpdateTimer(PriceFile instance) {

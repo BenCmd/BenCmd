@@ -11,7 +11,7 @@ import ben_dude56.plugins.bencmd.User;
 public class RedstoneCommands implements Commands {
 
 	private BenCmd plugin;
-	
+
 	public RedstoneCommands(BenCmd instance) {
 		plugin = instance;
 	}
@@ -32,14 +32,19 @@ public class RedstoneCommands implements Commands {
 		}
 		return false;
 	}
-	
+
 	public void Lever(String[] args, User user) {
-		if(args[0].equalsIgnoreCase("day")) {
-			plugin.levers.addLever(new RedstoneLever(user.getHandle().getTargetBlock(null, 4).getLocation(), RedstoneLever.LeverType.DAY));
+		if (args[0].equalsIgnoreCase("day")) {
+			plugin.levers.addLever(new RedstoneLever(user.getHandle()
+					.getTargetBlock(null, 4).getLocation(),
+					RedstoneLever.LeverType.DAY));
 		} else if (args[0].equalsIgnoreCase("night")) {
-			plugin.levers.addLever(new RedstoneLever(user.getHandle().getTargetBlock(null, 4).getLocation(), RedstoneLever.LeverType.NIGHT));
+			plugin.levers.addLever(new RedstoneLever(user.getHandle()
+					.getTargetBlock(null, 4).getLocation(),
+					RedstoneLever.LeverType.NIGHT));
 		} else if (args[0].equalsIgnoreCase("none")) {
-			plugin.levers.removeLever(user.getHandle().getTargetBlock(null, 4).getLocation());
+			plugin.levers.removeLever(user.getHandle().getTargetBlock(null, 4)
+					.getLocation());
 		}
 	}
 

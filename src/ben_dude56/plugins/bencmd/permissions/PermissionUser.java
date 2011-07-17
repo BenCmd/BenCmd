@@ -55,10 +55,13 @@ public class PermissionUser {
 		user = plugin.perm.userFile.getInternal(user.getName());
 		if (user == null && ouser == null) {
 			plugin.log.severe("Missing an internal user...");
-			plugin.getServer().broadcastMessage(ChatColor.RED + "Fatal error: InternalUser missing!");
-			plugin.getServer().broadcastMessage(ChatColor.RED + "Server shutting down...");
-			plugin.getServer().dispatchCommand(new ConsoleCommandSender(plugin.getServer()), "stop");
-		} else if (user ==  null) {
+			plugin.getServer().broadcastMessage(
+					ChatColor.RED + "Fatal error: InternalUser missing!");
+			plugin.getServer().broadcastMessage(
+					ChatColor.RED + "Server shutting down...");
+			plugin.getServer().dispatchCommand(
+					new ConsoleCommandSender(plugin.getServer()), "stop");
+		} else if (user == null) {
 			user = ouser;
 		}
 	}

@@ -53,7 +53,6 @@ public class EntityNPC extends EntityPlayer {
 	}
 
 	private boolean chunkLoaded() {
-		return this.bukkitEntity.getWorld().isChunkLoaded(this.A.x,
-				this.A.z);
+		return this.bukkitEntity.getWorld().isChunkLoaded(this.A.x, this.A.z);
 	}
 }

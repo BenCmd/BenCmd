@@ -9,8 +9,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
-import java.util.Timer;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 
@@ -26,7 +26,7 @@ public class PriceFile extends Properties {
 	private HashMap<String, BuyableItem> items = new HashMap<String, BuyableItem>();
 	private long nextUpdate;
 	private InventoryBackend back;
-	private Timer update;
+	private int update;
 	private boolean timerenabled;
 
 	public PriceFile(BenCmd instance, String priceLocation) {
@@ -35,12 +35,11 @@ public class PriceFile extends Properties {
 		back = new InventoryBackend(plugin);
 		loadFile();
 		loadPrices();
-		update = new Timer();
 		if (plugin.mainProperties.getInteger("updateTime", 1800000) == -1) {
 			timerenabled = false;
 		} else {
-			update.schedule(new UpdateTimer(this), 0, 1000);
-			timerenabled = true;
+			timerenabled = false;
+			loadTimer();
 		}
 	}
 
@@ -53,15 +52,19 @@ public class PriceFile extends Properties {
 			return;
 		}
 		timerenabled = true;
-		update.schedule(new UpdateTimer(this), 0, 1000);
+		update = Bukkit
+				.getServer()
+				.getScheduler()
+				.scheduleAsyncRepeatingTask(plugin, new UpdateTimer(this), 20,
+						20);
 	}
 
 	public void unloadTimer() {
 		if (!timerenabled) {
 			return;
 		}
-		timerenabled = true;
-		update.cancel();
+		timerenabled = false;
+		Bukkit.getServer().getScheduler().cancelTask(update);
 	}
 
 	public void loadFile() {

@@ -64,8 +64,9 @@ public class BuyableItem {
 	public Integer getSupply() {
 		return supply;
 	}
-	
-	public static boolean hasMoney(User user, Double amountNeeded, BenCmd instance) {
+
+	public static boolean hasMoney(User user, Double amountNeeded,
+			BenCmd instance) {
 		Double amountHas = 0.0;
 		HashMap<Double, Currency> sortedCurrencies = new HashMap<Double, Currency>();
 		for (Currency currencyType : instance.prices.getCurrencies()) {
@@ -78,7 +79,7 @@ public class BuyableItem {
 		}
 		return amountHas >= amountNeeded;
 	}
-	
+
 	public static void remMoney(User user, Double amountNeeded, BenCmd instance) {
 		Double amountTaken = 0.0;
 		HashMap<Double, Currency> sortedCurrencies = new HashMap<Double, Currency>();
@@ -140,8 +141,7 @@ public class BuyableItem {
 								.toArray()[i];
 						List<Integer> splitamount = new ArrayList<Integer>();
 						while (changeAmount > 0) {
-							Integer maxAmount = new InventoryBackend(
-									instance)
+							Integer maxAmount = new InventoryBackend(instance)
 									.getStackNumber(changeCurrency.getItemId());
 							if (changeAmount > maxAmount) {
 								splitamount.add(maxAmount);

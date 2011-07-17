@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 
+import org.bukkit.Bukkit;
+
 import ben_dude56.plugins.bencmd.BenCmd;
 
 public class SPAreaFile extends Properties {
@@ -24,6 +26,8 @@ public class SPAreaFile extends Properties {
 		proFile = file;
 		loadFile();
 		loadAreas();
+		Bukkit.getServer().getScheduler()
+				.scheduleAsyncRepeatingTask(plugin, new TimeCheck(), 20, 20);
 	}
 
 	public void loadFile() {
@@ -127,4 +131,14 @@ public class SPAreaFile extends Properties {
 		saveFile("--SPECIAL PURPOSE AREAS--");
 	}
 
+	public class TimeCheck implements Runnable {
+
+		public void run() {
+			for (SPArea a : new ArrayList<SPArea>(areas.values())) {
+				if (a instanceof TimedArea) {
+					((TimedArea) a).preTick();
+				}
+			}
+		}
+	}
 }

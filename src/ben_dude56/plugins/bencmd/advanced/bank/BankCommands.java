@@ -10,9 +10,9 @@ import ben_dude56.plugins.bencmd.Commands;
 import ben_dude56.plugins.bencmd.User;
 
 public class BankCommands implements Commands {
-	
+
 	private BenCmd plugin;
-	
+
 	public BankCommands(BenCmd instance) {
 		plugin = instance;
 	}
@@ -33,7 +33,7 @@ public class BankCommands implements Commands {
 		}
 		return false;
 	}
-	
+
 	public void Bank(String[] args, User user) {
 		if (args.length == 0) {
 			if (!plugin.banks.hasBank(user.getName())) {
@@ -42,7 +42,8 @@ public class BankCommands implements Commands {
 			plugin.banks.openInventory(user.getHandle());
 		} else if (args.length == 1) {
 			if (!plugin.banks.hasBank(args[0])) {
-				user.sendMessage(ChatColor.RED + "That player doesn't have a bank account!");
+				user.sendMessage(ChatColor.RED
+						+ "That player doesn't have a bank account!");
 				return;
 			}
 			plugin.banks.openInventory(args[0], user.getHandle());

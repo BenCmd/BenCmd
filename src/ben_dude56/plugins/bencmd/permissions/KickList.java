@@ -2,20 +2,20 @@ package ben_dude56.plugins.bencmd.permissions;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Timer;
-import java.util.TimerTask;
+
+import org.bukkit.Bukkit;
 
 import ben_dude56.plugins.bencmd.BenCmd;
 
 public class KickList {
-	private Timer kickTimer;
 	private HashMap<PermissionUser, Long> users;
 	private BenCmd plugin;
 
 	public KickList(BenCmd instance) {
 		users = new HashMap<PermissionUser, Long>();
-		kickTimer = new Timer();
-		kickTimer.schedule(new KickTimer(this), 0, 100);
+		Bukkit.getServer()
+				.getScheduler()
+				.scheduleAsyncRepeatingTask(instance, new KickTimer(this), 2, 2);
 		plugin = instance;
 	}
 
@@ -55,12 +55,7 @@ public class KickList {
 		users.clear();
 	}
 
-	public void killTimer() {
-		kickTimer.cancel();
-		kickTimer = null;
-	}
-
-	public class KickTimer extends TimerTask {
+	public class KickTimer implements Runnable {
 		private KickList list;
 
 		public KickTimer(KickList instance) {

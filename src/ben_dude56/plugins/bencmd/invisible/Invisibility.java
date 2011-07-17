@@ -1,7 +1,6 @@
 package ben_dude56.plugins.bencmd.invisible;
 
-import java.util.Timer;
-
+import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
@@ -12,12 +11,13 @@ import net.minecraft.server.Packet29DestroyEntity;
 
 public class Invisibility {
 	BenCmd plugin;
-	public Timer timer;
 
 	public Invisibility(BenCmd instance) {
 		plugin = instance;
-		timer = new Timer();
-		timer.schedule(new InvisibilityTask(this), 0, 10);
+		Bukkit.getServer()
+				.getScheduler()
+				.scheduleAsyncRepeatingTask(plugin, new InvisibilityTask(this),
+						2, 2);
 	}
 
 	public void invisible(Player p1, Player p2) {

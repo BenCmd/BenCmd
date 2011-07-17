@@ -2,10 +2,9 @@ package ben_dude56.plugins.bencmd.chat;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.logging.Logger;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
 import ben_dude56.plugins.bencmd.BenCmd;
@@ -16,7 +15,6 @@ public class SlowMode {
 	private Integer defTime;
 	private Integer origDefTime;
 	public HashMap<String, Long> playerList = new HashMap<String, Long>();
-	public Timer slowTimer = new Timer();
 	Logger log = Logger.getLogger("minecraft");
 
 	public int getDefTime() {
@@ -54,7 +52,10 @@ public class SlowMode {
 		defTime = defaultTime;
 		origDefTime = defaultTime;
 		enabled = false;
-		slowTimer.schedule(new SlowModeTimer(this), 0, 100);
+		Bukkit.getServer()
+				.getScheduler()
+				.scheduleAsyncRepeatingTask(plugin, new SlowModeTimer(this), 2,
+						2);
 	}
 
 	public void playerAdd(String player) {
@@ -81,8 +82,7 @@ public class SlowMode {
 		}
 	}
 
-	public class SlowModeTimer extends TimerTask {
-		// TODO For v1.2.6: Change to Bukkit Scheduler
+	public class SlowModeTimer implements Runnable {
 		SlowMode parent;
 
 		public SlowModeTimer(SlowMode instance) {

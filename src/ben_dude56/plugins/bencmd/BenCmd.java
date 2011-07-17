@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Timer;
 import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
@@ -99,7 +98,6 @@ public class BenCmd extends JavaPlugin {
 	public PluginProperties mainProperties;
 	public PluginProperties itemAliases;
 	public LotFile lots;
-	private Timer FreezeTimer = new Timer();
 	public boolean timeRunning = true;
 	public long lastTime = 0;
 	public long timeFrozenAt = 0;
@@ -166,16 +164,7 @@ public class BenCmd extends JavaPlugin {
 	 * Disables the plugin
 	 */
 	public void onDisable() {
-		// Cancel all running timers
-		FreezeTimer.cancel();
-		FreezeTimer = null;
-		chatListen.slow.slowTimer.cancel();
-		chatListen.slow.slowTimer = null;
-		inv.timer.cancel();
-		inv.timer = null;
-		flyDetect.flyTime.cancel();
-		flyDetect.flyTime = null;
-		kicked.killTimer();
+		getServer().getScheduler().cancelTasks(this);
 		for (Grave g : graves) {
 			g.delete();
 		}
@@ -184,7 +173,7 @@ public class BenCmd extends JavaPlugin {
 			a.delete();
 		}
 		banks.saveAll();
-		for(NPC npc : npcs.allNPCs()) {
+		for (NPC npc : npcs.allNPCs()) {
 			npc.despawn();
 		}
 		PluginDescriptionFile pdfFile = this.getDescription();
@@ -474,7 +463,8 @@ public class BenCmd extends JavaPlugin {
 				Event.Priority.Monitor, this);
 		PluginDescriptionFile pdfFile = this.getDescription();
 		// Prepare the time lock timer
-		FreezeTimer.schedule(new TimeFreeze(this), 0, 5000);
+		getServer().getScheduler().scheduleSyncRepeatingTask(this,
+				new TimeFreeze(this), 100, 100);
 		log.info(pdfFile.getName() + " v" + pdfFile.getVersion()
 				+ " has been enabled!");
 		for (World w : getServer().getWorlds()) {

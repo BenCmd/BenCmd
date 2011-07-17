@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Timer;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -17,7 +17,6 @@ import ben_dude56.plugins.bencmd.permissions.Action.ActionType;
 
 public class FlyDetect {
 	public BenCmd plugin;
-	public Timer flyTime;
 	public long lastUpdate;
 	private HashMap<Player, Long> timed;
 	private HashMap<Player, Double> rise;
@@ -28,8 +27,8 @@ public class FlyDetect {
 
 	public FlyDetect(BenCmd instance) {
 		plugin = instance;
-		flyTime = new Timer();
-		flyTime.schedule(new FlyTimer(this), 0, 100);
+		Bukkit.getServer().getScheduler()
+				.scheduleAsyncRepeatingTask(plugin, new FlyTimer(this), 2, 2);
 		lastUpdate = new Date().getTime();
 		timed = new HashMap<Player, Long>();
 		rise = new HashMap<Player, Double>();

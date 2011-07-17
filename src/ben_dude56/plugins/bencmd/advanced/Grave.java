@@ -2,9 +2,7 @@ package ben_dude56.plugins.bencmd.advanced;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -20,7 +18,7 @@ public class Grave {
 	private List<ItemStack> i;
 	private BenCmd plugin;
 	private int t;
-	private Timer d;
+	private int d;
 
 	public Grave(BenCmd instance, Block grave, Player player,
 			List<ItemStack> items, int secondsToPickUp) {
@@ -30,12 +28,12 @@ public class Grave {
 		i = new ArrayList<ItemStack>();
 		i.addAll(items);
 		t = secondsToPickUp;
-		d = new Timer();
-		d.schedule(new TimerTask() {
-			public void run() {
-				tick();
-			}
-		}, 0, 1000);
+		d = Bukkit.getServer().getScheduler()
+				.scheduleAsyncRepeatingTask(plugin, new Runnable() {
+					public void run() {
+						tick();
+					}
+				}, 20, 20);
 	}
 
 	public Block getBlock() {
@@ -105,7 +103,7 @@ public class Grave {
 	}
 
 	public void delete() {
-		d.cancel();
+		Bukkit.getServer().getScheduler().cancelTask(d);
 		g.setType(Material.AIR);
 	}
 }

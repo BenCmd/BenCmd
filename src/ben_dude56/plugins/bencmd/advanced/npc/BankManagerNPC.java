@@ -14,35 +14,44 @@ public class BankManagerNPC extends NPC implements Clickable {
 	public BankManagerNPC(BenCmd instance, int id, Location l) {
 		super(instance, "Bank Manager", id, l);
 	}
-	
+
 	@Override
 	public void onRightClick(Player p) {
-		if(!plugin.banks.hasBank(p.getName())) {
+		if (!plugin.banks.hasBank(p.getName())) {
 			plugin.banks.addBank(new BankInventory(p.getName(), plugin));
 		}
-		if(plugin.banks.getBank(p.getName()).isUpgraded()) {
-			p.sendMessage(ChatColor.RED + "Your bank has already been upgraded!");
+		if (plugin.banks.getBank(p.getName()).isUpgraded()) {
+			p.sendMessage(ChatColor.RED
+					+ "Your bank has already been upgraded!");
 		} else {
-			if(BuyableItem.hasMoney(User.getUser(plugin, p), plugin.mainProperties.getDouble("bankUpgradeCost", 4096), plugin)) {
-				BuyableItem.remMoney(User.getUser(plugin, p), plugin.mainProperties.getDouble("bankUpgradeCost", 4096), plugin);
+			if (BuyableItem.hasMoney(User.getUser(plugin, p),
+					plugin.mainProperties.getDouble("bankUpgradeCost", 4096),
+					plugin)) {
+				BuyableItem.remMoney(User.getUser(plugin, p),
+						plugin.mainProperties
+								.getDouble("bankUpgradeCost", 4096), plugin);
 				plugin.banks.upgradeBank(p.getName());
 				p.sendMessage(ChatColor.GREEN + "Enjoy the extra bank space!");
 			} else {
-				p.sendMessage(ChatColor.RED + "You need at least " + plugin.mainProperties.getDouble("bankUpgradeCost", 4096) + " worth of currency to upgrade your bank!");
+				p.sendMessage(ChatColor.RED
+						+ "You need at least "
+						+ plugin.mainProperties.getDouble("bankUpgradeCost",
+								4096)
+						+ " worth of currency to upgrade your bank!");
 			}
 		}
 	}
 
-	
 	@Override
 	public void onLeftClick(Player p) {
 
 	}
-	
+
 	@Override
 	public String getValue() {
 		Location l = super.getLocation();
-		return "m/" + l.getWorld().getName() + "," + l.getX() + "," + l.getY() + "," + l.getZ() + "," + l.getYaw() + "," + l.getPitch();
+		return "m/" + l.getWorld().getName() + "," + l.getX() + "," + l.getY()
+				+ "," + l.getZ() + "," + l.getYaw() + "," + l.getPitch();
 	}
 
 }

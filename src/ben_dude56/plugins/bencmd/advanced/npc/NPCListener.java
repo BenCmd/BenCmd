@@ -12,30 +12,34 @@ import ben_dude56.plugins.bencmd.User;
 
 public class NPCListener extends PlayerListener {
 	private BenCmd plugin;
-	
+
 	public NPCListener(BenCmd instance) {
 		plugin = instance;
 	}
-	
+
 	public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
 		if (event.getRightClicked() instanceof CraftPlayer) {
-			if (((CraftPlayer)event.getRightClicked()).getHandle() instanceof EntityNPC) {
-				NPC npc = plugin.npcs.getNPC((EntityNPC)((CraftPlayer)event.getRightClicked()).getHandle());
+			if (((CraftPlayer) event.getRightClicked()).getHandle() instanceof EntityNPC) {
+				NPC npc = plugin.npcs.getNPC((EntityNPC) ((CraftPlayer) event
+						.getRightClicked()).getHandle());
 				if (npc == null) {
-					plugin.log.warning("WARNING: Ghost NPC detected... Try restarting the server...");
+					plugin.log
+							.warning("WARNING: Ghost NPC detected... Try restarting the server...");
 					return;
 				}
-				if (event.getPlayer().getItemInHand().getType() == Material.STICK && User.getUser(plugin, event.getPlayer()).hasPerm("canEditNpcs")) {
+				if (event.getPlayer().getItemInHand().getType() == Material.STICK
+						&& User.getUser(plugin, event.getPlayer()).hasPerm(
+								"canEditNpcs")) {
 					info(event.getPlayer(), npc);
 					return;
 				}
 				if (npc instanceof Clickable) {
-					((Clickable)npc).onRightClick(event.getPlayer());
+					((Clickable) npc).onRightClick(event.getPlayer());
 				}
 			}
 		}
 	}
-	
+
 	public void info(Player p, NPC n) {
 		p.sendMessage(ChatColor.GRAY + "NPC ID: " + n.getID());
 		if (n instanceof BankerNPC) {

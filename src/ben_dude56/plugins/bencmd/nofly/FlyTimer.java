@@ -1,16 +1,12 @@
 package ben_dude56.plugins.bencmd.nofly;
 
-import java.util.TimerTask;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import ben_dude56.plugins.bencmd.User;
 
-public class FlyTimer extends TimerTask {
-	// TODO For v1.2.6: Change to Bukkit Scheduler
-
+public class FlyTimer implements Runnable {
 	FlyDetect flyDetect;
 
 	public FlyTimer(FlyDetect detect) {

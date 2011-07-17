@@ -14,7 +14,7 @@ import ben_dude56.plugins.bencmd.BenCmd;
 
 public class RedstoneFile extends Properties {
 	private static final long serialVersionUID = 0L;
-	
+
 	private String filename;
 	private HashMap<Location, RedstoneLever> levers;
 	private BenCmd plugin;
@@ -26,7 +26,7 @@ public class RedstoneFile extends Properties {
 		loadFile();
 		loadLevers();
 	}
-	
+
 	public void loadFile() {
 		File file = new File(filename);
 		if (file.exists()) {
@@ -50,28 +50,31 @@ public class RedstoneFile extends Properties {
 			}
 		}
 	}
-	
+
 	public void loadLevers() {
-		for(int i = 0; i < this.size(); i++) {
-			String key = (String) this.keySet().toArray()[i], value = this.getProperty(key);
+		for (int i = 0; i < this.size(); i++) {
+			String key = (String) this.keySet().toArray()[i], value = this
+					.getProperty(key);
 			Location l = toLocation(key);
 			if (value.equals("d")) {
 				levers.put(l, new RedstoneLever(l, RedstoneLever.LeverType.DAY));
 			} else if (value.equals("n")) {
-				levers.put(l, new RedstoneLever(l, RedstoneLever.LeverType.NIGHT));
+				levers.put(l, new RedstoneLever(l,
+						RedstoneLever.LeverType.NIGHT));
 			}
 		}
 	}
-	
+
 	public void timeTick() {
 		for (RedstoneLever lever : levers.values()) {
-			if (!lever.getLocation().getWorld().isChunkLoaded(lever.getLocation().getBlock().getChunk())) {
+			if (!lever.getLocation().getWorld()
+					.isChunkLoaded(lever.getLocation().getBlock().getChunk())) {
 				return;
 			}
 			lever.timeUpdate();
 		}
 	}
-	
+
 	private Location toLocation(String s) {
 		String[] splt = s.split(",");
 		World w = plugin.getServer().getWorld(splt[0]);
@@ -80,28 +83,30 @@ public class RedstoneFile extends Properties {
 		Integer z = Integer.parseInt(splt[3]);
 		return new Location(w, x, y, z);
 	}
-	
+
 	public void addLever(RedstoneLever lever) {
 		levers.put(lever.getLocation(), lever);
 		saveLever(lever);
 	}
-	
+
 	public void removeLever(Location l) {
 		levers.remove(l);
-		this.remove(l.getWorld().getName() + "," + l.getBlockX() + "," + l.getBlockY() + "," + l.getBlockZ());
+		this.remove(l.getWorld().getName() + "," + l.getBlockX() + ","
+				+ l.getBlockY() + "," + l.getBlockZ());
 		saveFile();
 	}
-	
+
 	public void saveLever(RedstoneLever lever) {
 		Location l = lever.getLocation();
-		this.put(l.getWorld().getName() + "," + l.getBlockX() + "," + l.getBlockY() + "," + l.getBlockZ(), lever.getValue());
+		this.put(
+				l.getWorld().getName() + "," + l.getBlockX() + ","
+						+ l.getBlockY() + "," + l.getBlockZ(), lever.getValue());
 		saveFile();
 	}
-	
+
 	public void saveAll() {
 		for (RedstoneLever lever : levers.values()) {
 			saveLever(lever);
 		}
 	}
 }
-

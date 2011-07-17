@@ -14,7 +14,7 @@ public class BankerNPC extends NPC implements Clickable {
 
 	@Override
 	public void onRightClick(Player p) {
-		if(!plugin.banks.hasBank(p.getName())) {
+		if (!plugin.banks.hasBank(p.getName())) {
 			plugin.banks.addBank(new BankInventory(p.getName(), plugin));
 		}
 		plugin.banks.openInventory(p);
@@ -24,11 +24,12 @@ public class BankerNPC extends NPC implements Clickable {
 	public void onLeftClick(Player p) {
 
 	}
-	
+
 	@Override
 	public String getValue() {
 		Location l = super.getLocation();
-		return "b/" + l.getWorld().getName() + "," + l.getX() + "," + l.getY() + "," + l.getZ() + "," + l.getYaw() + "," + l.getPitch();
+		return "b/" + l.getWorld().getName() + "," + l.getX() + "," + l.getY()
+				+ "," + l.getZ() + "," + l.getYaw() + "," + l.getPitch();
 	}
 
 }

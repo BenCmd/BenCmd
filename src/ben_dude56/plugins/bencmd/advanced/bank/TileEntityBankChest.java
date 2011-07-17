@@ -9,39 +9,39 @@ import net.minecraft.server.ItemStack;
 import net.minecraft.server.TileEntityChest;
 
 public class TileEntityBankChest extends TileEntityChest {
-	
+
 	protected String name = "null";
 	protected List<Integer> empty;
-	
+
 	protected TileEntityBankChest() {
 		super();
 		initEmpty();
 	}
-	
+
 	public void initEmpty() {
 		empty = new ArrayList<Integer>();
 		for (int i = 0; i < this.getSize(); i++) {
 			empty.add(i);
 		}
 	}
-	
+
 	@Override
 	public String getName() {
 		return name;
 	}
-	
+
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	public boolean isFull() {
 		return empty.isEmpty();
 	}
-	
+
 	public boolean isEmpty() {
 		return empty.size() == getSize();
 	}
-	
+
 	public boolean addItem(ItemStack items) {
 		if (isFull()) {
 			return false;
@@ -51,7 +51,7 @@ public class TileEntityBankChest extends TileEntityChest {
 			return true;
 		}
 	}
-	
+
 	@Override
 	public ItemStack splitStack(int i, int j) {
 		ItemStack toReturn = super.splitStack(i, j);
@@ -63,7 +63,7 @@ public class TileEntityBankChest extends TileEntityChest {
 		}
 		return toReturn;
 	}
-	
+
 	@Override
 	public void setItem(int i, ItemStack items) {
 		if (empty.contains(i)) {
@@ -71,40 +71,40 @@ public class TileEntityBankChest extends TileEntityChest {
 		}
 		super.setItem(i, items);
 	}
-	
+
 	public void removeItem(int i) {
 		if (i >= 0 && i <= getSize()) {
 			super.setItem(i, null);
 			empty.add(i);
 		}
 	}
-	
+
 	@Override
 	public boolean a_(EntityHuman entityhuman) {
 		return true;
 	}
-	
+
 	public void clear() {
 		empty.clear();
-		for(int i = 0; i < getSize(); i++) {
+		for (int i = 0; i < getSize(); i++) {
 			super.setItem(i, null);
 			empty.add(i);
 		}
 	}
-	
+
 	public String getValue() {
 		String s = "";
 		boolean init = false;
-		for(int i = 0; i < getSize(); i++) {
-			if(empty.contains(i)) {
-				if(init) {
+		for (int i = 0; i < getSize(); i++) {
+			if (empty.contains(i)) {
+				if (init) {
 					s += ",";
 				} else {
 					init = true;
 				}
 			} else {
 				ItemStack is = this.getContents()[i];
-				if(init) {
+				if (init) {
 					s += ",";
 				} else {
 					init = true;
