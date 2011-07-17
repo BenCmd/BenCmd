@@ -28,7 +28,7 @@ public class FlyDetect {
 	public FlyDetect(BenCmd instance) {
 		plugin = instance;
 		Bukkit.getServer().getScheduler()
-				.scheduleAsyncRepeatingTask(plugin, new FlyTimer(this), 2, 2);
+				.scheduleAsyncRepeatingTask(plugin, new FlyTimer(), 2, 2);
 		lastUpdate = new Date().getTime();
 		timed = new HashMap<Player, Long>();
 		rise = new HashMap<Player, Double>();
@@ -262,5 +262,33 @@ public class FlyDetect {
 
 	public enum FlyResponse {
 		PULLDOWN, RESPAWN, KICK, JAIL, BAN, WARN
+	}
+
+	public class FlyTimer implements Runnable {
+		@Override
+		public void run() {
+			try {
+				for (Player player : plugin.getServer().getOnlinePlayers()) {
+					if (User.getUser(plugin, player).hasPerm("canFly")) {
+						return;
+					}
+					Location loc = player.getLocation();
+					if (!lastL.containsKey(player)) {
+						lastL.put(player, player.getLocation());
+					} else {
+						riseChange(player, player.getLocation().getY()
+								- lastL.get(player).getY());
+						lastL.put(player, player.getLocation());
+					}
+					loc.setY(loc.getY() - 1);
+					if (!onBlock(player.getLocation()) && !onBlock(loc)) {
+						timeDetect(player);
+					} else {
+						timeUndetect(player);
+					}
+				}
+			} catch (Exception e) {
+			}
+		}
 	}
 }

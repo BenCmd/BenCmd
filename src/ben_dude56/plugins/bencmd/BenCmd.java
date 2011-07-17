@@ -464,7 +464,7 @@ public class BenCmd extends JavaPlugin {
 		PluginDescriptionFile pdfFile = this.getDescription();
 		// Prepare the time lock timer
 		getServer().getScheduler().scheduleSyncRepeatingTask(this,
-				new TimeFreeze(this), 100, 100);
+				new TimeFreeze(), 100, 100);
 		log.info(pdfFile.getName() + " v" + pdfFile.getVersion()
 				+ " has been enabled!");
 		for (World w : getServer().getWorlds()) {
@@ -525,6 +525,22 @@ public class BenCmd extends JavaPlugin {
 	public boolean sanityCheck() {
 		if (debug) {
 			log.warning("You are running a version of BenCmd marked for DEBUGGING ONLY! Use of this version may cause world/database corruption. Use at your own risk!");
+		}
+		Integer v = null;
+		try {
+			v = Integer.parseInt(getServer().getVersion().split("-")[5]
+					.split(" ")[0].replace("b", "").replace("jnks", ""));
+		} catch (IndexOutOfBoundsException e) {
+			log.severe("Cannot determine CraftBukkit build... Version check will be skipped...");
+		} catch (NumberFormatException e) {
+			log.severe("Cannot determine CraftBukkit build... Version check will be skipped...");
+		}
+		if (v == null) {
+			// Do nothing
+		} else if (v < 998) {
+			log.warning("You are using a version of CraftBukkit that is earlier than this version of BenCmd was designed to handle. This may cause unexpected problems... Run AT YOUR OWN RISK!");
+		} else if (v > 1000) {
+			log.warning("You are using a version of CraftBukkit that is newer than this version of BenCmd was built against. This may cause unexpected problems... Run AT YOUR OWN RISK!");
 		}
 		PluginManager pm = getServer().getPluginManager();
 		int result = -1;
@@ -641,6 +657,33 @@ public class BenCmd extends JavaPlugin {
 			user.sendMessage(ChatColor.RED
 					+ "You don't have permission to do that!");
 			return true;
+		}
+	}
+
+	public class TimeFreeze implements Runnable {
+		@Override
+		public void run() {
+			levers.timeTick();
+			if (!timeRunning) {
+				for (World world : getServer().getWorlds()) {
+					world.setTime(timeFrozenAt);
+				}
+			} else {
+				if (lastTime == 0) {
+					lastTime = getServer().getWorlds().get(0).getFullTime();
+					return;
+				}
+				for (World world : getServer().getWorlds()) {
+					if (world.getTime() >= 0 && world.getTime() < 12000) {
+						world.setFullTime(lastTime
+								+ mainProperties.getInteger("daySpeed", 100));
+					} else {
+						world.setFullTime(lastTime
+								+ mainProperties.getInteger("nightSpeed", 100));
+					}
+				}
+				lastTime = getServer().getWorlds().get(0).getFullTime();
+			}
 		}
 	}
 

@@ -14,10 +14,8 @@ public class Invisibility {
 
 	public Invisibility(BenCmd instance) {
 		plugin = instance;
-		Bukkit.getServer()
-				.getScheduler()
-				.scheduleAsyncRepeatingTask(plugin, new InvisibilityTask(this),
-						2, 2);
+		Bukkit.getServer().getScheduler()
+				.scheduleAsyncRepeatingTask(plugin, new InvTime(), 2, 2);
 	}
 
 	public void invisible(Player p1, Player p2) {
@@ -78,6 +76,29 @@ public class Invisibility {
 		for (Player disappear : plugin.invisible) {
 			if (player != disappear) {
 				invisible(disappear, player);
+			}
+		}
+	}
+
+	public class InvTime implements Runnable {
+		@Override
+		public void run() {
+			for (Player noInv : plugin.noinvisible) {
+				if (noInv == null) {
+					plugin.noinvisible.remove(noInv);
+				}
+			}
+			for (Player toHide : plugin.invisible) {
+				if (toHide == null) {
+					plugin.invisible.remove(toHide);
+					continue;
+				}
+				for (Player hideFrom : plugin.getServer().getOnlinePlayers()) {
+					if ((!plugin.noinvisible.contains(hideFrom) && toHide != hideFrom)
+							|| plugin.allinvisible.contains(toHide)) {
+						invisible(toHide, hideFrom);
+					}
+				}
 			}
 		}
 	}

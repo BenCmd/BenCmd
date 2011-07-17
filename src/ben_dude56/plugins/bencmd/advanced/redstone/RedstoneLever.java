@@ -1,10 +1,7 @@
 package ben_dude56.plugins.bencmd.advanced.redstone;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-
-import ben_dude56.plugins.bencmd.BenCmd;
 
 public class RedstoneLever {
 	Location l;
@@ -15,11 +12,9 @@ public class RedstoneLever {
 		f = type;
 	}
 
-	public void timeUpdate() {
+	public boolean timeUpdate() {
 		if (l.getBlock().getType() != Material.LEVER) {
-			((BenCmd) Bukkit.getServer().getPluginManager().getPlugin("BenCmd")).levers
-					.removeLever(l);
-			return;
+			return false;
 		}
 		long t = l.getWorld().getTime();
 		if (f == LeverType.DAY) {
@@ -39,6 +34,7 @@ public class RedstoneLever {
 				update();
 			}
 		}
+		return true;
 	}
 
 	public void update() {

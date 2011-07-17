@@ -52,11 +52,12 @@ public class PriceFile extends Properties {
 			return;
 		}
 		timerenabled = true;
-		update = Bukkit
-				.getServer()
-				.getScheduler()
-				.scheduleAsyncRepeatingTask(plugin, new UpdateTimer(this), 20,
-						20);
+		update = Bukkit.getServer().getScheduler()
+				.scheduleAsyncRepeatingTask(plugin, new Runnable() {
+					public void run() {
+						pollUpdate();
+					}
+				}, 20, 20);
 	}
 
 	public void unloadTimer() {

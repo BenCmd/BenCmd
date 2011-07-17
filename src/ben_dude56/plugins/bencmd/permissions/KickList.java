@@ -13,9 +13,8 @@ public class KickList {
 
 	public KickList(BenCmd instance) {
 		users = new HashMap<PermissionUser, Long>();
-		Bukkit.getServer()
-				.getScheduler()
-				.scheduleAsyncRepeatingTask(instance, new KickTimer(this), 2, 2);
+		Bukkit.getServer().getScheduler()
+				.scheduleAsyncRepeatingTask(instance, new KickTimer(), 2, 2);
 		plugin = instance;
 	}
 
@@ -56,16 +55,10 @@ public class KickList {
 	}
 
 	public class KickTimer implements Runnable {
-		private KickList list;
-
-		public KickTimer(KickList instance) {
-			list = instance;
-		}
-
 		public void run() {
-			HashMap<PermissionUser, Long> users = list.getUserList();
+			HashMap<PermissionUser, Long> users = getUserList();
 			for (PermissionUser user : users.keySet()) {
-				list.checkUser(user);
+				checkUser(user);
 			}
 		}
 

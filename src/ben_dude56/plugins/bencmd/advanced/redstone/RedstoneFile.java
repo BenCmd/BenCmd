@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Properties;
 
 import org.bukkit.Location;
@@ -66,12 +68,18 @@ public class RedstoneFile extends Properties {
 	}
 
 	public void timeTick() {
+		List<Location> remove = new ArrayList<Location>();
 		for (RedstoneLever lever : levers.values()) {
 			if (!lever.getLocation().getWorld()
 					.isChunkLoaded(lever.getLocation().getBlock().getChunk())) {
 				return;
 			}
-			lever.timeUpdate();
+			if (!lever.timeUpdate()) {
+				remove.add(lever.getLocation());
+			}
+		}
+		for (Location l : remove) {
+			levers.remove(l);
 		}
 	}
 
