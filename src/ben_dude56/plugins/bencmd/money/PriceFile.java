@@ -110,6 +110,7 @@ public class PriceFile extends Properties {
 					plugin.log.severe("nextUpdate (value: "
 							+ this.getProperty("nextUpdate")
 							+ ") couldn't be converted to a number!");
+					plugin.bLog.info("nextUpdate invalid!");
 				}
 				continue;
 			}
@@ -120,12 +121,14 @@ public class PriceFile extends Properties {
 				plugin.log
 						.severe("A value in the price file couldn't be loaded ("
 								+ this.keySet().toArray()[i] + "): ID is NaN");
+				plugin.bLog.info("BuyableItem " + this.keySet().toArray()[i] + " invalid!");
 				continue;
 			} catch (IndexOutOfBoundsException e) {
 				plugin.log
 						.severe("A value in the price file couldn't be loaded ("
 								+ this.keySet().toArray()[i]
 								+ "): ID is missing");
+				plugin.bLog.info("BuyableItem " + this.keySet().toArray()[i] + " invalid!");
 				continue;
 			}
 			try {
@@ -136,6 +139,7 @@ public class PriceFile extends Properties {
 						.severe("A value in the price file couldn't be loaded ("
 								+ this.keySet().toArray()[i]
 								+ "): Damage is NaN");
+				plugin.bLog.info("BuyableItem " + this.keySet().toArray()[i] + " invalid!");
 				continue;
 			} catch (IndexOutOfBoundsException e) {
 				damage = 0;
@@ -148,12 +152,14 @@ public class PriceFile extends Properties {
 				plugin.log
 						.severe("A value in the price file couldn't be loaded ("
 								+ this.keySet().toArray()[i] + "): Cost is NaN");
+				plugin.bLog.info("BuyableItem " + this.keySet().toArray()[i] + " invalid!");
 				continue;
 			} catch (IndexOutOfBoundsException e) {
 				plugin.log
 						.severe("A value in the price file couldn't be loaded ("
 								+ this.keySet().toArray()[i]
 								+ "): Cost is missing");
+				plugin.bLog.info("BuyableItem " + this.keySet().toArray()[i] + " invalid!");
 				continue;
 			}
 			try {
@@ -163,12 +169,14 @@ public class PriceFile extends Properties {
 						.severe("A value in the price file couldn't be loaded ("
 								+ this.keySet().toArray()[i]
 								+ "): Supply is NaN");
+				plugin.bLog.info("BuyableItem " + this.keySet().toArray()[i] + " invalid!");
 				continue;
 			} catch (IndexOutOfBoundsException e) {
 				plugin.log
 						.severe("A value in the price file couldn't be loaded ("
 								+ this.keySet().toArray()[i]
 								+ "): Supply is missing");
+				plugin.bLog.info("BuyableItem " + this.keySet().toArray()[i] + " invalid!");
 				continue;
 			}
 			try {
@@ -178,12 +186,14 @@ public class PriceFile extends Properties {
 						.severe("A value in the price file couldn't be loaded ("
 								+ this.keySet().toArray()[i]
 								+ "): Supply/Demand is NaN");
+				plugin.bLog.info("BuyableItem " + this.keySet().toArray()[i] + " invalid!");
 				continue;
 			} catch (IndexOutOfBoundsException e) {
 				plugin.log
 						.severe("A value in the price file couldn't be loaded ("
 								+ this.keySet().toArray()[i]
 								+ "): Supply/Demand is missing");
+				plugin.bLog.info("BuyableItem " + this.keySet().toArray()[i] + " invalid!");
 				continue;
 			}
 			try {
@@ -193,6 +203,7 @@ public class PriceFile extends Properties {
 						.severe("A value in the price file couldn't be loaded ("
 								+ this.keySet().toArray()[i]
 								+ "): isCurrency is missing");
+				plugin.bLog.info("BuyableItem " + this.keySet().toArray()[i] + " invalid!");
 				continue;
 			}
 			if (isCurrency) {

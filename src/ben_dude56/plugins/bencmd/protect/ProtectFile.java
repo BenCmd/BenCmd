@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.logging.Logger;
 
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -20,7 +19,6 @@ public class ProtectFile extends Properties {
 	private List<ProtectedBlock> protectedBlocks;
 	private BenCmd plugin;
 	private String proFile;
-	Logger log = Logger.getLogger("minecraft");
 
 	public ProtectFile(BenCmd instance, String protectList) {
 		plugin = instance;
@@ -63,22 +61,25 @@ public class ProtectFile extends Properties {
 			}
 			String[] slashsplit = value.split("/");
 			if (slashsplit.length != 4) {
-				log.warning("Entry " + key + " in " + proFile
+				plugin.log.warning("Entry " + key + " in " + proFile
 						+ " is invalid and was ignored!");
+				plugin.bLog.warning("Protection " + key + " is invalid!");
 				continue;
 			}
 			int id;
 			try {
 				id = Integer.parseInt(key);
 			} catch (NumberFormatException e) {
-				log.warning("Entry " + key + " in " + proFile
+				plugin.log.warning("Entry " + key + " in " + proFile
 						+ " is invalid and was ignored!");
+				plugin.bLog.warning("Protection " + key + " is invalid!");
 				continue;
 			}
 			PermissionUser owner;
 			if ((owner = PermissionUser.matchUser(slashsplit[2], plugin)) == null) {
-				log.warning("Entry " + key + " in " + proFile
+				plugin.log.warning("Entry " + key + " in " + proFile
 						+ " is invalid and was ignored!");
+				plugin.bLog.warning("Protection " + key + " is invalid!");
 				continue;
 			}
 			List<PermissionUser> guests = new ArrayList<PermissionUser>();
@@ -93,8 +94,9 @@ public class ProtectFile extends Properties {
 					}
 				}
 			} catch (NullPointerException e) {
-				log.warning("Entry " + key + " in " + proFile
+				plugin.log.warning("Entry " + key + " in " + proFile
 						+ " is invalid and was ignored!");
+				plugin.bLog.warning("Protection " + key + " is invalid!");
 				continue;
 			}
 			String type = slashsplit[0];
@@ -107,12 +109,14 @@ public class ProtectFile extends Properties {
 				int z = Integer.parseInt(slashsplit[3].split(",")[3]);
 				loc = new Location(world, x, y, z);
 			} catch (NumberFormatException e) {
-				log.warning("Entry " + key + " in " + proFile
+				plugin.log.warning("Entry " + key + " in " + proFile
 						+ " is invalid and was ignored!");
+				plugin.bLog.warning("Protection " + key + " is invalid!");
 				continue;
 			} catch (NullPointerException e) {
-				log.warning("Entry " + key + " in " + proFile
+				plugin.log.warning("Entry " + key + " in " + proFile
 						+ " is invalid and was ignored!");
+				plugin.bLog.warning("Protection " + key + " is invalid!");
 				continue;
 			}
 			if (type.equalsIgnoreCase("c")) {
@@ -128,8 +132,9 @@ public class ProtectFile extends Properties {
 				protectedBlocks.add(new PublicDoor(plugin, id, owner, guests,
 						loc));
 			} else {
-				log.warning("Entry " + key + " in " + proFile
+				plugin.log.warning("Entry " + key + " in " + proFile
 						+ " is invalid and was ignored!");
+				plugin.bLog.warning("Protection " + key + " is invalid!");
 			}
 		}
 	}
@@ -264,8 +269,9 @@ public class ProtectFile extends Properties {
 						break;
 					}
 				} catch (NullPointerException e) {
-					log.warning(block.GetId()
+					plugin.log.warning(block.GetId()
 							+ " has a missing secondary block. It will be quarantined...");
+					plugin.bLog.warning("Protection " + block.GetId() + " is missing a secondary block! (It was quarantined)");
 					q.add(block);
 				}
 				try {
@@ -275,8 +281,9 @@ public class ProtectFile extends Properties {
 						break;
 					}
 				} catch (NullPointerException e) {
-					log.warning(block.GetId()
+					plugin.log.warning(block.GetId()
 							+ " has a missing secondary block. It will be quarantined...");
+					plugin.bLog.warning("Protection " + block.GetId() + " is missing a secondary block! (It was quarantined)");
 					q.add(block);
 				}
 			}
@@ -288,8 +295,9 @@ public class ProtectFile extends Properties {
 						break;
 					}
 				} catch (NullPointerException e) {
-					log.warning(block.GetId()
+					plugin.log.warning(block.GetId()
 							+ " has a missing secondary block. It will be quarantined...");
+					plugin.bLog.warning("Protection " + block.GetId() + " is missing a secondary block! (It was quarantined)");
 					q.add(block);
 				}
 				try {
@@ -299,8 +307,9 @@ public class ProtectFile extends Properties {
 						break;
 					}
 				} catch (NullPointerException e) {
-					log.warning(block.GetId()
+					plugin.log.warning(block.GetId()
 							+ " has a missing secondary block. It will be quarantined...");
+					plugin.bLog.warning("Protection " + block.GetId() + " is missing a secondary block! (It was quarantined)");
 					q.add(block);
 				}
 			}

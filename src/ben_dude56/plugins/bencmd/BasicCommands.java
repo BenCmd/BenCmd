@@ -2,7 +2,6 @@ package ben_dude56.plugins.bencmd;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
@@ -21,7 +20,6 @@ import ben_dude56.plugins.bencmd.warps.Jail;
 
 public class BasicCommands implements Commands {
 	BenCmd plugin;
-	Logger log = Logger.getLogger("minecraft");
 
 	public BasicCommands(BenCmd instance) {
 		plugin = instance;
@@ -39,37 +37,36 @@ public class BasicCommands implements Commands {
 				&& user.hasPerm("canChangeTime")) {
 			Time(args, user);
 			return true;
-		}
-		if (commandLabel.equalsIgnoreCase("day")) {
+		} else if (commandLabel.equalsIgnoreCase("day")) {
 			plugin.getServer().dispatchCommand(sender, "time day");
 			return true;
-		}
-		if (commandLabel.equalsIgnoreCase("dawn")) {
+		} else if (commandLabel.equalsIgnoreCase("dawn")) {
 			plugin.getServer().dispatchCommand(sender, "time dawn");
 			return true;
-		}
-		if (commandLabel.equalsIgnoreCase("noon")) {
+		} else if (commandLabel.equalsIgnoreCase("noon")) {
 			plugin.getServer().dispatchCommand(sender, "time noon");
 			return true;
-		}
-		if (commandLabel.equalsIgnoreCase("dusk")) {
+		} else if (commandLabel.equalsIgnoreCase("dusk")) {
 			plugin.getServer().dispatchCommand(sender, "time dusk");
 			return true;
-		}
-		if (commandLabel.equalsIgnoreCase("sunrise")) {
+		} else if (commandLabel.equalsIgnoreCase("sunrise")) {
 			plugin.getServer().dispatchCommand(sender, "time sunrise");
 			return true;
-		}
-		if (commandLabel.equalsIgnoreCase("sunset")) {
+		} else if (commandLabel.equalsIgnoreCase("sunset")) {
 			plugin.getServer().dispatchCommand(sender, "time sunset");
 			return true;
-		}
-		if (commandLabel.equalsIgnoreCase("night")) {
+		} else if (commandLabel.equalsIgnoreCase("night")) {
 			plugin.getServer().dispatchCommand(sender, "time night");
 			return true;
-		}
-		if (commandLabel.equalsIgnoreCase("midnight")) {
+		} else if (commandLabel.equalsIgnoreCase("midnight")) {
 			plugin.getServer().dispatchCommand(sender, "time midnight");
+			return true;
+		} else if (commandLabel.equalsIgnoreCase("svping")) {
+			if (user.isServer()) {
+				plugin.log.info("pong");
+			} else {
+				user.sendMessage(ChatColor.RED + "Nice try, asshole!");
+			}
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("spawn")
 				&& user.hasPerm("canSpawn")) {
@@ -186,7 +183,9 @@ public class BasicCommands implements Commands {
 					user.sendMessage(ChatColor.RED + "Invaled time.");
 					return;
 				}
-				log.info("BenCmd: " + user.getDisplayName()
+				plugin.log.info("BenCmd: " + user.getDisplayName()
+						+ " has set time to " + time);
+				plugin.bLog.info("BenCmd: " + user.getDisplayName()
 						+ " has set time to " + time);
 				if (user.isServer()) {
 					for (World world : plugin.getServer().getWorlds()) {
@@ -259,7 +258,9 @@ public class BasicCommands implements Commands {
 				}
 			} else if (args[0].equalsIgnoreCase("lock")) {
 				if (plugin.timeRunning) {
-					log.info("BenCmd: " + user.getDisplayName()
+					plugin.log.info("BenCmd: " + user.getDisplayName()
+							+ " has frozen time!");
+					plugin.bLog.info("BenCmd: " + user.getDisplayName()
 							+ " has frozen time!");
 					if (user.isServer()) {
 						plugin.timeFrozenAt = plugin.getServer().getWorlds()
@@ -273,7 +274,9 @@ public class BasicCommands implements Commands {
 							ChatColor.DARK_BLUE + user.getDisplayName()
 									+ " has stopped the clock!");
 				} else {
-					log.info("BenCmd: " + user.getDisplayName()
+					plugin.log.info("BenCmd: " + user.getDisplayName()
+							+ " has unfrozen time!");
+					plugin.bLog.info("BenCmd: " + user.getDisplayName()
 							+ " has unfrozen time!");
 					plugin.timeRunning = true;
 					plugin.getServer().broadcastMessage(
@@ -303,13 +306,19 @@ public class BasicCommands implements Commands {
 				user.makeNonGod(); // Delete them from the list
 				user.sendMessage(ChatColor.GOLD
 						+ "You are no longer in god mode!");
-				log.info("BenCmd: " + user.getDisplayName()
+				plugin.log.info("BenCmd: " + user.getDisplayName()
+						+ " has been made a non-god by "
+						+ user.getDisplayName() + "!");
+				plugin.bLog.info("BenCmd: " + user.getDisplayName()
 						+ " has been made a non-god by "
 						+ user.getDisplayName() + "!");
 			} else { // If they're not a god
 				user.makeGod(); // Add them to the list
 				user.sendMessage(ChatColor.GOLD + "You are now in god mode!");
-				log.info("BenCmd: " + user.getDisplayName()
+				plugin.log.info("BenCmd: " + user.getDisplayName()
+						+ " has been made a god by " + user.getDisplayName()
+						+ "!");
+				plugin.bLog.info("BenCmd: " + user.getDisplayName()
 						+ " has been made a god by " + user.getDisplayName()
 						+ "!");
 			}
@@ -323,14 +332,20 @@ public class BasicCommands implements Commands {
 										// list
 					user2.sendMessage(ChatColor.GOLD
 							+ "You are no longer in god mode!");
-					log.info("BenCmd: " + user2.getDisplayName()
+					plugin.log.info("BenCmd: " + user2.getDisplayName()
+							+ " has been made a non-god by "
+							+ user.getDisplayName() + "!");
+					plugin.bLog.info("BenCmd: " + user2.getDisplayName()
 							+ " has been made a non-god by "
 							+ user.getDisplayName() + "!");
 				} else { // If they're not a god
 					user2.makeGod(); // Add them to the list
 					user2.sendMessage(ChatColor.GOLD
 							+ "You are now in god mode!");
-					log.info("BenCmd: " + user2.getDisplayName()
+					plugin.log.info("BenCmd: " + user2.getDisplayName()
+							+ " has been made a god by "
+							+ user.getDisplayName() + "!");
+					plugin.bLog.info("BenCmd: " + user2.getDisplayName()
 							+ " has been made a god by "
 							+ user.getDisplayName() + "!");
 				}
@@ -350,7 +365,9 @@ public class BasicCommands implements Commands {
 			// Heal the player
 			user.Heal();
 			user.sendMessage(ChatColor.GREEN + "You have been healed.");
-			log.info("BenCmd: " + user.getDisplayName() + " has healed "
+			plugin.log.info("BenCmd: " + user.getDisplayName() + " has healed "
+					+ user.getDisplayName());
+			plugin.bLog.info("BenCmd: " + user.getDisplayName() + " has healed "
 					+ user.getDisplayName());
 		} else {
 			// Heal the other player
@@ -359,7 +376,9 @@ public class BasicCommands implements Commands {
 				user2 = User.matchUser(args[0], plugin);
 				user2.Heal();
 				user2.sendMessage(ChatColor.GREEN + "You have been healed.");
-				log.info("BenCmd: " + user.getDisplayName() + " has healed "
+				plugin.log.info("BenCmd: " + user.getDisplayName() + " has healed "
+						+ user2.getDisplayName());
+				plugin.bLog.info("BenCmd: " + user.getDisplayName() + " has healed "
 						+ user2.getDisplayName());
 			} else {
 				user.sendMessage(ChatColor.RED + args[0]
@@ -392,7 +411,7 @@ public class BasicCommands implements Commands {
 								targetBlock.getX(), targetBlock.getY() + 1,
 								targetBlock.getZ()), TreeType.TREE)) {
 			// It sprouted properly!
-			log.info("BenCmd: " + user.getDisplayName()
+			plugin.log.info("BenCmd: " + user.getDisplayName()
 					+ " has sprouted a tree at (" + targetBlock.getX() + ","
 					+ targetBlock.getY() + 1 + "," + targetBlock.getZ() + ")!");
 			user.sendMessage(ChatColor.GREEN + "Tree created successfully!");
@@ -431,7 +450,9 @@ public class BasicCommands implements Commands {
 			plugin.timeRunning = true;
 			user.sendMessage(ChatColor.GREEN
 					+ "BenCmd Config Successfully reloaded!");
-			log.warning(user.getDisplayName()
+			plugin.log.warning(user.getDisplayName()
+					+ " has reloaded the BenCmd configuration.");
+			plugin.bLog.warning(user.getDisplayName()
 					+ " has reloaded the BenCmd configuration.");
 		}
 		if (args[0].equalsIgnoreCase("disable") && user.hasPerm("canDisable")) {
@@ -454,7 +475,10 @@ public class BasicCommands implements Commands {
 		}
 		Location newSpawn = user.getHandle().getLocation();
 		user.sendMessage(ChatColor.GREEN + "The spawn location has been set!");
-		log.info(user.getDisplayName() + " has set the spawn location to ("
+		plugin.log.info(user.getDisplayName() + " has set the spawn location to ("
+				+ newSpawn.getBlockX() + ", " + newSpawn.getBlockY() + ", "
+				+ newSpawn.getBlockZ() + ")");
+		plugin.bLog.info(user.getDisplayName() + " has set the spawn location to ("
 				+ newSpawn.getBlockX() + ", " + newSpawn.getBlockY() + ", "
 				+ newSpawn.getBlockZ() + ")");
 		user.getHandle()

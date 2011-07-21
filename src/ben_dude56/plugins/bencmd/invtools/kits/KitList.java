@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.logging.Logger;
 
 import ben_dude56.plugins.bencmd.*;
 import ben_dude56.plugins.bencmd.invtools.*;
@@ -16,7 +15,6 @@ public class KitList extends Properties {
 	File file;
 	BenCmd plugin;
 	InventoryBackend back;
-	static final Logger log = Logger.getLogger("minecraft");
 	public List<Kit> kits = new ArrayList<Kit>();
 
 	public KitList(BenCmd instance) {
@@ -31,7 +29,7 @@ public class KitList extends Properties {
 			try {
 				file.createNewFile();
 			} catch (IOException ex) {
-				log.severe("BenCmd had a problem:");
+				plugin.log.severe("BenCmd had a problem:");
 				ex.printStackTrace();
 				return;
 			}
@@ -39,7 +37,7 @@ public class KitList extends Properties {
 		try {
 			load(new FileInputStream(file));
 		} catch (IOException ex) {
-			log.severe("BenCmd had a problem:");
+			plugin.log.severe("BenCmd had a problem:");
 			ex.printStackTrace();
 		}
 		kits.clear();

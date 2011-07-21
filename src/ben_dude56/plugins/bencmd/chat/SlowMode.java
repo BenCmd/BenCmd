@@ -2,7 +2,6 @@ package ben_dude56.plugins.bencmd.chat;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -15,7 +14,6 @@ public class SlowMode {
 	private Integer defTime;
 	private Integer origDefTime;
 	public HashMap<String, Long> playerList = new HashMap<String, Long>();
-	Logger log = Logger.getLogger("minecraft");
 
 	public int getDefTime() {
 		return defTime;

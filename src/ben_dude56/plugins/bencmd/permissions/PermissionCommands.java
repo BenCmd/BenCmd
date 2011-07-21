@@ -1,7 +1,6 @@
 package ben_dude56.plugins.bencmd.permissions;
 
 import java.util.ArrayList;
-import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -17,7 +16,6 @@ import ben_dude56.plugins.bencmd.reporting.Report.ReportStatus;
 
 public class PermissionCommands implements Commands {
 	BenCmd plugin;
-	Logger log = Logger.getLogger("minecraft");
 
 	public PermissionCommands(BenCmd instance) {
 		plugin = instance;
@@ -95,6 +93,7 @@ public class PermissionCommands implements Commands {
 				user.sendMessage(ChatColor.GREEN + "User " + args[0]
 						+ " was successfully removed!");
 				plugin.log.info("User " + args[0] + " has been removed!");
+				plugin.bLog.info("User " + args[0] + " has been deleted from users.db!");
 			}
 		} else if (args[1].equalsIgnoreCase("add")) {
 			if (user2 != null) {
@@ -105,6 +104,7 @@ public class PermissionCommands implements Commands {
 				user.sendMessage(ChatColor.GREEN + "User " + args[0]
 						+ " was successfully created!");
 				plugin.log.info("User " + args[0] + " has been created!");
+				plugin.bLog.info("User " + args[0] + " has been added to users.db!");
 			}
 		} else if (args[1].equalsIgnoreCase("info")) {
 			if (user2 == null) {
@@ -138,6 +138,8 @@ public class PermissionCommands implements Commands {
 							+ "That user now has the specified permission!");
 					plugin.log.info("User " + args[0] + " now has permission "
 							+ args[1]);
+					plugin.bLog.info("User " + args[0] + " now has permission "
+							+ args[1]);
 				}
 			}
 		} else if (args[1].startsWith("-")) {
@@ -152,6 +154,8 @@ public class PermissionCommands implements Commands {
 					user.sendMessage(ChatColor.GREEN
 							+ "That user has now lost the specified permission!");
 					plugin.log.info("User " + args[0] + " has lost permission "
+							+ args[1]);
+					plugin.bLog.info("User " + args[0] + " has lost permission "
 							+ args[1]);
 				}
 			}
@@ -185,6 +189,7 @@ public class PermissionCommands implements Commands {
 				user.sendMessage(ChatColor.GREEN + "Group " + args[0]
 						+ " was successfully removed!");
 				plugin.log.info("Group " + args[0] + " has been removed!");
+				plugin.bLog.info("Group " + args[0] + " has been deleted from groups.db!");
 			}
 		} else if (args[1].equalsIgnoreCase("add")) {
 			if (group != null) {
@@ -197,6 +202,7 @@ public class PermissionCommands implements Commands {
 				user.sendMessage(ChatColor.GREEN + "Group " + args[0]
 						+ " was successfully created!");
 				plugin.log.info("Group " + args[0] + " has been created!");
+				plugin.bLog.info("Group " + args[0] + " has been added to groups.db!");
 			}
 		} else if (args[1].equalsIgnoreCase("info")) {
 			if (group == null) {
@@ -244,6 +250,9 @@ public class PermissionCommands implements Commands {
 							plugin.log.info(user2.getName()
 									+ " is now a part of group "
 									+ group.getName());
+							plugin.bLog.info(user2.getName()
+									+ " is now a part of group "
+									+ group.getName());
 						}
 					}
 				}
@@ -273,6 +282,9 @@ public class PermissionCommands implements Commands {
 									+ " is no longer a part of group "
 									+ group.getName());
 							plugin.log.info(user2.getName()
+									+ " is no longer a part of group "
+									+ group.getName());
+							plugin.bLog.info(user2.getName()
 									+ " is no longer a part of group "
 									+ group.getName());
 						}
@@ -306,6 +318,9 @@ public class PermissionCommands implements Commands {
 							plugin.log.info(group2.getName()
 									+ " is now a part of group "
 									+ group.getName());
+							plugin.bLog.info(group2.getName()
+									+ " is now a part of group "
+									+ group.getName());
 						}
 					}
 				}
@@ -337,6 +352,9 @@ public class PermissionCommands implements Commands {
 							plugin.log.info(group2.getName()
 									+ " is no longer a part of group "
 									+ group.getName());
+							plugin.bLog.info(group2.getName()
+									+ " is no longer a part of group "
+									+ group.getName());
 						}
 					}
 				}
@@ -352,6 +370,9 @@ public class PermissionCommands implements Commands {
 				plugin.log.info("The prefix of group " + args[0]
 						+ " was changed to "
 						+ args[1].replaceFirst("p:", "").replace("_", " "));
+				plugin.bLog.info("The prefix of group " + args[0]
+				                      						+ " was changed to "
+				                      						+ args[1].replaceFirst("p:", "").replace("_", " "));
 			}
 		} else if (args[1].startsWith("c:")) {
 			if (group == null) {
@@ -365,6 +386,9 @@ public class PermissionCommands implements Commands {
 					plugin.log.info("The color of group " + args[0]
 							+ " was changed to "
 							+ args[1].replaceFirst("c:", ""));
+					plugin.bLog.info("The color of group " + args[0]
+					                 							+ " was changed to "
+					                 							+ args[1].replaceFirst("c:", ""));
 				} catch (NumberFormatException e) {
 					user.sendMessage(ChatColor.RED
 							+ "Are you sure that's a hex number?");
@@ -382,6 +406,9 @@ public class PermissionCommands implements Commands {
 					plugin.log.info("The level of group " + args[0]
 							+ " was changed to "
 							+ args[1].replaceFirst("l:", ""));
+					plugin.bLog.info("The level of group " + args[0]
+					                 							+ " was changed to "
+					                 							+ args[1].replaceFirst("l:", ""));
 				} catch (NumberFormatException e) {
 					user.sendMessage(ChatColor.RED
 							+ "Are you sure that's a number?");
@@ -401,6 +428,8 @@ public class PermissionCommands implements Commands {
 							+ "That group now has the specified permission!");
 					plugin.log.info("Group " + args[0] + " now has permission "
 							+ args[1]);
+					plugin.bLog.info("Group " + args[0] + " now has permission "
+							+ args[1]);
 				}
 			}
 		} else if (args[1].startsWith("-")) {
@@ -417,6 +446,8 @@ public class PermissionCommands implements Commands {
 							+ "That group has now lost the specified permission!");
 					plugin.log.info("Group " + args[0]
 							+ " has lost permission " + args[1]);
+					plugin.bLog.info("Group " + args[0]
+					    							+ " has lost permission " + args[1]);
 				}
 			}
 		}

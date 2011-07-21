@@ -1,7 +1,7 @@
 package ben_dude56.plugins.bencmd.warps;
 
 import java.util.HashMap;
-import java.util.logging.Logger;
+import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -11,7 +11,6 @@ import ben_dude56.plugins.bencmd.*;
 public class PreWarp {
 	HashMap<String, Warp> prewarps = new HashMap<String, Warp>();
 	BenCmd plugin;
-	Logger log = Logger.getLogger("minecraft");
 
 	public PreWarp(BenCmd instance) {
 		plugin = instance;
@@ -54,7 +53,8 @@ public class PreWarp {
 		} catch (Exception e) {
 			player.sendMessage(ChatColor.RED
 					+ "There was a problem creating the checkpoint!");
-			log.severe("Couldn't create new checkpoint:");
+			plugin.bLog.log(Level.SEVERE, "Couldn't create new checkpoint:", e);
+			plugin.log.severe("Couldn't create new checkpoint:");
 			e.printStackTrace();
 			return;
 		}

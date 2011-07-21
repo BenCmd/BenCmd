@@ -2,7 +2,6 @@ package ben_dude56.plugins.bencmd.reporting;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -16,7 +15,6 @@ import ben_dude56.plugins.bencmd.permissions.PermissionUser;
 
 public class ReportCommands implements Commands {
 	BenCmd plugin;
-	Logger log = Logger.getLogger("minecraft");
 
 	public ReportCommands(BenCmd instance) {
 		plugin = instance;
@@ -69,7 +67,9 @@ public class ReportCommands implements Commands {
 		plugin.reports.addTicket(new Report(plugin, id, user, reported,
 				Report.ReportStatus.UNREAD, reason, "", 0,
 				new ArrayList<String>()));
-		log.info(user.getDisplayName() + " opened ticket #" + id.toString()
+		plugin.log.info(user.getDisplayName() + " opened ticket #" + id.toString()
+				+ "!");
+		plugin.bLog.info(user.getDisplayName() + " opened ticket #" + id.toString()
 				+ "!");
 		user.sendMessage(ChatColor.GREEN + "Thank you for your report");
 		user.sendMessage(ChatColor.GREEN
@@ -201,7 +201,9 @@ public class ReportCommands implements Commands {
 					}
 					if (args.length == 2) {
 						report.closeTicket("Ticket closed by admin");
-						log.info(user.getDisplayName() + " closed ticket #"
+						plugin.log.info(user.getDisplayName() + " closed ticket #"
+								+ id.toString() + "!");
+						plugin.bLog.info(user.getDisplayName() + " closed ticket #"
 								+ id.toString() + "!");
 						user.sendMessage(ChatColor.GREEN + "Ticket (ID: "
 								+ report.getId()
@@ -216,7 +218,9 @@ public class ReportCommands implements Commands {
 							}
 						}
 						report.closeTicket(reason);
-						log.info(user.getDisplayName() + " closed ticket #"
+						plugin.log.info(user.getDisplayName() + " closed ticket #"
+								+ id.toString() + "! Reason: " + reason);
+						plugin.bLog.info(user.getDisplayName() + " closed ticket #"
 								+ id.toString() + "! Reason: " + reason);
 						user.sendMessage(ChatColor.GREEN + "Ticket (ID: "
 								+ report.getId()
@@ -238,7 +242,9 @@ public class ReportCommands implements Commands {
 						user.sendMessage(ChatColor.GREEN + "Ticket (ID: "
 								+ report.getId()
 								+ ") has been successfully closed!");
-						log.info(user.getDisplayName() + " closed ticket #"
+						plugin.log.info(user.getDisplayName() + " closed ticket #"
+								+ id.toString() + "!");
+						plugin.bLog.info(user.getDisplayName() + " closed ticket #"
 								+ id.toString() + "!");
 					} else {
 						user.sendMessage(ChatColor.RED
@@ -258,7 +264,9 @@ public class ReportCommands implements Commands {
 						return;
 					}
 					report.reopenTicket(true);
-					log.info(user.getDisplayName() + " re-opened ticket #"
+					plugin.log.info(user.getDisplayName() + " re-opened ticket #"
+							+ id.toString() + "!");
+					plugin.bLog.info(user.getDisplayName() + " re-opened ticket #"
 							+ id.toString() + "!");
 					user.sendMessage(ChatColor.GREEN
 							+ "That ticket has been re-opened!");
@@ -274,7 +282,9 @@ public class ReportCommands implements Commands {
 						return;
 					}
 					if (report.reopenTicket(false)) {
-						log.info(user.getDisplayName() + " re-opened ticket #"
+						plugin.log.info(user.getDisplayName() + " re-opened ticket #"
+								+ id.toString() + "!");
+						plugin.bLog.info(user.getDisplayName() + " re-opened ticket #"
 								+ id.toString() + "!");
 						user.sendMessage(ChatColor.GREEN
 								+ "That ticket has been re-opened!");
@@ -312,7 +322,9 @@ public class ReportCommands implements Commands {
 					}
 					user.sendMessage(ChatColor.GREEN
 							+ "That ticket has been locked!");
-					log.info(user.getDisplayName() + " locked ticket #"
+					plugin.log.info(user.getDisplayName() + " locked ticket #"
+							+ id.toString() + "!");
+					plugin.bLog.info(user.getDisplayName() + " locked ticket #"
 							+ id.toString() + "!");
 				} else {
 					user.sendMessage(ChatColor.RED
@@ -328,7 +340,9 @@ public class ReportCommands implements Commands {
 					report.InvestigateTicket();
 					user.sendMessage(ChatColor.GREEN
 							+ "That ticket has been marked as under investigation!");
-					log.info(user.getDisplayName() + " is investigating #"
+					plugin.log.info(user.getDisplayName() + " is investigating #"
+							+ id.toString() + "!");
+					plugin.bLog.info(user.getDisplayName() + " is investigating #"
 							+ id.toString() + "!");
 				} else {
 					user.sendMessage(ChatColor.RED
@@ -344,7 +358,10 @@ public class ReportCommands implements Commands {
 					report.UninvestigateTicket();
 					user.sendMessage(ChatColor.GREEN
 							+ "That ticket has been marked as read!");
-					log.info(user.getDisplayName()
+					plugin.log.info(user.getDisplayName()
+							+ " is no longer investigating #" + id.toString()
+							+ "!");
+					plugin.bLog.info(user.getDisplayName()
 							+ " is no longer investigating #" + id.toString()
 							+ "!");
 				} else {
@@ -391,7 +408,10 @@ public class ReportCommands implements Commands {
 					}
 					user.sendMessage(ChatColor.GREEN
 							+ "The info has been added successfully!");
-					log.info(user.getDisplayName()
+					plugin.log.info(user.getDisplayName()
+							+ " has added information to ticket #"
+							+ id.toString() + "!");
+					plugin.bLog.info(user.getDisplayName()
 							+ " has added information to ticket #"
 							+ id.toString() + "!");
 					if (user.hasPerm("isTicketAdmin")) {

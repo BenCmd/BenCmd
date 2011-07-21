@@ -1,6 +1,6 @@
 package ben_dude56.plugins.bencmd.warps;
 
-import java.util.logging.Logger;
+import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -14,7 +14,6 @@ import ben_dude56.plugins.bencmd.permissions.PermissionUser;
 
 public class WarpCommands implements Commands {
 	BenCmd plugin;
-	Logger log = Logger.getLogger("minecraft");
 
 	public WarpCommands(BenCmd instance) {
 		plugin = instance;
@@ -171,7 +170,8 @@ public class WarpCommands implements Commands {
 		} catch (Exception e) {
 			user.sendMessage(ChatColor.RED
 					+ "There was a problem creating the warp!");
-			log.severe("Couldn't create new warp:");
+			plugin.bLog.log(Level.SEVERE, "Couldn't create new warp:", e);
+			plugin.log.severe("Couldn't create new warp:");
 			e.printStackTrace();
 			return;
 		}
@@ -382,6 +382,8 @@ public class WarpCommands implements Commands {
 			user.getHandle().teleport(user2.getHandle());
 			plugin.log.info(user.getName() + " has teleported to "
 					+ user2.getName());
+			plugin.bLog.info(user.getName() + " has teleported to "
+					+ user2.getName());
 			user.sendMessage(ChatColor.YELLOW + "Woosh!");
 		} else if (args.length == 2) {
 			if (args[0].equalsIgnoreCase(user.getName())) {
@@ -417,6 +419,8 @@ public class WarpCommands implements Commands {
 			plugin.checkpoints.SetPreWarp(user1.getHandle());
 			user1.getHandle().teleport(user2.getHandle());
 			plugin.log.info(user1.getName() + " has been teleported to "
+					+ user2.getName() + " by " + user.getName());
+			plugin.bLog.info(user1.getName() + " has been teleported to "
 					+ user2.getName() + " by " + user.getName());
 			user1.sendMessage(ChatColor.YELLOW + "Woosh!");
 		} else {

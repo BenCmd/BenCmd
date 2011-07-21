@@ -1,7 +1,5 @@
 package ben_dude56.plugins.bencmd.protect;
 
-import java.util.logging.Logger;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -12,7 +10,6 @@ import ben_dude56.plugins.bencmd.User;
 
 public class ProtectBlockListener extends BlockListener {
 	BenCmd plugin;
-	Logger log = Logger.getLogger("minecraft");
 
 	public ProtectBlockListener(BenCmd instance) {
 		plugin = instance;
@@ -39,11 +36,12 @@ public class ProtectBlockListener extends BlockListener {
 				String x = String.valueOf(loc.getX());
 				String y = String.valueOf(loc.getY());
 				String z = String.valueOf(loc.getZ());
-				log.info(user.getDisplayName() + " removed "
+				plugin.log.info(user.getDisplayName() + " removed "
 						+ block.getOwner().getName()
 						+ "'s protected chest (id: "
 						+ String.valueOf(block.GetId()) + ") at position (" + w
 						+ "," + x + "," + y + "," + z + ")");
+				plugin.bLog.info("PROTECTION REMOVED: " + String.valueOf(block.GetId()) + " (" + block.getOwner().getName() + ") by " + user.getDisplayName());
 				user.sendMessage(ChatColor.GREEN
 						+ "The protection on that block was removed.");
 			}

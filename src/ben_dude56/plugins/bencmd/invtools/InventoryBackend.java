@@ -1,7 +1,5 @@
 package ben_dude56.plugins.bencmd.invtools;
 
-import java.util.logging.Logger;
-
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.block.CraftDispenser;
@@ -13,7 +11,6 @@ public class InventoryBackend {
 	BenCmd plugin;
 	static final int FULL_STACK = 64;
 	static final int THROWABLE_STACK = 16;
-	Logger log = Logger.getLogger("minecraft");
 
 	public InventoryBackend(BenCmd instance) {
 		plugin = instance;

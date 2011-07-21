@@ -25,6 +25,7 @@ public class NPCListener extends PlayerListener {
 				if (npc == null) {
 					plugin.log
 							.warning("WARNING: Ghost NPC detected... Try restarting the server...");
+					plugin.bLog.warning("A Ghost NPC was detected!");
 					return;
 				}
 				if (event.getPlayer().getItemInHand().getType() == Material.STICK

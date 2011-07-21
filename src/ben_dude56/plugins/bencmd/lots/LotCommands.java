@@ -2,7 +2,6 @@ package ben_dude56.plugins.bencmd.lots;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -28,7 +27,6 @@ import ben_dude56.plugins.bencmd.permissions.PermissionGroup;
 
 public class LotCommands implements Commands {
 	BenCmd plugin;
-	Logger log = Logger.getLogger("minecraft");
 
 	public LotCommands(BenCmd instance) {
 		plugin = instance;

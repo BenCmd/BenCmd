@@ -60,18 +60,21 @@ public class ActionFile extends Properties {
 			} catch (NumberFormatException e) {
 				plugin.log.warning("In the actions file, " + key
 						+ " is not a valid integer!");
+				plugin.bLog.info("Action " + key + " is invalid!");
 				continue;
 			}
 			if (value.length != 3) {
 				plugin.log
 						.warning("In the actions file, an entry must contain exactly 2 slashes! (Entry: "
 								+ key + ")");
+				plugin.bLog.info("Action " + key + " is invalid!");
 				continue;
 			}
 			PermissionUser user = PermissionUser.matchUser(value[0], plugin);
 			if (user == null) {
 				plugin.log.warning("In the actions file, " + value[0]
 						+ " is not a valid user! (Entry: " + key + ")");
+				plugin.bLog.info("Action " + key + " is invalid!");
 				continue;
 			}
 			ActionType action;
@@ -86,6 +89,7 @@ public class ActionFile extends Properties {
 			} else {
 				plugin.log.warning("In the actions file, " + value[1]
 						+ " is not a valid action type! (Entry: " + key + ")");
+				plugin.bLog.info("Action " + key + " is invalid!");
 				continue;
 			}
 			long endTime;
@@ -95,6 +99,7 @@ public class ActionFile extends Properties {
 				plugin.log.warning("In the actions file, " + value[2]
 						+ " cannot be converted into an integer! (Entry: "
 						+ key + ")");
+				plugin.bLog.info("Action " + key + " is invalid!");
 				continue;
 			}
 			actions.put(id, new Action(id, user, action, endTime));

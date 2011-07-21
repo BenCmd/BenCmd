@@ -2,7 +2,6 @@ package ben_dude56.plugins.bencmd.invtools;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -17,7 +16,6 @@ import ben_dude56.plugins.bencmd.invtools.kits.*;
 
 public class InventoryCommands implements Commands {
 	BenCmd plugin;
-	Logger log = Logger.getLogger("minecraft");
 	InventoryBackend back;
 
 	public InventoryCommands(BenCmd instance) {
@@ -179,7 +177,12 @@ public class InventoryCommands implements Commands {
 			user2.sendMessage(ChatColor.GREEN + user.getDisplayName()
 					+ " has sent you a gift.");
 			user.sendMessage(ChatColor.GREEN + "Your gift has been sent!");
-			log.info("BenCmd: " + user.getDisplayName() + " gave "
+			plugin.log.info("BenCmd: " + user.getDisplayName() + " gave "
+					+ user2.getDisplayName() + " an item. (id: "
+					+ String.valueOf(mat.getId()) + ", amount: "
+					+ String.valueOf(fullAmount) + ", damage: "
+					+ String.valueOf(ItemDamage) + ")");
+			plugin.bLog.info("BenCmd: " + user.getDisplayName() + " gave "
 					+ user2.getDisplayName() + " an item. (id: "
 					+ String.valueOf(mat.getId()) + ", amount: "
 					+ String.valueOf(fullAmount) + ", damage: "
@@ -207,7 +210,12 @@ public class InventoryCommands implements Commands {
 			}
 			user.sendMessage(ChatColor.GREEN + "Enjoy, "
 					+ user.getDisplayName() + "!");
-			log.info("BenCmd: " + user.getDisplayName() + " gave "
+			plugin.log.info("BenCmd: " + user.getDisplayName() + " gave "
+					+ user.getDisplayName() + " an item. (id: "
+					+ String.valueOf(mat.getId()) + ", amount: "
+					+ String.valueOf(fullAmount) + ", damage: "
+					+ String.valueOf(ItemDamage) + ")");
+			plugin.bLog.info("BenCmd: " + user.getDisplayName() + " gave "
 					+ user.getDisplayName() + " an item. (id: "
 					+ String.valueOf(mat.getId()) + ", amount: "
 					+ String.valueOf(fullAmount) + ", damage: "
@@ -223,15 +231,19 @@ public class InventoryCommands implements Commands {
 			}
 			user.getHandle().getInventory().clear(); // Clear the player's
 														// inventory
-			log.info(user.getDisplayName()
+			plugin.log.info(user.getDisplayName()
+					+ " has cleared their own inventory.");
+			plugin.bLog.info(user.getDisplayName()
 					+ " has cleared their own inventory.");
 		} else if (args.length == 1) {
 			// Clear the other player's inventory
 			User user2;
 			if ((user2 = User.matchUser(args[0], plugin)) != null) {
 				user2.getHandle().getInventory().clear();
-				log.info(user.getDisplayName() + " has cleared " + args[0]
+				plugin.log.info(user.getDisplayName() + " has cleared " + args[0]
 						+ "'s inventory.");
+				plugin.bLog.info(user.getDisplayName() + " has cleared " + args[0]
+				                                       						+ "'s inventory.");
 			} else {
 				user.sendMessage(ChatColor.RED + args[0]
 						+ " doesn't exist or is not online.");
@@ -269,7 +281,9 @@ public class InventoryCommands implements Commands {
 					plugin.kits.giveKit(user, args[0]);
 					user.sendMessage(ChatColor.GREEN + "Enjoy, "
 							+ user.getDisplayName() + "!");
-					log.info("User " + user.getDisplayName()
+					plugin.log.info("User " + user.getDisplayName()
+							+ " has spawned kit " + args[0] + "!");
+					plugin.bLog.info("User " + user.getDisplayName()
 							+ " has spawned kit " + args[0] + "!");
 				} else {
 					user.sendMessage(ChatColor.RED
@@ -294,7 +308,10 @@ public class InventoryCommands implements Commands {
 							+ " has sent you a gift.");
 					user.sendMessage(ChatColor.GREEN
 							+ "Your gift has been sent!");
-					log.info("User " + user.getDisplayName()
+					plugin.log.info("User " + user.getDisplayName()
+							+ " has spawned kit " + args[1] + " for user "
+							+ user2.getDisplayName() + "!");
+					plugin.bLog.info("User " + user.getDisplayName()
 							+ " has spawned kit " + args[1] + " for user "
 							+ user2.getDisplayName() + "!");
 				} else {

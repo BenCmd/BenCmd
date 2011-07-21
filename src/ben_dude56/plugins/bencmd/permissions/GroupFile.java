@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
 
 public class GroupFile extends Properties {
 
@@ -95,29 +96,34 @@ public class GroupFile extends Properties {
 		groups.clear();
 		for (int i = 0; i < this.size(); i++) {
 			String name = (String) this.keySet().toArray()[i];
-			String value = this.getProperty(name);
-			List<String> permissions = new ArrayList<String>();
-			List<String> users = new ArrayList<String>();
-			List<String> groups = new ArrayList<String>();
-			String prefix;
-			Integer color;
-			Integer level;
-			permissions.addAll(Arrays.asList(value.split("/")[0].split(",")));
-			users.addAll(Arrays.asList(value.split("/")[1].split(",")));
-			groups.addAll(Arrays.asList(value.split("/")[2].split(",")));
-			prefix = value.split("/")[3];
 			try {
-				color = Integer.parseInt(value.split("/")[4], 16);
-			} catch (NumberFormatException e) {
-				color = -1;
+				String value = this.getProperty(name);
+				List<String> permissions = new ArrayList<String>();
+				List<String> users = new ArrayList<String>();
+				List<String> groups = new ArrayList<String>();
+				String prefix;
+				Integer color;
+				Integer level;
+				permissions
+						.addAll(Arrays.asList(value.split("/")[0].split(",")));
+				users.addAll(Arrays.asList(value.split("/")[1].split(",")));
+				groups.addAll(Arrays.asList(value.split("/")[2].split(",")));
+				prefix = value.split("/")[3];
+				try {
+					color = Integer.parseInt(value.split("/")[4], 16);
+				} catch (NumberFormatException e) {
+					color = -1;
+				}
+				try {
+					level = Integer.parseInt(value.split("/")[5]);
+				} catch (NumberFormatException e) {
+					level = 0;
+				}
+				this.groups.put(name, new InternalGroup(mainPerm.plugin, name,
+						permissions, users, groups, prefix, color, level));
+			} catch (Exception e) {
+				mainPerm.plugin.bLog.log(Level.WARNING, "Group " + name + " failed to load:", e);
 			}
-			try {
-				level = Integer.parseInt(value.split("/")[5]);
-			} catch (NumberFormatException e) {
-				level = 0;
-			}
-			this.groups.put(name, new InternalGroup(mainPerm.plugin, name,
-					permissions, users, groups, prefix, color, level));
 		}
 	}
 

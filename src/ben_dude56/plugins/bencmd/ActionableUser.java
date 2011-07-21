@@ -1,7 +1,5 @@
 package ben_dude56.plugins.bencmd;
 
-import java.util.logging.Logger;
-
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -12,7 +10,6 @@ public class ActionableUser extends WarpableUser {
 	private BenCmd plugin;
 	private Player player;
 	private boolean isConsole;
-	Logger log = Logger.getLogger("minecraft");
 
 	/**
 	 * Creates an ActionableUser corresponding to a player entity.
@@ -48,7 +45,7 @@ public class ActionableUser extends WarpableUser {
 	 */
 	public void Poof() {
 		if (isConsole) {
-			log.info("The server is already invisible, doofus!");
+			plugin.log.info("The server is already invisible, doofus!");
 			return;
 		}
 		plugin.inv.addInv(player);
@@ -59,7 +56,7 @@ public class ActionableUser extends WarpableUser {
 	 */
 	public void UnPoof() {
 		if (isConsole) {
-			log.info("This code should NEVER be reached...");
+			plugin.log.info("This code should NEVER be reached...");
 			return;
 		}
 		plugin.inv.remInv(player);
@@ -70,7 +67,7 @@ public class ActionableUser extends WarpableUser {
 	 */
 	public void NoPoof() {
 		if (isConsole) {
-			log.info("The server has no eyes...");
+			plugin.log.info("The server has no eyes...");
 			return;
 		}
 		plugin.inv.addNoInv(player);
@@ -81,7 +78,7 @@ public class ActionableUser extends WarpableUser {
 	 */
 	public void UnNoPoof() {
 		if (isConsole) {
-			log.info("This code should NEVER be reached...");
+			plugin.log.info("This code should NEVER be reached...");
 			return;
 		}
 		plugin.inv.remNoInv(player);
@@ -89,7 +86,7 @@ public class ActionableUser extends WarpableUser {
 
 	public void AllPoof() {
 		if (isConsole) {
-			log.info("The server is already invisible, doofus!");
+			plugin.log.info("The server is already invisible, doofus!");
 			return;
 		}
 		plugin.inv.addAInv(player);
@@ -97,7 +94,7 @@ public class ActionableUser extends WarpableUser {
 
 	public void UnAllPoof() {
 		if (isConsole) {
-			log.info("This code should NEVER be reached...");
+			plugin.log.info("This code should NEVER be reached...");
 			return;
 		}
 		plugin.inv.remAInv(player);
@@ -148,7 +145,7 @@ public class ActionableUser extends WarpableUser {
 	 */
 	public void Kick(String reason, User sender) {
 		if (isConsole) {
-			log.info(sender.getDisplayName() + " attempted to kick the server!");
+			plugin.log.info(sender.getDisplayName() + " attempted to kick the server!");
 			return;
 		}
 		plugin.kicked.addUser(this);
@@ -164,7 +161,7 @@ public class ActionableUser extends WarpableUser {
 	 */
 	public void Kick(String reason) {
 		if (isConsole) {
-			log.info("An attempt was made to kick the server!");
+			plugin.log.info("An attempt was made to kick the server!");
 			return;
 		}
 		plugin.kicked.addUser(this);
@@ -179,7 +176,7 @@ public class ActionableUser extends WarpableUser {
 	 */
 	public void Kick(User sender) {
 		if (isConsole) {
-			log.info(sender.getDisplayName() + " attempted to kick the server!");
+			plugin.log.info(sender.getDisplayName() + " attempted to kick the server!");
 			return;
 		}
 		plugin.kicked.addUser(this);
@@ -192,7 +189,7 @@ public class ActionableUser extends WarpableUser {
 	 */
 	public void Kick() {
 		if (isConsole) {
-			log.info("An attempt was made to kick the server!");
+			plugin.log.info("An attempt was made to kick the server!");
 			return;
 		}
 		plugin.kicked.addUser(this);
@@ -206,7 +203,7 @@ public class ActionableUser extends WarpableUser {
 	 */
 	public boolean Kill() {
 		if (isConsole) {
-			log.info("An attempt was made to kill the server!");
+			plugin.log.info("An attempt was made to kill the server!");
 			return false;
 		}
 		if (plugin.isGod(player)) {

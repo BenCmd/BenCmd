@@ -1,7 +1,5 @@
 package ben_dude56.plugins.bencmd.chat;
 
-import java.util.logging.Logger;
-
 import net.minecraft.server.EntityHuman;
 
 import org.bukkit.ChatColor;
@@ -16,7 +14,6 @@ import ben_dude56.plugins.bencmd.User;
 
 public class ChatCommands implements Commands {
 	BenCmd plugin;
-	Logger log = Logger.getLogger("minecraft");
 
 	public ChatCommands(BenCmd instance) {
 		plugin = instance;
@@ -222,7 +219,9 @@ public class ChatCommands implements Commands {
 					+ user2.getColor() + user2.getDisplayName()
 					+ ChatColor.GRAY + ") " + message);
 		}
-		log.info("(" + user.getDisplayName() + " => " + user2.getDisplayName()
+		plugin.log.info("(" + user.getDisplayName() + " => " + user2.getDisplayName()
+				+ ") " + message);
+		plugin.bLog.info("(" + user.getDisplayName() + " => " + user2.getDisplayName()
 				+ ") " + message);
 	}
 }

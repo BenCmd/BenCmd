@@ -10,7 +10,6 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.logging.Logger;
 
 import ben_dude56.plugins.bencmd.BenCmd;
 import ben_dude56.plugins.bencmd.permissions.PermissionUser;
@@ -21,7 +20,6 @@ public class ReportFile extends Properties {
 	private BenCmd plugin;
 	private String proFile = "plugins/BenCmd/tickets.db";
 	private List<Report> reports = new ArrayList<Report>();
-	Logger log = Logger.getLogger("minecraft");
 
 	public ReportFile(BenCmd instance) {
 		plugin = instance;
@@ -65,15 +63,19 @@ public class ReportFile extends Properties {
 				try {
 					Integer id = Integer.parseInt((String) this.keySet()
 							.toArray()[i]);
-					log.info("Ticket #" + this.keySet().toArray()[i]
+					plugin.log.info("Ticket #" + this.keySet().toArray()[i]
 							+ " is outdated! Attempting to upgrade...");
+					plugin.bLog.info("Ticket #" + this.keySet().toArray()[i]
+					                         							+ " is outdated! Attempting to upgrade...");
 					reports.add(this.TicketUpgrade(id));
 				} catch (Exception e) {
 					try {
 						copyToOld();
-						log.warning("Ticket couldn't be updated! You can upgrade it manually in oldtickets.db...");
+						plugin.log.warning("Ticket couldn't be updated! You can upgrade it manually in oldtickets.db...");
+						plugin.bLog.warning("Ticket couldn't be updated! You can upgrade it manually in oldtickets.db...");
 					} catch (Exception e1) {
-						log.warning("Ticket couldn't be updated! You can upgrade it manually in tickets.db...");
+						plugin.log.warning("Ticket couldn't be updated! You can upgrade it manually in tickets.db...");
+						plugin.bLog.warning("Ticket couldn't be updated! You can upgrade it manually in tickets.db...");
 					}
 				}
 				continue;
@@ -116,7 +118,8 @@ public class ReportFile extends Properties {
 				reports.add(new Report(plugin, id, sender, accused, status,
 						reason, finalRemark, timesReopened, addedinfo));
 			} catch (Exception e) {
-				log.warning("A ticket in the tickets list couldn't be loaded!");
+				plugin.log.warning("A ticket in the tickets list couldn't be loaded!");
+				plugin.bLog.warning("A ticket in the tickets list couldn't be loaded!");
 			}
 		}
 	}

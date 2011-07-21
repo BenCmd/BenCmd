@@ -2,7 +2,6 @@ package ben_dude56.plugins.bencmd.warps;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -15,7 +14,6 @@ public class WarpableUser extends PermissionUser {
 	private Player player;
 	private BenCmd plugin;
 	private boolean isConsole;
-	Logger log = Logger.getLogger("minecraft");
 
 	public WarpableUser(BenCmd instance, Player entity)
 			throws NullPointerException {
@@ -127,7 +125,7 @@ public class WarpableUser extends PermissionUser {
 	public void sendMessage(String message) {
 		if (isConsole) {
 			message = message.replaceAll("§.", "");
-			log.info(message);
+			plugin.log.info(message);
 		} else {
 			player.sendMessage(message);
 		}

@@ -1,7 +1,5 @@
 package ben_dude56.plugins.bencmd.protect;
 
-import java.util.logging.Logger;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.World.Environment;
@@ -14,7 +12,6 @@ import ben_dude56.plugins.bencmd.User;
 
 public class ProtectPlayerListener extends PlayerListener {
 	BenCmd plugin;
-	Logger log = Logger.getLogger("minecraft");
 
 	public ProtectPlayerListener(BenCmd instance) {
 		plugin = instance;
@@ -27,7 +24,9 @@ public class ProtectPlayerListener extends PlayerListener {
 				event.getPlayer().sendMessage(
 						ChatColor.RED
 								+ "Did you really think that would work!?");
-				log.info(event.getPlayer().getDisplayName()
+				plugin.log.info(event.getPlayer().getDisplayName()
+						+ " attempted to use a bed in the Nether.");
+				plugin.bLog.info(event.getPlayer().getDisplayName()
 						+ " attempted to use a bed in the Nether.");
 				event.setCancelled(true);
 			}
@@ -51,7 +50,10 @@ public class ProtectPlayerListener extends PlayerListener {
 			} else {
 				if (!user.getName()
 						.equalsIgnoreCase(block.getOwner().getName())) {
-					log.info(user.getDisplayName() + " has accessed "
+					plugin.log.info(user.getDisplayName() + " has accessed "
+							+ block.getOwner().getName()
+							+ "'s protected block. (" + block.GetId() + ")");
+					plugin.bLog.info(user.getDisplayName() + " has accessed "
 							+ block.getOwner().getName()
 							+ "'s protected block. (" + block.GetId() + ")");
 				}

@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.logging.Logger;
 
 import org.bukkit.Material;
 
@@ -15,7 +14,6 @@ public class ItemBW extends Properties {
 	private static final long serialVersionUID = 0L;
 	File file;
 	MainPermissions mainPerm;
-	static final Logger log = Logger.getLogger("minecraft");
 
 	/**
 	 * This is used to initialize a GroupFile for use. Use it ONLY ONCE!
@@ -38,7 +36,7 @@ public class ItemBW extends Properties {
 				file.createNewFile(); // If the file doesn't exist, create it!
 			} catch (IOException ex) {
 				// If you can't, produce an error.
-				log.severe("BenCmd had a problem:");
+				mainPerm.plugin.log.severe("BenCmd had a problem:");
 				ex.printStackTrace();
 				return;
 			}
@@ -47,7 +45,7 @@ public class ItemBW extends Properties {
 			load(new FileInputStream(file)); // Load the values
 		} catch (IOException ex) {
 			// If you can't, produce an error.
-			log.severe("BenCmd had a problem:");
+			mainPerm.plugin.log.severe("BenCmd had a problem:");
 			ex.printStackTrace();
 		}
 	}
@@ -62,7 +60,7 @@ public class ItemBW extends Properties {
 				file.createNewFile(); // If the file doesn't exist, create it!
 			} catch (IOException ex) {
 				// If you can't, produce an error.
-				log.severe("BenCmd had a problem:");
+				mainPerm.plugin.log.severe("BenCmd had a problem:");
 				ex.printStackTrace();
 				return;
 			}
@@ -73,14 +71,15 @@ public class ItemBW extends Properties {
 																				// values
 		} catch (IOException ex) {
 			// If you can't, produce an error.
-			log.severe("BenCmd had a problem:");
+			mainPerm.plugin.log.severe("BenCmd had a problem:");
 			ex.printStackTrace();
 		}
 	}
 
 	public List<Material> getListed(String group) {
 		if (!groupExists(group) && !addGroup(group)) {
-			log.warning(group
+			mainPerm.plugin.bLog.warning("Failed to retrieve item blacklist/whitelist for group " + group + "!");
+			mainPerm.plugin.log.warning(group
 					+ " was not in plugins/BenCmd/itemsbw.db and couldn't be added due to an unknown error! Returning null...");
 			return null;
 		}
@@ -92,7 +91,8 @@ public class ItemBW extends Properties {
 				try {
 					mat = Material.getMaterial(Integer.parseInt(material));
 				} catch (NumberFormatException e) {
-					log.warning("Cannot get a number from input: " + material
+					mainPerm.plugin.bLog.warning(material + " in group " + group + " in itembw.db is NaN!");
+					mainPerm.plugin.log.warning("Cannot get a number from input: " + material
 							+ " in plugins/BenCmd/itemsbw.db (Entry: " + group
 							+ ")! Skipping...");
 					continue;
@@ -108,12 +108,11 @@ public class ItemBW extends Properties {
 		boolean returnValue = false;
 		switch (getSetting(group)) {
 		case BWUnknown:
-			log.warning("BWUnknown returned... Assuming BWBlack...");
+			mainPerm.plugin.bLog.warning("Unknown blacklist/whitelist setting for group " + group + "! Assuming blacklist...");
 		case BWBlack:
 			try {
 				returnValue = !(getListed(group).contains(mat));
 			} catch (NullPointerException e) {
-				log.warning("Returned null... Assuming empty list...");
 				returnValue = true;
 			}
 			break;
@@ -121,24 +120,15 @@ public class ItemBW extends Properties {
 			try {
 				returnValue = getListed(group).contains(mat);
 			} catch (NullPointerException e) {
-				log.warning("Returned null... Assuming empty list...");
 				returnValue = false;
 			}
 			break;
 		case BWNoRestriction:
-			log.warning("Group " + group
-					+ " using deprecated BWSetting BWNoRestriction!");
+			mainPerm.plugin.bLog.info("Group " + group + " is using a deprecated blacklist/whitelist setting");
 			returnValue = true;
 			break;
 		default:
-			log.severe("Unknown BWSetting value passed to canSpawn()! Value: "
-					+ getSetting(group).toString() + "! Assuming BWBlack...");
-			try {
-				returnValue = !(getListed(group).contains(mat));
-			} catch (NullPointerException e) {
-				log.warning("Returned null... Assuming empty list...");
-				returnValue = true;
-			}
+			assert false : "Unknown blacklist/whitelist setting!";
 			break;
 		}
 		return returnValue;
@@ -146,7 +136,8 @@ public class ItemBW extends Properties {
 
 	public BWSetting getSetting(String group) {
 		if (!groupExists(group) && !addGroup(group)) {
-			log.warning(group
+			mainPerm.plugin.bLog.warning("Failed to retrieve item blacklist/whitelist setting for group " + group + "!");
+			mainPerm.plugin.log.warning(group
 					+ " was not in plugins/BenCmd/itemsbw.db and couldn't be added due to an unknown error! Returning BWUnknown...");
 			return BWSetting.BWUnknown;
 		}
@@ -158,7 +149,8 @@ public class ItemBW extends Properties {
 		} else if (set.equalsIgnoreCase("nr")) {
 			return BWSetting.BWNoRestriction;
 		} else {
-			log.warning("Cannot get a BWSetting from input: " + set
+			mainPerm.plugin.bLog.warning("Group " + group + " has an unknown blacklist/whitelist setting! (" + set + ")");
+			mainPerm.plugin.log.warning("Cannot get a BWSetting from input: " + set
 					+ " in plugins/BenCmd/itemsbw.db (Entry: " + group
 					+ ")! Returning BWUnknown...");
 			return BWSetting.BWUnknown;

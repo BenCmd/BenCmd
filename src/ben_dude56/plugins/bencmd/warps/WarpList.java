@@ -11,7 +11,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Logger;
+import java.util.logging.Level;
 
 import org.bukkit.entity.Player;
 
@@ -19,7 +19,6 @@ import ben_dude56.plugins.bencmd.*;
 
 public class WarpList {
 	BenCmd plugin;
-	Logger log = Logger.getLogger("minecraft");
 	HashMap<String, Warp> warps = new HashMap<String, Warp>();
 	List<String> warpString = new ArrayList<String>();
 
@@ -71,13 +70,15 @@ public class WarpList {
 			br = new BufferedReader(new InputStreamReader(new FileInputStream(
 					warpFile)));
 		} catch (FileNotFoundException e) {
-			log.warning("warps.db not found. Attempting to create...");
+			plugin.log.warning("warps.db not found. Attempting to create...");
+			plugin.bLog.warning("warps.db not found. Attempting to create...");
 			try {
 				warpFile.createNewFile();
 				br = new BufferedReader(new InputStreamReader(
 						new FileInputStream(warpFile)));
 			} catch (IOException ex) {
-				log.severe("Couldn't create warps.db:");
+				plugin.bLog.log(Level.SEVERE, "Couldn't create warps.db:", e);
+				plugin.log.severe("Couldn't create warps.db:");
 				ex.printStackTrace();
 				return false;
 			}
@@ -112,16 +113,19 @@ public class WarpList {
 					warps.put(name, new Warp(x, y, z, yaw, pitch, world, name,
 							group, plugin));
 				} catch (IndexOutOfBoundsException e) {
-					log.warning("Couldn't load one of the warps!");
+					plugin.bLog.log(Level.SEVERE, "Couldn't load one of the warps!", e);
+					plugin.log.warning("Couldn't load one of the warps!");
 					e.printStackTrace();
 				} catch (NumberFormatException e) {
-					log.warning("Couldn't load one of the warps!");
+					plugin.bLog.log(Level.SEVERE, "Couldn't load one of the warps!", e);
+					plugin.log.warning("Couldn't load one of the warps!");
 					e.printStackTrace();
 				}
 			}
 			br.close();
 		} catch (IOException e) {
-			log.severe("Couldn't read warps.db:");
+			plugin.bLog.log(Level.SEVERE, "Couldn't read warps.db:", e);
+			plugin.log.severe("Couldn't read warps.db:");
 			e.printStackTrace();
 			return false;
 		}
@@ -155,7 +159,8 @@ public class WarpList {
 		try {
 			bw = new BufferedWriter(new FileWriter(warpFile));
 		} catch (IOException e) {
-			log.severe("Unable to open warps.db for writing:");
+			plugin.bLog.log(Level.SEVERE, "Unable to open warps.db for writing:", e);
+			plugin.log.severe("Unable to open warps.db for writing:");
 			e.printStackTrace();
 			return false;
 		}
@@ -166,7 +171,9 @@ public class WarpList {
 					bw.newLine();
 				}
 			} catch (IOException e) {
-				log.severe("BenCmd failed to save warp " + value.split(":")[0]
+				plugin.bLog.log(Level.SEVERE, "BenCmd failed to save warp " + value.split(":")[0]
+						+ ":", e);
+				plugin.log.severe("BenCmd failed to save warp " + value.split(":")[0]
 						+ ":");
 				e.printStackTrace();
 			}
@@ -174,53 +181,8 @@ public class WarpList {
 		try {
 			bw.close();
 		} catch (IOException e) {
-			log.severe("Failed to save warps:");
-			e.printStackTrace();
-			return false;
-		}
-		return true;
-	}
-
-	/**
-	 * @deprecated Causes extreme lag.
-	 */
-	public boolean SaveWarps() {
-		File warpFile;
-		warpFile = new File(plugin.propDir + "warps.db");
-		BufferedWriter bw;
-		try {
-			bw = new BufferedWriter(new FileWriter(warpFile));
-		} catch (IOException e) {
-			log.severe("Unable to open warps.db for writing:");
-			e.printStackTrace();
-			return false;
-		}
-		for (Warp warp : warps.values()) {
-			String name = warp.warpName;
-			double x = warp.loc.getX();
-			double y = warp.loc.getY();
-			double z = warp.loc.getZ();
-			Double yaw = (double) warp.loc.getYaw();
-			Double pitch = (double) warp.loc.getPitch();
-			String world = warp.loc.getWorld().getName();
-			String group = warp.mustInheritGroup;
-			try {
-				bw.write(name + ":" + x + "," + y + "," + z + ","
-						+ yaw.toString() + "," + pitch.toString() + ":" + world
-						+ ":" + group);
-				if (!warps.values().toArray()[warps.values().size() - 1]
-						.equals(warp)) {
-					bw.newLine();
-				}
-			} catch (IOException e) {
-				log.severe("BenCmd failed to save warp " + name + ":");
-				e.printStackTrace();
-			}
-		}
-		try {
-			bw.close();
-		} catch (IOException e) {
-			log.severe("Failed to save warps:");
+			plugin.bLog.log(Level.SEVERE, "Failed to save warps:", e);
+			plugin.log.severe("Failed to save warps:");
 			e.printStackTrace();
 			return false;
 		}
@@ -241,7 +203,8 @@ public class WarpList {
 			warp = new Warp(x, y, z, yaw, pitch, world, name, group, plugin);
 			warps.put(name, warp);
 		} catch (Exception e) {
-			log.severe("Couldn't add new warp:");
+			plugin.bLog.log(Level.SEVERE, "Couldn't add new warp:", e);
+			plugin.log.severe("Couldn't add new warp:");
 			e.printStackTrace();
 			return false;
 		}

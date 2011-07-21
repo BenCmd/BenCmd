@@ -3,8 +3,11 @@ package ben_dude56.plugins.bencmd;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
@@ -132,7 +135,10 @@ public class BenCmd extends JavaPlugin {
 	public List<Location> canSpread = new ArrayList<Location>();
 	public List<Grave> graves = new ArrayList<Grave>();
 	public HashMap<Player, List<ItemStack>> returns = new HashMap<Player, List<ItemStack>>();
-	public Logger log = Logger.getLogger("minecraft");
+	public Logger bLog = Logger.getLogger("Minecraft.BenCmd");
+	public FileHandler fh;
+	public Logger log = Logger.getLogger("Minecraft");
+	public Calendar clog;
 
 	public boolean checkID(int id) {
 		for (Material item : Material.values()) {
@@ -180,146 +186,216 @@ public class BenCmd extends JavaPlugin {
 		log.info(pdfFile.getName() + " v" + pdfFile.getVersion()
 				+ " has been disabled!");
 	}
+	
+	public void rotateLogFile() {
+		log.info("BenCmd log file is rotating...");
+		try {
+			String logName = "";
+			Calendar c = Calendar.getInstance();
+			clog = c;
+			logName += c.get(Calendar.MONTH);
+			logName += "-" + c.get(Calendar.DAY_OF_MONTH);
+			logName += "-" + c.get(Calendar.YEAR);
+			bLog.setLevel(Level.INFO);
+			bLog.setUseParentHandlers(false);
+			fh = new FileHandler(propDir + logName + ".log");
+			fh.setFormatter(new LogFormatter());
+			bLog.addHandler(fh);
+		} catch (IOException e) {
+			log.severe("Unable to create/load log files. Some logging functions may not work properly!");
+		}
+	}
 
 	@Override
 	/**
 	 * Initializes the plugin for general use.
 	 */
 	public void onEnable() {
+		try {
+			String logName = "";
+			Calendar c = Calendar.getInstance();
+			clog = c;
+			logName += c.get(Calendar.MONTH);
+			logName += "-" + c.get(Calendar.DAY_OF_MONTH);
+			logName += "-" + c.get(Calendar.YEAR);
+			bLog.setLevel(Level.INFO);
+			bLog.setUseParentHandlers(false);
+			fh = new FileHandler(propDir + logName + ".log");
+			fh.setFormatter(new LogFormatter());
+			bLog.addHandler(fh);
+		} catch (IOException e) {
+			log.severe("Unable to create/load log files. Some logging functions may not work properly!");
+		}
+		bLog.info("BenCmd log ready! Running BenCmd v" + getDescription().getVersion());
 		// Check for missing files and add them if necessary
+		bLog.info("Checking for missing database files...");
 		new File(propDir).mkdirs();
 		if (!mainProp.exists()) {
+			bLog.info("\"main.properties\" missing... Attempting to create...");
 			try {
 				mainProp.createNewFile();
 			} catch (IOException e) {
+				bLog.log(Level.SEVERE, "Error creating \"main.properties\":", e);
 				System.out.println("BenCmd had a problem:");
 				e.printStackTrace();
 			}
 		}
 		if (!itemAlias.exists()) {
+			bLog.info("\"items.txt\" missing... Attempting to create...");
 			try {
 				itemAlias.createNewFile();
 			} catch (IOException e) {
+				bLog.log(Level.SEVERE, "Error creating \"items.txt\":", e);
 				System.out.println("BenCmd had a problem:");
 				e.printStackTrace();
 			}
 		}
 		if (!unlDisp.exists()) {
+			bLog.info("\"disp.db\" missing... Attempting to create...");
 			try {
 				unlDisp.createNewFile();
 			} catch (IOException e) {
+				bLog.log(Level.SEVERE, "Error creating \"disp.db\":", e);
 				System.out.println("BenCmd had a problem:");
 				e.printStackTrace();
 			}
 		}
 		if (!dispChests.exists()) {
+			bLog.info("\"chest.db\" missing... Attempting to create...");
 			try {
 				dispChests.createNewFile();
 			} catch (IOException e) {
+				bLog.log(Level.SEVERE, "Error creating \"chest.db\":", e);
 				System.out.println("BenCmd had a problem:");
 				e.printStackTrace();
 			}
 		}
 		if (!lotFile.exists()) {
+			bLog.info("\"lots.db\" missing... Attempting to create...");
 			try {
 				lotFile.createNewFile();
 			} catch (IOException e) {
+				bLog.log(Level.SEVERE, "Error creating \"lots.db\":", e);
 				System.out.println("BenCmd had a problem:");
 				e.printStackTrace();
 			}
 		}
 		if (!kitFile.exists()) {
+			bLog.info("\"kits.db\" missing... Attempting to create...");
 			try {
 				kitFile.createNewFile();
 			} catch (IOException e) {
+				bLog.log(Level.SEVERE, "Error creating \"kits.db\":", e);
 				System.out.println("BenCmd had a problem:");
 				e.printStackTrace();
 			}
 		}
 		if (!proFile.exists()) {
+			bLog.info("\"protection.db\" missing... Attempting to create...");
 			try {
 				proFile.createNewFile();
 			} catch (IOException e) {
+				bLog.log(Level.SEVERE, "Error creating \"protection.db\":", e);
 				System.out.println("BenCmd had a problem:");
 				e.printStackTrace();
 			}
 		}
 		if (!chatFile.exists()) {
+			bLog.info("\"channels.db\" missing... Attempting to create...");
 			try {
 				chatFile.createNewFile();
 			} catch (IOException e) {
+				bLog.log(Level.SEVERE, "Error creating \"channels.db\":", e);
 				System.out.println("BenCmd had a problem:");
 				e.printStackTrace();
 			}
 		}
 		if (!ticketFile.exists()) {
+			bLog.info("\"tickets.db\" missing... Attempting to create...");
 			try {
 				ticketFile.createNewFile();
 			} catch (IOException e) {
+				bLog.log(Level.SEVERE, "Error creating \"tickets.db\":", e);
 				System.out.println("BenCmd had a problem:");
 				e.printStackTrace();
 			}
 		}
 		if (!pricesFile.exists()) {
+			bLog.info("\"prices.db\" missing... Attempting to create...");
 			try {
 				pricesFile.createNewFile();
 			} catch (IOException e) {
+				bLog.log(Level.SEVERE, "Error creating \"prices.db\":", e);
 				System.out.println("BenCmd had a problem:");
 				e.printStackTrace();
 			}
 		}
 		if (!portalFile.exists()) {
+			bLog.info("\"portals.db\" missing... Attempting to create...");
 			try {
 				portalFile.createNewFile();
 			} catch (IOException e) {
+				bLog.log(Level.SEVERE, "Error creating \"portals.db\":", e);
 				System.out.println("BenCmd had a problem:");
 				e.printStackTrace();
 			}
 		}
 		if (!shelfFile.exists()) {
+			bLog.info("\"shelves.db\" missing... Attempting to create...");
 			try {
 				shelfFile.createNewFile();
 			} catch (IOException e) {
+				bLog.log(Level.SEVERE, "Error creating \"shelves.db\":", e);
 				System.out.println("BenCmd had a problem:");
 				e.printStackTrace();
 			}
 		}
 		if (!actionFile.exists()) {
+			bLog.info("\"action.db\" missing... Attempting to create...");
 			try {
 				actionFile.createNewFile();
 			} catch (IOException e) {
+				bLog.log(Level.SEVERE, "Error creating \"action.db\":", e);
 				System.out.println("BenCmd had a problem:");
 				e.printStackTrace();
 			}
 		}
 		if (!spareaFile.exists()) {
+			bLog.info("\"sparea.db\" missing... Attempting to create...");
 			try {
 				spareaFile.createNewFile();
 			} catch (IOException e) {
+				bLog.log(Level.SEVERE, "Error creating \"sparea.db\":", e);
 				System.out.println("BenCmd had a problem:");
 				e.printStackTrace();
 			}
 		}
 		if (!bankFile.exists()) {
+			bLog.info("\"bank.db\" missing... Attempting to create...");
 			try {
 				bankFile.createNewFile();
 			} catch (IOException e) {
+				bLog.log(Level.SEVERE, "Error creating \"bank.db\":", e);
 				System.out.println("BenCmd had a problem:");
 				e.printStackTrace();
 			}
 		}
 		if (!NPCFile.exists()) {
+			bLog.info("\"npc.db\" missing... Attempting to create...");
 			try {
 				NPCFile.createNewFile();
 			} catch (IOException e) {
+				bLog.log(Level.SEVERE, "Error creating \"npc.db\":", e);
 				System.out.println("BenCmd had a problem:");
 				e.printStackTrace();
 			}
 		}
 		if (!RFile.exists()) {
+			bLog.info("\"lever.db\" missing... Attempting to create...");
 			try {
 				RFile.createNewFile();
 			} catch (IOException e) {
+				bLog.log(Level.SEVERE, "Error creating \"lever.db\":", e);
 				System.out.println("BenCmd had a problem:");
 				e.printStackTrace();
 			}
@@ -327,6 +403,7 @@ public class BenCmd extends JavaPlugin {
 		// Get some static methods ready
 		User.finalizeAll();
 		// Start loading classes
+		bLog.info("Loading databases...");
 		perm = new MainPermissions(this);
 		warps = new WarpList(this);
 		homes = new HomeWarps(this);
@@ -362,6 +439,7 @@ public class BenCmd extends JavaPlugin {
 		banks = new BankFile(this, propDir + "bank.db");
 		npcs = new NPCFile(this, propDir + "npc.db");
 		levers = new RedstoneFile(this, propDir + "lever.db");
+		bLog.info("Performing configuration check...");
 		// SANITY CHECK
 		if (!sanityCheck()) {
 			this.getServer().getPluginManager().disablePlugin(this);
@@ -377,6 +455,7 @@ public class BenCmd extends JavaPlugin {
 				user.Kick("The server ran out of player slots when reloading... :(");
 			}
 		}
+		bLog.info("Registering events...");
 		// Register all necessary events
 		PluginManager pm = getServer().getPluginManager();
 		pm.registerEvent(Event.Type.PLAYER_JOIN, this.chatListen,
@@ -463,8 +542,10 @@ public class BenCmd extends JavaPlugin {
 				Event.Priority.Monitor, this);
 		PluginDescriptionFile pdfFile = this.getDescription();
 		// Prepare the time lock timer
+		bLog.info("Preparing time task...");
 		getServer().getScheduler().scheduleSyncRepeatingTask(this,
 				new TimeFreeze(), 100, 100);
+		bLog.info("BenCmd enabled successfully!");
 		log.info(pdfFile.getName() + " v" + pdfFile.getVersion()
 				+ " has been enabled!");
 		for (World w : getServer().getWorlds()) {
@@ -517,7 +598,8 @@ public class BenCmd extends JavaPlugin {
 	public String[] warningconflicts = new String[] { "WorldGuard", "Jail",
 			"PlgSetspawn", "GiveTo", "SpawnCreature", "CreatureSpawner",
 			"FullChest", "SpawnMob", "SimpleSpawn", "AdminCmd", "StruckDown",
-			"Requests", "EasyShout", "DeathTpPlus", "iConomy", "RepairChest" };
+			"Requests", "EasyShout", "DeathTpPlus", "iConomy", "RepairChest",
+			"BukkitCompat"};
 	public String[] minorconflicts = new String[] { "MessageChanger",
 			"NoMoreRain", "kcpxBukkit", "Regios", "ClothCommand", "ChatCensor",
 			"Permissions", "DeathSigns" };
@@ -663,6 +745,9 @@ public class BenCmd extends JavaPlugin {
 	public class TimeFreeze implements Runnable {
 		@Override
 		public void run() {
+			if (Calendar.getInstance().get(Calendar.DAY_OF_MONTH) != clog.get(Calendar.DAY_OF_MONTH)) {
+				rotateLogFile();
+			}
 			levers.timeTick();
 			if (!timeRunning) {
 				for (World world : getServer().getWorlds()) {

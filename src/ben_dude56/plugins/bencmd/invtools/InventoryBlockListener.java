@@ -1,7 +1,5 @@
 package ben_dude56.plugins.bencmd.invtools;
 
-import java.util.logging.Logger;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -18,7 +16,6 @@ import ben_dude56.plugins.bencmd.User;
 public class InventoryBlockListener extends BlockListener {
 	BenCmd plugin;
 	InventoryBackend back;
-	Logger log = Logger.getLogger("minecraft");
 
 	public InventoryBlockListener(BenCmd instance) {
 		plugin = instance;

@@ -1,7 +1,5 @@
 package ben_dude56.plugins.bencmd.warps;
 
-import java.util.logging.Logger;
-
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -11,7 +9,6 @@ import ben_dude56.plugins.bencmd.User;
 public class Jail {
 	Warp jailWarp;
 	BenCmd plugin;
-	Logger log = Logger.getLogger("minecraft");
 
 	public Jail(BenCmd instance) {
 		plugin = instance;

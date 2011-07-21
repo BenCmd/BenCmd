@@ -65,6 +65,7 @@ public class SPAreaFile extends Properties {
 			} catch (NumberFormatException e) {
 				plugin.log.warning("SPArea " + key
 						+ " is invalid and was ignored.");
+				plugin.bLog.warning("SPArea " + key + " failed to load!");
 				continue;
 			}
 			String type = value.split("/")[0];
@@ -82,11 +83,13 @@ public class SPAreaFile extends Properties {
 				} else {
 					plugin.log.warning("SPArea " + key
 							+ " is invalid and was ignored.");
+					plugin.bLog.warning("SPArea " + key + " failed to load!");
 					continue;
 				}
 			} catch (Exception e) {
 				plugin.log.warning("SPArea " + key
 						+ " is invalid and was ignored.");
+				plugin.bLog.warning("SPArea " + key + " failed to load!");
 				continue;
 			}
 		}

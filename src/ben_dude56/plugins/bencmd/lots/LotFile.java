@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
-import java.util.logging.Logger;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -20,7 +19,6 @@ public class LotFile extends Properties {
 	private static final long serialVersionUID = 1L;
 	File file;
 	BenCmd plugin;
-	static final Logger log = Logger.getLogger("minecraft");
 	HashMap<String, Lot> lot = new HashMap<String, Lot>();
 
 	public LotFile(BenCmd instance) {
@@ -38,7 +36,7 @@ public class LotFile extends Properties {
 				file.createNewFile(); // If the file doesn't exist, create it!
 			} catch (IOException ex) {
 				// If you can't, produce an error.
-				log.severe("BenCmd had a problem:");
+				plugin.log.severe("BenCmd had a problem:");
 				ex.printStackTrace();
 				return;
 			}
@@ -47,7 +45,7 @@ public class LotFile extends Properties {
 			load(new FileInputStream(file)); // Load the values
 		} catch (IOException ex) {
 			// If you can't, produce an error.
-			log.severe("BenCmd had a problem:");
+			plugin.log.severe("BenCmd had a problem:");
 			ex.printStackTrace();
 		}
 		lot.clear();
@@ -72,7 +70,7 @@ public class LotFile extends Properties {
 				file.createNewFile(); // If the file doesn't exist, create it!
 			} catch (IOException ex) {
 				// If you can't, produce an error.
-				log.severe("BenCmd had a problem:");
+				plugin.log.severe("BenCmd had a problem:");
 				ex.printStackTrace();
 				return;
 			}
@@ -113,7 +111,7 @@ public class LotFile extends Properties {
 																	// values
 		} catch (IOException ex) {
 			// If you can't, produce an error.
-			log.severe("BenCmd had a problem:");
+			plugin.log.severe("BenCmd had a problem:");
 			ex.printStackTrace();
 		}
 	}
@@ -316,7 +314,8 @@ public class LotFile extends Properties {
 			try {
 				sub = Integer.parseInt(lot.split(",")[1]);
 			} catch (NumberFormatException e) {
-				log.severe("A lot's sub-id is formatted wrong!");
+				plugin.log.severe("A lot's sub-id is formatted wrong!");
+				plugin.bLog.severe("A lot's sub-id is formatted wrong!");
 				return;
 			}
 			if (sub > max)

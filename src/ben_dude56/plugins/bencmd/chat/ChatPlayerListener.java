@@ -1,7 +1,5 @@
 package ben_dude56.plugins.bencmd.chat;
 
-import java.util.logging.Logger;
-
 import org.bukkit.ChatColor;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -17,7 +15,6 @@ import ben_dude56.plugins.bencmd.advanced.ViewableInventory;
 
 public class ChatPlayerListener extends PlayerListener {
 	BenCmd plugin;
-	Logger log = Logger.getLogger("minecraft");
 	public SlowMode slow;
 
 	public ChatPlayerListener(BenCmd instance) {
@@ -29,12 +26,14 @@ public class ChatPlayerListener extends PlayerListener {
 	public void ToggleSlow(User user) {
 		if (slow.isEnabled()) {
 			slow.DisableSlow();
-			log.info(user.getDisplayName() + " has disabled slow mode.");
+			plugin.log.info(user.getDisplayName() + " has disabled slow mode.");
+			plugin.bLog.info(user.getDisplayName() + " has disabled slow mode.");
 			plugin.getServer().broadcastMessage(
 					ChatColor.GRAY + "Slow mode has been disabled.");
 		} else {
 			slow.EnableSlow();
-			log.info(user.getDisplayName() + " has enabled slow mode.");
+			plugin.log.info(user.getDisplayName() + " has enabled slow mode.");
+			plugin.bLog.info(user.getDisplayName() + " has enabled slow mode.");
 			plugin.getServer().broadcastMessage(
 					ChatColor.GRAY
 							+ "Slow mode has been enabled. You must wait "
@@ -85,7 +84,8 @@ public class ChatPlayerListener extends PlayerListener {
 			}
 		}
 		String prefix;
-		log.info(user.getDisplayName() + ": " + message);
+		plugin.log.info(user.getDisplayName() + ": " + message);
+		plugin.bLog.info(user.getDisplayName() + ": " + message);
 		if (!(prefix = user.getPrefix()).isEmpty()) {
 			message = user.getColor() + "[" + prefix + "] "
 					+ user.getDisplayName() + ": " + ChatColor.WHITE + message;
@@ -210,6 +210,7 @@ public class ChatPlayerListener extends PlayerListener {
 		}
 		user.unspyAll();
 		User.finalizeUser(user);
+		plugin.log.info(user.getName() + " lost connection: User was kicked");
 	}
 
 }

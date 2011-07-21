@@ -43,6 +43,7 @@ public class ChatChannel {
 							+ key
 							+ " encountered a fatal error while loading and has been disabled:");
 			control.plugin.log.severe("Invalid number of entries.");
+			control.plugin.bLog.warning("ChatChannel " + key + " failed to load!");
 			return null;
 		}
 		PermissionUser owner = PermissionUser.matchUser(value.split("/")[0],
@@ -54,6 +55,7 @@ public class ChatChannel {
 							+ " encountered a fatal error while loading and has been disabled:");
 			control.plugin.log.severe("Owner \"" + value.split("/")[0]
 					+ "\" doesn't exist in users.db.");
+			control.plugin.bLog.warning("ChatChannel " + key + " failed to load!");
 			return null;
 		}
 		List<PermissionUser> mods = new ArrayList<PermissionUser>();
@@ -68,6 +70,7 @@ public class ChatChannel {
 									+ " encountered a fatal error while loading and has been disabled:");
 					control.plugin.log.severe("Mod \"" + player
 							+ "\" doesn't exist in users.db.");
+					control.plugin.bLog.warning("ChatChannel " + key + " failed to load!");
 					return null;
 				}
 				mods.add(mod);
@@ -85,6 +88,7 @@ public class ChatChannel {
 									+ " encountered a fatal error while loading and has been disabled:");
 					control.plugin.log.severe("Guest \"" + player
 							+ "\" doesn't exist in users.db.");
+					control.plugin.bLog.warning("ChatChannel " + key + " failed to load!");
 					return null;
 				}
 				guests.add(guest);
@@ -102,6 +106,7 @@ public class ChatChannel {
 									+ " encountered a fatal error while loading and has been disabled:");
 					control.plugin.log.severe("Banned player \"" + player
 							+ "\" doesn't exist in users.db.");
+					control.plugin.bLog.warning("ChatChannel " + key + " failed to load!");
 					return null;
 				}
 				banned.add(ban);
@@ -119,6 +124,7 @@ public class ChatChannel {
 									+ " encountered a fatal error while loading and has been disabled:");
 					control.plugin.log.severe("Muted player \"" + player
 							+ "\" doesn't exist in users.db.");
+					control.plugin.bLog.warning("ChatChannel " + key + " failed to load!");
 					return null;
 				}
 				muted.add(mute);
@@ -140,6 +146,7 @@ public class ChatChannel {
 					.warning("\""
 							+ value.split("/")[7]
 							+ "\" is not a valid value for Default Join Type. Assumed \"d\".");
+			control.plugin.bLog.warning("ChatChannel " + key + " encountered a minor error while loading, but recovered.");
 			joinType = ChatLevel.DEFAULT;
 		}
 		return new ChatChannel(control, key, owner, mods, guests, banned,
@@ -740,6 +747,8 @@ public class ChatChannel {
 
 	protected void broadcastMessage(String message) {
 		control.plugin.log.info("(" + displayName + ") "
+				+ ChatColor.stripColor(message));
+		control.plugin.bLog.info("(" + displayName + ") "
 				+ ChatColor.stripColor(message));
 		for (User user : inChannel) {
 			user.sendMessage(ChatColor.WHITE + message);

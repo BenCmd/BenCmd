@@ -2,7 +2,6 @@ package ben_dude56.plugins.bencmd.invtools.kits;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import org.bukkit.inventory.ItemStack;
 
@@ -14,7 +13,6 @@ public class Kit {
 	private List<ItemStack> items = new ArrayList<ItemStack>();
 	private String group;
 	private String kitName;
-	static final Logger log = Logger.getLogger("minecraft");
 	private int kitId;
 	BenCmd plugin;
 
@@ -38,7 +36,9 @@ public class Kit {
 								.checkAlias(itemKey.split(" ")[0])
 								.getMaterial().getId();
 					} catch (NumberFormatException e) {
-						log.severe("Error in kit (id: " + String.valueOf(ID)
+						plugin.log.severe("Error in kit (id: " + String.valueOf(ID)
+								+ "). " + itemKey.split(" ")[0] + " is NaN!");
+						plugin.bLog.severe("Error in kit (id: " + String.valueOf(ID)
 								+ "). " + itemKey.split(" ")[0] + " is NaN!");
 						continue;
 					}
@@ -46,7 +46,10 @@ public class Kit {
 						itemDamage = Short.parseShort(itemKey.split(" ")[0]
 								.split(":")[1]);
 					} catch (NumberFormatException e) {
-						log.severe("Error in kit (id: " + String.valueOf(ID)
+						plugin.log.severe("Error in kit (id: " + String.valueOf(ID)
+								+ "). " + itemKey.split(" ")[0].split(":")[1]
+								+ " is NaN!");
+						plugin.bLog.severe("Error in kit (id: " + String.valueOf(ID)
 								+ "). " + itemKey.split(" ")[0].split(":")[1]
 								+ " is NaN!");
 						continue;
@@ -58,7 +61,10 @@ public class Kit {
 								.checkAlias(itemKey.split(" ")[0])
 								.getMaterial().getId();
 					} catch (NumberFormatException e) {
-						log.severe("Error in kit (id: " + String.valueOf(ID)
+						plugin.log.severe("Error in kit (id: " + String.valueOf(ID)
+								+ "). " + itemKey.split(" ")[0].split(":")[0]
+								+ " is NaN!");
+						plugin.bLog.severe("Error in kit (id: " + String.valueOf(ID)
 								+ "). " + itemKey.split(" ")[0].split(":")[0]
 								+ " is NaN!");
 						continue;
@@ -73,7 +79,9 @@ public class Kit {
 								.checkAlias(itemKey.split(" ")[0])
 								.getMaterial().getId();
 					} catch (NumberFormatException e) {
-						log.severe("Error in kit (id: " + String.valueOf(ID)
+						plugin.log.severe("Error in kit (id: " + String.valueOf(ID)
+								+ "). " + itemKey.split(" ")[0] + " is NaN!");
+						plugin.bLog.severe("Error in kit (id: " + String.valueOf(ID)
 								+ "). " + itemKey.split(" ")[0] + " is NaN!");
 						continue;
 					}
@@ -81,7 +89,10 @@ public class Kit {
 						itemDamage = Short.parseShort(itemKey.split(" ")[0]
 								.split(":")[1]);
 					} catch (NumberFormatException e) {
-						log.severe("Error in kit (id: " + String.valueOf(ID)
+						plugin.log.severe("Error in kit (id: " + String.valueOf(ID)
+								+ "). " + itemKey.split(" ")[0].split(":")[1]
+								+ " is NaN!");
+						plugin.bLog.severe("Error in kit (id: " + String.valueOf(ID)
 								+ "). " + itemKey.split(" ")[0].split(":")[1]
 								+ " is NaN!");
 						continue;
@@ -92,7 +103,10 @@ public class Kit {
 								.checkAlias(itemKey.split(" ")[0])
 								.getMaterial().getId();
 					} catch (NumberFormatException e) {
-						log.severe("Error in kit (id: " + String.valueOf(ID)
+						plugin.log.severe("Error in kit (id: " + String.valueOf(ID)
+								+ "). " + itemKey.split(" ")[0].split(":")[0]
+								+ " is NaN!");
+						plugin.bLog.severe("Error in kit (id: " + String.valueOf(ID)
 								+ "). " + itemKey.split(" ")[0].split(":")[0]
 								+ " is NaN!");
 						continue;
@@ -102,13 +116,18 @@ public class Kit {
 				try {
 					itemAmount = Integer.parseInt(itemKey.split(" ")[1]);
 				} catch (NumberFormatException e) {
-					log.severe("Error in kit (id: " + String.valueOf(ID)
+					plugin.log.severe("Error in kit (id: " + String.valueOf(ID)
+							+ "). " + itemKey.split(" ")[0].split(":")[0]
+							+ " is NaN!");
+					plugin.bLog.severe("Error in kit (id: " + String.valueOf(ID)
 							+ "). " + itemKey.split(" ")[0].split(":")[0]
 							+ " is NaN!");
 					continue;
 				}
 			} else {
-				log.severe("Error in kit (id: " + String.valueOf(ID)
+				plugin.log.severe("Error in kit (id: " + String.valueOf(ID)
+						+ "). Too many/not enough spaces.");
+				plugin.bLog.severe("Error in kit (id: " + String.valueOf(ID)
 						+ "). Too many/not enough spaces.");
 				continue;
 			}

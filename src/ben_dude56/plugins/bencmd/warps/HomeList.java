@@ -11,13 +11,12 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Logger;
+import java.util.logging.Level;
 
 import ben_dude56.plugins.bencmd.BenCmd;
 
 public class HomeList {
 	BenCmd plugin;
-	Logger log = Logger.getLogger("minecraft");
 	HashMap<String, Warp> warps = new HashMap<String, Warp>();
 	List<String> warpString = new ArrayList<String>();
 
@@ -89,13 +88,15 @@ public class HomeList {
 			br = new BufferedReader(new InputStreamReader(new FileInputStream(
 					warpFile)));
 		} catch (FileNotFoundException e) {
-			log.warning("warps.db not found. Attempting to create...");
+			plugin.log.warning("homes.db not found. Attempting to create...");
+			plugin.bLog.warning("homes.db not found. Attempting to create...");
 			try {
 				warpFile.createNewFile();
 				br = new BufferedReader(new InputStreamReader(
 						new FileInputStream(warpFile)));
 			} catch (IOException ex) {
-				log.severe("Couldn't create warps.db:");
+				plugin.bLog.log(Level.SEVERE, "Couldn't create homes.db:", e);
+				plugin.log.severe("Couldn't create homes.db:");
 				ex.printStackTrace();
 				return false;
 			}
@@ -130,16 +131,19 @@ public class HomeList {
 					warps.put(name, new Warp(x, y, z, yaw, pitch, world, name,
 							group, plugin));
 				} catch (IndexOutOfBoundsException e) {
-					log.warning("Couldn't load one of the warps!");
+					plugin.log.warning("Couldn't load one of the homes!");
+					plugin.bLog.warning("Couldn't load one of the homes!");
 					e.printStackTrace();
 				} catch (NumberFormatException e) {
-					log.warning("Couldn't load one of the warps!");
+					plugin.log.warning("Couldn't load one of the homes!");
+					plugin.bLog.warning("Couldn't load one of the homes!");
 					e.printStackTrace();
 				}
 			}
 			br.close();
 		} catch (IOException e) {
-			log.severe("Couldn't read warps.db:");
+			plugin.bLog.log(Level.SEVERE, "Couldn't read homes.db:", e);
+			plugin.log.severe("Couldn't read homes.db:");
 			e.printStackTrace();
 			return false;
 		}
@@ -153,7 +157,7 @@ public class HomeList {
 		try {
 			bw = new BufferedWriter(new FileWriter(warpFile));
 		} catch (IOException e) {
-			log.severe("Unable to open homes.db for writing:");
+			plugin.log.severe("Unable to open homes.db for writing:");
 			e.printStackTrace();
 			return false;
 		}
@@ -164,7 +168,8 @@ public class HomeList {
 					bw.newLine();
 				}
 			} catch (IOException e) {
-				log.severe("BenCmd failed to save home " + value.split(":")[0]
+				plugin.bLog.log(Level.SEVERE, "BenCmd failed to save home " + value.split(":")[0] + ":", e);
+				plugin.log.severe("BenCmd failed to save home " + value.split(":")[0]
 						+ ":");
 				e.printStackTrace();
 			}
@@ -172,53 +177,8 @@ public class HomeList {
 		try {
 			bw.close();
 		} catch (IOException e) {
-			log.severe("Failed to save homes:");
-			e.printStackTrace();
-			return false;
-		}
-		return true;
-	}
-
-	/**
-	 * @deprecated Causes extreme lag.
-	 */
-	public boolean SaveHomes() {
-		File warpFile;
-		warpFile = new File(plugin.propDir + "homes.db");
-		BufferedWriter bw;
-		try {
-			bw = new BufferedWriter(new FileWriter(warpFile));
-		} catch (IOException e) {
-			log.severe("Unable to open homes.db for writing:");
-			e.printStackTrace();
-			return false;
-		}
-		for (Warp warp : warps.values()) {
-			String name = warp.warpName;
-			int x = warp.loc.getBlockX();
-			int y = warp.loc.getBlockY();
-			int z = warp.loc.getBlockZ();
-			Double yaw = (double) warp.loc.getYaw();
-			Double pitch = (double) warp.loc.getPitch();
-			String world = warp.loc.getWorld().getName();
-			String group = warp.mustInheritGroup;
-			try {
-				bw.write(name + ":" + x + "," + y + "," + z + ","
-						+ yaw.toString() + "," + pitch.toString() + ":" + world
-						+ ":" + group);
-				if (!warps.values().toArray()[warps.values().size() - 1]
-						.equals(warp)) {
-					bw.newLine();
-				}
-			} catch (IOException e) {
-				log.severe("BenCmd failed to save home " + name + ":");
-				e.printStackTrace();
-			}
-		}
-		try {
-			bw.close();
-		} catch (IOException e) {
-			log.severe("Failed to save homes:");
+			plugin.bLog.log(Level.SEVERE, "Failed to save homes:", e);
+			plugin.log.severe("Failed to save homes:");
 			e.printStackTrace();
 			return false;
 		}
@@ -239,7 +199,8 @@ public class HomeList {
 			warp = new Warp(x, y, z, yaw, pitch, world, name, group, plugin);
 			warps.put(name, warp);
 		} catch (Exception e) {
-			log.severe("Couldn't add new home:");
+			plugin.bLog.log(Level.SEVERE, "Couldn't add new home:", e);
+			plugin.log.severe("Couldn't add new home:");
 			e.printStackTrace();
 			return false;
 		}

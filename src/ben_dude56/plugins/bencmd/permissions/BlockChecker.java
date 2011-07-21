@@ -16,11 +16,8 @@ import ben_dude56.plugins.bencmd.*;
 import ben_dude56.plugins.bencmd.multiworld.Portal;
 import ben_dude56.plugins.bencmd.warps.Warp;
 
-import java.util.logging.Logger;
-
 public class BlockChecker extends BlockListener {
 	BenCmd plugin;
-	static final Logger log = Logger.getLogger("minecraft");
 
 	public BlockChecker(BenCmd instance) {
 		plugin = instance;
@@ -102,6 +99,9 @@ public class BlockChecker extends BlockListener {
 		plugin.log.info(p.getDisplayName() + " put a sign at (" + l.getBlockX()
 				+ ", " + l.getBlockY() + ", " + l.getBlockZ() + ", "
 				+ l.getWorld().getName() + "):");
+		plugin.bLog.info(p.getDisplayName() + " put a sign at (" + l.getBlockX()
+				+ ", " + l.getBlockY() + ", " + l.getBlockZ() + ", "
+				+ l.getWorld().getName() + "):");
 		int firstLine = -1;
 		for (int i = 0; i < ls.length; i++) {
 			String line = ls[i];
@@ -110,6 +110,7 @@ public class BlockChecker extends BlockListener {
 					firstLine = i;
 				}
 				plugin.log.info("Line " + String.valueOf(i) + ": " + line);
+				plugin.bLog.info("Line " + String.valueOf(i) + ": " + line);
 			}
 		}
 		for (User spy : plugin.perm.userFile.allWithPerm("hearAllSigns")) {

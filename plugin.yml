@@ -266,3 +266,6 @@ commands:
     lever:
         usage:
         description: Deals with levers
+    svping:
+        usage:
+        description: Annoying McMyAdmin compatibility stuff
