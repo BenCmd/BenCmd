@@ -53,6 +53,7 @@ import ben_dude56.plugins.bencmd.advanced.redstone.*;
  */
 public class BenCmd extends JavaPlugin {
 	public final static boolean debug = true;
+	public final static int cbbuild = 1031;
 	private final PermLoginListener permLoginListener = new PermLoginListener(
 			this);
 	private final InventoryBlockListener invBlockListen = new InventoryBlockListener(
@@ -619,9 +620,9 @@ public class BenCmd extends JavaPlugin {
 		}
 		if (v == null) {
 			// Do nothing
-		} else if (v < 998) {
-			log.warning("You are using a version of CraftBukkit that is earlier than this version of BenCmd was designed to handle. This may cause unexpected problems... Run AT YOUR OWN RISK!");
-		} else if (v > 1000) {
+		} else if (v < cbbuild) {
+			log.warning("You are using a version of CraftBukkit that is earlier than this version of BenCmd was built against. This may cause unexpected problems... Run AT YOUR OWN RISK!");
+		} else if (v > cbbuild) {
 			log.warning("You are using a version of CraftBukkit that is newer than this version of BenCmd was built against. This may cause unexpected problems... Run AT YOUR OWN RISK!");
 		}
 		PluginManager pm = getServer().getPluginManager();

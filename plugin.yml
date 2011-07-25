@@ -1,6 +1,8 @@
 name: BenCmd
 version: 1.2.5
 main: ben_dude56.plugins.bencmd.BenCmd
+website: github.com/bendude56/BenCmd
+author: ben_dude56
 commands:
     slow:
         usage:

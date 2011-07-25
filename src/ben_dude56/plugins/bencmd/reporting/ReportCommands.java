@@ -1,7 +1,6 @@
 package ben_dude56.plugins.bencmd.reporting;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -91,36 +90,60 @@ public class ReportCommands implements Commands {
 	public void Ticket(String[] args, User user) {
 		if (args.length == 0) {
 			user.sendMessage(ChatColor.YELLOW
-					+ "Proper use is /ticket {<id>|list|search} [options]");
+					+ "Proper use is /ticket {<id>|list|alist|search|asearch|purge|purgefrom|purgeto} [options]");
 			return;
 		}
 		if (args[0].equalsIgnoreCase("list")) {
-			boolean tickets = false;
-			user.sendMessage(ChatColor.GRAY + "The following tickets are OPEN:");
-			for (Report ticket : plugin.reports.getReports()) {
-				if (ticket.canRead(user)) {
-					switch (ticket.getStatus()) {
-					case UNREAD:
-						tickets = true;
-						user.sendMessage(ChatColor.RED + ticket.readShorthand());
-						break;
-					case READ:
-						tickets = true;
-						user.sendMessage(ChatColor.YELLOW
-								+ ticket.readShorthand());
-						break;
-					case INVESTIGATING:
-						tickets = true;
-						user.sendMessage(ChatColor.GREEN
-								+ ticket.readShorthand());
-						break;
-					}
+			int page = 1;
+			if (args.length > 1) {
+				try {
+					page = Integer.parseInt(args[1]);
+				} catch (NumberFormatException e) {
+					user.sendMessage(ChatColor.RED + args[1] + " isn't a number!");
+					return;
 				}
 			}
-			if (!tickets) {
-				user.sendMessage(ChatColor.RED
-						+ "You don't have any open tickets!");
+			plugin.reports.listTickets(user, page);
+		} else if (args[0].equalsIgnoreCase("alist")) {
+			int page = 1;
+			if (args.length > 1) {
+				try {
+					page = Integer.parseInt(args[1]);
+				} catch (NumberFormatException e) {
+					user.sendMessage(ChatColor.RED + args[1] + " isn't a number!");
+					return;
+				}
 			}
+			plugin.reports.listAllTickets(user, page);
+		} else if (args[0].equalsIgnoreCase("purge")) {
+			if (!user.hasPerm("isTicketAdmin")) {
+				user.sendMessage(ChatColor.RED
+						+ "You must be an admin to do that!");
+				return;
+			}
+			plugin.reports.PurgeOpen(user);
+		} else if (args[0].equalsIgnoreCase("purgefrom")) {
+			if (!user.hasPerm("isTicketAdmin")) {
+				user.sendMessage(ChatColor.RED
+						+ "You must be an admin to do that!");
+				return;
+			}
+			if (args.length != 2) {
+				user.sendMessage(ChatColor.YELLOW + "Proper use is /ticket purgefrom [name]");
+				return;
+			}
+			plugin.reports.PurgeFrom(user, args[1]);
+		} else if (args[0].equalsIgnoreCase("purgeto")) {
+			if (!user.hasPerm("isTicketAdmin")) {
+				user.sendMessage(ChatColor.RED
+						+ "You must be an admin to do that!");
+				return;
+			}
+			if (args.length != 2) {
+				user.sendMessage(ChatColor.YELLOW + "Proper use is /ticket purgeto [name]");
+				return;
+			}
+			plugin.reports.PurgeTo(user, args[1]);
 		} else if (args[0].equalsIgnoreCase("search")) {
 			if (!user.hasPerm("isTicketAdmin")) {
 				user.sendMessage(ChatColor.RED
@@ -129,47 +152,40 @@ public class ReportCommands implements Commands {
 			}
 			if (args.length == 1) {
 				user.sendMessage(ChatColor.YELLOW
-						+ "Proper use is /ticket search <name>");
+						+ "Proper use is /ticket search <name> [page]");
 				return;
 			}
-			List<Report> results = new ArrayList<Report>();
-			for (Report ticket : plugin.reports.getReports()) {
-				if (ticket.getAccused().getName().equalsIgnoreCase(args[1])
-						|| ticket.getSender().getName()
-								.equalsIgnoreCase(args[1])) {
-					results.add(ticket);
+			int page = 1;
+			if (args.length == 3) {
+				try {
+					page = Integer.parseInt(args[2]);
+				} catch (NumberFormatException e) {
+					user.sendMessage(ChatColor.RED + args[2] + " isn't a number!");
+					return;
 				}
 			}
-			if (results.isEmpty()) {
+			plugin.reports.searchTickets(user, args[1], page);
+		} else if (args[0].equalsIgnoreCase("asearch")) {
+			if (!user.hasPerm("isTicketAdmin")) {
 				user.sendMessage(ChatColor.RED
-						+ "Your search returned no results!");
-			} else {
-				user.sendMessage(ChatColor.GRAY
-						+ "Your search returned the following results:");
-				for (Report ticket : results) {
-					switch (ticket.getStatus()) {
-					case UNREAD:
-						user.sendMessage(ChatColor.RED + ticket.readShorthand());
-						break;
-					case READ:
-						user.sendMessage(ChatColor.YELLOW
-								+ ticket.readShorthand());
-						break;
-					case INVESTIGATING:
-						user.sendMessage(ChatColor.GREEN
-								+ ticket.readShorthand());
-						break;
-					case CLOSED:
-						user.sendMessage(ChatColor.GRAY
-								+ ticket.readShorthand());
-						break;
-					case LOCKED:
-						user.sendMessage(ChatColor.DARK_GRAY
-								+ ticket.readShorthand());
-						break;
-					}
+						+ "You must be an admin to do that!");
+				return;
+			}
+			if (args.length == 1) {
+				user.sendMessage(ChatColor.YELLOW
+						+ "Proper use is /ticket asearch <name> [page]");
+				return;
+			}
+			int page = 1;
+			if (args.length == 3) {
+				try {
+					page = Integer.parseInt(args[2]);
+				} catch (NumberFormatException e) {
+					user.sendMessage(ChatColor.RED + args[2] + " isn't a number!");
+					return;
 				}
 			}
+			plugin.reports.searchAllTickets(user, args[1], page);
 		} else {
 			Integer id;
 			try {

@@ -69,18 +69,18 @@ public class Report {
 			addedInfo.clear();
 		}
 		addedInfo.add(newInfo);
-		plugin.reports.saveAll();
+		plugin.reports.saveTicket(this);
 	}
 
 	public void setStatus(ReportStatus newStatus) {
 		this.status = newStatus;
-		plugin.reports.saveAll();
+		plugin.reports.saveTicket(this);
 	}
 
 	public String readReport(Boolean isAdmin) {
 		if (this.status == ReportStatus.UNREAD && isAdmin) {
 			this.status = ReportStatus.READ;
-			plugin.reports.saveAll();
+			plugin.reports.saveTicket(this);
 		}
 		String message = "";
 		message += ChatColor.GRAY + "(" + this.status.toString() + ") "
@@ -122,30 +122,30 @@ public class Report {
 				return false;
 			}
 		}
-		plugin.reports.saveAll();
+		plugin.reports.saveTicket(this);
 		return true;
 	}
 
 	public void InvestigateTicket() {
 		this.status = ReportStatus.INVESTIGATING;
-		plugin.reports.saveAll();
+		plugin.reports.saveTicket(this);
 	}
 
 	public void UninvestigateTicket() {
 		this.status = ReportStatus.READ;
-		plugin.reports.saveAll();
+		plugin.reports.saveTicket(this);
 	}
 
 	public void closeTicket(String finalRemark) {
 		this.finalRemark = finalRemark;
 		this.status = ReportStatus.CLOSED;
-		plugin.reports.saveAll();
+		plugin.reports.saveTicket(this);
 	}
 
 	public void lockTicket(String finalRemark) {
 		this.finalRemark = finalRemark;
 		this.status = ReportStatus.LOCKED;
-		plugin.reports.saveAll();
+		plugin.reports.saveTicket(this);
 	}
 
 	public boolean canRead(PermissionUser user) {
