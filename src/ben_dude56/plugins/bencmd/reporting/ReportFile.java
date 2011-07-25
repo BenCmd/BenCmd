@@ -508,7 +508,6 @@ public class ReportFile extends Properties {
 				+ "Please wait... The report databases are being queried...");
 		new Thread() {
 			public void run() {
-				for (long i = 0; i < 10000000000L; i++) { }
 				List<Report> results = new ArrayList<Report>();
 				for (Report ticket : getReports()) {
 					if (ticket.getAccused().getName().equalsIgnoreCase(search)
