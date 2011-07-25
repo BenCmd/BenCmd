@@ -237,7 +237,7 @@ public class ReportFile extends Properties {
 
 	public Report getTicketById(Integer id) {
 		for (Report ticket : reports) {
-			if (ticket.getId() == id) {
+			if (ticket.getId().equals(id)) {
 				return ticket;
 			}
 		}

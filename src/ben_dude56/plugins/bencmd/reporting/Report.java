@@ -84,19 +84,19 @@ public class Report {
 		}
 		String message = "";
 		message += ChatColor.GRAY + "(" + this.status.toString() + ") "
-				+ this.idNumber.toString() + "/n";
+				+ this.idNumber.toString() + "\n";
 		message += ChatColor.GRAY + this.sender.getName() + " reported "
-				+ this.accused.getName() + "!/n";
+				+ this.accused.getName() + "!\n";
 		message += ChatColor.GRAY + "Reasoning: " + this.reason;
 		if (!this.addedInfo.isEmpty() && !this.addedInfo.get(0).isEmpty()) {
-			message += "/n" + ChatColor.GRAY + "Added info:";
+			message += "\n" + ChatColor.GRAY + "Added info:";
 			for (String info : addedInfo) {
-				message += "/n" + ChatColor.GRAY + "  -" + info;
+				message += "\n" + ChatColor.GRAY + "  -" + info;
 			}
 		}
 		if (this.status == ReportStatus.CLOSED
 				|| this.status == ReportStatus.LOCKED) {
-			message += "/n" + ChatColor.GRAY + "Closing remark: "
+			message += "\n" + ChatColor.GRAY + "Closing remark: "
 					+ this.finalRemark;
 		}
 		return message;

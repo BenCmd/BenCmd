@@ -185,8 +185,10 @@ public class ReportCommands implements Commands {
 				return;
 			}
 			if (args.length == 1) {
-				user.sendMessage(plugin.reports.getTicketById(id).readReport(
-						user.hasPerm("isTicketAdmin")));
+				for(String s : plugin.reports.getTicketById(id).readReport(
+						user.hasPerm("isTicketAdmin")).split("\n")) {
+					user.sendMessage(s);
+				}
 			} else if (args[1].equalsIgnoreCase("close")) {
 				if (user.hasPerm("isTicketAdmin")) {
 					if (report.getStatus() == Report.ReportStatus.LOCKED) {
@@ -290,8 +292,8 @@ public class ReportCommands implements Commands {
 								+ "That ticket has been re-opened!");
 					} else {
 						user.sendMessage(ChatColor.RED
-								+ "That ticket has been re-opened too many times!/n"
-								+ ChatColor.RED
+								+ "That ticket has been re-opened too many times!");
+						user.sendMessage(ChatColor.RED
 								+ "Talk to an admin to have it re-opened!");
 					}
 				} else {
