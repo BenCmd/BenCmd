@@ -199,7 +199,7 @@ public class BenCmd extends JavaPlugin {
 			logName += "-" + c.get(Calendar.YEAR);
 			bLog.setLevel(Level.INFO);
 			bLog.setUseParentHandlers(false);
-			fh = new FileHandler(propDir + logName + ".log");
+			fh = new FileHandler(propDir + logName + ".log", true);
 			fh.setFormatter(new LogFormatter());
 			bLog.addHandler(fh);
 		} catch (IOException e) {
@@ -221,7 +221,7 @@ public class BenCmd extends JavaPlugin {
 			logName += "-" + c.get(Calendar.YEAR);
 			bLog.setLevel(Level.INFO);
 			bLog.setUseParentHandlers(false);
-			fh = new FileHandler(propDir + logName + ".log");
+			fh = new FileHandler(propDir + logName + ".log", true);
 			fh.setFormatter(new LogFormatter());
 			bLog.addHandler(fh);
 		} catch (IOException e) {
