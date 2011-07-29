@@ -7,7 +7,7 @@ import org.bukkit.ChatColor;
 import ben_dude56.plugins.bencmd.BenCmd;
 import ben_dude56.plugins.bencmd.permissions.PermissionUser;
 
-public class Report {
+public class Report implements Comparable<Report> {
 	private BenCmd plugin;
 	private Integer idNumber;
 	private PermissionUser sender;
@@ -161,5 +161,16 @@ public class Report {
 
 	public enum ReportStatus {
 		UNREAD, READ, INVESTIGATING, CLOSED, LOCKED
+	}
+
+	@Override
+	public int compareTo(Report r) {
+		if (r.getId() > idNumber) {
+			return -1;
+		} else if (r.getId() < idNumber) {
+			return 1;
+		} else {
+			return 0;
+		}
 	}
 }

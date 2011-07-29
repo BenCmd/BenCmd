@@ -43,6 +43,9 @@ public class ChatPlayerListener extends PlayerListener {
 	}
 
 	public void onPlayerChat(PlayerChatEvent event) {
+		if (plugin.mainProperties.getBoolean("externalChat", false)) {
+			return;
+		}
 		String message = event.getMessage();
 		User user = User.getUser(plugin, event.getPlayer());
 		if (user.isMuted() != null) {

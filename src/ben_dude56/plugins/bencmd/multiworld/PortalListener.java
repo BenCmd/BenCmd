@@ -17,6 +17,9 @@ public class PortalListener extends PlayerListener {
 	}
 
 	public void onPlayerPortal(PlayerPortalEvent event) {
+		if (!plugin.mainProperties.getBoolean("BenCmdPortals", true)) {
+			return;
+		}
 		Portal portal;
 		Location loc = event.getPlayer().getLocation();
 		if ((portal = plugin.portals.getPortalAt(loc)) == null) {

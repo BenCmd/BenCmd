@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
@@ -356,6 +357,7 @@ public class ReportFile extends Properties {
 						}
 					}
 				}
+				Collections.sort(results);
 				try {
 					if (results.isEmpty()) {
 						user.sendMessage(ChatColor.RED

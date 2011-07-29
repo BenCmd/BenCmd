@@ -83,7 +83,7 @@ public class NPCFile extends Properties {
 				npcs.put(key, new BlacksmithNPC(plugin, key, l, t, a));
 				break;
 			default:
-				plugin.bLog.warning("An invalid NPC type was detected in NPC with UID " + key);
+				plugin.bLog.warning("NPC ERROR: An invalid NPC type was detected in NPC with UID " + key);
 				plugin.log.warning("INVALID NPC TYPE! (ID " + key + ")");
 				break;
 			}

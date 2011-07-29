@@ -171,6 +171,7 @@ public class BenCmd extends JavaPlugin {
 	 * Disables the plugin
 	 */
 	public void onDisable() {
+		bLog.info("BenCmd is shutting down...");
 		getServer().getScheduler().cancelTasks(this);
 		for (Grave g : graves) {
 			g.delete();
@@ -189,6 +190,7 @@ public class BenCmd extends JavaPlugin {
 	}
 	
 	public void rotateLogFile() {
+		bLog.info("Beginning BenCmd log file rotation...");
 		log.info("BenCmd log file is rotating...");
 		try {
 			String logName = "";
@@ -202,6 +204,7 @@ public class BenCmd extends JavaPlugin {
 			fh = new FileHandler(propDir + logName + ".log", true);
 			fh.setFormatter(new LogFormatter());
 			bLog.addHandler(fh);
+			bLog.info("BenCmd log file rotated...");
 		} catch (IOException e) {
 			log.severe("Unable to create/load log files. Some logging functions may not work properly!");
 		}

@@ -50,12 +50,18 @@ public class BlockChecker extends BlockListener {
 	}
 
 	public void onBlockBurn(BlockBurnEvent event) {
+		if (plugin.mainProperties.getBoolean("allowFireDamage", false)) {
+			return;
+		}
 		if (event.getBlock().getType() != Material.NETHERRACK) {
 			event.setCancelled(true);
 		}
 	}
 
 	public void onBlockIgnite(BlockIgniteEvent event) {
+		if (plugin.mainProperties.getBoolean("allowFireSpread", false)) {
+			return;
+		}
 		if (event.getCause() == IgniteCause.SPREAD) {
 			if (plugin.canIgnite(event.getBlock().getLocation())) {
 				plugin.canSpread.add(event.getBlock().getLocation());

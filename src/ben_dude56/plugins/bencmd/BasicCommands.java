@@ -119,11 +119,13 @@ public class BasicCommands implements Commands {
 				&& user.hasPerm("canBurn")) {
 			Location loc = user.getHandle().getTargetBlock(null, 4)
 					.getLocation();
+			user.sendMessage(ChatColor.GREEN + "Fire next to that block can now spread...");
 			plugin.canSpread.add(loc);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("nofire")
 				&& user.hasPerm("canBurn")) {
 			plugin.canSpread.clear();
+			user.sendMessage(ChatColor.GREEN + "All area-specific fire-spread is now disabled.");
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("debug")) {
 			return true;

@@ -51,6 +51,8 @@ public class ChatCommands implements Commands {
 				}
 			}
 			user2.getHandle().setDisplayName(message);
+			plugin.log.info(user2.getName() + " is now imitating " + message + "!");
+			plugin.bLog.info("NAME IMITATE: " + user2.getName() + " => " + message);
 			((EntityHuman) ((CraftPlayer) user2.getHandle()).getHandle()).name = message;
 			return true;
 		}

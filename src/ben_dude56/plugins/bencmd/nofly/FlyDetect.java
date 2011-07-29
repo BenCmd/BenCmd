@@ -275,6 +275,9 @@ public class FlyDetect {
 	public class FlyTimer implements Runnable {
 		@Override
 		public void run() {
+			if (plugin.mainProperties.getBoolean("allowFlight", false)) {
+				return;
+			}
 			try {
 				for (Player player : plugin.getServer().getOnlinePlayers()) {
 					if (User.getUser(plugin, player).hasPerm("canFly")) {
