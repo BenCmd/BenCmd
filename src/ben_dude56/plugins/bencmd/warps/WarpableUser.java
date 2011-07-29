@@ -111,8 +111,19 @@ public class WarpableUser extends PermissionUser {
 		if (isConsole) {
 			return;
 		}
-		Location spawn = player.getWorld().getSpawnLocation(); // Get the spawn
-																// location
+		Location spawn;
+		
+		if (plugin.mainProperties.getBoolean("UseDeafultSpawn", true)) {
+			try {
+				spawn = plugin.getServer().getWorld(plugin.mainProperties.getString("DefaultSpawn", "world")).getSpawnLocation();
+			} catch (NullPointerException e) {
+				spawn = player.getWorld().getSpawnLocation();
+			}
+		} else {
+			spawn = player.getWorld().getSpawnLocation();
+		}
+		// *ABOVE* Get the spawn location
+		
 		new Warp(spawn.getX(), spawn.getY(), spawn.getZ(), spawn.getYaw(),
 				spawn.getPitch(), spawn.getWorld().getName(), "spawn", "",
 				plugin).WarpHere(this);

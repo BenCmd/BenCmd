@@ -295,17 +295,11 @@ public class BasicCommands implements Commands {
 			return;
 		}
 		String spawnworld;
-		if (args.length >= 1) {
+		if (args.length >= 1 && user.hasPerm("canSpawnAllWorlds")) {
 			spawnworld=args[0];
 			user.Spawn(spawnworld);
 		} else {
-			if (plugin.mainProperties.getBoolean("UseDefaultSpawn", true)) {
-				spawnworld = plugin.mainProperties.getString("DefaultSpawn", "world");
-				user.Spawn(spawnworld);
-			}
-			else {
-				user.Spawn();
-			}
+			user.Spawn();
 		}
 	}
 
