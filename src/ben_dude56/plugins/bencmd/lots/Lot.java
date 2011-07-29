@@ -17,6 +17,7 @@ public class Lot {
 	String LotID;
 	String SubID;
 	String FullID;
+	org.bukkit.World World;
 	BenCmd plugin;
 
 	public Lot(BenCmd instance, String key, String value)
@@ -33,6 +34,7 @@ public class Lot {
 				plugin.getServer().getWorld(value.split(",")[7]),
 				Integer.parseInt(value.split(",")[4]), Integer.parseInt(value
 						.split(",")[5]), Integer.parseInt(value.split(",")[6]));
+		World = corner1.getWorld();
 		if (SubID.equalsIgnoreCase("0")) {
 			owner = value.split(",")[8];
 			group = value.split(",")[9];
@@ -51,6 +53,10 @@ public class Lot {
 
 	public Location getCorner2() {
 		return corner2;
+	}
+	
+	public org.bukkit.World getWorld() {
+		return World;
 	}
 
 	public String getOwner() {

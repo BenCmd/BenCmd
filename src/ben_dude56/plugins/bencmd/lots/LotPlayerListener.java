@@ -38,7 +38,8 @@ public class LotPlayerListener extends PlayerListener {
 						.getCorner2();
 				player.sendMessage(ChatColor.LIGHT_PURPLE
 						+ "Corner 2 set at [X: " + corner2.getX() + ", Y: "
-						+ corner2.getY() + ", Z: " + corner2.getZ() + "]");
+						+ corner2.getY() + ", Z: " + corner2.getZ() + ", W: "
+						+ corner2.getWorld().getName() + "]");
 				return;
 			}
 		} else if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
@@ -52,7 +53,8 @@ public class LotPlayerListener extends PlayerListener {
 						.getCorner1();
 				player.sendMessage(ChatColor.LIGHT_PURPLE
 						+ "Corner 1 set at [X: " + corner1.getX() + ", Y: "
-						+ corner1.getY() + ", Z: " + corner1.getZ() + "]");
+						+ corner1.getY() + ", Z: " + corner1.getZ() + ", W: "
+						+ corner1.getWorld().getName() + "]");
 				return;
 			}
 		}

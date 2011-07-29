@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -149,7 +150,7 @@ public class LotCommands implements Commands {
 			String sub = thisLot.getSubID();
 			if (thisLot != null) {
 				user.sendMessage(ChatColor.GRAY + "Lot ID: " + lot + "  Part: "
-						+ sub + "   Total parts: " + (thisLot.getSubs().size()));
+						+ sub + "   Total parts: " + (thisLot.getSubs().size()) + "   World: " + thisLot.getWorld().getName());
 				user.sendMessage(ChatColor.GRAY + "Owner: "
 						+ thisLot.getOwner() + "    Group: "
 						+ thisLot.getLotGroup() + "   Guests: "
@@ -415,12 +416,38 @@ public class LotCommands implements Commands {
 			}
 			boolean cor1 = plugin.lotListener.corner.get(user.getName()).corner1set;
 			boolean cor2 = plugin.lotListener.corner.get(user.getName()).corner2set;
-			if (cor1 && cor2) {
+			if (cor1 && cor2) {				
 				String LotID = plugin.lots.getNextID();
 				corner1 = plugin.lotListener.corner.get(user.getName())
 						.getCorner1();
 				corner2 = plugin.lotListener.corner.get(user.getName())
 						.getCorner2();
+				
+				World c1world = corner1.getWorld();
+				World c2world = corner2.getWorld();
+				World pworld = user.getHandle().getWorld();
+				if (c1world != pworld && c2world != pworld) {
+					user.sendMessage(ChatColor.RED
+							+ "You need to mark off some corners first!");
+					user.sendMessage(ChatColor.RED
+							+ "Be sure to use a wooden shovel!");
+					return;
+				}
+				if (c1world != pworld && c2world == pworld) {
+					user.sendMessage(ChatColor.RED
+							+ "You need to mark off CORNER 1! (Left-click)");
+					user.sendMessage(ChatColor.RED
+							+ "Be sure to use a wooden shovel!");
+					return;
+				}
+				if (c1world == pworld && c2world != pworld) {
+					user.sendMessage(ChatColor.RED
+							+ "You need to mark off CORNER 2! (Right-click)");
+					user.sendMessage(ChatColor.RED
+							+ "Be sure to use a wooden shovel!");
+					return;
+				}
+				
 				if (args.length >= 2) {
 					owner = args[1];
 				} else {
@@ -492,6 +519,32 @@ public class LotCommands implements Commands {
 						.getCorner1();
 				corner2 = plugin.lotListener.corner.get(user.getName())
 						.getCorner2();
+				
+				World c1world = corner1.getWorld();
+				World c2world = corner2.getWorld();
+				World pworld = user.getHandle().getWorld();
+				if (c1world != pworld && c2world != pworld) {
+					user.sendMessage(ChatColor.RED
+							+ "You need to mark off some corners first!");
+					user.sendMessage(ChatColor.RED
+							+ "Be sure to use a wooden shovel!");
+					return;
+				}
+				if (c1world != pworld && c2world == pworld) {
+					user.sendMessage(ChatColor.RED
+							+ "You need to mark off CORNER 1! (Left-click)");
+					user.sendMessage(ChatColor.RED
+							+ "Be sure to use a wooden shovel!");
+					return;
+				}
+				if (c1world == pworld && c2world != pworld) {
+					user.sendMessage(ChatColor.RED
+							+ "You need to mark off CORNER 2! (Right-click)");
+					user.sendMessage(ChatColor.RED
+							+ "Be sure to use a wooden shovel!");
+					return;
+				}
+				
 				if (args.length >= 4) {
 					try {
 						up = Integer.parseInt(args[1]);
@@ -1028,6 +1081,32 @@ public class LotCommands implements Commands {
 						.getCorner1();
 				corner2 = plugin.lotListener.corner.get(user.getName())
 						.getCorner2();
+				
+				World c1world = corner1.getWorld();
+				World c2world = corner2.getWorld();
+				World pworld = user.getHandle().getWorld();
+				if (c1world != pworld && c2world != pworld) {
+					user.sendMessage(ChatColor.RED
+							+ "You need to mark off some corners first!");
+					user.sendMessage(ChatColor.RED
+							+ "Be sure to use a wooden shovel!");
+					return;
+				}
+				if (c1world != pworld && c2world == pworld) {
+					user.sendMessage(ChatColor.RED
+							+ "You need to mark off CORNER 1! (Left-click)");
+					user.sendMessage(ChatColor.RED
+							+ "Be sure to use a wooden shovel!");
+					return;
+				}
+				if (c1world == pworld && c2world != pworld) {
+					user.sendMessage(ChatColor.RED
+							+ "You need to mark off CORNER 2! (Right-click)");
+					user.sendMessage(ChatColor.RED
+							+ "Be sure to use a wooden shovel!");
+					return;
+				}
+				
 				String group = plugin.lots.getLot(LotID).getLotGroup();
 				String owner = plugin.lots.getLot(LotID).getOwner();
 				plugin.lots.sortSubs(LotID);
@@ -1091,6 +1170,32 @@ public class LotCommands implements Commands {
 						.getCorner1();
 				corner2 = plugin.lotListener.corner.get(user.getName())
 						.getCorner2();
+				
+				World c1world = corner1.getWorld();
+				World c2world = corner2.getWorld();
+				World pworld = user.getHandle().getWorld();
+				if (c1world != pworld && c2world != pworld) {
+					user.sendMessage(ChatColor.RED
+							+ "You need to mark off some corners first!");
+					user.sendMessage(ChatColor.RED
+							+ "Be sure to use a wooden shovel!");
+					return;
+				}
+				if (c1world != pworld && c2world == pworld) {
+					user.sendMessage(ChatColor.RED
+							+ "You need to mark off CORNER 1! (Left-click)");
+					user.sendMessage(ChatColor.RED
+							+ "Be sure to use a wooden shovel!");
+					return;
+				}
+				if (c1world == pworld && c2world != pworld) {
+					user.sendMessage(ChatColor.RED
+							+ "You need to mark off CORNER 2! (Right-click)");
+					user.sendMessage(ChatColor.RED
+							+ "Be sure to use a wooden shovel!");
+					return;
+				}
+				
 				if (args.length >= 4) {
 					try {
 						up = Integer.parseInt(args[1]);
