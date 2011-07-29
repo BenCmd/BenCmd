@@ -32,14 +32,16 @@ public class LotPlayerListener extends PlayerListener {
 			if (User.getUser(plugin, player).hasPerm("isLandlord")
 					&& player.getItemInHand().getType() == Material.WOOD_SPADE) {
 				checkPlayer(player.getName());
-				this.corner.get(player.getName()).setCorner2(
-						event.getClickedBlock().getLocation());
-				Location corner2 = this.corner.get(player.getName())
-						.getCorner2();
-				player.sendMessage(ChatColor.LIGHT_PURPLE
-						+ "Corner 2 set at [X: " + corner2.getX() + ", Y: "
-						+ corner2.getY() + ", Z: " + corner2.getZ() + ", W: "
-						+ corner2.getWorld().getName() + "]");
+				if (this.corner.get(player.getName()).corner2 != event.getClickedBlock().getLocation()) {
+					this.corner.get(player.getName()).setCorner2(
+							event.getClickedBlock().getLocation());
+					Location corner2 = this.corner.get(player.getName())
+					.getCorner2();
+					player.sendMessage(ChatColor.LIGHT_PURPLE
+							+ "Corner 2 set at [X: " + corner2.getX() + ", Y: "
+							+ corner2.getY() + ", Z: " + corner2.getZ() + ", W: "
+							+ corner2.getWorld().getName() + "]");
+				}
 				return;
 			}
 		} else if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
@@ -47,14 +49,16 @@ public class LotPlayerListener extends PlayerListener {
 			if (User.getUser(plugin, player).hasPerm("isLandlord")
 					&& player.getItemInHand().getType() == Material.WOOD_SPADE) {
 				checkPlayer(player.getName());
-				this.corner.get(player.getName()).setCorner1(
-						event.getClickedBlock().getLocation());
-				Location corner1 = this.corner.get(player.getName())
-						.getCorner1();
-				player.sendMessage(ChatColor.LIGHT_PURPLE
-						+ "Corner 1 set at [X: " + corner1.getX() + ", Y: "
-						+ corner1.getY() + ", Z: " + corner1.getZ() + ", W: "
-						+ corner1.getWorld().getName() + "]");
+				if (this.corner.get(player.getName()).corner1 != event.getClickedBlock().getLocation()) {
+					this.corner.get(player.getName()).setCorner1(
+							event.getClickedBlock().getLocation());
+					Location corner1 = this.corner.get(player.getName())
+					.getCorner1();
+					player.sendMessage(ChatColor.LIGHT_PURPLE
+							+ "Corner 1 set at [X: " + corner1.getX() + ", Y: "
+							+ corner1.getY() + ", Z: " + corner1.getZ() + ", W: "
+							+ corner1.getWorld().getName() + "]");
+				}
 				return;
 			}
 		}
