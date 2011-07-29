@@ -294,7 +294,19 @@ public class BasicCommands implements Commands {
 			user.sendMessage(ChatColor.RED + "The server cannot do that!");
 			return;
 		}
-		user.Spawn();
+		String spawnworld;
+		if (args.length >= 1) {
+			spawnworld=args[0];
+			user.Spawn(spawnworld);
+		} else {
+			if (plugin.mainProperties.getBoolean("UseDefaultSpawn", true)) {
+				spawnworld = plugin.mainProperties.getString("DefaultSpawn", "world");
+				user.Spawn(spawnworld);
+			}
+			else {
+				user.Spawn();
+			}
+		}
 	}
 
 	public void God(String[] args, User user) {

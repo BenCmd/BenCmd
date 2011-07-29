@@ -92,6 +92,9 @@ public class Lot {
 	}
 
 	public boolean withinLot(Location loc) {
+		if (corner1.getWorld() != loc.getWorld()) {
+			return false;
+		}
 		if (plugin.lots.isBetween(corner1.getBlockX(), loc.getBlockX(),
 				corner2.getBlockX())
 				&& plugin.lots.isBetween(corner1.getBlockZ(), loc.getBlockZ(),
