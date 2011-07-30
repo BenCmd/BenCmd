@@ -27,6 +27,7 @@ public class LotBlockListener extends BlockListener {
 		}
 		
 		Player player = event.getPlayer();
+				
 		if (!plugin.lots.canBuildHere(player, event.getBlock().getLocation())) {
 			event.setCancelled(true);
 			player.sendMessage("You cannot build here.");
@@ -35,6 +36,7 @@ public class LotBlockListener extends BlockListener {
 
 	public void onBlockPlace(BlockPlaceEvent event) {
 		Player player = event.getPlayer();
+		
 		if (!plugin.lots.canBuildHere(player, event.getBlock().getLocation())) {
 			event.setCancelled(true);
 			player.sendMessage("You cannot build here.");

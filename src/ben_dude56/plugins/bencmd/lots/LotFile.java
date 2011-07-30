@@ -12,6 +12,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import ben_dude56.plugins.bencmd.BenCmd;
+import ben_dude56.plugins.bencmd.User;
 import ben_dude56.plugins.bencmd.permissions.PermissionUser;
 
 public class LotFile extends Properties {
@@ -349,7 +350,15 @@ public class LotFile extends Properties {
 		if (inLot) {
 			return false;
 		} else {
-			return true;
+			
+			User user = User.getUser(plugin, player);
+			
+			if (plugin.mainProperties.getBoolean("useGlobalLot", true) && !user.hasPerm("isGlobalGuest")) {
+				return false;
+			}
+			else {
+				return true;
+			}
 		}
 	}
 
