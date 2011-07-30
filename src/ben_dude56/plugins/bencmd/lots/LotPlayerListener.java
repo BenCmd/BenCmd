@@ -32,9 +32,13 @@ public class LotPlayerListener extends PlayerListener {
 			if (User.getUser(plugin, player).hasPerm("isLandlord")
 					&& player.getItemInHand().getType() == Material.WOOD_SPADE) {
 				checkPlayer(player.getName());
-				if (this.corner.get(player.getName()).corner2 != event.getClickedBlock().getLocation()) {
+				if (this.corner.get(player.getName()).corner2set) {
+					if (this.corner.get(player.getName()).corner2.equals(event.getClickedBlock().getLocation())) {
+						return;
+					}
+				}
 					this.corner.get(player.getName()).setCorner2(
-							event.getClickedBlock().getLocation());
+					event.getClickedBlock().getLocation());
 					Location corner2 = this.corner.get(player.getName())
 					.getCorner2();
 					player.sendMessage(ChatColor.LIGHT_PURPLE
@@ -43,13 +47,16 @@ public class LotPlayerListener extends PlayerListener {
 							+ corner2.getWorld().getName() + "]");
 				}
 				return;
-			}
 		} else if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
 			Player player = event.getPlayer();
 			if (User.getUser(plugin, player).hasPerm("isLandlord")
 					&& player.getItemInHand().getType() == Material.WOOD_SPADE) {
 				checkPlayer(player.getName());
-				if (this.corner.get(player.getName()).corner1 != event.getClickedBlock().getLocation()) {
+				if (this.corner.get(player.getName()).corner1set) {
+					if (this.corner.get(player.getName()).corner1.equals(event.getClickedBlock().getLocation())) {
+						return;
+					}
+				}
 					this.corner.get(player.getName()).setCorner1(
 							event.getClickedBlock().getLocation());
 					Location corner1 = this.corner.get(player.getName())
@@ -60,7 +67,6 @@ public class LotPlayerListener extends PlayerListener {
 							+ corner1.getWorld().getName() + "]");
 				}
 				return;
-			}
 		}
 	}
 
