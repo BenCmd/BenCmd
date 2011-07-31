@@ -113,7 +113,7 @@ public class WarpableUser extends PermissionUser {
 		}
 		Location spawn;
 		
-		if (plugin.mainProperties.getBoolean("perWorldSpawn", false)) {
+		if (!plugin.mainProperties.getBoolean("perWorldSpawn", false)) {
 			try {
 				spawn = plugin.getServer().getWorld(plugin.mainProperties.getString("defaultWorld", "world")).getSpawnLocation();
 			} catch (NullPointerException e) {
