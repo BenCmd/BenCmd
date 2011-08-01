@@ -23,6 +23,9 @@ public class PortalListener extends PlayerListener {
 		Portal portal;
 		Location loc = event.getPlayer().getLocation();
 		if ((portal = plugin.portals.getPortalAt(loc)) == null) {
+			event.getPlayer().sendMessage(
+			    ChatColor.RED + "That portal doesn't lead anywhere!");
+			event.setCancelled(true);
 			return;
 		}
 		if (portal.getGroup() != null
