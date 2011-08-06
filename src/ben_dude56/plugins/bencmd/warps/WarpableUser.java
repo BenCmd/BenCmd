@@ -111,22 +111,12 @@ public class WarpableUser extends PermissionUser {
 		if (isConsole) {
 			return;
 		}
-		Location spawn;
-		
 		if (!plugin.mainProperties.getBoolean("perWorldSpawn", false)) {
-			try {
-				spawn = plugin.getServer().getWorld(plugin.mainProperties.getString("defaultWorld", "world")).getSpawnLocation();
-			} catch (NullPointerException e) {
-				spawn = player.getWorld().getSpawnLocation();
-			}
+			Spawn(plugin.mainProperties.getString("defaultWorld", "world"));
 		} else {
-			spawn = player.getWorld().getSpawnLocation();
+			Spawn(player.getWorld().getName());
 		}
 		// *ABOVE* Get the spawn location
-		
-		new Warp(spawn.getX(), spawn.getY(), spawn.getZ(), spawn.getYaw(),
-				spawn.getPitch(), spawn.getWorld().getName(), "spawn", "",
-				plugin).WarpHere(this);
 	}
 	
 	public void Spawn(String world) {
@@ -135,7 +125,7 @@ public class WarpableUser extends PermissionUser {
 		}
 		
 		Location spawn;
-		
+
 		try {
 			spawn = plugin.getServer().getWorld(world).getSpawnLocation();
 		} catch (NullPointerException e) {
@@ -145,7 +135,7 @@ public class WarpableUser extends PermissionUser {
 		// Get the spawn location
 		
 		new Warp(spawn.getX(), spawn.getY(), spawn.getZ(), spawn.getYaw(),
-				spawn.getPitch(), spawn.getWorld().getName(), "spawn", "",
+				spawn.getPitch(), spawn.getWorld().getName(), spawn.getWorld().getName() + "-spawn", "",
 				plugin).WarpHere(this);
 	}
 
