@@ -1,9 +1,18 @@
 package ben_dude56.plugins.bencmd;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.Socket;
+import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.FileHandler;
@@ -23,27 +32,73 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import ben_dude56.plugins.bencmd.chat.*;
-import ben_dude56.plugins.bencmd.chat.channels.*;
-import ben_dude56.plugins.bencmd.invisible.*;
-import ben_dude56.plugins.bencmd.invtools.*;
-import ben_dude56.plugins.bencmd.invtools.kits.*;
-import ben_dude56.plugins.bencmd.lots.*;
-import ben_dude56.plugins.bencmd.lots.sparea.*;
-import ben_dude56.plugins.bencmd.maps.*;
-import ben_dude56.plugins.bencmd.money.*;
-import ben_dude56.plugins.bencmd.multiworld.*;
-import ben_dude56.plugins.bencmd.nofly.*;
-import ben_dude56.plugins.bencmd.permissions.*;
+import ben_dude56.plugins.bencmd.advanced.AdvancedCommands;
+import ben_dude56.plugins.bencmd.advanced.Grave;
+import ben_dude56.plugins.bencmd.advanced.ShelfBListener;
+import ben_dude56.plugins.bencmd.advanced.ShelfFile;
+import ben_dude56.plugins.bencmd.advanced.ShelfPListener;
+import ben_dude56.plugins.bencmd.advanced.bank.BankCommands;
+import ben_dude56.plugins.bencmd.advanced.bank.BankFile;
+import ben_dude56.plugins.bencmd.advanced.npc.NPC;
+import ben_dude56.plugins.bencmd.advanced.npc.NPCChunkListener;
+import ben_dude56.plugins.bencmd.advanced.npc.NPCCommands;
+import ben_dude56.plugins.bencmd.advanced.npc.NPCFile;
+import ben_dude56.plugins.bencmd.advanced.npc.NPCListener;
+import ben_dude56.plugins.bencmd.advanced.redstone.RedstoneCommands;
+import ben_dude56.plugins.bencmd.advanced.redstone.RedstoneFile;
+import ben_dude56.plugins.bencmd.chat.ChatCommands;
+import ben_dude56.plugins.bencmd.chat.ChatPlayerListener;
+import ben_dude56.plugins.bencmd.chat.channels.ChatChannelCommands;
+import ben_dude56.plugins.bencmd.chat.channels.ChatChannelController;
+import ben_dude56.plugins.bencmd.invisible.Invisibility;
+import ben_dude56.plugins.bencmd.invisible.InvisibleCommands;
+import ben_dude56.plugins.bencmd.invtools.DispChest;
+import ben_dude56.plugins.bencmd.invtools.InventoryBlockListener;
+import ben_dude56.plugins.bencmd.invtools.InventoryCommands;
+import ben_dude56.plugins.bencmd.invtools.InventoryPlayerListener;
+import ben_dude56.plugins.bencmd.invtools.UnlimitedDisp;
+import ben_dude56.plugins.bencmd.invtools.kits.KitList;
+import ben_dude56.plugins.bencmd.lots.LotBlockListener;
+import ben_dude56.plugins.bencmd.lots.LotCommands;
+import ben_dude56.plugins.bencmd.lots.LotFile;
+import ben_dude56.plugins.bencmd.lots.LotPlayerListener;
+import ben_dude56.plugins.bencmd.lots.sparea.SPArea;
+import ben_dude56.plugins.bencmd.lots.sparea.SPAreaEListener;
+import ben_dude56.plugins.bencmd.lots.sparea.SPAreaFile;
+import ben_dude56.plugins.bencmd.lots.sparea.SPAreaPListener;
+import ben_dude56.plugins.bencmd.maps.MapCommands;
+import ben_dude56.plugins.bencmd.money.MoneyCommands;
+import ben_dude56.plugins.bencmd.money.PriceFile;
+import ben_dude56.plugins.bencmd.multiworld.PortalCommands;
+import ben_dude56.plugins.bencmd.multiworld.PortalFile;
+import ben_dude56.plugins.bencmd.multiworld.PortalListener;
+import ben_dude56.plugins.bencmd.nofly.FlyDetect;
+import ben_dude56.plugins.bencmd.nofly.FlyListener;
+import ben_dude56.plugins.bencmd.permissions.ActionFile;
+import ben_dude56.plugins.bencmd.permissions.BlockChecker;
+import ben_dude56.plugins.bencmd.permissions.CreeperListener;
+import ben_dude56.plugins.bencmd.permissions.EntityPermListen;
+import ben_dude56.plugins.bencmd.permissions.KickList;
+import ben_dude56.plugins.bencmd.permissions.MainPermissions;
+import ben_dude56.plugins.bencmd.permissions.MaxPlayers;
 import ben_dude56.plugins.bencmd.permissions.MaxPlayers.JoinType;
-import ben_dude56.plugins.bencmd.protect.*;
-import ben_dude56.plugins.bencmd.reporting.*;
-import ben_dude56.plugins.bencmd.warps.*;
-import ben_dude56.plugins.bencmd.weather.*;
-import ben_dude56.plugins.bencmd.advanced.*;
-import ben_dude56.plugins.bencmd.advanced.bank.*;
-import ben_dude56.plugins.bencmd.advanced.npc.*;
-import ben_dude56.plugins.bencmd.advanced.redstone.*;
+import ben_dude56.plugins.bencmd.permissions.PermLoginListener;
+import ben_dude56.plugins.bencmd.permissions.PermissionCommands;
+import ben_dude56.plugins.bencmd.protect.ProtectBlockListener;
+import ben_dude56.plugins.bencmd.protect.ProtectFile;
+import ben_dude56.plugins.bencmd.protect.ProtectPlayerListener;
+import ben_dude56.plugins.bencmd.protect.ProtectedCommands;
+import ben_dude56.plugins.bencmd.reporting.ReportCommands;
+import ben_dude56.plugins.bencmd.reporting.ReportFile;
+import ben_dude56.plugins.bencmd.warps.DeathListener;
+import ben_dude56.plugins.bencmd.warps.HomeWarps;
+import ben_dude56.plugins.bencmd.warps.Jail;
+import ben_dude56.plugins.bencmd.warps.PreWarp;
+import ben_dude56.plugins.bencmd.warps.WarpCommands;
+import ben_dude56.plugins.bencmd.warps.WarpList;
+import ben_dude56.plugins.bencmd.weather.WeatherBinding;
+import ben_dude56.plugins.bencmd.weather.WeatherCommands;
+import ben_dude56.plugins.bencmd.weather.WeatherPListener;
 
 /**
  * BenCmd for Bukkit
@@ -53,7 +108,12 @@ import ben_dude56.plugins.bencmd.advanced.redstone.*;
  */
 public class BenCmd extends JavaPlugin {
 	public final static boolean debug = true;
-	public final static int cbbuild = 1031;
+	public final static int buildId = 1;
+	public final static int cbbuild = 1051;
+	public final static String downloadServer = "cloud.github.com";
+	public final static String verLoc = "http://cloud.github.com/downloads/BenCmd/BenCmd/version.txt";
+	public final static String downloadLoc = "http://cloud.github.com/downloads/BenCmd/BenCmd/BenCmd.jar";
+	public static boolean updateAvailable = false;
 	private final PermLoginListener permLoginListener = new PermLoginListener(
 			this);
 	private final InventoryBlockListener invBlockListen = new InventoryBlockListener(
@@ -82,7 +142,11 @@ public class BenCmd extends JavaPlugin {
 	public final List<Player> allinvisible = new ArrayList<Player>();
 	public final List<ActionableUser> offline = new ArrayList<ActionableUser>();
 	public final String propDir = "plugins/BenCmd/";
-	public final File mainProp = new File(propDir + "main.properties");
+	public final String[] files = { "action.db", "bank.db", "channels.db",
+			"chest.db", "disp.db", "items.txt", "kits.db", "lever.db",
+			"lots.db", "main.properties", "npc.db", "portals.db", "prices.db",
+			"protection.db", "shelves.db", "sparea.db", "tickets.db" };
+	/* public final File mainProp = new File(propDir + "main.properties");
 	public final File itemAlias = new File(propDir + "items.txt");
 	public final File unlDisp = new File(propDir + "disp.db");
 	public final File dispChests = new File(propDir + "chest.db");
@@ -98,7 +162,7 @@ public class BenCmd extends JavaPlugin {
 	public final File spareaFile = new File(propDir + "sparea.db");
 	public final File bankFile = new File(propDir + "bank.db");
 	public final File NPCFile = new File(propDir + "npc.db");
-	public final File RFile = new File(propDir + "lever.db");
+	public final File RFile = new File(propDir + "lever.db"); */
 	public PluginProperties mainProperties;
 	public PluginProperties itemAliases;
 	public LotFile lots;
@@ -188,7 +252,7 @@ public class BenCmd extends JavaPlugin {
 		log.info(pdfFile.getName() + " v" + pdfFile.getVersion()
 				+ " has been disabled!");
 	}
-	
+
 	public void rotateLogFile() {
 		bLog.info("Beginning BenCmd log file rotation...");
 		log.info("BenCmd log file is rotating...");
@@ -230,11 +294,25 @@ public class BenCmd extends JavaPlugin {
 		} catch (IOException e) {
 			log.severe("Unable to create/load log files. Some logging functions may not work properly!");
 		}
-		bLog.info("BenCmd log ready! Running BenCmd v" + getDescription().getVersion());
+		bLog.info("BenCmd log ready! Running BenCmd v"
+				+ getDescription().getVersion());
 		// Check for missing files and add them if necessary
 		bLog.info("Checking for missing database files...");
 		new File(propDir).mkdirs();
-		if (!mainProp.exists()) {
+		for (String f : files) {
+			File file;
+			if (!(file = new File(propDir + f)).exists()) {
+				bLog.info("\"" + f + "\" missing... Attempting to create...");
+				try {
+					file.createNewFile();
+				} catch (IOException e) {
+					bLog.log(Level.SEVERE, "Error creating \"" + f + "\"!", e);
+					System.out.println("BenCmd had a problem:");
+					e.printStackTrace();
+				}
+			}
+		}
+		/* if (!mainProp.exists()) {
 			bLog.info("\"main.properties\" missing... Attempting to create...");
 			try {
 				mainProp.createNewFile();
@@ -403,7 +481,7 @@ public class BenCmd extends JavaPlugin {
 				System.out.println("BenCmd had a problem:");
 				e.printStackTrace();
 			}
-		}
+		} */
 		// Get some static methods ready
 		User.finalizeAll();
 		// Start loading classes
@@ -545,18 +623,108 @@ public class BenCmd extends JavaPlugin {
 		pm.registerEvent(Event.Type.WORLD_SAVE, this.npccl,
 				Event.Priority.Monitor, this);
 		PluginDescriptionFile pdfFile = this.getDescription();
+		// Prepare the update timer...
+		bLog.info("Preparing update timer...");
+		getServer().getScheduler().scheduleSyncRepeatingTask(this,
+				new Update(), 36000, 36000);
 		// Prepare the time lock timer
 		bLog.info("Preparing time task...");
 		getServer().getScheduler().scheduleSyncRepeatingTask(this,
 				new TimeFreeze(), 100, 100);
 		bLog.info("BenCmd enabled successfully!");
 		log.info(pdfFile.getName() + " v" + pdfFile.getVersion()
-				+ " has been enabled!");
+				+ " has been enabled! (BenCmd Build ID: " + buildId + ")");
 		for (World w : getServer().getWorlds()) {
 			w.setPVP(true);
 		}
-		if (mainProperties.getBoolean("channelsEnabled", false)) {
-			log.warning("BenCmd Chat Channels (Experimental) are active...");
+		if (!mainProperties.getBoolean("channelsEnabled", false)) {
+			log.severe("Non-channel chat using BenCmd is being phased out... Please move to channel-based chat...");
+		}
+	}
+	
+	public void update(boolean force) {
+		if (!updateAvailable && !force) {
+			return;
+		}
+		getServer().broadcastMessage(ChatColor.RED + "BenCmd is updating... Some features may reset after it is updated...");
+		log.info("BenCmd update in progress...");
+		log.info("Opening connection...");
+		try {
+			URL loc = new URL(downloadLoc);
+			ReadableByteChannel rbc = Channels.newChannel(loc.openStream());
+			FileOutputStream fos = new FileOutputStream("plugins/BenCmd.jar");
+			log.info("Downloading new JAR file...");
+			fos.getChannel().transferFrom(rbc, 0, 1 << 24);
+			log.info("Download complete! Server is reloading...");
+			getServer().reload();
+		} catch (Exception e) {
+			log.warning("Failed to download update:");
+			e.printStackTrace();
+		}
+	}
+	
+	public boolean checkForUpdates(boolean output) {
+		if (updateAvailable) {
+			return true; // Skip the version check
+		}
+		if (output) {
+			log.info("Checking for BenCmd updates...");
+		}
+		try {
+			Socket s = new Socket(downloadServer, 80);
+			BufferedReader i = new BufferedReader(new InputStreamReader(s.getInputStream()));
+			DataOutputStream o = new DataOutputStream(s.getOutputStream());
+			o.writeBytes("GET " + verLoc + " HTTP/1.1\r\n\r\n");
+			o.flush();
+			long end = new Date().getTime() + 5000;
+			while (!i.ready() && new Date().getTime() < end) { }
+			if (!i.ready()) {
+				if (output) {
+					log.warning("Update request timed out...");
+				}
+				return false;
+			}
+			List<String> l = new ArrayList<String>();
+			for (int j = 0; j < 17 && i.ready(); j++) {
+				String data = i.readLine();
+				l.add(data);
+			}
+			if (l.get(0).split(" ", 3)[1].equals("200")) {
+				int b = 0;
+				for (int j = 0; j < l.size(); j++) {
+					if (l.get(j).isEmpty()) {
+						b = Integer.parseInt(l.get(j + 1));
+						break;
+					}
+				}
+				if (buildId < b) {
+					if (output) {
+						log.info("A new BenCmd update is available! Use \"bencmd update\" to update your server...");
+						for (User u : perm.userFile.allWithPerm("canUpdate")) {
+							u.sendMessage(ChatColor.RED + "A new BenCmd update was detected! Use \"/bencmd update\" to update your server...");
+						}
+					}
+					updateAvailable = true;
+					return true;
+				} else {
+					if (output) {
+						log.info("BenCmd is up to date!");
+					}
+					return false;
+				}
+			} else {
+				if (output) {
+					log.warning("Failed to check for updates! Server returned code " + l.get(0).split(" ", 3)[1] + ":");
+					log.warning(l.get(0).split(" ", 3)[2]);
+				}
+				return false;
+			}
+		} catch (Exception e) {
+			if (output) {
+				log.warning("BenCmd failed to check for updates:");
+				e.printStackTrace();
+			}
+			return false;
 		}
 	}
 
@@ -603,7 +771,7 @@ public class BenCmd extends JavaPlugin {
 			"PlgSetspawn", "GiveTo", "SpawnCreature", "CreatureSpawner",
 			"FullChest", "SpawnMob", "SimpleSpawn", "AdminCmd", "StruckDown",
 			"Requests", "EasyShout", "DeathTpPlus", "iConomy", "RepairChest",
-			"BukkitCompat"};
+			"BukkitCompat" };
 	public String[] minorconflicts = new String[] { "MessageChanger",
 			"NoMoreRain", "kcpxBukkit", "Regios", "ClothCommand", "ChatCensor",
 			"Permissions", "DeathSigns" };
@@ -612,6 +780,7 @@ public class BenCmd extends JavaPlugin {
 		if (debug) {
 			log.warning("You are running a version of BenCmd marked for DEBUGGING ONLY! Use of this version may cause world/database corruption. Use at your own risk!");
 		}
+		checkForUpdates(true);
 		Integer v = null;
 		try {
 			v = Integer.parseInt(getServer().getVersion().split("-")[5]
@@ -745,11 +914,19 @@ public class BenCmd extends JavaPlugin {
 			return true;
 		}
 	}
+	
+	public class Update implements Runnable {
+		@Override
+		public void run() {
+			checkForUpdates(true); // Check for new BenCmd versions
+		}
+	}
 
 	public class TimeFreeze implements Runnable {
 		@Override
 		public void run() {
-			if (Calendar.getInstance().get(Calendar.DAY_OF_MONTH) != clog.get(Calendar.DAY_OF_MONTH)) {
+			if (Calendar.getInstance().get(Calendar.DAY_OF_MONTH) != clog
+					.get(Calendar.DAY_OF_MONTH)) {
 				rotateLogFile();
 			}
 			levers.timeTick();

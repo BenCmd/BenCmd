@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Properties;
 
 import org.bukkit.entity.Player;
+import org.bukkit.util.FileUtil;
 
 import ben_dude56.plugins.bencmd.BenCmd;
 
@@ -22,6 +23,15 @@ public class BankFile extends Properties {
 		plugin = instance;
 		filename = file;
 		banks = new HashMap<String, BankInventory>();
+		if (new File("plugins/BenCmd/_bank.db").exists()) {
+			plugin.log.warning("Bank backup file found... Restoring...");
+			if (FileUtil.copy(new File("plugins/BenCmd/_bank.db"), new File(file))) {
+				new File("plugins/BenCmd/_bank.db").delete();
+				plugin.log.info("Restoration suceeded!");
+			} else {
+				plugin.log.warning("Failed to restore from backup!");
+			}
+		}
 		loadFile();
 		loadBanks();
 	}
@@ -103,14 +113,23 @@ public class BankFile extends Properties {
 	public void saveBank(BankInventory bank) {
 		try {
 			this.put(bank.p, bank.getValue());
-			this.saveFile();
 		} catch (Exception e) {
 		}
 	}
 
 	public void saveAll() {
+		try {
+			new File("/plugins/BenCmd/_bank.db").createNewFile();
+		} catch (IOException e) {
+			plugin.log.warning("Failed to back up bank database!");
+		}
+		if (!FileUtil.copy(new File(filename), new File("/plugins/BenCmd/_bank.db"))) {
+			plugin.log.warning("Failed to back up bank database!");
+		}
 		for (BankInventory bank : banks.values()) {
 			saveBank(bank);
 		}
+		saveFile();
+		new File("/plugins/BenCmd/_bank.db").delete();
 	}
 }

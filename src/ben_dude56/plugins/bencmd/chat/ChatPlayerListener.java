@@ -105,6 +105,9 @@ public class ChatPlayerListener extends PlayerListener {
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		ViewableInventory.replInv((CraftPlayer) event.getPlayer());
 		User user = User.getUser(plugin, event.getPlayer());
+		if (BenCmd.updateAvailable && user.hasPerm("canUpdate")) {
+			user.sendMessage(ChatColor.RED + "A new BenCmd update was detected! Use \"/bencmd update\" to update your server...");
+		}
 		Player[] playerList = plugin.getServer().getOnlinePlayers();
 		if (user.hasPerm("canListPlayers")) {
 			if (playerList.length == 1) {

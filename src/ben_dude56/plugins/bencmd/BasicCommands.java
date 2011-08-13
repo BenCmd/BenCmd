@@ -6,15 +6,12 @@ import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
-import org.bukkit.TreeType;
 import org.bukkit.World;
-import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.Material;
 
 import ben_dude56.plugins.bencmd.warps.Jail;
 
@@ -79,10 +76,6 @@ public class BasicCommands implements Commands {
 		} else if (commandLabel.equalsIgnoreCase("heal")
 				&& user.hasPerm("canHeal")) {
 			Heal(args, user);
-			return true;
-		} else if (commandLabel.equalsIgnoreCase("gentree")
-				&& user.hasPerm("canMakeTree")) {
-			GenTree(user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("bencmd")) {
 			BenCmd(args, user);
@@ -395,40 +388,6 @@ public class BasicCommands implements Commands {
 		}
 	}
 
-	public void GenTree(User user) {
-		if (user.isServer()) {
-			user.sendMessage(ChatColor.RED + "The server cannot do that!");
-			return;
-		}
-		Block targetBlock = user.getHandle().getTargetBlock(null, 30); // Get
-																		// the
-		// block
-		// that the
-		// player is
-		// pointing
-		// at
-		if (targetBlock.getType() == Material.AIR) {
-			user.sendMessage(ChatColor.RED
-					+ "You must be pointing at a block to sprout a tree!");
-			return;
-		}
-		if (user.getHandle()
-				.getWorld()
-				.generateTree(
-						new Location(user.getHandle().getWorld(),
-								targetBlock.getX(), targetBlock.getY() + 1,
-								targetBlock.getZ()), TreeType.TREE)) {
-			// It sprouted properly!
-			plugin.log.info("BenCmd: " + user.getDisplayName()
-					+ " has sprouted a tree at (" + targetBlock.getX() + ","
-					+ targetBlock.getY() + 1 + "," + targetBlock.getZ() + ")!");
-			user.sendMessage(ChatColor.GREEN + "Tree created successfully!");
-		} else {
-			// There was a problem
-			user.sendMessage(ChatColor.RED + "You can't sprout a tree there!");
-		}
-	}
-
 	public void BenCmd(String[] args, User user) {
 		if (args.length == 0 || args[0].equalsIgnoreCase("version")) {
 			PluginDescriptionFile pdfFile = plugin.getDescription();
@@ -462,8 +421,15 @@ public class BasicCommands implements Commands {
 					+ " has reloaded the BenCmd configuration.");
 			plugin.bLog.warning(user.getDisplayName()
 					+ " has reloaded the BenCmd configuration.");
-		}
-		if (args[0].equalsIgnoreCase("disable") && user.hasPerm("canDisable")) {
+		} else if (args[0].equalsIgnoreCase("update") && user.hasPerm("canUpdate")) {
+			if (plugin.checkForUpdates(true)) {
+				plugin.update(false);
+			} else {
+				user.sendMessage(ChatColor.RED + "BenCmd is up to date... Use /bencmd fupdate to force an update...");
+			}
+		} else if (args[0].equalsIgnoreCase("fupdate") && user.hasPerm("canUpdate")) {
+			plugin.update(true);
+		} else if (args[0].equalsIgnoreCase("disable") && user.hasPerm("canDisable")) {
 			plugin.getServer()
 					.broadcastMessage(
 							ChatColor.RED

@@ -58,9 +58,6 @@ commands:
     heal:
         usage:
         description: Heals a player.
-    gentree:
-        usage:
-        description: Makes a tree!
     bencmd:
         usage:
         description: Displays the version info for, or reloads, BenCmd.
