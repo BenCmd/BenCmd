@@ -22,6 +22,10 @@ public class GroupFile extends Properties {
 		this.loadFile(); // Load the values into memory.
 		this.loadGroups();
 	}
+	
+	public List<String> listGroups() {
+		return new ArrayList<String>(groups.keySet());
+	}
 
 	public void loadFile() {
 		File file = new File("plugins/BenCmd/groups.db"); // Prepare the file

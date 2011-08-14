@@ -19,6 +19,9 @@ import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.sk89q.bukkit.migration.PermissionsProvider;
+
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -81,6 +84,7 @@ import ben_dude56.plugins.bencmd.permissions.EntityPermListen;
 import ben_dude56.plugins.bencmd.permissions.KickList;
 import ben_dude56.plugins.bencmd.permissions.MainPermissions;
 import ben_dude56.plugins.bencmd.permissions.MaxPlayers;
+import ben_dude56.plugins.bencmd.permissions.PermissionUser;
 import ben_dude56.plugins.bencmd.permissions.MaxPlayers.JoinType;
 import ben_dude56.plugins.bencmd.permissions.PermLoginListener;
 import ben_dude56.plugins.bencmd.permissions.PermissionCommands;
@@ -106,9 +110,9 @@ import ben_dude56.plugins.bencmd.weather.WeatherPListener;
  * @author ben_dude56
  * 
  */
-public class BenCmd extends JavaPlugin {
+public class BenCmd extends JavaPlugin implements PermissionsProvider {
 	public final static boolean debug = true;
-	public final static int buildId = 1;
+	public final static int buildId = 2;
 	public final static int cbbuild = 1051;
 	public final static String downloadServer = "cloud.github.com";
 	public final static String verLoc = "http://cloud.github.com/downloads/BenCmd/BenCmd/version.txt";
@@ -312,176 +316,6 @@ public class BenCmd extends JavaPlugin {
 				}
 			}
 		}
-		/* if (!mainProp.exists()) {
-			bLog.info("\"main.properties\" missing... Attempting to create...");
-			try {
-				mainProp.createNewFile();
-			} catch (IOException e) {
-				bLog.log(Level.SEVERE, "Error creating \"main.properties\":", e);
-				System.out.println("BenCmd had a problem:");
-				e.printStackTrace();
-			}
-		}
-		if (!itemAlias.exists()) {
-			bLog.info("\"items.txt\" missing... Attempting to create...");
-			try {
-				itemAlias.createNewFile();
-			} catch (IOException e) {
-				bLog.log(Level.SEVERE, "Error creating \"items.txt\":", e);
-				System.out.println("BenCmd had a problem:");
-				e.printStackTrace();
-			}
-		}
-		if (!unlDisp.exists()) {
-			bLog.info("\"disp.db\" missing... Attempting to create...");
-			try {
-				unlDisp.createNewFile();
-			} catch (IOException e) {
-				bLog.log(Level.SEVERE, "Error creating \"disp.db\":", e);
-				System.out.println("BenCmd had a problem:");
-				e.printStackTrace();
-			}
-		}
-		if (!dispChests.exists()) {
-			bLog.info("\"chest.db\" missing... Attempting to create...");
-			try {
-				dispChests.createNewFile();
-			} catch (IOException e) {
-				bLog.log(Level.SEVERE, "Error creating \"chest.db\":", e);
-				System.out.println("BenCmd had a problem:");
-				e.printStackTrace();
-			}
-		}
-		if (!lotFile.exists()) {
-			bLog.info("\"lots.db\" missing... Attempting to create...");
-			try {
-				lotFile.createNewFile();
-			} catch (IOException e) {
-				bLog.log(Level.SEVERE, "Error creating \"lots.db\":", e);
-				System.out.println("BenCmd had a problem:");
-				e.printStackTrace();
-			}
-		}
-		if (!kitFile.exists()) {
-			bLog.info("\"kits.db\" missing... Attempting to create...");
-			try {
-				kitFile.createNewFile();
-			} catch (IOException e) {
-				bLog.log(Level.SEVERE, "Error creating \"kits.db\":", e);
-				System.out.println("BenCmd had a problem:");
-				e.printStackTrace();
-			}
-		}
-		if (!proFile.exists()) {
-			bLog.info("\"protection.db\" missing... Attempting to create...");
-			try {
-				proFile.createNewFile();
-			} catch (IOException e) {
-				bLog.log(Level.SEVERE, "Error creating \"protection.db\":", e);
-				System.out.println("BenCmd had a problem:");
-				e.printStackTrace();
-			}
-		}
-		if (!chatFile.exists()) {
-			bLog.info("\"channels.db\" missing... Attempting to create...");
-			try {
-				chatFile.createNewFile();
-			} catch (IOException e) {
-				bLog.log(Level.SEVERE, "Error creating \"channels.db\":", e);
-				System.out.println("BenCmd had a problem:");
-				e.printStackTrace();
-			}
-		}
-		if (!ticketFile.exists()) {
-			bLog.info("\"tickets.db\" missing... Attempting to create...");
-			try {
-				ticketFile.createNewFile();
-			} catch (IOException e) {
-				bLog.log(Level.SEVERE, "Error creating \"tickets.db\":", e);
-				System.out.println("BenCmd had a problem:");
-				e.printStackTrace();
-			}
-		}
-		if (!pricesFile.exists()) {
-			bLog.info("\"prices.db\" missing... Attempting to create...");
-			try {
-				pricesFile.createNewFile();
-			} catch (IOException e) {
-				bLog.log(Level.SEVERE, "Error creating \"prices.db\":", e);
-				System.out.println("BenCmd had a problem:");
-				e.printStackTrace();
-			}
-		}
-		if (!portalFile.exists()) {
-			bLog.info("\"portals.db\" missing... Attempting to create...");
-			try {
-				portalFile.createNewFile();
-			} catch (IOException e) {
-				bLog.log(Level.SEVERE, "Error creating \"portals.db\":", e);
-				System.out.println("BenCmd had a problem:");
-				e.printStackTrace();
-			}
-		}
-		if (!shelfFile.exists()) {
-			bLog.info("\"shelves.db\" missing... Attempting to create...");
-			try {
-				shelfFile.createNewFile();
-			} catch (IOException e) {
-				bLog.log(Level.SEVERE, "Error creating \"shelves.db\":", e);
-				System.out.println("BenCmd had a problem:");
-				e.printStackTrace();
-			}
-		}
-		if (!actionFile.exists()) {
-			bLog.info("\"action.db\" missing... Attempting to create...");
-			try {
-				actionFile.createNewFile();
-			} catch (IOException e) {
-				bLog.log(Level.SEVERE, "Error creating \"action.db\":", e);
-				System.out.println("BenCmd had a problem:");
-				e.printStackTrace();
-			}
-		}
-		if (!spareaFile.exists()) {
-			bLog.info("\"sparea.db\" missing... Attempting to create...");
-			try {
-				spareaFile.createNewFile();
-			} catch (IOException e) {
-				bLog.log(Level.SEVERE, "Error creating \"sparea.db\":", e);
-				System.out.println("BenCmd had a problem:");
-				e.printStackTrace();
-			}
-		}
-		if (!bankFile.exists()) {
-			bLog.info("\"bank.db\" missing... Attempting to create...");
-			try {
-				bankFile.createNewFile();
-			} catch (IOException e) {
-				bLog.log(Level.SEVERE, "Error creating \"bank.db\":", e);
-				System.out.println("BenCmd had a problem:");
-				e.printStackTrace();
-			}
-		}
-		if (!NPCFile.exists()) {
-			bLog.info("\"npc.db\" missing... Attempting to create...");
-			try {
-				NPCFile.createNewFile();
-			} catch (IOException e) {
-				bLog.log(Level.SEVERE, "Error creating \"npc.db\":", e);
-				System.out.println("BenCmd had a problem:");
-				e.printStackTrace();
-			}
-		}
-		if (!RFile.exists()) {
-			bLog.info("\"lever.db\" missing... Attempting to create...");
-			try {
-				RFile.createNewFile();
-			} catch (IOException e) {
-				bLog.log(Level.SEVERE, "Error creating \"lever.db\":", e);
-				System.out.println("BenCmd had a problem:");
-				e.printStackTrace();
-			}
-		} */
 		// Get some static methods ready
 		User.finalizeAll();
 		// Start loading classes
@@ -537,6 +371,13 @@ public class BenCmd extends JavaPlugin {
 				user.Kick("The server ran out of player slots when reloading... :(");
 			}
 		}
+		// Check for an instance of WorldEdit
+		/* bLog.info("Checking for running instances of WorldEdit...");
+		if (getServer().getPluginManager().isPluginEnabled("WorldEdit")) {
+			bLog.info("WorldEdit found! Attaching as permissions provider...");
+			((WorldEditPlugin) getServer().getPluginManager().getPlugin("WorldEdit")).getPermissionsResolver().setPluginPermissionsResolver(new WorldEditPermissions());
+			log.info(String.valueOf(((WorldEditPlugin) getServer().getPluginManager().getPlugin("WorldEdit")).getPermissionsResolver().hasPermission("ben_dude56", "canFly")));
+		} */
 		bLog.info("Registering events...");
 		// Register all necessary events
 		PluginManager pm = getServer().getPluginManager();
@@ -915,6 +756,32 @@ public class BenCmd extends JavaPlugin {
 		}
 	}
 	
+	@Override
+	public boolean hasPermission(String name, String permission) {
+		return PermissionUser.matchUser(name, this).hasPerm(permission);
+	}
+	
+	@Override
+	public boolean hasPermission(String worldName, String name,
+			String permission) {
+		return hasPermission(name, permission);
+	}
+
+	@Override
+	public boolean inGroup(String player, String group) {
+		return PermissionUser.matchUser(player, this).inGroup(perm.groupFile.getGroup(group));
+	}
+
+	@Override
+	public String[] getGroups(String player) {
+		List<String> sl;
+		String[] sa = new String[(sl = perm.groupFile.listGroups()).size()];
+		for (int i = 0; i < sa.length; i++) {
+			sa[i] = sl.get(i);
+		}
+		return sa;
+	}
+	
 	public class Update implements Runnable {
 		@Override
 		public void run() {
@@ -952,5 +819,13 @@ public class BenCmd extends JavaPlugin {
 			}
 		}
 	}
+	
+	public static boolean isRunning() {
+		return Bukkit.getServer().getPluginManager().isPluginEnabled("BenCmd");
+	}
 
+	public static BenCmd getPlugin() {
+		return (BenCmd) Bukkit.getServer().getPluginManager()
+			.getPlugin("BenCmd");
+	}
 }
