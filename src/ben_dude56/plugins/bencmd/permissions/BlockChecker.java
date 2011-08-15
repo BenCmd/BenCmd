@@ -4,7 +4,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
@@ -24,28 +23,12 @@ public class BlockChecker extends BlockListener {
 	}
 
 	public void onBlockPlace(BlockPlaceEvent event) {
-		User user = User.getUser(plugin, event.getPlayer());
-		if (!user.canBuild()) {
-			event.setCancelled(true);
-			user.sendMessage(ChatColor.RED
-					+ "You don't have permission to build.");
-			return;
-		}
 		Warp warpTo;
 		if (event.getBlockPlaced().getType() == Material.PORTAL
 				&& (warpTo = plugin.warps.getWarp(plugin.mainProperties
 						.getString("defaultPortalWarp", "portals"))) != null) {
 			plugin.portals.addPortal(new Portal(Portal.getHandleBlock(event
 					.getBlockPlaced().getLocation()), null, warpTo));
-		}
-	}
-
-	public void onBlockBreak(BlockBreakEvent event) {
-		User user = User.getUser(plugin, event.getPlayer());
-		if (!user.canBuild()) {
-			event.setCancelled(true);
-			user.sendMessage(ChatColor.RED
-					+ "You don't have permission to build.");
 		}
 	}
 
@@ -83,13 +66,13 @@ public class BlockChecker extends BlockListener {
 				event.setCancelled(true);
 				return;
 			}
-			if (!user.hasPerm("canBurn", false)
+			if (!user.hasPerm("bencmd.fire.netherrack", false)
 					&& material != Material.AIR
 					&& material != Material.NETHERRACK
 					&& user.getHandle().getTargetBlock(null, 4).getType() != Material.NETHERRACK) {
 				event.setCancelled(true);
 			}
-			if (user.hasPerm("canBurnAll")) {
+			if (user.hasPerm("bencmd.fire.all")) {
 				event.setCancelled(false);
 			}
 		} catch (NullPointerException e) {
@@ -119,7 +102,7 @@ public class BlockChecker extends BlockListener {
 				plugin.bLog.info("Line " + String.valueOf(i) + ": " + line);
 			}
 		}
-		for (User spy : plugin.perm.userFile.allWithPerm("hearAllSigns")) {
+		for (User spy : plugin.perm.userFile.allWithPerm("bencmd.signspy")) {
 			if (spy.getName().equals(p.getName()) || firstLine == -1) {
 				continue;
 			}

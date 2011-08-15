@@ -286,7 +286,7 @@ public class FlyDetect {
 			}
 			try {
 				for (Player player : plugin.getServer().getOnlinePlayers()) {
-					if (User.getUser(plugin, player).hasPerm("canFly")) {
+					if (User.getUser(plugin, player).hasPerm("bencmd.allowfly")) {
 						return;
 					}
 					Location loc = player.getLocation();

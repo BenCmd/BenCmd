@@ -112,7 +112,7 @@ import ben_dude56.plugins.bencmd.weather.WeatherPListener;
  */
 public class BenCmd extends JavaPlugin implements PermissionsProvider {
 	public final static boolean debug = true;
-	public final static int buildId = 4;
+	public final static int buildId = 5;
 	public final static int cbbuild = 1051;
 	public final static String downloadServer = "cloud.github.com";
 	public final static String verLoc = "http://cloud.github.com/downloads/BenCmd/BenCmd/version.txt";
@@ -396,8 +396,6 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 				Event.Priority.Highest, this);
 		pm.registerEvent(Event.Type.BLOCK_PLACE, this.blockCheck,
 				Event.Priority.High, this);
-		pm.registerEvent(Event.Type.BLOCK_BREAK, this.blockCheck,
-				Event.Priority.High, this);
 		pm.registerEvent(Event.Type.BLOCK_BURN, this.blockCheck,
 				Event.Priority.Highest, this);
 		pm.registerEvent(Event.Type.BLOCK_IGNITE, this.blockCheck,
@@ -553,7 +551,7 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 				if (buildId < b) {
 					if (output) {
 						log.info("A new BenCmd update is available! Use \"bencmd update\" to update your server...");
-						for (User u : perm.userFile.allWithPerm("canUpdate")) {
+						for (User u : perm.userFile.allWithPerm("bencmd.update")) {
 							u.sendMessage(ChatColor.RED
 									+ "A new BenCmd update was detected! Use \"/bencmd update\" to update your server...");
 						}

@@ -31,38 +31,38 @@ public class WarpCommands implements Commands {
 			Warp(args, user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("setwarp")
-				&& user.hasPerm("canEditWarps")) {
+				&& user.hasPerm("bencmd.warp.set")) {
 			SetWarp(args, user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("delwarp")
-				&& user.hasPerm("canEditWarps")) {
+				&& user.hasPerm("bencmd.warp.remove")) {
 			DelWarp(args, user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("home")
-				&& user.hasPerm("canWarpOwnHomes")) {
+				&& user.hasPerm("bencmd.home.self")) {
 			Home(args, user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("sethome")
-				&& user.hasPerm("canEditOwnHomes")) {
+				&& user.hasPerm("bencmd.home.set")) {
 			SetHome(args, user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("delhome")
-				&& user.hasPerm("canEditOwnHomes")) {
+				&& user.hasPerm("bencmd.home.remove")) {
 			DelHome(args, user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("back")
-				&& user.hasPerm("canWarp")) {
+				&& user.hasPerm("bencmd.warp.back")) {
 			Back(user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("setjail")
-				&& user.hasPerm("canJail")) {
+				&& user.hasPerm("bencmd.action.setjail")) {
 			SetJail(user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("tp")) {
 			Tp(args, user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("tphere")
-				&& user.hasPerm("canTpOther")) {
+				&& user.hasPerm("bencmd.tp.other")) {
 			if (args.length != 1) {
 				user.sendMessage(ChatColor.YELLOW
 						+ "Proper use is: /tphere <player>");
@@ -105,7 +105,7 @@ public class WarpCommands implements Commands {
 			user.WarpTo(warp);
 			return;
 		}
-		if (args.length == 2 && user.hasPerm("canWarpOthers")) {
+		if (args.length == 2 && user.hasPerm("bencmd.warp.other")) {
 			Warp warp = plugin.warps.getWarp(args[0]);
 			if (warp == null) {
 				user.sendMessage(ChatColor.RED + "That warp doesn't exist!");
@@ -125,7 +125,7 @@ public class WarpCommands implements Commands {
 			warper.WarpTo(warp, user);
 			return;
 		}
-		if (user.hasPerm("canWarpOthers")) {
+		if (user.hasPerm("bencmd.warp.other")) {
 			user.sendMessage(ChatColor.YELLOW
 					+ "Proper use is: /warp <name> [player]");
 		}
@@ -209,7 +209,7 @@ public class WarpCommands implements Commands {
 			return;
 		}
 		if (args.length > 2) {
-			if (user.hasPerm("canWarpOtherHomes")) {
+			if (user.hasPerm("bencmd.home.warpall")) {
 				user.sendMessage(ChatColor.YELLOW
 						+ "Proper use is: /home <number> [player]");
 			} else {
@@ -230,7 +230,7 @@ public class WarpCommands implements Commands {
 				}
 			}
 		} else if (args.length == 2) {
-			if (user.hasPerm("canWarpOtherHomes")) {
+			if (user.hasPerm("bencmd.home.warpall")) {
 				int homenum;
 				try {
 					homenum = Integer.parseInt(args[0]);
@@ -252,7 +252,7 @@ public class WarpCommands implements Commands {
 			return;
 		}
 		if (args.length > 2) {
-			if (user.hasPerm("canEditOtherHomes")) {
+			if (user.hasPerm("bencmd.home.setall")) {
 				user.sendMessage(ChatColor.YELLOW
 						+ "Proper use is: /sethome <number> [player]");
 			} else {
@@ -272,7 +272,7 @@ public class WarpCommands implements Commands {
 				}
 			}
 		} else if (args.length == 2) {
-			if (user.hasPerm("canEditOtherHomes")) {
+			if (user.hasPerm("bencmd.home.setall")) {
 				int homenum;
 				try {
 					homenum = Integer.parseInt(args[0]);
@@ -290,7 +290,7 @@ public class WarpCommands implements Commands {
 
 	public void DelHome(String[] args, User user) {
 		if (args.length > 2) {
-			if (user.hasPerm("canEditOtherHomes")) {
+			if (user.hasPerm("bencmd.home.removeall")) {
 				user.sendMessage(ChatColor.YELLOW
 						+ "Proper use is: /delhome <number> [player]");
 			} else {
@@ -330,7 +330,7 @@ public class WarpCommands implements Commands {
 				}
 			}
 		} else if (args.length == 2) {
-			if (user.hasPerm("canEditOtherHomes")) {
+			if (user.hasPerm("bencmd.home.removeall")) {
 				int homenum;
 				try {
 					homenum = Integer.parseInt(args[0]);
@@ -363,7 +363,7 @@ public class WarpCommands implements Commands {
 
 	public void Tp(String[] args, User user) {
 		if (args.length == 1) {
-			if (!user.hasPerm("canTpSelf")) {
+			if (!user.hasPerm("bencmd.tp.self")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
 				return;
@@ -391,7 +391,7 @@ public class WarpCommands implements Commands {
 						"tp " + args[1]);
 				return;
 			}
-			if (!user.hasPerm("canTpOther")) {
+			if (!user.hasPerm("bencmd.tp.other")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
 				return;
@@ -424,7 +424,7 @@ public class WarpCommands implements Commands {
 					+ user2.getName() + " by " + user.getName());
 			user1.sendMessage(ChatColor.YELLOW + "Woosh!");
 		} else {
-			if (user.hasPerm("canTpSelf") || user.hasPerm("canTpOther")) {
+			if (user.hasPerm("bencmd.tp.self") || user.hasPerm("bencmd.tp.other")) {
 				user.sendMessage(ChatColor.YELLOW
 						+ "Proper use is: /tp <player> [player]");
 			} else {

@@ -169,4 +169,11 @@ public class PortalFile extends Properties {
 		portals.put(portal.getLocation(), portal);
 		updatePortal(portal);
 	}
+	
+	public void remPortal(Location loc) {
+		portals.remove(loc);
+		this.remove(loc.getWorld().getName() + "," + loc.getBlockX() + ","
+					+ loc.getBlockY() + "," + loc.getBlockZ());
+		saveFile();
+	}
 }

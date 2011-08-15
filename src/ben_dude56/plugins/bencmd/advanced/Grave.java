@@ -88,7 +88,7 @@ public class Grave {
 			return true;
 		} else {
 			User user = User.getUser(plugin, player);
-			if (user.hasPerm("canDestroyGraves")) {
+			if (user.hasPerm("bencmd.grave.destroy")) {
 				delete();
 				plugin.graves.remove(this);
 				p.sendMessage(ChatColor.RED

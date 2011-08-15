@@ -26,7 +26,7 @@ public class NPCCommands implements Commands {
 		} catch (ClassCastException e) {
 			user = User.getUser(plugin);
 		}
-		if (commandLabel.equalsIgnoreCase("npc") && user.hasPerm("canEditNpcs")) {
+		if (commandLabel.equalsIgnoreCase("npc") && user.hasPerm("bencmd.npc.create")) {
 			Npc(args, user);
 			return true;
 		}
@@ -74,6 +74,11 @@ public class NPCCommands implements Commands {
 			((BlacksmithNPC) npc).addItem(user.getHandle().getItemInHand(),
 					Double.parseDouble(args[2]), user.getHandle());
 		} else if (args[0].equalsIgnoreCase("remove")) {
+			if (!user.hasPerm("bencmd.npc.remove")) {
+				user.sendMessage(ChatColor.RED
+						+ "You don't have permission to do that!");
+				return;
+			}
 			if (args.length == 1) {
 				user.sendMessage(ChatColor.YELLOW
 						+ "Proper usage: /npc remove [id]");
@@ -81,6 +86,11 @@ public class NPCCommands implements Commands {
 			}
 			plugin.npcs.remNPC(plugin.npcs.getNPC(Integer.parseInt(args[1])));
 		} else if (args[0].equalsIgnoreCase("despawnall")) {
+			if (!user.hasPerm("bencmd.npc.despawnall")) {
+				user.sendMessage(ChatColor.RED
+						+ "You don't have permission to do that!");
+				return;
+			}
 			for (NPC npc : plugin.npcs.allNPCs()) {
 				npc.despawn();
 			}

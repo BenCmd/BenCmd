@@ -4,7 +4,6 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import ben_dude56.plugins.bencmd.BenCmd;
-import ben_dude56.plugins.bencmd.User;
 
 public class Jail {
 	Warp jailWarp;
@@ -48,10 +47,6 @@ public class Jail {
 	}
 
 	public boolean SendToJail(Player player) {
-		User user = User.getUser(plugin, player);
-		if (user.hasPerm("cannotBeJailed")) {
-			return false;
-		}
 		jailWarp.WarpHere(new WarpableUser(plugin, player));
 		return true;
 	}

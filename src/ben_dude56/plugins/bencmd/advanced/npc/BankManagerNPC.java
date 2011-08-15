@@ -17,7 +17,7 @@ public class BankManagerNPC extends NPC implements Clickable {
 
 	@Override
 	public void onRightClick(Player p) {
-		if (User.getUser(super.plugin, p).hasPerm("isBankAdmin")) {
+		if (User.getUser(super.plugin, p).hasPerm("bencmd.bank.admin")) {
 			p.sendMessage(ChatColor.RED
 					+ "Admins cannot use this NPC to upgrade banks, use /bank upgrade instead!");
 			return;

@@ -148,7 +148,7 @@ public class Kit {
 	}
 
 	public boolean canUseKit(User user) {
-		if (user.hasPerm("allKit")) {
+		if (user.hasPerm("bencmd.inv.kit.all")) {
 			return true;
 		}
 		return (user.inGroup(plugin.perm.groupFile.getGroup(group)));

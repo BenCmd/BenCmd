@@ -43,7 +43,7 @@ public class ProtectPlayerListener extends PlayerListener {
 				.getLocation())) != -1) {
 			block = plugin.protectFile.getProtection(id);
 			User user = User.getUser(plugin, event.getPlayer());
-			if (!block.canUse(user)) {
+			if (!block.canUse(user) && !user.hasPerm("bencmd.lock.peek")) {
 				event.setCancelled(true);
 				user.sendMessage(ChatColor.RED
 						+ "That block is locked! Use /protect info for more information...");

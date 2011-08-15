@@ -28,9 +28,9 @@ public class MaxPlayers {
 	}
 
 	public JoinType join(PermissionUser user) {
-		if (user.hasPerm("indSlotReserved") && indefActive) {
+		if (user.hasPerm("bencmd.slot.always") && indefActive) {
 			return JoinType.SLOT_AVAILABLE;
-		} else if (user.hasPerm("slotReserved") && reserveActive) {
+		} else if (user.hasPerm("bencmd.slot.reserved") && reserveActive) {
 			if (reservedList.size() < reservemax) {
 				reservedList.add(user);
 				return JoinType.SLOT_AVAILABLE;

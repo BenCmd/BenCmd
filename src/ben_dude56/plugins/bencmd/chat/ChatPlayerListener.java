@@ -75,7 +75,7 @@ public class ChatPlayerListener extends PlayerListener {
 			return;
 		}
 		long slowTimeLeft = slow.playerBlocked(user.getName());
-		if ((!user.hasPerm("ignoreSlowMode")) && slow.isEnabled()) {
+		if ((!user.hasPerm("bencmd.chat.noslow")) && slow.isEnabled()) {
 			if (slowTimeLeft > 0) {
 				user.sendMessage(ChatColor.GRAY
 						+ "Slow mode is enabled! You must wait "
@@ -106,12 +106,12 @@ public class ChatPlayerListener extends PlayerListener {
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		ViewableInventory.replInv((CraftPlayer) event.getPlayer());
 		User user = User.getUser(plugin, event.getPlayer());
-		if (BenCmd.updateAvailable && user.hasPerm("canUpdate")) {
+		if (BenCmd.updateAvailable && user.hasPerm("bencmd.update")) {
 			user.sendMessage(ChatColor.RED
 					+ "A new BenCmd update was detected! Use \"/bencmd update\" to update your server...");
 		}
 		Player[] playerList = plugin.getServer().getOnlinePlayers();
-		if (user.hasPerm("canListPlayers")) {
+		if (user.hasPerm("bencmd.chat.list")) {
 			if (playerList.length == 1) {
 				user.sendMessage(ChatColor.GREEN
 						+ "You are the only one online. :(");
@@ -137,7 +137,7 @@ public class ChatPlayerListener extends PlayerListener {
 					+ (slow.getDefTime() / 1000)
 					+ " seconds between each chat message.");
 		}
-		if (user.hasPerm("isTicketAdmin") && plugin.reports.unreadTickets()) {
+		if (user.hasPerm("bencmd.ticket.readall") && plugin.reports.unreadTickets()) {
 			user.sendMessage(ChatColor.RED
 					+ "There are unread reports! Use /ticket list to see them!");
 		}

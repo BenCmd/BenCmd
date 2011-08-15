@@ -145,7 +145,7 @@ public class Lot {
 			group = getGroup();
 		}
 		if (isOwner(player) || isGuest(player.getName())
-				|| user.hasPerm("isLandlord")
+				|| user.hasPerm("bencmd.lot.buildall")
 				|| user.inGroup(plugin.perm.groupFile.getGroup(group))) {
 			return true;
 		} else

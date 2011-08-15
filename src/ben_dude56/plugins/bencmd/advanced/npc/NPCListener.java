@@ -30,7 +30,7 @@ public class NPCListener extends PlayerListener {
 				}
 				if (event.getPlayer().getItemInHand().getType() == Material.STICK
 						&& User.getUser(plugin, event.getPlayer()).hasPerm(
-								"canEditNpcs")) {
+								"bencmd.npc.info")) {
 					info(event.getPlayer(), npc);
 					return;
 				}

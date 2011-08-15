@@ -31,11 +31,26 @@ public class PortalCommands implements Commands {
 			user = User.getUser(plugin);
 		}
 		if (commandLabel.equalsIgnoreCase("setportal")
-				&& user.hasPerm("canEditWarps")) {
+				&& user.hasPerm("bencmd.portal.set")) {
 			SetPortal(args, user);
+			return true;
+		} else if (commandLabel.equalsIgnoreCase("remportal")
+				&& user.hasPerm("bencmd.portal.remove")) {
+			RemPortal(args, user);
 			return true;
 		}
 		return false;
+	}
+	
+	public void RemPortal(String[] args, User user) {
+		Block pointedAt = user.getHandle().getTargetBlock(null, 4);
+		if (pointedAt.getType() != Material.PORTAL) {
+			user.sendMessage(ChatColor.RED
+					+ "You're not pointing at a portal!");
+		}
+		Location handle = Portal.getHandleBlock(pointedAt.getLocation());
+		plugin.portals.remPortal(handle);
+		user.sendMessage(ChatColor.GREEN + "That portal was successfully removed!");
 	}
 
 	public void SetPortal(String[] args, User user) {

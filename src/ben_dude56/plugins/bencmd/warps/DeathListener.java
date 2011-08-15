@@ -73,7 +73,7 @@ public class DeathListener extends EntityListener {
 			return;
 		}
 		User user = User.getUser(plugin, (Player) event.getEntity());
-		if (user.hasPerm("canWarp") && user.hasPerm("canBackOnDeath")) {
+		if (user.hasPerm("bencmd.warp.back") && user.hasPerm("bencmd.warp.deathback")) {
 			plugin.checkpoints.SetPreWarp(user.getHandle());
 			user.sendMessage(ChatColor.RED
 					+ "Use /back to return to your death point...");

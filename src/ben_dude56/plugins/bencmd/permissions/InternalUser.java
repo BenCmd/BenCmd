@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ben_dude56.plugins.bencmd.BenCmd;
+import ben_dude56.plugins.bencmd.InvalidPermissionError;
 
 public class InternalUser {
 	protected BenCmd plugin;
@@ -46,6 +47,9 @@ public class InternalUser {
 	}
 
 	public boolean hasPerm(String perm, boolean testStar, boolean testGroup) {
+		if (!perm.contains(".")) {
+			throw new InvalidPermissionError();
+		}
 		if (isServer()) {
 			return testStar;
 		}
@@ -60,8 +64,14 @@ public class InternalUser {
 				perms.addAll(group.getInternal().getPermissions(true));
 			}
 		}
+		List<String> possibleStars = new ArrayList<String>();
+		String currentNamespace = "";
+		for (String splt : perm.split("\\.")) {
+			possibleStars.add(currentNamespace + "*");
+			currentNamespace += splt + ".";
+		}
 		for (String perm2 : perms) {
-			if (perm2.equals("*")) {
+			if (possibleStars.contains(perm2)) {
 				isStarred = true;
 			}
 			if (perm2.equalsIgnoreCase("-" + perm)) {

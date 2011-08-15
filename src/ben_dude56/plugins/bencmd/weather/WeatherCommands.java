@@ -30,11 +30,11 @@ public class WeatherCommands implements Commands {
 			user = User.getUser(plugin);
 		}
 		if (commandLabel.equalsIgnoreCase("storm")
-				&& user.hasPerm("canControlWeather")) {
+				&& user.hasPerm("bencmd.storm.control")) {
 			Storm(args, user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("strike")
-				&& user.hasPerm("canStrike")) {
+				&& user.hasPerm("bencmd.strike.location")) {
 			Strike(args, user);
 			return true;
 		}
@@ -88,6 +88,11 @@ public class WeatherCommands implements Commands {
 			loc = targetBlock.getLocation();
 		} else {
 			if (args[0].equalsIgnoreCase("bind")) {
+				if (!user.hasPerm("bencmd.storm.strike.bind")) {
+					user.sendMessage(ChatColor.RED
+							+ "You don't have permission to do that!");
+					return;
+				}
 				if (user.isServer()) {
 					user.sendMessage(ChatColor.RED
 							+ "The server cannot do that!");
@@ -102,6 +107,11 @@ public class WeatherCommands implements Commands {
 				}
 				return;
 			} else if (args[0].equalsIgnoreCase("unbind")) {
+				if (!user.hasPerm("bencmd.storm.strike.bind")) {
+					user.sendMessage(ChatColor.RED
+							+ "You don't have permission to do that!");
+					return;
+				}
 				if (user.isServer()) {
 					user.sendMessage(ChatColor.RED
 							+ "The server cannot do that!");
@@ -117,6 +127,11 @@ public class WeatherCommands implements Commands {
 				}
 				return;
 			} else {
+				if (!user.hasPerm("bencmd.storm.strike.player")) {
+					user.sendMessage(ChatColor.RED
+							+ "You don't have permission to do that!");
+					return;
+				}
 				User user2;
 				if ((user2 = User.matchUser(args[0], plugin)) == null) {
 					user.sendMessage(ChatColor.RED

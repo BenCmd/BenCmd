@@ -30,7 +30,7 @@ public class InventoryBlockListener extends BlockListener {
 		Player player = event.getPlayer();
 		if (block.getType() == Material.DISPENSER
 				&& plugin.dispensers.isUnlimitedDispenser(block.getLocation())) {
-			if (!User.getUser(plugin, player).hasPerm("canDeleteUnlDisp")) {
+			if (!User.getUser(plugin, player).hasPerm("bencmd.inv.unlimited.remove")) {
 				player.sendMessage(ChatColor.RED
 						+ "You can't destroy unlimited dispensers!");
 				event.setCancelled(true);
@@ -42,9 +42,9 @@ public class InventoryBlockListener extends BlockListener {
 		}
 		if (block.getType() == Material.CHEST
 				&& plugin.chests.isDisposalChest(block.getLocation())) {
-			if (!User.getUser(plugin, player).hasPerm("canDeleteDispChest")) {
+			if (!User.getUser(plugin, player).hasPerm("bencmd.inv.disposal.remove")) {
 				player.sendMessage(ChatColor.RED
-						+ "You can't destroy disposal chest!");
+						+ "You can't destroy disposal chests!");
 				event.setCancelled(true);
 				return;
 			}

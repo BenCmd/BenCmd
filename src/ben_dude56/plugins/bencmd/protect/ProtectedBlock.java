@@ -44,8 +44,7 @@ public class ProtectedBlock {
 	}
 
 	public boolean canChange(PermissionUser user) {
-		if (blockOwner.getName().equalsIgnoreCase(user.getName())
-				|| user.hasPerm("isProtectionAdmin")) {
+		if (blockOwner.getName().equalsIgnoreCase(user.getName())) {
 			return true;
 		} else {
 			return false;
@@ -53,13 +52,9 @@ public class ProtectedBlock {
 	}
 
 	public boolean setOwner(PermissionUser user) {
-		if (user.hasPerm("noProtect", false)) {
-			return false;
-		} else {
-			blockOwner = user;
-			plugin.protectFile.updateValue(this, false);
-			return true;
-		}
+		blockOwner = user;
+		plugin.protectFile.updateValue(this, false);
+		return true;
 	}
 
 	public boolean addGuest(PermissionUser guest) {

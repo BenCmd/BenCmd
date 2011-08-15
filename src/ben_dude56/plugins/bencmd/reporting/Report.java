@@ -149,14 +149,14 @@ public class Report implements Comparable<Report> {
 	}
 
 	public boolean canRead(PermissionUser user) {
-		return user.getName().equalsIgnoreCase(accused.getName())
-				|| user.getName().equalsIgnoreCase(sender.getName())
-				|| user.hasPerm("isTicketAdmin");
+		return (user.getName().equalsIgnoreCase(accused.getName()) && user.hasPerm("bencmd.ticket.readown"))
+				|| (user.getName().equalsIgnoreCase(sender.getName()) && user.hasPerm("bencmd.ticket.readown"))
+				|| user.hasPerm("bencmd.ticket.readall");
 	}
 
 	public boolean canBasicChange(PermissionUser user) {
-		return user.getName().equalsIgnoreCase(sender.getName())
-				|| user.hasPerm("isTicketAdmin");
+		return (user.getName().equalsIgnoreCase(sender.getName()) && user.hasPerm("bencmd.ticket.editown"))
+				|| user.hasPerm("bencmd.ticket.editall");
 	}
 
 	public enum ReportStatus {

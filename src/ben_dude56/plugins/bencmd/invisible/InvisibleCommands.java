@@ -24,23 +24,23 @@ public class InvisibleCommands implements Commands {
 		} catch (ClassCastException e) {
 			user = User.getUser(plugin);
 		}
-		if (commandLabel.equalsIgnoreCase("poof") && user.hasPerm("canPoof")) {
+		if (commandLabel.equalsIgnoreCase("poof") && user.hasPerm("bencmd.poof.poof")) {
 			Poof(user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("nopoof")
-				&& user.hasPerm("canNoPoof")) {
+				&& user.hasPerm("bencmd.poof.nopoof")) {
 			NoPoof(user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("allpoof")
-				&& user.hasPerm("canAllPoof")) {
+				&& user.hasPerm("bencmd.poof.allpoof")) {
 			AllPoof(user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("offline")
-				&& user.hasPerm("canOffline")) {
+				&& user.hasPerm("bencmd.poof.offline")) {
 			Offline(user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("online")
-				&& user.hasPerm("canOffline")) {
+				&& user.hasPerm("bencmd.poof.offline")) {
 			Online(user);
 			return true;
 		}

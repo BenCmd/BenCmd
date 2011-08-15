@@ -31,7 +31,7 @@ public class AdvancedCommands implements Commands {
 			Write(args, user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("inv")
-				&& user.hasPerm("canCheckInv")) {
+				&& user.hasPerm("bencmd.inv.look")) {
 			Inv(args, user);
 			return true;
 		}
@@ -73,6 +73,10 @@ public class AdvancedCommands implements Commands {
 		User target;
 		if ((target = User.matchUserIgnoreCase(args[0], plugin)) == null) {
 			user.sendMessage(ChatColor.RED + "That player isn't online!");
+			return;
+		}
+		if (target.hasPerm("bencmd.inv.protect") && !user.hasPerm("bencmd.inv.all")) {
+			user.sendMessage(ChatColor.RED + "That player's inventory is protected!");
 			return;
 		}
 		if (!(((CraftPlayer) target.getHandle()).getHandle().inventory instanceof ViewableInventory)) {

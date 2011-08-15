@@ -278,15 +278,6 @@ public class ActionableUser extends WarpableUser {
 	}
 
 	/**
-	 * Checks if the user is allowed to build
-	 * 
-	 * @return True if they can build, False otherwise
-	 */
-	public boolean canBuild() {
-		return !this.hasPerm("NoBuild", false);
-	}
-
-	/**
 	 * Checks if the user is using /offline
 	 * 
 	 * @return Whether /offline was used

@@ -26,7 +26,7 @@ public class LotBlockListener extends BlockListener {
 		User user = User.getUser(plugin, player);
 
 		if (player.getItemInHand().getType() == Material.WOOD_SPADE
-				&& user.hasPerm("isLandlord")) {
+				&& user.hasPerm("bencmd.lot.select")) {
 			event.setCancelled(true);
 		}
 

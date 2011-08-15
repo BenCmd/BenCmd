@@ -28,7 +28,7 @@ public class ReportCommands implements Commands {
 			user = User.getUser(plugin);
 		}
 		if (commandLabel.equalsIgnoreCase("report")
-				&& user.hasPerm("canReport")) {
+				&& user.hasPerm("bencmd.ticket.send")) {
 			Report(args, user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("ticket")) {
@@ -79,7 +79,7 @@ public class ReportCommands implements Commands {
 		for (Player onlinePlayer : plugin.getServer().getOnlinePlayers()) {
 			User onlineUser;
 			if ((onlineUser = User.getUser(plugin, onlinePlayer))
-					.hasPerm("isTicketAdmin")) {
+					.hasPerm("bencmd.ticket.readall")) {
 				onlineUser.sendMessage(ChatColor.RED
 						+ "A new report has been filed! Use /ticket " + id
 						+ " to see details!");
@@ -118,14 +118,14 @@ public class ReportCommands implements Commands {
 			}
 			plugin.reports.listAllTickets(user, page);
 		} else if (args[0].equalsIgnoreCase("purge")) {
-			if (!user.hasPerm("isTicketAdmin")) {
+			if (!user.hasPerm("bencmd.ticket.purge")) {
 				user.sendMessage(ChatColor.RED
 						+ "You must be an admin to do that!");
 				return;
 			}
 			plugin.reports.PurgeOpen(user);
 		} else if (args[0].equalsIgnoreCase("purgefrom")) {
-			if (!user.hasPerm("isTicketAdmin")) {
+			if (!user.hasPerm("bencmd.ticket.purge")) {
 				user.sendMessage(ChatColor.RED
 						+ "You must be an admin to do that!");
 				return;
@@ -137,7 +137,7 @@ public class ReportCommands implements Commands {
 			}
 			plugin.reports.PurgeFrom(user, args[1]);
 		} else if (args[0].equalsIgnoreCase("purgeto")) {
-			if (!user.hasPerm("isTicketAdmin")) {
+			if (!user.hasPerm("bencmd.ticket.purge")) {
 				user.sendMessage(ChatColor.RED
 						+ "You must be an admin to do that!");
 				return;
@@ -149,7 +149,7 @@ public class ReportCommands implements Commands {
 			}
 			plugin.reports.PurgeTo(user, args[1]);
 		} else if (args[0].equalsIgnoreCase("search")) {
-			if (!user.hasPerm("isTicketAdmin")) {
+			if (!user.hasPerm("bencmd.ticket.search")) {
 				user.sendMessage(ChatColor.RED
 						+ "You must be an admin to do that!");
 				return;
@@ -171,7 +171,7 @@ public class ReportCommands implements Commands {
 			}
 			plugin.reports.searchTickets(user, args[1], page);
 		} else if (args[0].equalsIgnoreCase("asearch")) {
-			if (!user.hasPerm("isTicketAdmin")) {
+			if (!user.hasPerm("bencmd.ticket.asearch")) {
 				user.sendMessage(ChatColor.RED
 						+ "You must be an admin to do that!");
 				return;
@@ -208,11 +208,11 @@ public class ReportCommands implements Commands {
 			}
 			if (args.length == 1) {
 				for (String s : plugin.reports.getTicketById(id)
-						.readReport(user.hasPerm("isTicketAdmin")).split("\n")) {
+						.readReport(user.hasPerm("bencmd.ticket.editall")).split("\n")) {
 					user.sendMessage(s);
 				}
 			} else if (args[1].equalsIgnoreCase("close")) {
-				if (user.hasPerm("isTicketAdmin")) {
+				if (user.hasPerm("bencmd.ticket.editall")) {
 					if (report.getStatus() == Report.ReportStatus.LOCKED) {
 						user.sendMessage(ChatColor.RED
 								+ "That ticket is locked!");
@@ -278,7 +278,7 @@ public class ReportCommands implements Commands {
 					}
 				}
 			} else if (args[1].equalsIgnoreCase("reopen")) {
-				if (user.hasPerm("isTicketAdmin")) {
+				if (user.hasPerm("bencmd.ticket.editall")) {
 					if (report.getStatus() == Report.ReportStatus.LOCKED) {
 						user.sendMessage(ChatColor.RED
 								+ "That ticket is locked!");
@@ -325,7 +325,7 @@ public class ReportCommands implements Commands {
 							+ "You cannot edit that ticket!");
 				}
 			} else if (args[1].equalsIgnoreCase("lock")) {
-				if (user.hasPerm("isTicketAdmin")) {
+				if (user.hasPerm("bencmd.ticket.lock") && report.canBasicChange(user)) {
 					if (report.getStatus() == Report.ReportStatus.LOCKED) {
 						user.sendMessage(ChatColor.RED
 								+ "That ticket is locked!");
@@ -357,7 +357,7 @@ public class ReportCommands implements Commands {
 							+ "You must be an admin to do that!");
 				}
 			} else if (args[1].equalsIgnoreCase("inv")) {
-				if (user.hasPerm("isTicketAdmin")) {
+				if (user.hasPerm("bencmd.ticket.investigate") && report.canBasicChange(user)) {
 					if (report.getStatus() == Report.ReportStatus.LOCKED) {
 						user.sendMessage(ChatColor.RED
 								+ "That ticket is locked!");
@@ -375,7 +375,7 @@ public class ReportCommands implements Commands {
 							+ "You must be an admin to do that!");
 				}
 			} else if (args[1].equalsIgnoreCase("uninv")) {
-				if (user.hasPerm("isTicketAdmin")) {
+				if (user.hasPerm("bencmd.ticket.investigate") && report.canBasicChange(user)) {
 					if (report.getStatus() == Report.ReportStatus.LOCKED) {
 						user.sendMessage(ChatColor.RED
 								+ "That ticket is locked!");
@@ -402,7 +402,7 @@ public class ReportCommands implements Commands {
 						return;
 					}
 					if (report.getStatus() == Report.ReportStatus.CLOSED
-							&& !user.hasPerm("isTicketAdmin")) {
+							&& !user.hasPerm("bencmd.ticket.editall")) {
 						user.sendMessage(ChatColor.RED
 								+ "That ticket is closed! Re-open it using /ticket "
 								+ report.getId()
@@ -410,7 +410,7 @@ public class ReportCommands implements Commands {
 						return;
 					}
 					if (report.getStatus() == Report.ReportStatus.INVESTIGATING
-							&& !user.hasPerm("isTicketAdmin")) {
+							&& !user.hasPerm("bencmd.ticket.editall")) {
 						user.sendMessage(ChatColor.RED
 								+ "That ticket is under investigation and new info cannot be added. Ask an admin for more details...");
 						return;
@@ -429,7 +429,7 @@ public class ReportCommands implements Commands {
 						}
 					}
 					report.addInfo(newInfo);
-					if (!user.hasPerm("isTicketAdmin")) {
+					if (!user.hasPerm("bencmd.ticket.editall")) {
 						report.setStatus(Report.ReportStatus.UNREAD);
 					}
 					user.sendMessage(ChatColor.GREEN
@@ -440,14 +440,14 @@ public class ReportCommands implements Commands {
 					plugin.bLog.info(user.getDisplayName()
 							+ " has added information to ticket #"
 							+ id.toString() + "!");
-					if (user.hasPerm("isTicketAdmin")) {
+					if (user.hasPerm("bencmd.ticket.editall")) {
 						return;
 					}
 					for (Player onlinePlayer : plugin.getServer()
 							.getOnlinePlayers()) {
 						User onlineUser;
 						if ((onlineUser = User.getUser(plugin, onlinePlayer))
-								.hasPerm("isTicketAdmin")) {
+								.hasPerm("bencmd.ticket.readall")) {
 							onlineUser
 									.sendMessage(ChatColor.RED
 											+ "Info has been added to a report! Use /ticket "

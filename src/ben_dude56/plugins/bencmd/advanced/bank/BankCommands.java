@@ -14,6 +14,7 @@ import ben_dude56.plugins.bencmd.Commands;
 import ben_dude56.plugins.bencmd.User;
 import ben_dude56.plugins.bencmd.money.BuyableItem;
 import ben_dude56.plugins.bencmd.money.Currency;
+import ben_dude56.plugins.bencmd.permissions.PermissionUser;
 
 public class BankCommands implements Commands {
 
@@ -33,8 +34,8 @@ public class BankCommands implements Commands {
 			user = User.getUser(plugin);
 		}
 		if (commandLabel.equalsIgnoreCase("bank")
-				&& (user.hasPerm("isBankAdmin") || user
-						.hasPerm("canBankRemote"))) {
+				&& (user.hasPerm("bencmd.bank.admin") || user
+						.hasPerm("bencmd.bank.remote"))) {
 			Bank(args, user);
 			return true;
 		}
@@ -53,7 +54,7 @@ public class BankCommands implements Commands {
 					user.sendMessage(ChatColor.RED
 							+ "Your bank has already been upgraded!");
 				} else {
-					if (user.hasPerm("isBankAdmin")) {
+					if (user.hasPerm("bencmd.bank.admin")) {
 						plugin.banks.upgradeBank(user.getName());
 						user.sendMessage(ChatColor.GREEN
 								+ "Enjoy the extra bank space!");
@@ -85,7 +86,7 @@ public class BankCommands implements Commands {
 						return;
 					}
 					plugin.banks.downgradeBank(user.getName());
-					if (!user.hasPerm("isBankAdmin")) {
+					if (!user.hasPerm("bencmd.bank.admin")) {
 						Object[] ac = plugin.prices.getCurrencies().toArray();
 						Arrays.sort(ac);
 						HashMap<Currency, Integer> change = BuyableItem
@@ -121,7 +122,7 @@ public class BankCommands implements Commands {
 							+ "Your bank isn't upgraded!");
 				}
 			} else {
-				if (!user.hasPerm("isBankAdmin")) {
+				if (!user.hasPerm("bencmd.bank.admin")) {
 					user.sendMessage(ChatColor.RED
 							+ "You need to be an admin to do that!");
 					return;
@@ -131,10 +132,14 @@ public class BankCommands implements Commands {
 							+ "That player doesn't have a bank account!");
 					return;
 				}
+				if (PermissionUser.matchUserIgnoreCase(args[0], plugin).hasPerm("bencmd.bank.protect") && !user.hasPerm("bencmd.bank.all")) {
+					user.sendMessage(ChatColor.RED + "That player's bank is protected!");
+					return;
+				}
 				plugin.banks.openInventory(args[0], user.getHandle());
 			}
 		} else if (args.length == 2) {
-			if (!user.hasPerm("isBankAdmin")) {
+			if (!user.hasPerm("bencmd.bank.admin")) {
 				user.sendMessage(ChatColor.RED
 						+ "You need to be an admin to do that!");
 				return;
@@ -142,6 +147,10 @@ public class BankCommands implements Commands {
 			if (!plugin.banks.hasBank(args[0])) {
 				user.sendMessage(ChatColor.RED
 						+ "That player doesn't have a bank account!");
+				return;
+			}
+			if (PermissionUser.matchUserIgnoreCase(args[0], plugin).hasPerm("bencmd.bank.protect") && !user.hasPerm("bencmd.bank.all")) {
+				user.sendMessage(ChatColor.RED + "That player's bank is protected!");
 				return;
 			}
 			if (args[1].equalsIgnoreCase("upgrade")) {
@@ -172,7 +181,7 @@ public class BankCommands implements Commands {
 						+ "Proper usage: /bank [{upgrade|downgrade|<name> [{upgrade|downgrade}]}]");
 			}
 		} else {
-			if (user.hasPerm("isBankAdmin")) {
+			if (user.hasPerm("bencmd.bank.admin")) {
 				user.sendMessage(ChatColor.YELLOW
 						+ "Proper usage: /bank [{upgrade|downgrade|<name> [{upgrade|downgrade}]}]");
 			} else {

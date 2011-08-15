@@ -64,14 +64,14 @@ public class PermLoginListener extends PlayerListener {
 
 	public void onPlayerPickupItem(PlayerPickupItemEvent event) {
 		User user = User.getUser(plugin, event.getPlayer());
-		if (user.hasPerm("isJailed", false)) {
+		if (user.isJailed() != null) {
 			event.setCancelled(true);
 		}
 	}
 
 	public void onPlayerDropItem(PlayerDropItemEvent event) {
 		User user = User.getUser(plugin, event.getPlayer());
-		if (user.hasPerm("isJailed", false)) {
+		if (user.isJailed() != null) {
 			event.setCancelled(true);
 		}
 	}

@@ -432,7 +432,7 @@ public class ChatChannelCommands implements Commands {
 							+ "That channel couldn't be found!");
 				}
 			} else if (args[0].equalsIgnoreCase("add")) {
-				if (!user.hasPerm("canAddChannels")) {
+				if (!user.hasPerm("bencmd.chat.newchannel")) {
 					user.sendMessage(ChatColor.RED
 							+ "You don't have permission to do that!");
 					return;

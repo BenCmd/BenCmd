@@ -26,7 +26,7 @@ public class RedstoneCommands implements Commands {
 			user = User.getUser(plugin);
 		}
 		if (commandLabel.equalsIgnoreCase("lever")
-				&& user.hasPerm("canEditLevers")) {
+				&& user.hasPerm("bencmd.lever")) {
 			Lever(args, user);
 			return true;
 		}

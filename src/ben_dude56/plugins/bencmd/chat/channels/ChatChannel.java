@@ -306,7 +306,7 @@ public class ChatChannel {
 		if (isGuested(user)) {
 			return ChatLevel.DEFAULT;
 		}
-		if (user.hasPerm("isUniversalMod")) {
+		if (user.hasPerm("bencmd.chat.universalmod")) {
 			return ChatLevel.DEFAULT;
 		}
 		if (isBanned(user)) {
@@ -410,7 +410,7 @@ public class ChatChannel {
 				user.sendMessage(ChatColor.GRAY
 						+ "Please note that pause mode is enabled. Only mods can talk.");
 			}
-			if (user.hasPerm("isUniversalMod") && !isMod(user)
+			if (user.hasPerm("bencmd.chat.universalmod") && !isMod(user)
 					&& !isOwner(user)) {
 				Mod(user);
 			}

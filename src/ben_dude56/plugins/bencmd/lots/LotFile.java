@@ -354,7 +354,7 @@ public class LotFile extends Properties {
 			User user = User.getUser(plugin, player);
 
 			if (plugin.mainProperties.getBoolean("useGlobalLot", false)
-					&& !user.hasPerm("isGlobalGuest")) {
+					&& !user.hasPerm("bencmd.lot.globalguest")) {
 				return false;
 			} else {
 				return true;
@@ -373,7 +373,7 @@ public class LotFile extends Properties {
 					return "noUser";
 				}
 				if (plugin.lots.getLot(LotID).isOwner(player)
-						|| user.hasPerm("isLandlord")) {
+						|| user.hasPerm("bencmd.lot.buildall")) {
 					return plugin.lots.getLot(LotID).getLotID();
 				}
 			}

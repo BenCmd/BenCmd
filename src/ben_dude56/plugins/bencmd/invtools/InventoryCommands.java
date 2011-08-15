@@ -32,24 +32,24 @@ public class InventoryCommands implements Commands {
 			user = User.getUser(plugin);
 		}
 		if ((commandLabel.equalsIgnoreCase("item") || commandLabel
-				.equalsIgnoreCase("i")) && user.hasPerm("canSpawnItems")) {
+				.equalsIgnoreCase("i")) && user.hasPerm("bencmd.inv.spawn")) {
 			Item(args, user);
 			return true;
 		} else if ((commandLabel.equalsIgnoreCase("clearinventory") || commandLabel
 				.equalsIgnoreCase("clrinv"))
-				&& user.hasPerm("canClearInventory")) {
+				&& user.hasPerm("bencmd.inv.clr.self")) {
 			ClearInventory(args, user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("unl")
-				&& user.hasPerm("canMakeUnlDisp")) {
+				&& user.hasPerm("bencmd.inv.unlimited.create")) {
 			Unl(args, user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("disp")
-				&& user.hasPerm("canMakeDispChest")) {
+				&& user.hasPerm("bencmd.inv.disposal.create")) {
 			Disp(args, user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("kit")
-				&& user.hasPerm("canSpawnKit")) {
+				&& user.hasPerm("bencmd.inv.kit")) {
 			Kit(args, user);
 			return true;
 		}
@@ -237,9 +237,18 @@ public class InventoryCommands implements Commands {
 			plugin.bLog.info(user.getDisplayName()
 					+ " has cleared their own inventory.");
 		} else if (args.length == 1) {
+			if (!user.hasPerm("bencmd.inv.clr.other")) {
+				user.sendMessage(ChatColor.RED
+						+ "You don't have permission to do that!");
+				return;
+			}
 			// Clear the other player's inventory
 			User user2;
 			if ((user2 = User.matchUser(args[0], plugin)) != null) {
+				if (user2.hasPerm("bencmd.inv.clr.protect") && !user.hasPerm("bencmd.inv.clr.all")) {
+					user.sendMessage(ChatColor.RED + "That player is protected from being godded/ungodded by others!");
+					return;
+				}
 				user2.getHandle().getInventory().clear();
 				plugin.log.info(user.getDisplayName() + " has cleared "
 						+ args[0] + "'s inventory.");

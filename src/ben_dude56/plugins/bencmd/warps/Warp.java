@@ -114,7 +114,7 @@ public class Warp {
 				.userInGroup(player)) {
 			return true;
 		}
-		if (player.hasPerm("canWarpAnywhere")) {
+		if (player.hasPerm("bencmd.warp.all")) {
 			return true;
 		}
 		return false;

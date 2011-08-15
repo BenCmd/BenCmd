@@ -30,42 +30,42 @@ public class PermissionCommands implements Commands {
 			user = User.getUser(plugin);
 		}
 		if (commandLabel.equalsIgnoreCase("user")
-				&& user.hasPerm("canChangePerm")) {
+				&& user.hasPerm("bencmd.editpermissions")) {
 			User(args, user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("group")
-				&& user.hasPerm("canChangePerm")) {
+				&& user.hasPerm("bencmd.editpermissions")) {
 			Group(args, user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("status")) {
 			Status(args, user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("kick")
-				&& user.hasPerm("canKick")) {
+				&& user.hasPerm("bencmd.action.kick,normal")) {
 			Kick(args, user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("mute")
-				&& user.hasPerm("canMute")) {
+				&& user.hasPerm("bencmd.action.mute")) {
 			Mute(args, user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("unmute")
-				&& user.hasPerm("canUnmute")) {
+				&& user.hasPerm("bencmd.action.unmute")) {
 			Unmute(args, user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("jail")
-				&& user.hasPerm("canJail")) {
+				&& user.hasPerm("bencmd.action.jail")) {
 			Jail(args, user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("unjail")
-				&& user.hasPerm("canUnjail")) {
+				&& user.hasPerm("bencmd.action.unjail")) {
 			Unjail(args, user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("ban")
-				&& user.hasPerm("canBan")) {
+				&& user.hasPerm("bencmd.action.ban")) {
 			Ban(args, user);
 			return true;
 		} else if ((commandLabel.equalsIgnoreCase("pardon") || commandLabel
-				.equalsIgnoreCase("pardon")) && user.hasPerm("canUnban")) {
+				.equalsIgnoreCase("pardon")) && user.hasPerm("bencmd.action.unban")) {
 			Unban(args, user);
 			return true;
 		}
@@ -460,7 +460,7 @@ public class PermissionCommands implements Commands {
 	public void Status(String[] args, User user) {
 		PermissionUser puser2 = null;
 		User user2 = null;
-		if (args.length == 1 && !user.hasPerm("canCheckOtherStatus")) {
+		if (args.length == 1 && !user.hasPerm("bencmd.action.status.other")) {
 			user.sendMessage(ChatColor.RED
 					+ "You don't have enough permissions to check the status of others!");
 			return;
@@ -513,7 +513,7 @@ public class PermissionCommands implements Commands {
 		} else {
 			user.sendMessage(ChatColor.GRAY + "   -Reported: NO");
 		}
-		if (user.hasPerm("canViewAdvStatus") && user2 != null) {
+		if (user.hasPerm("bencmd.action.status.advanced") && user2 != null) {
 			boolean godded = user2.isGod();
 			boolean allpoofed = user2.isNoPoofed();
 			boolean poofed = user2.isPoofed();
@@ -582,6 +582,10 @@ public class PermissionCommands implements Commands {
 				i++;
 			}
 		}
+		if (toKick.hasPerm("bencmd.kick.protect") && !user.hasPerm("bencmd.kick.all")) {
+			user.sendMessage(ChatColor.RED + "That player is protected from being godded/ungodded by others!");
+			return;
+		}
 		if (anon) {
 			if (reason.isEmpty()) {
 				toKick.Kick();
@@ -637,6 +641,10 @@ public class PermissionCommands implements Commands {
 				return;
 			}
 			duration *= getValue(durationType);
+		}
+		if (duration == -1 && !user.hasPerm("bencmd.action.permamute")) {
+			user.sendMessage(ChatColor.RED + "You cannot permanently mute somebody! Specify a time limit!");
+			return;
 		}
 		plugin.actions.addAction(puser2, ActionType.ALLMUTE, duration);
 		User user2;
@@ -709,6 +717,10 @@ public class PermissionCommands implements Commands {
 				return;
 			}
 			duration *= getValue(durationType);
+		}
+		if (duration == -1 && !user.hasPerm("bencmd.action.permajail")) {
+			user.sendMessage(ChatColor.RED + "You cannot permanently jail somebody! Specify a time limit!");
+			return;
 		}
 		plugin.actions.addAction(puser2, ActionType.JAIL, duration);
 		User user2;
@@ -785,6 +797,10 @@ public class PermissionCommands implements Commands {
 				return;
 			}
 			duration *= getValue(durationType);
+		}
+		if (duration == -1 && !user.hasPerm("bencmd.action.permaban")) {
+			user.sendMessage(ChatColor.RED + "You cannot permanently ban somebody! Specify a time limit!");
+			return;
 		}
 		plugin.actions.addAction(puser2, ActionType.BAN, duration);
 		User user2;

@@ -35,11 +35,11 @@ public class ChatCommands implements Commands {
 			tell(args, user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("list")
-				&& user.hasPerm("canListPlayers")) {
+				&& user.hasPerm("bencmd.chat.list")) {
 			list(args, user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("display")
-				&& user.hasPerm("canChangeDisplayName")) {
+				&& user.hasPerm("bencmd.chat.imitate")) {
 			User user2 = User.matchUser(args[0], plugin);
 			String message = "";
 			for (int i = 1; i < args.length; i++) {
@@ -62,7 +62,7 @@ public class ChatCommands implements Commands {
 			return false;
 		}
 		if (commandLabel.equalsIgnoreCase("slow")
-				&& user.hasPerm("canSlowMode")) {
+				&& user.hasPerm("bencmd.chat.slow")) {
 			slowMode(args, user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("me")) {
@@ -135,7 +135,7 @@ public class ChatCommands implements Commands {
 		}
 		long slowTimeLeft = plugin.chatListen.slow
 				.playerBlocked(user.getName());
-		if (!user.hasPerm("ignoreSlowMode")
+		if (!user.hasPerm("bencmd.chat.noslow")
 				&& plugin.chatListen.slow.isEnabled()) {
 			if (slowTimeLeft > 0) {
 				user.sendMessage(ChatColor.GRAY
@@ -196,7 +196,7 @@ public class ChatCommands implements Commands {
 		}
 		long slowTimeLeft = plugin.chatListen.slow
 				.playerBlocked(user.getName());
-		if (!user.hasPerm("ignoreSlowMode")
+		if (!user.hasPerm("bencmd.chat.noslow")
 				&& plugin.chatListen.slow.isEnabled()) {
 			if (slowTimeLeft > 0) {
 				user.sendMessage(ChatColor.GRAY
@@ -213,7 +213,7 @@ public class ChatCommands implements Commands {
 				+ message);
 		user.sendMessage(ChatColor.GRAY + "(You => " + user2.getColor()
 				+ user2.getDisplayName() + ChatColor.GRAY + ") " + message);
-		for (User spy : plugin.perm.userFile.allWithPerm("hearAllMessages")) {
+		for (User spy : plugin.perm.userFile.allWithPerm("bencmd.chat.tellspy")) {
 			if (spy.getName().equals(user.getName())
 					|| spy.getName().equals(user2.getName())) {
 				continue;

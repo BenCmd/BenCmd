@@ -36,7 +36,7 @@ public class MoneyCommands implements Commands {
 			Sell(args, user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("market")
-				&& user.hasPerm("canControlMarket")) {
+				&& user.hasPerm("bencmd.market.command")) {
 			Market(args, user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("price")) {
@@ -152,14 +152,39 @@ public class MoneyCommands implements Commands {
 			return;
 		}
 		if (args[0].equalsIgnoreCase("currency")) {
+			if (!user.hasPerm("bencmd.market.price")) {
+				user.sendMessage(ChatColor.RED
+						+ "You don't have permission to do that!");
+				return;
+			}
 			MarketCurrency(args, user);
 		} else if (args[0].equalsIgnoreCase("item")) {
+			if (!user.hasPerm("bencmd.market.price")) {
+				user.sendMessage(ChatColor.RED
+						+ "You don't have permission to do that!");
+				return;
+			}
 			MarketItem(args, user);
 		} else if (args[0].equalsIgnoreCase("supply")) {
+			if (!user.hasPerm("bencmd.market.supply")) {
+				user.sendMessage(ChatColor.RED
+						+ "You don't have permission to do that!");
+				return;
+			}
 			MarketSupply(args, user);
 		} else if (args[0].equalsIgnoreCase("update")) {
+			if (!user.hasPerm("bencmd.market.update")) {
+				user.sendMessage(ChatColor.RED
+						+ "You don't have permission to do that!");
+				return;
+			}
 			MarketUpdate(args, user);
 		} else if (args[0].equalsIgnoreCase("noupdate")) {
+			if (!user.hasPerm("bencmd.market.update")) {
+				user.sendMessage(ChatColor.RED
+						+ "You don't have permission to do that!");
+				return;
+			}
 			if (!plugin.prices.isTimerEnabled()) {
 				user.sendMessage(ChatColor.RED
 						+ "Updating is already disabled!");
@@ -170,6 +195,11 @@ public class MoneyCommands implements Commands {
 			user.sendMessage(ChatColor.GREEN + "Updating disabled!");
 			plugin.prices.unloadTimer();
 		} else if (args[0].equalsIgnoreCase("close")) {
+			if (!user.hasPerm("bencmd.market.close")) {
+				user.sendMessage(ChatColor.RED
+						+ "You don't have permission to do that!");
+				return;
+			}
 			if (!plugin.mainProperties.getBoolean("marketOpen", true)) {
 				user.sendMessage(ChatColor.RED
 						+ "The market is already closed!");
@@ -180,6 +210,11 @@ public class MoneyCommands implements Commands {
 			plugin.getServer().broadcastMessage(
 					ChatColor.RED + "The market is now closed!");
 		} else if (args[0].equalsIgnoreCase("open")) {
+			if (!user.hasPerm("bencmd.market.open")) {
+				user.sendMessage(ChatColor.RED
+						+ "You don't have permission to do that!");
+				return;
+			}
 			if (plugin.mainProperties.getBoolean("marketOpen", true)) {
 				user.sendMessage(ChatColor.RED + "The market is already open!");
 				return;
@@ -189,6 +224,11 @@ public class MoneyCommands implements Commands {
 			plugin.getServer().broadcastMessage(
 					ChatColor.GREEN + "The market is now open!");
 		} else if (args[0].equalsIgnoreCase("multiple")) {
+			if (!user.hasPerm("bencmd.market.properties")) {
+				user.sendMessage(ChatColor.RED
+						+ "You don't have permission to do that!");
+				return;
+			}
 			if (args.length != 2) {
 				user.sendMessage(ChatColor.YELLOW
 						+ "Proper use is /market multiple <multiple>");
@@ -206,6 +246,11 @@ public class MoneyCommands implements Commands {
 					multiple.toString());
 			plugin.mainProperties.saveFile("-BenCmd Main Config-");
 		} else if (args[0].equalsIgnoreCase("max")) {
+			if (!user.hasPerm("bencmd.market.properties")) {
+				user.sendMessage(ChatColor.RED
+						+ "You don't have permission to do that!");
+				return;
+			}
 			if (args.length != 2) {
 				user.sendMessage(ChatColor.YELLOW
 						+ "Proper use is /market max <max>");
@@ -223,6 +268,11 @@ public class MoneyCommands implements Commands {
 					.setProperty("marketMaxChange", max.toString());
 			plugin.mainProperties.saveFile("-BenCmd Main Config-");
 		} else if (args[0].equalsIgnoreCase("min")) {
+			if (!user.hasPerm("bencmd.market.properties")) {
+				user.sendMessage(ChatColor.RED
+						+ "You don't have permission to do that!");
+				return;
+			}
 			if (args.length != 2) {
 				user.sendMessage(ChatColor.YELLOW
 						+ "Proper use is /market min <min>");

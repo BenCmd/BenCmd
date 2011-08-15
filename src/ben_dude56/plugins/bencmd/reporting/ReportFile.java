@@ -317,9 +317,9 @@ public class ReportFile extends Properties {
 		new Thread() {
 			public void run() {
 				List<Report> results;
-				if (user.hasPerm("isTicketAdmin")) {
+				if (user.hasPerm("bencmd.ticket.list")) {
 					results = new ArrayList<Report>(getOpen());
-				} else {
+				} else if (user.hasPerm("bencmd.ticket.readown")) {
 					results = new ArrayList<Report>();
 					for (Report ticket : getOpen()) {
 						if (ticket.getAccused().getName()
@@ -329,6 +329,10 @@ public class ReportFile extends Properties {
 							results.add(ticket);
 						}
 					}
+				} else {
+					user.sendMessage(ChatColor.RED
+							+ "You don't have permission to do that!");
+					return;
 				}
 				try {
 					if (results.isEmpty()) {
@@ -352,9 +356,9 @@ public class ReportFile extends Properties {
 		new Thread() {
 			public void run() {
 				List<Report> results;
-				if (user.hasPerm("isTicketAdmin")) {
+				if (user.hasPerm("bencmd.ticket.alist")) {
 					results = new ArrayList<Report>(getReports());
-				} else {
+				} else if (user.hasPerm("bencmd.ticket.readown")) {
 					results = new ArrayList<Report>();
 					for (Report ticket : getReports()) {
 						if (ticket.getAccused().getName()
@@ -364,6 +368,10 @@ public class ReportFile extends Properties {
 							results.add(ticket);
 						}
 					}
+				} else {
+					user.sendMessage(ChatColor.RED
+							+ "You don't have permission to do that!");
+					return;
 				}
 				Collections.sort(results);
 				try {

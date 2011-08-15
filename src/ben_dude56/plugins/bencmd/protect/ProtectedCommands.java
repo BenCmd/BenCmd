@@ -100,7 +100,7 @@ public class ProtectedCommands implements Commands {
 	}
 
 	public void AddProtect(String[] args, User user) {
-		if (!user.hasPerm("canProtect")) {
+		if (!user.hasPerm("bencmd.lock.create")) {
 			user.sendMessage(ChatColor.RED
 					+ "You don't have permission to do that!");
 			return;
@@ -206,7 +206,7 @@ public class ProtectedCommands implements Commands {
 	}
 
 	public void PublicProtect(String[] args, User user) {
-		if (!user.hasPerm("canProtect")) {
+		if (!user.hasPerm("bencmd.lock.public")) {
 			user.sendMessage(ChatColor.RED
 					+ "You don't have permission to do that!");
 			return;
@@ -323,7 +323,7 @@ public class ProtectedCommands implements Commands {
 				if ((id = plugin.protectFile.getProtection(pointedAt
 						.getLocation())) != -1) {
 					ProtectedBlock block = plugin.protectFile.getProtection(id);
-					if (!block.canChange(user)) {
+					if (!block.canChange(user) && !user.hasPerm("bencmd.lock.remove")) {
 						user.sendMessage(ChatColor.RED
 								+ "You don't have permission to remove the protection on that block!");
 					} else {
@@ -451,6 +451,11 @@ public class ProtectedCommands implements Commands {
 	}
 
 	public void InfoProtect(String[] args, User user) {
+		if (!user.hasPerm("bencmd.lock.info")) {
+			user.sendMessage(ChatColor.RED
+					+ "You don't have permission to do that!");
+			return;
+		}
 		Block pointedAt = user.getHandle().getTargetBlock(null, 4);
 		ProtectedBlock block;
 		if ((block = plugin.protectFile.getProtection(plugin.protectFile
@@ -482,7 +487,7 @@ public class ProtectedCommands implements Commands {
 		if (args.length == 2) {
 			if ((block = plugin.protectFile.getProtection(plugin.protectFile
 					.getProtection(pointedAt.getLocation()))) != null) {
-				if (!block.canChange(user)) {
+				if (!block.canChange(user) && !user.hasPerm("bencmd.lock.edit")) {
 					user.sendMessage(ChatColor.RED
 							+ "You don't have permission to edit the protection on that block!");
 					return;
@@ -556,7 +561,7 @@ public class ProtectedCommands implements Commands {
 		if (args.length == 2) {
 			if ((block = plugin.protectFile.getProtection(plugin.protectFile
 					.getProtection(pointedAt.getLocation()))) != null) {
-				if (!block.canChange(user)) {
+				if (!block.canChange(user) && !user.hasPerm("bencmd.lock.edit")) {
 					user.sendMessage(ChatColor.RED
 							+ "You don't have permission to edit the protection on that block!");
 					return;
@@ -622,7 +627,7 @@ public class ProtectedCommands implements Commands {
 		if (args.length == 2) {
 			if ((block = plugin.protectFile.getProtection(plugin.protectFile
 					.getProtection(pointedAt.getLocation()))) != null) {
-				if (!block.canChange(user)) {
+				if (!block.canChange(user) && !user.hasPerm("bencmd.lock.edit")) {
 					user.sendMessage(ChatColor.RED
 							+ "You don't have permission to edit the protection on that block!");
 					return;

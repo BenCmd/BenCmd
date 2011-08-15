@@ -31,7 +31,7 @@ public class BasicCommands implements Commands {
 			user = User.getUser(plugin);
 		}
 		if (commandLabel.equalsIgnoreCase("time")
-				&& user.hasPerm("canChangeTime")) {
+				&& (user.hasPerm("bencmd.time.set") || user.hasPerm("bencmd.time.lock"))) {
 			Time(args, user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("day")) {
@@ -66,37 +66,33 @@ public class BasicCommands implements Commands {
 			}
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("spawn")
-				&& user.hasPerm("canSpawn")) {
+				&& user.hasPerm("bencmd.spawn.normal")) {
 			Spawn(args, user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("god")
-				&& user.hasPerm("canMakeGod")) {
+				&& user.hasPerm("bencmd.god.self")) {
 			God(args, user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("heal")
-				&& user.hasPerm("canHeal")) {
+				&& user.hasPerm("bencmd.heal.self")) {
 			Heal(args, user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("bencmd")) {
 			BenCmd(args, user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("setspawn")
-				&& user.hasPerm("canSetSpawn")) {
+				&& user.hasPerm("bencmd.spawn.set")) {
 			SetSpawn(user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("help")) {
 			Help(args, user);
 			return true;
-		} else if (commandLabel.equalsIgnoreCase("lemonpledge")) {
-			plugin.getServer().dispatchCommand(sender,
-					"me \u00A7Edemands more lemon pledge!");
-			return true;
 		} else if (commandLabel.equalsIgnoreCase("kill")
-				&& user.hasPerm("canKill")) {
+				&& user.hasPerm("bencmd.kill.self")) {
 			Kill(args, user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("spawnmob")
-				&& user.hasPerm("canSpawnMobs")) {
+				&& user.hasPerm("bencmd.spawnmob")) {
 			SpawnMob(args, user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("rechunk")) {
@@ -109,7 +105,7 @@ public class BasicCommands implements Commands {
 			user.getHandle().getWorld().refreshChunk(chunkx, chunkz);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("fire")
-				&& user.hasPerm("canBurn")) {
+				&& user.hasPerm("bencmd.fire.spread")) {
 			Location loc = user.getHandle().getTargetBlock(null, 4)
 					.getLocation();
 			user.sendMessage(ChatColor.GREEN
@@ -117,7 +113,7 @@ public class BasicCommands implements Commands {
 			plugin.canSpread.add(loc);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("nofire")
-				&& user.hasPerm("canBurn")) {
+				&& user.hasPerm("bencmd.fire.spread")) {
 			plugin.canSpread.clear();
 			user.sendMessage(ChatColor.GREEN
 					+ "All area-specific fire-spread is now disabled.");
@@ -132,11 +128,20 @@ public class BasicCommands implements Commands {
 		if (args.length == 0) {
 			if (!user.Kill()) {
 				user.sendMessage(ChatColor.RED
-						+ "You can't kill someone while they're godded!");
+						+ "You can't kill yourself while you're godded!");
 			}
 		} else if (args.length == 1) {
+			if (!user.hasPerm("bencmd.kill.other")) {
+				user.sendMessage(ChatColor.RED
+						+ "You don't have permission to do that!");
+				return;
+			}
 			User user2;
 			if ((user2 = User.matchUser(args[0], plugin)) != null) {
+				if (user2.hasPerm("bencmd.kill.protect") && !user.hasPerm("bencmd.kill.all")) {
+					user.sendMessage(ChatColor.RED + "That player is protected from being killed!");
+					return;
+				}
 				if (!user2.Kill()) {
 					user.sendMessage(ChatColor.RED
 							+ "You can't kill someone while they're godded!");
@@ -153,6 +158,11 @@ public class BasicCommands implements Commands {
 					+ "Proper use is /time {day|night|set|lock} [time]");
 		} else {
 			if (args[0].equalsIgnoreCase("day")) {
+				if (!user.hasPerm("bencmd.time.set")) {
+					user.sendMessage(ChatColor.RED
+							+ "You don't have permission to do that!");
+					return;
+				}
 				if (user.isServer()) {
 					for (World world : plugin.getServer().getWorlds()) {
 						world.setTime(0);
@@ -163,6 +173,11 @@ public class BasicCommands implements Commands {
 					plugin.lastTime = user.getHandle().getWorld().getFullTime();
 				}
 			} else if (args[0].equalsIgnoreCase("night")) {
+				if (!user.hasPerm("bencmd.time.set")) {
+					user.sendMessage(ChatColor.RED
+							+ "You don't have permission to do that!");
+					return;
+				}
 				if (user.isServer()) {
 					for (World world : plugin.getServer().getWorlds()) {
 						world.setTime(15000);
@@ -173,6 +188,11 @@ public class BasicCommands implements Commands {
 					plugin.lastTime = user.getHandle().getWorld().getFullTime();
 				}
 			} else if (args[0].equalsIgnoreCase("set")) {
+				if (!user.hasPerm("bencmd.time.set")) {
+					user.sendMessage(ChatColor.RED
+							+ "You don't have permission to do that!");
+					return;
+				}
 				int time;
 				try {
 					time = Integer.parseInt(args[1]);
@@ -194,6 +214,11 @@ public class BasicCommands implements Commands {
 					plugin.lastTime = user.getHandle().getWorld().getFullTime();
 				}
 			} else if (args[0].equalsIgnoreCase("dawn")) {
+				if (!user.hasPerm("bencmd.time.set")) {
+					user.sendMessage(ChatColor.RED
+							+ "You don't have permission to do that!");
+					return;
+				}
 				if (user.isServer()) {
 					for (World world : plugin.getServer().getWorlds()) {
 						world.setTime(23000);
@@ -204,6 +229,11 @@ public class BasicCommands implements Commands {
 					plugin.lastTime = user.getHandle().getWorld().getFullTime();
 				}
 			} else if (args[0].equalsIgnoreCase("sunrise")) {
+				if (!user.hasPerm("bencmd.time.set")) {
+					user.sendMessage(ChatColor.RED
+							+ "You don't have permission to do that!");
+					return;
+				}
 				if (user.isServer()) {
 					for (World world : plugin.getServer().getWorlds()) {
 						world.setTime(22500);
@@ -214,6 +244,11 @@ public class BasicCommands implements Commands {
 					plugin.lastTime = user.getHandle().getWorld().getFullTime();
 				}
 			} else if (args[0].equalsIgnoreCase("noon")) {
+				if (!user.hasPerm("bencmd.time.set")) {
+					user.sendMessage(ChatColor.RED
+							+ "You don't have permission to do that!");
+					return;
+				}
 				if (user.isServer()) {
 					for (World world : plugin.getServer().getWorlds()) {
 						world.setTime(6000);
@@ -224,6 +259,11 @@ public class BasicCommands implements Commands {
 					plugin.lastTime = user.getHandle().getWorld().getFullTime();
 				}
 			} else if (args[0].equalsIgnoreCase("dusk")) {
+				if (!user.hasPerm("bencmd.time.set")) {
+					user.sendMessage(ChatColor.RED
+							+ "You don't have permission to do that!");
+					return;
+				}
 				if (user.isServer()) {
 					for (World world : plugin.getServer().getWorlds()) {
 						world.setTime(13000);
@@ -234,6 +274,11 @@ public class BasicCommands implements Commands {
 					plugin.lastTime = user.getHandle().getWorld().getFullTime();
 				}
 			} else if (args[0].equalsIgnoreCase("sunset")) {
+				if (!user.hasPerm("bencmd.time.set")) {
+					user.sendMessage(ChatColor.RED
+							+ "You don't have permission to do that!");
+					return;
+				}
 				if (user.isServer()) {
 					for (World world : plugin.getServer().getWorlds()) {
 						world.setTime(12000);
@@ -244,6 +289,11 @@ public class BasicCommands implements Commands {
 					plugin.lastTime = user.getHandle().getWorld().getFullTime();
 				}
 			} else if (args[0].equalsIgnoreCase("midnight")) {
+				if (!user.hasPerm("bencmd.time.set")) {
+					user.sendMessage(ChatColor.RED
+							+ "You don't have permission to do that!");
+					return;
+				}
 				if (user.isServer()) {
 					for (World world : plugin.getServer().getWorlds()) {
 						world.setTime(18000);
@@ -254,6 +304,11 @@ public class BasicCommands implements Commands {
 					plugin.lastTime = user.getHandle().getWorld().getFullTime();
 				}
 			} else if (args[0].equalsIgnoreCase("lock")) {
+				if (!user.hasPerm("bencmd.time.lock")) {
+					user.sendMessage(ChatColor.RED
+							+ "You don't have permission to do that!");
+					return;
+				}
 				if (plugin.timeRunning) {
 					plugin.log.info("BenCmd: " + user.getDisplayName()
 							+ " has frozen time!");
@@ -290,7 +345,7 @@ public class BasicCommands implements Commands {
 			return;
 		}
 		String spawnworld;
-		if (args.length >= 1 && user.hasPerm("canSpawnAllWorlds")) {
+		if (args.length >= 1 && user.hasPerm("bencmd.spawn.all")) {
 			spawnworld = args[0];
 			user.Spawn(spawnworld);
 		} else {
@@ -326,10 +381,19 @@ public class BasicCommands implements Commands {
 						+ "!");
 			}
 		} else if (args.length == 1) {
+			if (!user.hasPerm("bencmd.god.other")) {
+				user.sendMessage(ChatColor.RED
+						+ "You don't have permission to do that!");
+				return;
+			}
 			User user2;
 			if ((user2 = User.matchUser(args[0], plugin)) != null) { // If
 																		// they
 																		// exist
+				if (user2.hasPerm("bencmd.god.protect") && !user.hasPerm("bencmd.god.all")) {
+					user.sendMessage(ChatColor.RED + "That player is protected from being godded/ungodded by others!");
+					return;
+				}
 				if (user2.isGod()) { // If they're a god
 					user2.makeNonGod(); // Delete them from the
 										// list
@@ -373,6 +437,11 @@ public class BasicCommands implements Commands {
 			plugin.bLog.info("BenCmd: " + user.getDisplayName()
 					+ " has healed " + user.getDisplayName());
 		} else {
+			if (!user.hasPerm("bencmd.heal.other")) {
+				user.sendMessage(ChatColor.RED
+						+ "You don't have permission to do that!");
+				return;
+			}
 			// Heal the other player
 			User user2;
 			if ((user2 = User.matchUser(args[0], plugin)) != null) {
@@ -399,7 +468,7 @@ public class BasicCommands implements Commands {
 			return;
 		}
 		if ((args[0].equalsIgnoreCase("reload") || args[0]
-				.equalsIgnoreCase("rel")) && user.hasPerm("canReloadConfig")) {
+				.equalsIgnoreCase("rel")) && user.hasPerm("bencmd.reload")) {
 			plugin.perm.userFile.loadFile();
 			plugin.perm.userFile.loadUsers();
 			plugin.perm.groupFile.loadFile();
@@ -424,7 +493,7 @@ public class BasicCommands implements Commands {
 			plugin.bLog.warning(user.getDisplayName()
 					+ " has reloaded the BenCmd configuration.");
 		} else if (args[0].equalsIgnoreCase("update")
-				&& user.hasPerm("canUpdate")) {
+				&& user.hasPerm("bencmd.update")) {
 			if (plugin.checkForUpdates(true)) {
 				plugin.update(false);
 			} else {
@@ -432,10 +501,10 @@ public class BasicCommands implements Commands {
 						+ "BenCmd is up to date... Use /bencmd fupdate to force an update...");
 			}
 		} else if (args[0].equalsIgnoreCase("fupdate")
-				&& user.hasPerm("canUpdate")) {
+				&& user.hasPerm("bencmd.update")) {
 			plugin.update(true);
 		} else if (args[0].equalsIgnoreCase("disable")
-				&& user.hasPerm("canDisable")) {
+				&& user.hasPerm("bencmd.disable")) {
 			plugin.getServer()
 					.broadcastMessage(
 							ChatColor.RED
@@ -474,12 +543,6 @@ public class BasicCommands implements Commands {
 		if (args.length == 0) {
 			pageToShow = 1;
 		} else {
-			if (args[0].equalsIgnoreCase("consuela")) {
-				user.sendMessage(ChatColor.GREEN + "/lemonpledge"
-						+ ChatColor.WHITE + " - " + ChatColor.GRAY
-						+ "Demand more lemon pledge...");
-				return;
-			}
 			try {
 				pageToShow = Integer.parseInt(args[0]);
 			} catch (NumberFormatException e) {

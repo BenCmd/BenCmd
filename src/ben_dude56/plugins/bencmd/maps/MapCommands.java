@@ -1,5 +1,6 @@
 package ben_dude56.plugins.bencmd.maps;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -26,7 +27,7 @@ public class MapCommands implements Commands {
 			user = User.getUser(plugin);
 		}
 		if (commandLabel.equalsIgnoreCase("map")
-				&& user.hasPerm("canChangeMaps")) {
+				&& (user.hasPerm("bencmd.map.zoom") || user.hasPerm("bencmd.map.center"))) {
 			Map(args, user);
 			return true;
 		}
@@ -43,10 +44,25 @@ public class MapCommands implements Commands {
 		BCMap map = new BCMap(user.getHandle().getItemInHand().getDurability(),
 				((CraftWorld) user.getHandle().getWorld()).getHandle());
 		if (args[0].equalsIgnoreCase("zoomin")) {
+			if (!user.hasPerm("bencmd.map.zoom")) {
+				user.sendMessage(ChatColor.RED
+						+ "You don't have permission to do that!");
+				return;
+			}
 			map.zoomIn();
 		} else if (args[0].equalsIgnoreCase("zoomout")) {
+			if (!user.hasPerm("bencmd.map.zoom")) {
+				user.sendMessage(ChatColor.RED
+						+ "You don't have permission to do that!");
+				return;
+			}
 			map.zoomOut();
 		} else if (args[0].equalsIgnoreCase("center")) {
+			if (!user.hasPerm("bencmd.map.center")) {
+				user.sendMessage(ChatColor.RED
+						+ "You don't have permission to do that!");
+				return;
+			}
 			map.setCenter(user.getHandle().getLocation().getBlockX(), user
 					.getHandle().getLocation().getBlockZ());
 		}
