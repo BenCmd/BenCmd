@@ -36,21 +36,25 @@ public class Kit {
 								.checkAlias(itemKey.split(" ")[0])
 								.getMaterial().getId();
 					} catch (NumberFormatException e) {
-						plugin.log.severe("Error in kit (id: " + String.valueOf(ID)
-								+ "). " + itemKey.split(" ")[0] + " is NaN!");
-						plugin.bLog.severe("Error in kit (id: " + String.valueOf(ID)
-								+ "). " + itemKey.split(" ")[0] + " is NaN!");
+						plugin.log.severe("Error in kit (id: "
+								+ String.valueOf(ID) + "). "
+								+ itemKey.split(" ")[0] + " is NaN!");
+						plugin.bLog.severe("Error in kit (id: "
+								+ String.valueOf(ID) + "). "
+								+ itemKey.split(" ")[0] + " is NaN!");
 						continue;
 					}
 					try {
 						itemDamage = Short.parseShort(itemKey.split(" ")[0]
 								.split(":")[1]);
 					} catch (NumberFormatException e) {
-						plugin.log.severe("Error in kit (id: " + String.valueOf(ID)
-								+ "). " + itemKey.split(" ")[0].split(":")[1]
+						plugin.log.severe("Error in kit (id: "
+								+ String.valueOf(ID) + "). "
+								+ itemKey.split(" ")[0].split(":")[1]
 								+ " is NaN!");
-						plugin.bLog.severe("Error in kit (id: " + String.valueOf(ID)
-								+ "). " + itemKey.split(" ")[0].split(":")[1]
+						plugin.bLog.severe("Error in kit (id: "
+								+ String.valueOf(ID) + "). "
+								+ itemKey.split(" ")[0].split(":")[1]
 								+ " is NaN!");
 						continue;
 					}
@@ -61,11 +65,13 @@ public class Kit {
 								.checkAlias(itemKey.split(" ")[0])
 								.getMaterial().getId();
 					} catch (NumberFormatException e) {
-						plugin.log.severe("Error in kit (id: " + String.valueOf(ID)
-								+ "). " + itemKey.split(" ")[0].split(":")[0]
+						plugin.log.severe("Error in kit (id: "
+								+ String.valueOf(ID) + "). "
+								+ itemKey.split(" ")[0].split(":")[0]
 								+ " is NaN!");
-						plugin.bLog.severe("Error in kit (id: " + String.valueOf(ID)
-								+ "). " + itemKey.split(" ")[0].split(":")[0]
+						plugin.bLog.severe("Error in kit (id: "
+								+ String.valueOf(ID) + "). "
+								+ itemKey.split(" ")[0].split(":")[0]
 								+ " is NaN!");
 						continue;
 					}
@@ -79,21 +85,25 @@ public class Kit {
 								.checkAlias(itemKey.split(" ")[0])
 								.getMaterial().getId();
 					} catch (NumberFormatException e) {
-						plugin.log.severe("Error in kit (id: " + String.valueOf(ID)
-								+ "). " + itemKey.split(" ")[0] + " is NaN!");
-						plugin.bLog.severe("Error in kit (id: " + String.valueOf(ID)
-								+ "). " + itemKey.split(" ")[0] + " is NaN!");
+						plugin.log.severe("Error in kit (id: "
+								+ String.valueOf(ID) + "). "
+								+ itemKey.split(" ")[0] + " is NaN!");
+						plugin.bLog.severe("Error in kit (id: "
+								+ String.valueOf(ID) + "). "
+								+ itemKey.split(" ")[0] + " is NaN!");
 						continue;
 					}
 					try {
 						itemDamage = Short.parseShort(itemKey.split(" ")[0]
 								.split(":")[1]);
 					} catch (NumberFormatException e) {
-						plugin.log.severe("Error in kit (id: " + String.valueOf(ID)
-								+ "). " + itemKey.split(" ")[0].split(":")[1]
+						plugin.log.severe("Error in kit (id: "
+								+ String.valueOf(ID) + "). "
+								+ itemKey.split(" ")[0].split(":")[1]
 								+ " is NaN!");
-						plugin.bLog.severe("Error in kit (id: " + String.valueOf(ID)
-								+ "). " + itemKey.split(" ")[0].split(":")[1]
+						plugin.bLog.severe("Error in kit (id: "
+								+ String.valueOf(ID) + "). "
+								+ itemKey.split(" ")[0].split(":")[1]
 								+ " is NaN!");
 						continue;
 					}
@@ -103,11 +113,13 @@ public class Kit {
 								.checkAlias(itemKey.split(" ")[0])
 								.getMaterial().getId();
 					} catch (NumberFormatException e) {
-						plugin.log.severe("Error in kit (id: " + String.valueOf(ID)
-								+ "). " + itemKey.split(" ")[0].split(":")[0]
+						plugin.log.severe("Error in kit (id: "
+								+ String.valueOf(ID) + "). "
+								+ itemKey.split(" ")[0].split(":")[0]
 								+ " is NaN!");
-						plugin.bLog.severe("Error in kit (id: " + String.valueOf(ID)
-								+ "). " + itemKey.split(" ")[0].split(":")[0]
+						plugin.bLog.severe("Error in kit (id: "
+								+ String.valueOf(ID) + "). "
+								+ itemKey.split(" ")[0].split(":")[0]
 								+ " is NaN!");
 						continue;
 					}
@@ -119,9 +131,9 @@ public class Kit {
 					plugin.log.severe("Error in kit (id: " + String.valueOf(ID)
 							+ "). " + itemKey.split(" ")[0].split(":")[0]
 							+ " is NaN!");
-					plugin.bLog.severe("Error in kit (id: " + String.valueOf(ID)
-							+ "). " + itemKey.split(" ")[0].split(":")[0]
-							+ " is NaN!");
+					plugin.bLog.severe("Error in kit (id: "
+							+ String.valueOf(ID) + "). "
+							+ itemKey.split(" ")[0].split(":")[0] + " is NaN!");
 					continue;
 				}
 			} else {

@@ -118,12 +118,12 @@ public class WarpableUser extends PermissionUser {
 		}
 		// *ABOVE* Get the spawn location
 	}
-	
+
 	public void Spawn(String world) {
 		if (isConsole) {
 			return;
 		}
-		
+
 		Location spawn;
 
 		try {
@@ -133,10 +133,10 @@ public class WarpableUser extends PermissionUser {
 			return;
 		}
 		// Get the spawn location
-		
+
 		new Warp(spawn.getX(), spawn.getY(), spawn.getZ(), spawn.getYaw(),
-				spawn.getPitch(), spawn.getWorld().getName(), spawn.getWorld().getName() + "-spawn", "",
-				plugin).WarpHere(this);
+				spawn.getPitch(), spawn.getWorld().getName(), spawn.getWorld()
+						.getName() + "-spawn", "", plugin).WarpHere(this);
 	}
 
 	public WarpableUser getWarpableUser() {

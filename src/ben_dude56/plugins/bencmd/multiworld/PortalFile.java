@@ -71,18 +71,21 @@ public class PortalFile extends Properties {
 			} catch (NumberFormatException e) {
 				plugin.log.warning("Portal (" + this.keySet().toArray()[i]
 						+ ")'s location is invalid!");
-				plugin.bLog.warning("A portal location was discovered to be invalid...");
+				plugin.bLog
+						.warning("A portal location was discovered to be invalid...");
 				continue;
 			} catch (IndexOutOfBoundsException e) {
 				plugin.log.warning("Portal (" + this.keySet().toArray()[i]
 						+ ")'s location is invalid!");
-				plugin.bLog.warning("A portal location was discovered to be invalid...");
+				plugin.bLog
+						.warning("A portal location was discovered to be invalid...");
 				continue;
 			}
 			if ((world = plugin.getServer().getWorld(key.split(",")[0])) == null) {
 				plugin.log.warning("Portal (" + this.keySet().toArray()[i]
 						+ ")'s location is invalid!");
-				plugin.bLog.warning("A portal location was discovered to be invalid...");
+				plugin.bLog
+						.warning("A portal location was discovered to be invalid...");
 				continue;
 			}
 			location = new Location(world, x, y, z);
@@ -95,18 +98,21 @@ public class PortalFile extends Properties {
 						.split("/")[1])) == null) {
 					plugin.log.warning("Portal (" + this.keySet().toArray()[i]
 							+ ")'s warp name is invalid or has been removed!");
-					plugin.bLog.warning("A portal warp was discovered to be invalid...");
+					plugin.bLog
+							.warning("A portal warp was discovered to be invalid...");
 					continue;
 				}
 			} catch (IndexOutOfBoundsException e) {
 				plugin.log.warning("Portal (" + this.keySet().toArray()[i]
 						+ ")'s warp name is invalid or has been removed!");
-				plugin.bLog.warning("A portal warp was discovered to be invalid...");
+				plugin.bLog
+						.warning("A portal warp was discovered to be invalid...");
 				continue;
 			} catch (NumberFormatException e) {
 				plugin.log.warning("Portal (" + this.keySet().toArray()[i]
 						+ ")'s warp name is invalid or has been removed!");
-				plugin.bLog.warning("A portal warp was discovered to be invalid...");
+				plugin.bLog
+						.warning("A portal warp was discovered to be invalid...");
 				continue;
 			}
 			try {

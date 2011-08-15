@@ -65,18 +65,21 @@ public class ShelfFile extends Properties {
 				y = Integer.parseInt(key.split(",")[2]);
 				z = Integer.parseInt(key.split(",")[3]);
 			} catch (NumberFormatException e) {
-				plugin.bLog.warning("SHELF ERROR: A shelf location was discovered to be invalid...");
+				plugin.bLog
+						.warning("SHELF ERROR: A shelf location was discovered to be invalid...");
 				plugin.log.warning("Shelf (" + this.keySet().toArray()[i]
 						+ ")'s location is invalid!");
 				continue;
 			} catch (IndexOutOfBoundsException e) {
-				plugin.bLog.warning("SHELF ERROR: A shelf location was discovered to be invalid...");
+				plugin.bLog
+						.warning("SHELF ERROR: A shelf location was discovered to be invalid...");
 				plugin.log.warning("Shelf (" + this.keySet().toArray()[i]
 						+ ")'s location is invalid!");
 				continue;
 			}
 			if ((world = plugin.getServer().getWorld(key.split(",")[0])) == null) {
-				plugin.bLog.warning("SHELF ERROR: A shelf location was discovered to be invalid...");
+				plugin.bLog
+						.warning("SHELF ERROR: A shelf location was discovered to be invalid...");
 				plugin.log.warning("Shelf (" + this.keySet().toArray()[i]
 						+ ")'s location is invalid!");
 				continue;

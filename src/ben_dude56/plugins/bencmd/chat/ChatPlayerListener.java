@@ -27,7 +27,8 @@ public class ChatPlayerListener extends PlayerListener {
 		if (slow.isEnabled()) {
 			slow.DisableSlow();
 			plugin.log.info(user.getDisplayName() + " has disabled slow mode.");
-			plugin.bLog.info(user.getDisplayName() + " has disabled slow mode.");
+			plugin.bLog
+					.info(user.getDisplayName() + " has disabled slow mode.");
 			plugin.getServer().broadcastMessage(
 					ChatColor.GRAY + "Slow mode has been disabled.");
 		} else {
@@ -106,7 +107,8 @@ public class ChatPlayerListener extends PlayerListener {
 		ViewableInventory.replInv((CraftPlayer) event.getPlayer());
 		User user = User.getUser(plugin, event.getPlayer());
 		if (BenCmd.updateAvailable && user.hasPerm("canUpdate")) {
-			user.sendMessage(ChatColor.RED + "A new BenCmd update was detected! Use \"/bencmd update\" to update your server...");
+			user.sendMessage(ChatColor.RED
+					+ "A new BenCmd update was detected! Use \"/bencmd update\" to update your server...");
 		}
 		Player[] playerList = plugin.getServer().getOnlinePlayers();
 		if (user.hasPerm("canListPlayers")) {

@@ -138,7 +138,8 @@ public class ProtectedCommands implements Commands {
 						+ ") with owner " + user.getDisplayName()
 						+ " at position (" + w + "," + x + "," + y + "," + z
 						+ ")");
-				plugin.bLog.info("PROTECTION ADDED: " + String.valueOf(id) + " by " + user.getDisplayName());
+				plugin.bLog.info("PROTECTION ADDED: " + String.valueOf(id)
+						+ " by " + user.getDisplayName());
 			} else if (pointedAt.getType() == Material.WOODEN_DOOR) {
 				int id = plugin.protectFile.addProtection(user,
 						pointedAt.getLocation(), ProtectionType.Door);
@@ -154,7 +155,8 @@ public class ProtectedCommands implements Commands {
 						+ ") with owner " + user.getDisplayName()
 						+ " at position (" + w + "," + x + "," + y + "," + z
 						+ ")");
-				plugin.bLog.info("PROTECTION ADDED: " + String.valueOf(id) + " by " + user.getDisplayName());
+				plugin.bLog.info("PROTECTION ADDED: " + String.valueOf(id)
+						+ " by " + user.getDisplayName());
 			}
 		} else if (args.length == 2) {
 			PermissionUser user2;
@@ -176,7 +178,9 @@ public class ProtectedCommands implements Commands {
 						+ " created protected chest (id: " + id
 						+ ") with owner " + user2.getName() + " at position ("
 						+ w + "," + x + "," + y + "," + z + ")");
-				plugin.bLog.info("PROTECTION ADDED: " + String.valueOf(id) + " (" + user2.getName() + ") by " + user.getDisplayName());
+				plugin.bLog.info("PROTECTION ADDED: " + String.valueOf(id)
+						+ " (" + user2.getName() + ") by "
+						+ user.getDisplayName());
 			} else if (pointedAt.getType() == Material.WOODEN_DOOR) {
 				int id = plugin.protectFile.addProtection(user2,
 						pointedAt.getLocation(), ProtectionType.Door);
@@ -191,7 +195,9 @@ public class ProtectedCommands implements Commands {
 						+ " created protected door (id: " + id
 						+ ") with owner " + user2.getName() + " at position ("
 						+ w + "," + x + "," + y + "," + z + ")");
-				plugin.bLog.info("PROTECTION ADDED: " + String.valueOf(id) + " (" + user2.getName() + ") by " + user.getDisplayName());
+				plugin.bLog.info("PROTECTION ADDED: " + String.valueOf(id)
+						+ " (" + user2.getName() + ") by "
+						+ user.getDisplayName());
 			}
 		} else {
 			user.sendMessage(ChatColor.YELLOW
@@ -233,11 +239,12 @@ public class ProtectedCommands implements Commands {
 				String x = String.valueOf(pointedAt.getX());
 				String y = String.valueOf(pointedAt.getY());
 				String z = String.valueOf(pointedAt.getX());
-				plugin.log.info(user.getDisplayName() + " created public chest (id: "
-						+ id + ") with owner " + user.getDisplayName()
-						+ " at position (" + w + "," + x + "," + y + "," + z
-						+ ")");
-				plugin.bLog.info("PUBLIC PROTECTION ADDED: " + String.valueOf(id) + " by " + user.getDisplayName());
+				plugin.log.info(user.getDisplayName()
+						+ " created public chest (id: " + id + ") with owner "
+						+ user.getDisplayName() + " at position (" + w + ","
+						+ x + "," + y + "," + z + ")");
+				plugin.bLog.info("PUBLIC PROTECTION ADDED: "
+						+ String.valueOf(id) + " by " + user.getDisplayName());
 			} else if (pointedAt.getType() == Material.WOODEN_DOOR) {
 				int id = plugin.protectFile.addProtection(user,
 						pointedAt.getLocation(), ProtectionType.PDoor);
@@ -248,11 +255,12 @@ public class ProtectedCommands implements Commands {
 				String x = String.valueOf(pointedAt.getX());
 				String y = String.valueOf(pointedAt.getY());
 				String z = String.valueOf(pointedAt.getX());
-				plugin.log.info(user.getDisplayName() + " created public door (id: "
-						+ id + ") with owner " + user.getDisplayName()
-						+ " at position (" + w + "," + x + "," + y + "," + z
-						+ ")");
-				plugin.bLog.info("PUBLIC PROTECTION ADDED: " + String.valueOf(id) + " by " + user.getDisplayName());
+				plugin.log.info(user.getDisplayName()
+						+ " created public door (id: " + id + ") with owner "
+						+ user.getDisplayName() + " at position (" + w + ","
+						+ x + "," + y + "," + z + ")");
+				plugin.bLog.info("PUBLIC PROTECTION ADDED: "
+						+ String.valueOf(id) + " by " + user.getDisplayName());
 			}
 		} else if (args.length == 2) {
 			PermissionUser user2;
@@ -270,11 +278,13 @@ public class ProtectedCommands implements Commands {
 				String x = String.valueOf(pointedAt.getX());
 				String y = String.valueOf(pointedAt.getY());
 				String z = String.valueOf(pointedAt.getX());
-				plugin.log.info(user.getDisplayName() + " created public chest (id: "
-						+ id + ") with owner " + user2.getName()
-						+ " at position (" + w + "," + x + "," + y + "," + z
-						+ ")");
-				plugin.bLog.info("PUBLIC PROTECTION ADDED: " + String.valueOf(id) + "(" + user2.getName() + ") by " + user.getDisplayName());
+				plugin.log.info(user.getDisplayName()
+						+ " created public chest (id: " + id + ") with owner "
+						+ user2.getName() + " at position (" + w + "," + x
+						+ "," + y + "," + z + ")");
+				plugin.bLog.info("PUBLIC PROTECTION ADDED: "
+						+ String.valueOf(id) + "(" + user2.getName() + ") by "
+						+ user.getDisplayName());
 			} else if (pointedAt.getType() == Material.WOODEN_DOOR) {
 				int id = plugin.protectFile.addProtection(user2,
 						pointedAt.getLocation(), ProtectionType.PDoor);
@@ -285,11 +295,13 @@ public class ProtectedCommands implements Commands {
 				String x = String.valueOf(pointedAt.getX());
 				String y = String.valueOf(pointedAt.getY());
 				String z = String.valueOf(pointedAt.getX());
-				plugin.log.info(user.getDisplayName() + " created public door (id: "
-						+ id + ") with owner " + user2.getName()
-						+ " at position (" + w + "," + x + "," + y + "," + z
-						+ ")");
-				plugin.bLog.info("PUBLIC PROTECTION ADDED: " + String.valueOf(id) + "(" + user2.getName() + ") by " + user.getDisplayName());
+				plugin.log.info(user.getDisplayName()
+						+ " created public door (id: " + id + ") with owner "
+						+ user2.getName() + " at position (" + w + "," + x
+						+ "," + y + "," + z + ")");
+				plugin.bLog.info("PUBLIC PROTECTION ADDED: "
+						+ String.valueOf(id) + "(" + user2.getName() + ") by "
+						+ user.getDisplayName());
 			}
 		} else {
 			user.sendMessage(ChatColor.YELLOW
@@ -326,7 +338,10 @@ public class ProtectedCommands implements Commands {
 								+ String.valueOf(block.GetId())
 								+ ") at position (" + w + "," + x + "," + y
 								+ "," + z + ")");
-						plugin.bLog.info("PROTECTION REMOVED: " + String.valueOf(block.GetId()) + " (" + block.getOwner().getName() + ") by " + user.getDisplayName());
+						plugin.bLog.info("PROTECTION REMOVED: "
+								+ String.valueOf(block.GetId()) + " ("
+								+ block.getOwner().getName() + ") by "
+								+ user.getDisplayName());
 						user.sendMessage(ChatColor.GREEN
 								+ "The protection on that block was removed.");
 					}
@@ -354,7 +369,10 @@ public class ProtectedCommands implements Commands {
 								+ String.valueOf(block.GetId())
 								+ ") at position (" + w + "," + x + "," + y
 								+ "," + z + ")");
-						plugin.bLog.info("PROTECTION REMOVED: " + String.valueOf(block.GetId()) + " (" + block.getOwner().getName() + ") by " + user.getDisplayName());
+						plugin.bLog.info("PROTECTION REMOVED: "
+								+ String.valueOf(block.GetId()) + " ("
+								+ block.getOwner().getName() + ") by "
+								+ user.getDisplayName());
 						user.sendMessage(ChatColor.GREEN
 								+ "The protection on that block was removed.");
 					}
@@ -393,7 +411,10 @@ public class ProtectedCommands implements Commands {
 							+ "'s protected chest (id: "
 							+ String.valueOf(block.GetId()) + ") at position ("
 							+ w + "," + x + "," + y + "," + z + ")");
-					plugin.bLog.info("PROTECTION REMOVED: " + String.valueOf(block.GetId()) + " (" + block.getOwner().getName() + ") by " + user.getDisplayName());
+					plugin.bLog.info("PROTECTION REMOVED: "
+							+ String.valueOf(block.GetId()) + " ("
+							+ block.getOwner().getName() + ") by "
+							+ user.getDisplayName());
 					user.sendMessage(ChatColor.GREEN
 							+ "The protection on that block was removed.");
 					return;
@@ -414,7 +435,10 @@ public class ProtectedCommands implements Commands {
 							+ "'s protected door (id: "
 							+ String.valueOf(block.GetId()) + ") at position ("
 							+ w + "," + x + "," + y + "," + z + ")");
-					plugin.bLog.info("PROTECTION REMOVED: " + String.valueOf(block.GetId()) + " (" + block.getOwner().getName() + ") by " + user.getDisplayName());
+					plugin.bLog.info("PROTECTION REMOVED: "
+							+ String.valueOf(block.GetId()) + " ("
+							+ block.getOwner().getName() + ") by "
+							+ user.getDisplayName());
 					user.sendMessage(ChatColor.GREEN
 							+ "The protection on that block was removed.");
 					return;
@@ -469,11 +493,15 @@ public class ProtectedCommands implements Commands {
 							+ "That player doesn't exist!");
 					return;
 				}
-				plugin.log.info(user.getDisplayName() + " has changed the owner of "
+				plugin.log.info(user.getDisplayName()
+						+ " has changed the owner of "
 						+ block.getOwner().getName()
 						+ "'s protected block (id: " + block.GetId() + ") to "
 						+ args[1]);
-				plugin.bLog.info("PROTECTION EDITED: " + String.valueOf(block.GetId()) + " (" + block.getOwner().getName() + ") by " + user.getDisplayName());
+				plugin.bLog.info("PROTECTION EDITED: "
+						+ String.valueOf(block.GetId()) + " ("
+						+ block.getOwner().getName() + ") by "
+						+ user.getDisplayName());
 				plugin.bLog.info("Owner changed to " + newOwner.getName());
 				user.sendMessage(ChatColor.GREEN
 						+ "That protected block now belongs to "
@@ -503,10 +531,14 @@ public class ProtectedCommands implements Commands {
 				user.sendMessage(ChatColor.RED + "That player doesn't exist!");
 				return;
 			}
-			plugin.log.info(user.getDisplayName() + " has changed the owner of "
-					+ block.getOwner().getName() + "'s protected block (id: "
-					+ block.GetId() + ") to " + args[1]);
-			plugin.bLog.info("PROTECTION EDITED: " + String.valueOf(block.GetId()) + " (" + block.getOwner().getName() + ") by " + user.getDisplayName());
+			plugin.log.info(user.getDisplayName()
+					+ " has changed the owner of " + block.getOwner().getName()
+					+ "'s protected block (id: " + block.GetId() + ") to "
+					+ args[1]);
+			plugin.bLog.info("PROTECTION EDITED: "
+					+ String.valueOf(block.GetId()) + " ("
+					+ block.getOwner().getName() + ") by "
+					+ user.getDisplayName());
 			plugin.bLog.info("Owner changed to " + newOwner.getName());
 			user.sendMessage(ChatColor.GREEN
 					+ "That protected block now belongs to "
@@ -539,7 +571,10 @@ public class ProtectedCommands implements Commands {
 						+ newOwner.getName() + " to the guest list of "
 						+ block.getOwner().getName()
 						+ "'s protected block (id: " + block.GetId() + ")");
-				plugin.bLog.info("PROTECTION EDITED: " + String.valueOf(block.GetId()) + " (" + block.getOwner().getName() + ") by " + user.getDisplayName());
+				plugin.bLog.info("PROTECTION EDITED: "
+						+ String.valueOf(block.GetId()) + " ("
+						+ block.getOwner().getName() + ") by "
+						+ user.getDisplayName());
 				plugin.bLog.info(newOwner.getName() + " added as guest!");
 				user.sendMessage(ChatColor.GREEN + newOwner.getName()
 						+ " now has guest access to that block.");
@@ -563,10 +598,14 @@ public class ProtectedCommands implements Commands {
 				user.sendMessage(ChatColor.RED + "That player doesn't exist!");
 				return;
 			}
-			plugin.log.info(user.getDisplayName() + " has added " + newOwner.getName()
-					+ " to the guest list of " + block.getOwner().getName()
-					+ "'s protected block (id: " + block.GetId() + ")");
-			plugin.bLog.info("PROTECTION EDITED: " + String.valueOf(block.GetId()) + " (" + block.getOwner().getName() + ") by " + user.getDisplayName());
+			plugin.log.info(user.getDisplayName() + " has added "
+					+ newOwner.getName() + " to the guest list of "
+					+ block.getOwner().getName() + "'s protected block (id: "
+					+ block.GetId() + ")");
+			plugin.bLog.info("PROTECTION EDITED: "
+					+ String.valueOf(block.GetId()) + " ("
+					+ block.getOwner().getName() + ") by "
+					+ user.getDisplayName());
 			plugin.bLog.info(newOwner.getName() + " added as guest!");
 			user.sendMessage(ChatColor.GREEN + newOwner.getName()
 					+ " now has guest access to that block.");
@@ -598,8 +637,12 @@ public class ProtectedCommands implements Commands {
 						+ newOwner.getName() + " from the guest list of "
 						+ block.getOwner().getName()
 						+ "'s protected block (id: " + block.GetId() + ")");
-				plugin.bLog.info("PROTECTION EDITED: " + String.valueOf(block.GetId()) + " (" + block.getOwner().getName() + ") by " + user.getDisplayName());
-				plugin.bLog.info(newOwner.getName() + " removed from guest list!");
+				plugin.bLog.info("PROTECTION EDITED: "
+						+ String.valueOf(block.GetId()) + " ("
+						+ block.getOwner().getName() + ") by "
+						+ user.getDisplayName());
+				plugin.bLog.info(newOwner.getName()
+						+ " removed from guest list!");
 				user.sendMessage(ChatColor.GREEN + newOwner.getName()
 						+ " has now lost guest access to that block.");
 				plugin.protectFile.removeGuest(block.GetId(), newOwner);
@@ -626,7 +669,10 @@ public class ProtectedCommands implements Commands {
 					+ newOwner.getName() + " from the guest list of "
 					+ block.getOwner().getName() + "'s protected block (id: "
 					+ block.GetId() + ")");
-			plugin.bLog.info("PROTECTION EDITED: " + String.valueOf(block.GetId()) + " (" + block.getOwner().getName() + ") by " + user.getDisplayName());
+			plugin.bLog.info("PROTECTION EDITED: "
+					+ String.valueOf(block.GetId()) + " ("
+					+ block.getOwner().getName() + ") by "
+					+ user.getDisplayName());
 			plugin.bLog.info(newOwner.getName() + " removed from guest list!");
 			user.sendMessage(ChatColor.GREEN + newOwner.getName()
 					+ " has now lost guest access to that block.");

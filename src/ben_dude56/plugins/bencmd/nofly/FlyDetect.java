@@ -68,11 +68,13 @@ public class FlyDetect {
 		if (jailResponse == FlyResponse.RESPAWN) {
 			plugin.log
 					.warning("A jailFlyResponse of 'r' may allow people to escape jail by flying and being respawned!");
-			plugin.bLog.warning("jailFlyResponse == 'r'! Allows jailed people to be sent to spawn!");
+			plugin.bLog
+					.warning("jailFlyResponse == 'r'! Allows jailed people to be sent to spawn!");
 		} else if (jailResponse == FlyResponse.JAIL) {
 			plugin.log
 					.warning("A jailFlyResponse of 'j' will not produce any action when a person in jail flies, as you cannot double-jail someone!");
-			plugin.bLog.warning("jailFlyResponse == 'j'! Produces no response!");
+			plugin.bLog
+					.warning("jailFlyResponse == 'j'! Produces no response!");
 		}
 	}
 
@@ -111,7 +113,8 @@ public class FlyDetect {
 			player.teleport(l);
 			plugin.log.info(player.getName()
 					+ " was sent to ground level for flying!");
-			plugin.bLog.info(player.getName() + " was sent to ground level for flying!");
+			plugin.bLog.info(player.getName()
+					+ " was sent to ground level for flying!");
 			break;
 		case RESPAWN:
 			User.getUser(plugin, player).Spawn();
@@ -120,7 +123,8 @@ public class FlyDetect {
 					+ "You have been respawned for flying!");
 			plugin.log
 					.info(player.getName() + " was sent to spawn for flying!");
-			plugin.bLog.info(player.getName() + " was sent to spawn for flying!");
+			plugin.bLog.info(player.getName()
+					+ " was sent to spawn for flying!");
 			lastL.put(player, player.getLocation());
 			break;
 		case KICK:
@@ -142,7 +146,8 @@ public class FlyDetect {
 				lastL.put(player, player.getLocation());
 				plugin.log.info(player.getName()
 						+ " was jailed (1hr) for flying!");
-				plugin.bLog.info(player.getName() + " was jailed (1hr) for flying!");
+				plugin.bLog.info(player.getName()
+						+ " was jailed (1hr) for flying!");
 			}
 			break;
 		case BAN:
@@ -150,7 +155,8 @@ public class FlyDetect {
 			plugin.actions.addAction(u, ActionType.BAN, 3600000L);
 			u.Kick("You have been banned for 1 hour for flying!");
 			plugin.log.info(player.getName() + " was banned (1hr) for flying!");
-			plugin.bLog.info(player.getName() + " was banned (1hr) for flying!");
+			plugin.bLog
+					.info(player.getName() + " was banned (1hr) for flying!");
 			break;
 		case WARN:
 			player.sendMessage(ChatColor.RED

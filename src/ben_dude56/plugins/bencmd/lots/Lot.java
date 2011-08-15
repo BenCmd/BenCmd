@@ -54,7 +54,7 @@ public class Lot {
 	public Location getCorner2() {
 		return corner2;
 	}
-	
+
 	public org.bukkit.World getWorld() {
 		return World;
 	}

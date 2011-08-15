@@ -113,11 +113,13 @@ public class WarpList {
 					warps.put(name, new Warp(x, y, z, yaw, pitch, world, name,
 							group, plugin));
 				} catch (IndexOutOfBoundsException e) {
-					plugin.bLog.log(Level.SEVERE, "Couldn't load one of the warps!", e);
+					plugin.bLog.log(Level.SEVERE,
+							"Couldn't load one of the warps!", e);
 					plugin.log.warning("Couldn't load one of the warps!");
 					e.printStackTrace();
 				} catch (NumberFormatException e) {
-					plugin.bLog.log(Level.SEVERE, "Couldn't load one of the warps!", e);
+					plugin.bLog.log(Level.SEVERE,
+							"Couldn't load one of the warps!", e);
 					plugin.log.warning("Couldn't load one of the warps!");
 					e.printStackTrace();
 				}
@@ -159,7 +161,8 @@ public class WarpList {
 		try {
 			bw = new BufferedWriter(new FileWriter(warpFile));
 		} catch (IOException e) {
-			plugin.bLog.log(Level.SEVERE, "Unable to open warps.db for writing:", e);
+			plugin.bLog.log(Level.SEVERE,
+					"Unable to open warps.db for writing:", e);
 			plugin.log.severe("Unable to open warps.db for writing:");
 			e.printStackTrace();
 			return false;
@@ -171,10 +174,10 @@ public class WarpList {
 					bw.newLine();
 				}
 			} catch (IOException e) {
-				plugin.bLog.log(Level.SEVERE, "BenCmd failed to save warp " + value.split(":")[0]
-						+ ":", e);
-				plugin.log.severe("BenCmd failed to save warp " + value.split(":")[0]
-						+ ":");
+				plugin.bLog.log(Level.SEVERE, "BenCmd failed to save warp "
+						+ value.split(":")[0] + ":", e);
+				plugin.log.severe("BenCmd failed to save warp "
+						+ value.split(":")[0] + ":");
 				e.printStackTrace();
 			}
 		}

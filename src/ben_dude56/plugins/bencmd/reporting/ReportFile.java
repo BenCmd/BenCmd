@@ -165,21 +165,24 @@ public class ReportFile extends Properties {
 			}
 		}
 	}
-	
+
 	public void PurgeOpen(final User user) {
-		user.sendMessage(ChatColor.YELLOW + "Please wait... Ticket purge in progress...");
+		user.sendMessage(ChatColor.YELLOW
+				+ "Please wait... Ticket purge in progress...");
 		new Thread() {
 			public void run() {
 				for (Report r : getOpen()) {
 					r.closeTicket("Ticket purged by admin");
 				}
-				user.sendMessage(ChatColor.GREEN + "All tickets purged successfully!");
+				user.sendMessage(ChatColor.GREEN
+						+ "All tickets purged successfully!");
 			}
 		}.start();
 	}
-	
+
 	public void PurgeFrom(final User user, final String toPurge) {
-		user.sendMessage(ChatColor.YELLOW + "Please wait... Ticket purge in progress...");
+		user.sendMessage(ChatColor.YELLOW
+				+ "Please wait... Ticket purge in progress...");
 		new Thread() {
 			public void run() {
 				for (Report r : getOpen()) {
@@ -187,13 +190,15 @@ public class ReportFile extends Properties {
 						r.closeTicket("Ticket purged by admin");
 					}
 				}
-				user.sendMessage(ChatColor.GREEN + "All tickets from " + toPurge + " purged successfully!");
+				user.sendMessage(ChatColor.GREEN + "All tickets from "
+						+ toPurge + " purged successfully!");
 			}
 		}.start();
 	}
-	
+
 	public void PurgeTo(final User user, final String toPurge) {
-		user.sendMessage(ChatColor.YELLOW + "Please wait... Ticket purge in progress...");
+		user.sendMessage(ChatColor.YELLOW
+				+ "Please wait... Ticket purge in progress...");
 		new Thread() {
 			public void run() {
 				for (Report r : getOpen()) {
@@ -201,7 +206,8 @@ public class ReportFile extends Properties {
 						r.closeTicket("Ticket purged by admin");
 					}
 				}
-				user.sendMessage(ChatColor.GREEN + "All tickets against " + toPurge + " purged successfully!");
+				user.sendMessage(ChatColor.GREEN + "All tickets against "
+						+ toPurge + " purged successfully!");
 			}
 		}.start();
 	}
@@ -304,7 +310,7 @@ public class ReportFile extends Properties {
 			this.put(key, value);
 		}
 	}
-	
+
 	public void listTickets(final User user, final int page) {
 		user.sendMessage(ChatColor.YELLOW
 				+ "Please wait... The report databases are being queried...");
@@ -316,9 +322,10 @@ public class ReportFile extends Properties {
 				} else {
 					results = new ArrayList<Report>();
 					for (Report ticket : getOpen()) {
-						if (ticket.getAccused().getName().equalsIgnoreCase(user.getName())
+						if (ticket.getAccused().getName()
+								.equalsIgnoreCase(user.getName())
 								|| ticket.getSender().getName()
-									.equalsIgnoreCase(user.getName())) {
+										.equalsIgnoreCase(user.getName())) {
 							results.add(ticket);
 						}
 					}
@@ -338,7 +345,7 @@ public class ReportFile extends Properties {
 			}
 		}.start();
 	}
-	
+
 	public void listAllTickets(final User user, final int page) {
 		user.sendMessage(ChatColor.YELLOW
 				+ "Please wait... The report databases are being queried...");
@@ -350,9 +357,10 @@ public class ReportFile extends Properties {
 				} else {
 					results = new ArrayList<Report>();
 					for (Report ticket : getReports()) {
-						if (ticket.getAccused().getName().equalsIgnoreCase(user.getName())
+						if (ticket.getAccused().getName()
+								.equalsIgnoreCase(user.getName())
 								|| ticket.getSender().getName()
-									.equalsIgnoreCase(user.getName())) {
+										.equalsIgnoreCase(user.getName())) {
 							results.add(ticket);
 						}
 					}
@@ -373,7 +381,7 @@ public class ReportFile extends Properties {
 			}
 		}.start();
 	}
-	
+
 	public void showTickets(List<Report> reports, int page, User user) {
 		HashMap<Integer, List<Report>> pages = new HashMap<Integer, List<Report>>();
 		int cpage = 1;
@@ -393,15 +401,18 @@ public class ReportFile extends Properties {
 			cpage--;
 		}
 		if (page <= 0) {
-			user.sendMessage(ChatColor.RED + "There can be no page lower than 1.");
+			user.sendMessage(ChatColor.RED
+					+ "There can be no page lower than 1.");
 			return;
 		}
 		if (page > cpage) {
-			user.sendMessage(ChatColor.RED + "There are only " + cpage + " pages...");
+			user.sendMessage(ChatColor.RED + "There are only " + cpage
+					+ " pages...");
 			return;
 		}
 		if (cpage != 1) {
-			user.sendMessage(ChatColor.GRAY + "Page " + ChatColor.GREEN + page + ChatColor.GRAY + "/" + ChatColor.GREEN + cpage);
+			user.sendMessage(ChatColor.GRAY + "Page " + ChatColor.GREEN + page
+					+ ChatColor.GRAY + "/" + ChatColor.GREEN + cpage);
 		}
 		for (Report r : pages.get(page)) {
 			switch (r.getStatus()) {
@@ -409,20 +420,16 @@ public class ReportFile extends Properties {
 				user.sendMessage(ChatColor.RED + r.readShorthand());
 				break;
 			case READ:
-				user.sendMessage(ChatColor.YELLOW
-						+ r.readShorthand());
+				user.sendMessage(ChatColor.YELLOW + r.readShorthand());
 				break;
 			case INVESTIGATING:
-				user.sendMessage(ChatColor.GREEN
-						+ r.readShorthand());
+				user.sendMessage(ChatColor.GREEN + r.readShorthand());
 				break;
 			case CLOSED:
-				user.sendMessage(ChatColor.GRAY
-						+ r.readShorthand());
+				user.sendMessage(ChatColor.GRAY + r.readShorthand());
 				break;
 			case LOCKED:
-				user.sendMessage(ChatColor.DARK_GRAY
-						+ r.readShorthand());
+				user.sendMessage(ChatColor.DARK_GRAY + r.readShorthand());
 				break;
 			}
 		}
@@ -469,14 +476,16 @@ public class ReportFile extends Properties {
 		} else {
 			setRead(ticket);
 		}
-		if (ticket.getStatus() == ReportStatus.CLOSED || ticket.getStatus() == ReportStatus.LOCKED){
+		if (ticket.getStatus() == ReportStatus.CLOSED
+				|| ticket.getStatus() == ReportStatus.LOCKED) {
 			setClosed(ticket);
 		} else {
 			setOpen(ticket);
 		}
 	}
-	
-	public void searchTickets(final User user, final String search, final int page) {
+
+	public void searchTickets(final User user, final String search,
+			final int page) {
 		user.sendMessage(ChatColor.YELLOW
 				+ "Please wait... The report databases are being queried...");
 		new Thread() {
@@ -505,7 +514,8 @@ public class ReportFile extends Properties {
 		}.start();
 	}
 
-	public void searchAllTickets(final User user, final String search, final int page) {
+	public void searchAllTickets(final User user, final String search,
+			final int page) {
 		user.sendMessage(ChatColor.YELLOW
 				+ "Please wait... The report databases are being queried...");
 		new Thread() {

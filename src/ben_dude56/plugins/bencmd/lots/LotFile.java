@@ -350,13 +350,13 @@ public class LotFile extends Properties {
 		if (inLot) {
 			return false;
 		} else {
-			
+
 			User user = User.getUser(plugin, player);
-			
-			if (plugin.mainProperties.getBoolean("useGlobalLot", false) && !user.hasPerm("isGlobalGuest")) {
+
+			if (plugin.mainProperties.getBoolean("useGlobalLot", false)
+					&& !user.hasPerm("isGlobalGuest")) {
 				return false;
-			}
-			else {
+			} else {
 				return true;
 			}
 		}

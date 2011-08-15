@@ -11,7 +11,7 @@ import ben_dude56.plugins.bencmd.BenCmd;
 import ben_dude56.plugins.bencmd.User;
 import ben_dude56.plugins.bencmd.invtools.InventoryBackend;
 
-public class BuyableItem {
+public class BuyableItem implements Comparable<BuyableItem> {
 	private Integer id;
 	private Integer durability;
 	private Double cost;
@@ -435,5 +435,16 @@ public class BuyableItem {
 
 	public enum BuyResult {
 		INS_FUNDS, INS_SUPPLY, IMP_BUY, SUCCESS
+	}
+
+	@Override
+	public int compareTo(BuyableItem c) {
+		if (c.getPrice() < cost) {
+			return -1;
+		} else if (c.getPrice() > cost) {
+			return 1;
+		} else {
+			return 0;
+		}
 	}
 }

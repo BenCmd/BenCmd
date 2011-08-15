@@ -269,9 +269,13 @@ public class ProtectFile extends Properties {
 						break;
 					}
 				} catch (NullPointerException e) {
-					plugin.log.warning(block.GetId()
-							+ " has a missing secondary block. It will be quarantined...");
-					plugin.bLog.warning("Protection " + block.GetId() + " is missing a secondary block! (It was quarantined)");
+					plugin.log
+							.warning(block.GetId()
+									+ " has a missing secondary block. It will be quarantined...");
+					plugin.bLog
+							.warning("Protection "
+									+ block.GetId()
+									+ " is missing a secondary block! (It was quarantined)");
 					q.add(block);
 				}
 				try {
@@ -281,9 +285,13 @@ public class ProtectFile extends Properties {
 						break;
 					}
 				} catch (NullPointerException e) {
-					plugin.log.warning(block.GetId()
-							+ " has a missing secondary block. It will be quarantined...");
-					plugin.bLog.warning("Protection " + block.GetId() + " is missing a secondary block! (It was quarantined)");
+					plugin.log
+							.warning(block.GetId()
+									+ " has a missing secondary block. It will be quarantined...");
+					plugin.bLog
+							.warning("Protection "
+									+ block.GetId()
+									+ " is missing a secondary block! (It was quarantined)");
 					q.add(block);
 				}
 			}
@@ -295,9 +303,13 @@ public class ProtectFile extends Properties {
 						break;
 					}
 				} catch (NullPointerException e) {
-					plugin.log.warning(block.GetId()
-							+ " has a missing secondary block. It will be quarantined...");
-					plugin.bLog.warning("Protection " + block.GetId() + " is missing a secondary block! (It was quarantined)");
+					plugin.log
+							.warning(block.GetId()
+									+ " has a missing secondary block. It will be quarantined...");
+					plugin.bLog
+							.warning("Protection "
+									+ block.GetId()
+									+ " is missing a secondary block! (It was quarantined)");
 					q.add(block);
 				}
 				try {
@@ -307,9 +319,13 @@ public class ProtectFile extends Properties {
 						break;
 					}
 				} catch (NullPointerException e) {
-					plugin.log.warning(block.GetId()
-							+ " has a missing secondary block. It will be quarantined...");
-					plugin.bLog.warning("Protection " + block.GetId() + " is missing a secondary block! (It was quarantined)");
+					plugin.log
+							.warning(block.GetId()
+									+ " has a missing secondary block. It will be quarantined...");
+					plugin.bLog
+							.warning("Protection "
+									+ block.GetId()
+									+ " is missing a secondary block! (It was quarantined)");
 					q.add(block);
 				}
 			}

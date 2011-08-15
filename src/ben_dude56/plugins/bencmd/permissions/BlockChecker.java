@@ -105,9 +105,9 @@ public class BlockChecker extends BlockListener {
 		plugin.log.info(p.getDisplayName() + " put a sign at (" + l.getBlockX()
 				+ ", " + l.getBlockY() + ", " + l.getBlockZ() + ", "
 				+ l.getWorld().getName() + "):");
-		plugin.bLog.info(p.getDisplayName() + " put a sign at (" + l.getBlockX()
-				+ ", " + l.getBlockY() + ", " + l.getBlockZ() + ", "
-				+ l.getWorld().getName() + "):");
+		plugin.bLog.info(p.getDisplayName() + " put a sign at ("
+				+ l.getBlockX() + ", " + l.getBlockY() + ", " + l.getBlockZ()
+				+ ", " + l.getWorld().getName() + "):");
 		int firstLine = -1;
 		for (int i = 0; i < ls.length; i++) {
 			String line = ls[i];

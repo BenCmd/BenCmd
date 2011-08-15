@@ -51,8 +51,10 @@ public class ChatCommands implements Commands {
 				}
 			}
 			user2.getHandle().setDisplayName(message);
-			plugin.log.info(user2.getName() + " is now imitating " + message + "!");
-			plugin.bLog.info("NAME IMITATE: " + user2.getName() + " => " + message);
+			plugin.log.info(user2.getName() + " is now imitating " + message
+					+ "!");
+			plugin.bLog.info("NAME IMITATE: " + user2.getName() + " => "
+					+ message);
 			((EntityHuman) ((CraftPlayer) user2.getHandle()).getHandle()).name = message;
 			return true;
 		}
@@ -221,9 +223,9 @@ public class ChatCommands implements Commands {
 					+ user2.getColor() + user2.getDisplayName()
 					+ ChatColor.GRAY + ") " + message);
 		}
-		plugin.log.info("(" + user.getDisplayName() + " => " + user2.getDisplayName()
-				+ ") " + message);
-		plugin.bLog.info("(" + user.getDisplayName() + " => " + user2.getDisplayName()
-				+ ") " + message);
+		plugin.log.info("(" + user.getDisplayName() + " => "
+				+ user2.getDisplayName() + ") " + message);
+		plugin.bLog.info("(" + user.getDisplayName() + " => "
+				+ user2.getDisplayName() + ") " + message);
 	}
 }

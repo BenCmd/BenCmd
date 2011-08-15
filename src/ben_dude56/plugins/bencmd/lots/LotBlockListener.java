@@ -21,14 +21,15 @@ public class LotBlockListener extends BlockListener {
 	}
 
 	public void onBlockBreak(BlockBreakEvent event) {
-		
+
 		Player player = event.getPlayer();
 		User user = User.getUser(plugin, player);
-		
-		if (player.getItemInHand().getType() == Material.WOOD_SPADE && user.hasPerm("isLandlord")) {
+
+		if (player.getItemInHand().getType() == Material.WOOD_SPADE
+				&& user.hasPerm("isLandlord")) {
 			event.setCancelled(true);
 		}
-		
+
 		if (!plugin.lots.canBuildHere(player, event.getBlock().getLocation())) {
 			event.setCancelled(true);
 			player.sendMessage("You cannot build here.");
@@ -37,7 +38,7 @@ public class LotBlockListener extends BlockListener {
 
 	public void onBlockPlace(BlockPlaceEvent event) {
 		Player player = event.getPlayer();
-		
+
 		if (!plugin.lots.canBuildHere(player, event.getBlock().getLocation())) {
 			event.setCancelled(true);
 			player.sendMessage("You cannot build here.");

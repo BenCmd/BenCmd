@@ -150,7 +150,8 @@ public class LotCommands implements Commands {
 			String sub = thisLot.getSubID();
 			if (thisLot != null) {
 				user.sendMessage(ChatColor.GRAY + "Lot ID: " + lot + "  Part: "
-						+ sub + "   Total parts: " + (thisLot.getSubs().size()) + "   World: " + thisLot.getWorld().getName());
+						+ sub + "   Total parts: " + (thisLot.getSubs().size())
+						+ "   World: " + thisLot.getWorld().getName());
 				user.sendMessage(ChatColor.GRAY + "Owner: "
 						+ thisLot.getOwner() + "    Group: "
 						+ thisLot.getLotGroup() + "   Guests: "
@@ -416,13 +417,13 @@ public class LotCommands implements Commands {
 			}
 			boolean cor1 = plugin.lotListener.corner.get(user.getName()).corner1set;
 			boolean cor2 = plugin.lotListener.corner.get(user.getName()).corner2set;
-			if (cor1 && cor2) {				
+			if (cor1 && cor2) {
 				String LotID = plugin.lots.getNextID();
 				corner1 = plugin.lotListener.corner.get(user.getName())
 						.getCorner1();
 				corner2 = plugin.lotListener.corner.get(user.getName())
 						.getCorner2();
-				
+
 				World c1world = corner1.getWorld();
 				World c2world = corner2.getWorld();
 				World pworld = user.getHandle().getWorld();
@@ -447,7 +448,7 @@ public class LotCommands implements Commands {
 							+ "Be sure to use a wooden shovel!");
 					return;
 				}
-				
+
 				if (args.length >= 2) {
 					owner = args[1];
 				} else {
@@ -519,7 +520,7 @@ public class LotCommands implements Commands {
 						.getCorner1();
 				corner2 = plugin.lotListener.corner.get(user.getName())
 						.getCorner2();
-				
+
 				World c1world = corner1.getWorld();
 				World c2world = corner2.getWorld();
 				World pworld = user.getHandle().getWorld();
@@ -544,7 +545,7 @@ public class LotCommands implements Commands {
 							+ "Be sure to use a wooden shovel!");
 					return;
 				}
-				
+
 				if (args.length >= 4) {
 					try {
 						up = Integer.parseInt(args[1]);
@@ -1081,7 +1082,7 @@ public class LotCommands implements Commands {
 						.getCorner1();
 				corner2 = plugin.lotListener.corner.get(user.getName())
 						.getCorner2();
-				
+
 				World c1world = corner1.getWorld();
 				World c2world = corner2.getWorld();
 				World pworld = user.getHandle().getWorld();
@@ -1106,7 +1107,7 @@ public class LotCommands implements Commands {
 							+ "Be sure to use a wooden shovel!");
 					return;
 				}
-				
+
 				String group = plugin.lots.getLot(LotID).getLotGroup();
 				String owner = plugin.lots.getLot(LotID).getOwner();
 				plugin.lots.sortSubs(LotID);
@@ -1170,7 +1171,7 @@ public class LotCommands implements Commands {
 						.getCorner1();
 				corner2 = plugin.lotListener.corner.get(user.getName())
 						.getCorner2();
-				
+
 				World c1world = corner1.getWorld();
 				World c2world = corner2.getWorld();
 				World pworld = user.getHandle().getWorld();
@@ -1195,7 +1196,7 @@ public class LotCommands implements Commands {
 							+ "Be sure to use a wooden shovel!");
 					return;
 				}
-				
+
 				if (args.length >= 4) {
 					try {
 						up = Integer.parseInt(args[1]);

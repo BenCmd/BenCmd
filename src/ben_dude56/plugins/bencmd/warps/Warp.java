@@ -22,7 +22,8 @@ public class Warp {
 			loc = new Location(plugin.getServer().getWorld(world), x, y, z,
 					(float) yaw, (float) pitch);
 		} catch (NullPointerException e) {
-			plugin.bLog.log(Level.SEVERE, "Couldn't load warp " + warpName + "!", e);
+			plugin.bLog.log(Level.SEVERE, "Couldn't load warp " + warpName
+					+ "!", e);
 			plugin.log.severe("Couldn't load warp " + warpName + "!");
 			return;
 		}
@@ -41,7 +42,8 @@ public class Warp {
 		try {
 			loc = new Location(world, x, y, z, yaw, pitch);
 		} catch (NullPointerException e) {
-			plugin.bLog.log(Level.SEVERE, "Couldn't load warp " + warpName + "!", e);
+			plugin.bLog.log(Level.SEVERE, "Couldn't load warp " + warpName
+					+ "!", e);
 			plugin.log.severe("Couldn't load warp " + warpName + "!");
 			return;
 		}
@@ -62,15 +64,15 @@ public class Warp {
 			plugin.checkpoints.SetPreWarp(player.getHandle());
 			player.getHandle().teleport(loc);
 			player.sendMessage(ChatColor.YELLOW + "Woosh!");
-			plugin.log.info(player.getName() + " just warped to warp " + warpName
-					+ ".");
-			plugin.bLog.info(player.getName() + " just warped to warp " + warpName
-					+ ".");
+			plugin.log.info(player.getName() + " just warped to warp "
+					+ warpName + ".");
+			plugin.bLog.info(player.getName() + " just warped to warp "
+					+ warpName + ".");
 		} catch (NullPointerException e) {
-			plugin.log.severe("There was an error warping player " + player.getName()
-					+ " to warp " + warpName + "!");
-			plugin.bLog.log(Level.SEVERE, "There was an error warping player " + player.getName()
-					+ " to warp " + warpName + "!", e);
+			plugin.log.severe("There was an error warping player "
+					+ player.getName() + " to warp " + warpName + "!");
+			plugin.bLog.log(Level.SEVERE, "There was an error warping player "
+					+ player.getName() + " to warp " + warpName + "!", e);
 		}
 	}
 
@@ -78,24 +80,26 @@ public class Warp {
 		if (!this.canWarpHere(sender)) {
 			player.sendMessage(ChatColor.RED
 					+ "You don't have permission to warp them there!");
-			plugin.log.info(sender.getName() + " tried to warp " + player.getName()
-					+ " to " + warpName + ", but they don't have permission.");
-			plugin.bLog.info(sender.getName() + " tried to warp " + player.getName()
-					+ " to " + warpName + ", but they don't have permission.");
+			plugin.log.info(sender.getName() + " tried to warp "
+					+ player.getName() + " to " + warpName
+					+ ", but they don't have permission.");
+			plugin.bLog.info(sender.getName() + " tried to warp "
+					+ player.getName() + " to " + warpName
+					+ ", but they don't have permission.");
 		}
 		try {
 			plugin.checkpoints.SetPreWarp(player.getHandle());
 			player.getHandle().teleport(loc);
 			player.sendMessage(ChatColor.YELLOW + "Woosh!");
-			plugin.log.info(sender.getName() + " just warped " + player.getName()
-					+ " to warp " + warpName + ".");
-			plugin.bLog.info(sender.getName() + " just warped " + player.getName()
-					+ " to warp " + warpName + ".");
+			plugin.log.info(sender.getName() + " just warped "
+					+ player.getName() + " to warp " + warpName + ".");
+			plugin.bLog.info(sender.getName() + " just warped "
+					+ player.getName() + " to warp " + warpName + ".");
 		} catch (NullPointerException e) {
-			plugin.bLog.log(Level.SEVERE, "There was an error warping player " + player.getName()
-					+ " to warp " + warpName + "!", e);
-			plugin.log.severe("There was an error warping player " + player.getName()
-					+ " to warp " + warpName + "!");
+			plugin.bLog.log(Level.SEVERE, "There was an error warping player "
+					+ player.getName() + " to warp " + warpName + "!", e);
+			plugin.log.severe("There was an error warping player "
+					+ player.getName() + " to warp " + warpName + "!");
 		}
 	}
 

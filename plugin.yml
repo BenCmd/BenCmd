@@ -154,9 +154,6 @@ commands:
     help:
         usage:
         description: Shows help for the BenCmd commands
-    lemonpledge:
-        usage: 
-        description: DEMANDS MORE LEMON PLEDGE
     lock:
         usage:
         description: Protects a chest

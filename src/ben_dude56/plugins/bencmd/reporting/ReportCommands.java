@@ -66,10 +66,10 @@ public class ReportCommands implements Commands {
 		plugin.reports.addTicket(new Report(plugin, id, user, reported,
 				Report.ReportStatus.UNREAD, reason, "", 0,
 				new ArrayList<String>()));
-		plugin.log.info(user.getDisplayName() + " opened ticket #" + id.toString()
-				+ "!");
-		plugin.bLog.info(user.getDisplayName() + " opened ticket #" + id.toString()
-				+ "!");
+		plugin.log.info(user.getDisplayName() + " opened ticket #"
+				+ id.toString() + "!");
+		plugin.bLog.info(user.getDisplayName() + " opened ticket #"
+				+ id.toString() + "!");
 		user.sendMessage(ChatColor.GREEN + "Thank you for your report");
 		user.sendMessage(ChatColor.GREEN
 				+ "You can check the status of your report using /ticket " + id
@@ -99,7 +99,8 @@ public class ReportCommands implements Commands {
 				try {
 					page = Integer.parseInt(args[1]);
 				} catch (NumberFormatException e) {
-					user.sendMessage(ChatColor.RED + args[1] + " isn't a number!");
+					user.sendMessage(ChatColor.RED + args[1]
+							+ " isn't a number!");
 					return;
 				}
 			}
@@ -110,7 +111,8 @@ public class ReportCommands implements Commands {
 				try {
 					page = Integer.parseInt(args[1]);
 				} catch (NumberFormatException e) {
-					user.sendMessage(ChatColor.RED + args[1] + " isn't a number!");
+					user.sendMessage(ChatColor.RED + args[1]
+							+ " isn't a number!");
 					return;
 				}
 			}
@@ -129,7 +131,8 @@ public class ReportCommands implements Commands {
 				return;
 			}
 			if (args.length != 2) {
-				user.sendMessage(ChatColor.YELLOW + "Proper use is /ticket purgefrom [name]");
+				user.sendMessage(ChatColor.YELLOW
+						+ "Proper use is /ticket purgefrom [name]");
 				return;
 			}
 			plugin.reports.PurgeFrom(user, args[1]);
@@ -140,7 +143,8 @@ public class ReportCommands implements Commands {
 				return;
 			}
 			if (args.length != 2) {
-				user.sendMessage(ChatColor.YELLOW + "Proper use is /ticket purgeto [name]");
+				user.sendMessage(ChatColor.YELLOW
+						+ "Proper use is /ticket purgeto [name]");
 				return;
 			}
 			plugin.reports.PurgeTo(user, args[1]);
@@ -160,7 +164,8 @@ public class ReportCommands implements Commands {
 				try {
 					page = Integer.parseInt(args[2]);
 				} catch (NumberFormatException e) {
-					user.sendMessage(ChatColor.RED + args[2] + " isn't a number!");
+					user.sendMessage(ChatColor.RED + args[2]
+							+ " isn't a number!");
 					return;
 				}
 			}
@@ -181,7 +186,8 @@ public class ReportCommands implements Commands {
 				try {
 					page = Integer.parseInt(args[2]);
 				} catch (NumberFormatException e) {
-					user.sendMessage(ChatColor.RED + args[2] + " isn't a number!");
+					user.sendMessage(ChatColor.RED + args[2]
+							+ " isn't a number!");
 					return;
 				}
 			}
@@ -201,8 +207,8 @@ public class ReportCommands implements Commands {
 				return;
 			}
 			if (args.length == 1) {
-				for(String s : plugin.reports.getTicketById(id).readReport(
-						user.hasPerm("isTicketAdmin")).split("\n")) {
+				for (String s : plugin.reports.getTicketById(id)
+						.readReport(user.hasPerm("isTicketAdmin")).split("\n")) {
 					user.sendMessage(s);
 				}
 			} else if (args[1].equalsIgnoreCase("close")) {
@@ -219,10 +225,10 @@ public class ReportCommands implements Commands {
 					}
 					if (args.length == 2) {
 						report.closeTicket("Ticket closed by admin");
-						plugin.log.info(user.getDisplayName() + " closed ticket #"
-								+ id.toString() + "!");
-						plugin.bLog.info(user.getDisplayName() + " closed ticket #"
-								+ id.toString() + "!");
+						plugin.log.info(user.getDisplayName()
+								+ " closed ticket #" + id.toString() + "!");
+						plugin.bLog.info(user.getDisplayName()
+								+ " closed ticket #" + id.toString() + "!");
 						user.sendMessage(ChatColor.GREEN + "Ticket (ID: "
 								+ report.getId()
 								+ ") has been successfully closed!");
@@ -236,10 +242,12 @@ public class ReportCommands implements Commands {
 							}
 						}
 						report.closeTicket(reason);
-						plugin.log.info(user.getDisplayName() + " closed ticket #"
-								+ id.toString() + "! Reason: " + reason);
-						plugin.bLog.info(user.getDisplayName() + " closed ticket #"
-								+ id.toString() + "! Reason: " + reason);
+						plugin.log.info(user.getDisplayName()
+								+ " closed ticket #" + id.toString()
+								+ "! Reason: " + reason);
+						plugin.bLog.info(user.getDisplayName()
+								+ " closed ticket #" + id.toString()
+								+ "! Reason: " + reason);
 						user.sendMessage(ChatColor.GREEN + "Ticket (ID: "
 								+ report.getId()
 								+ ") has been successfully closed!");
@@ -260,10 +268,10 @@ public class ReportCommands implements Commands {
 						user.sendMessage(ChatColor.GREEN + "Ticket (ID: "
 								+ report.getId()
 								+ ") has been successfully closed!");
-						plugin.log.info(user.getDisplayName() + " closed ticket #"
-								+ id.toString() + "!");
-						plugin.bLog.info(user.getDisplayName() + " closed ticket #"
-								+ id.toString() + "!");
+						plugin.log.info(user.getDisplayName()
+								+ " closed ticket #" + id.toString() + "!");
+						plugin.bLog.info(user.getDisplayName()
+								+ " closed ticket #" + id.toString() + "!");
 					} else {
 						user.sendMessage(ChatColor.RED
 								+ "You cannot edit that ticket!");
@@ -282,10 +290,10 @@ public class ReportCommands implements Commands {
 						return;
 					}
 					report.reopenTicket(true);
-					plugin.log.info(user.getDisplayName() + " re-opened ticket #"
-							+ id.toString() + "!");
-					plugin.bLog.info(user.getDisplayName() + " re-opened ticket #"
-							+ id.toString() + "!");
+					plugin.log.info(user.getDisplayName()
+							+ " re-opened ticket #" + id.toString() + "!");
+					plugin.bLog.info(user.getDisplayName()
+							+ " re-opened ticket #" + id.toString() + "!");
 					user.sendMessage(ChatColor.GREEN
 							+ "That ticket has been re-opened!");
 				} else if (report.canBasicChange(user)) {
@@ -300,10 +308,10 @@ public class ReportCommands implements Commands {
 						return;
 					}
 					if (report.reopenTicket(false)) {
-						plugin.log.info(user.getDisplayName() + " re-opened ticket #"
-								+ id.toString() + "!");
-						plugin.bLog.info(user.getDisplayName() + " re-opened ticket #"
-								+ id.toString() + "!");
+						plugin.log.info(user.getDisplayName()
+								+ " re-opened ticket #" + id.toString() + "!");
+						plugin.bLog.info(user.getDisplayName()
+								+ " re-opened ticket #" + id.toString() + "!");
 						user.sendMessage(ChatColor.GREEN
 								+ "That ticket has been re-opened!");
 					} else {
@@ -358,10 +366,10 @@ public class ReportCommands implements Commands {
 					report.InvestigateTicket();
 					user.sendMessage(ChatColor.GREEN
 							+ "That ticket has been marked as under investigation!");
-					plugin.log.info(user.getDisplayName() + " is investigating #"
-							+ id.toString() + "!");
-					plugin.bLog.info(user.getDisplayName() + " is investigating #"
-							+ id.toString() + "!");
+					plugin.log.info(user.getDisplayName()
+							+ " is investigating #" + id.toString() + "!");
+					plugin.bLog.info(user.getDisplayName()
+							+ " is investigating #" + id.toString() + "!");
 				} else {
 					user.sendMessage(ChatColor.RED
 							+ "You must be an admin to do that!");

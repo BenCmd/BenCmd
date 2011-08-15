@@ -145,7 +145,8 @@ public class ActionableUser extends WarpableUser {
 	 */
 	public void Kick(String reason, User sender) {
 		if (isConsole) {
-			plugin.log.info(sender.getDisplayName() + " attempted to kick the server!");
+			plugin.log.info(sender.getDisplayName()
+					+ " attempted to kick the server!");
 			return;
 		}
 		plugin.kicked.addUser(this);
@@ -176,7 +177,8 @@ public class ActionableUser extends WarpableUser {
 	 */
 	public void Kick(User sender) {
 		if (isConsole) {
-			plugin.log.info(sender.getDisplayName() + " attempted to kick the server!");
+			plugin.log.info(sender.getDisplayName()
+					+ " attempted to kick the server!");
 			return;
 		}
 		plugin.kicked.addUser(this);

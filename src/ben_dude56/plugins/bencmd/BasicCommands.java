@@ -112,13 +112,15 @@ public class BasicCommands implements Commands {
 				&& user.hasPerm("canBurn")) {
 			Location loc = user.getHandle().getTargetBlock(null, 4)
 					.getLocation();
-			user.sendMessage(ChatColor.GREEN + "Fire next to that block can now spread...");
+			user.sendMessage(ChatColor.GREEN
+					+ "Fire next to that block can now spread...");
 			plugin.canSpread.add(loc);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("nofire")
 				&& user.hasPerm("canBurn")) {
 			plugin.canSpread.clear();
-			user.sendMessage(ChatColor.GREEN + "All area-specific fire-spread is now disabled.");
+			user.sendMessage(ChatColor.GREEN
+					+ "All area-specific fire-spread is now disabled.");
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("debug")) {
 			return true;
@@ -289,7 +291,7 @@ public class BasicCommands implements Commands {
 		}
 		String spawnworld;
 		if (args.length >= 1 && user.hasPerm("canSpawnAllWorlds")) {
-			spawnworld=args[0];
+			spawnworld = args[0];
 			user.Spawn(spawnworld);
 		} else {
 			user.Spawn();
@@ -368,8 +370,8 @@ public class BasicCommands implements Commands {
 			user.sendMessage(ChatColor.GREEN + "You have been healed.");
 			plugin.log.info("BenCmd: " + user.getDisplayName() + " has healed "
 					+ user.getDisplayName());
-			plugin.bLog.info("BenCmd: " + user.getDisplayName() + " has healed "
-					+ user.getDisplayName());
+			plugin.bLog.info("BenCmd: " + user.getDisplayName()
+					+ " has healed " + user.getDisplayName());
 		} else {
 			// Heal the other player
 			User user2;
@@ -377,10 +379,10 @@ public class BasicCommands implements Commands {
 				user2 = User.matchUser(args[0], plugin);
 				user2.Heal();
 				user2.sendMessage(ChatColor.GREEN + "You have been healed.");
-				plugin.log.info("BenCmd: " + user.getDisplayName() + " has healed "
-						+ user2.getDisplayName());
-				plugin.bLog.info("BenCmd: " + user.getDisplayName() + " has healed "
-						+ user2.getDisplayName());
+				plugin.log.info("BenCmd: " + user.getDisplayName()
+						+ " has healed " + user2.getDisplayName());
+				plugin.bLog.info("BenCmd: " + user.getDisplayName()
+						+ " has healed " + user2.getDisplayName());
 			} else {
 				user.sendMessage(ChatColor.RED + args[0]
 						+ " doesn't exist or is not online.");
@@ -421,15 +423,19 @@ public class BasicCommands implements Commands {
 					+ " has reloaded the BenCmd configuration.");
 			plugin.bLog.warning(user.getDisplayName()
 					+ " has reloaded the BenCmd configuration.");
-		} else if (args[0].equalsIgnoreCase("update") && user.hasPerm("canUpdate")) {
+		} else if (args[0].equalsIgnoreCase("update")
+				&& user.hasPerm("canUpdate")) {
 			if (plugin.checkForUpdates(true)) {
 				plugin.update(false);
 			} else {
-				user.sendMessage(ChatColor.RED + "BenCmd is up to date... Use /bencmd fupdate to force an update...");
+				user.sendMessage(ChatColor.RED
+						+ "BenCmd is up to date... Use /bencmd fupdate to force an update...");
 			}
-		} else if (args[0].equalsIgnoreCase("fupdate") && user.hasPerm("canUpdate")) {
+		} else if (args[0].equalsIgnoreCase("fupdate")
+				&& user.hasPerm("canUpdate")) {
 			plugin.update(true);
-		} else if (args[0].equalsIgnoreCase("disable") && user.hasPerm("canDisable")) {
+		} else if (args[0].equalsIgnoreCase("disable")
+				&& user.hasPerm("canDisable")) {
 			plugin.getServer()
 					.broadcastMessage(
 							ChatColor.RED
@@ -449,12 +455,14 @@ public class BasicCommands implements Commands {
 		}
 		Location newSpawn = user.getHandle().getLocation();
 		user.sendMessage(ChatColor.GREEN + "The spawn location has been set!");
-		plugin.log.info(user.getDisplayName() + " has set the spawn location to ("
-				+ newSpawn.getBlockX() + ", " + newSpawn.getBlockY() + ", "
-				+ newSpawn.getBlockZ() + ")");
-		plugin.bLog.info(user.getDisplayName() + " has set the spawn location to ("
-				+ newSpawn.getBlockX() + ", " + newSpawn.getBlockY() + ", "
-				+ newSpawn.getBlockZ() + ")");
+		plugin.log.info(user.getDisplayName()
+				+ " has set the spawn location to (" + newSpawn.getBlockX()
+				+ ", " + newSpawn.getBlockY() + ", " + newSpawn.getBlockZ()
+				+ ")");
+		plugin.bLog.info(user.getDisplayName()
+				+ " has set the spawn location to (" + newSpawn.getBlockX()
+				+ ", " + newSpawn.getBlockY() + ", " + newSpawn.getBlockZ()
+				+ ")");
 		user.getHandle()
 				.getWorld()
 				.setSpawnLocation(newSpawn.getBlockX(), newSpawn.getBlockY(),

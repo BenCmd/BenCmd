@@ -33,56 +33,60 @@ public class LotPlayerListener extends PlayerListener {
 					&& player.getItemInHand().getType() == Material.WOOD_SPADE) {
 				checkPlayer(player.getName());
 				if (this.corner.get(player.getName()).corner2set) {
-					if (this.corner.get(player.getName()).corner2.equals(event.getClickedBlock().getLocation())) {
+					if (this.corner.get(player.getName()).corner2.equals(event
+							.getClickedBlock().getLocation())) {
 						return;
 					}
 				}
-					this.corner.get(player.getName()).setCorner2(
-					event.getClickedBlock().getLocation());
-					Location corner2 = this.corner.get(player.getName())
-					.getCorner2();
-					player.sendMessage(ChatColor.LIGHT_PURPLE
-							+ "Corner 2 set at [X: " + corner2.getX() + ", Y: "
-							+ corner2.getY() + ", Z: " + corner2.getZ() + ", W: "
-							+ corner2.getWorld().getName() + "]");
-				}
-				return;
+				this.corner.get(player.getName()).setCorner2(
+						event.getClickedBlock().getLocation());
+				Location corner2 = this.corner.get(player.getName())
+						.getCorner2();
+				player.sendMessage(ChatColor.LIGHT_PURPLE
+						+ "Corner 2 set at [X: " + corner2.getX() + ", Y: "
+						+ corner2.getY() + ", Z: " + corner2.getZ() + ", W: "
+						+ corner2.getWorld().getName() + "]");
+			}
+			return;
 		} else if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
 			Player player = event.getPlayer();
 			if (User.getUser(plugin, player).hasPerm("isLandlord")
 					&& player.getItemInHand().getType() == Material.WOOD_SPADE) {
 				checkPlayer(player.getName());
 				if (this.corner.get(player.getName()).corner1set) {
-					if (this.corner.get(player.getName()).corner1.equals(event.getClickedBlock().getLocation())) {
+					if (this.corner.get(player.getName()).corner1.equals(event
+							.getClickedBlock().getLocation())) {
 						return;
 					}
 				}
-					this.corner.get(player.getName()).setCorner1(
-							event.getClickedBlock().getLocation());
-					Location corner1 = this.corner.get(player.getName())
-					.getCorner1();
-					player.sendMessage(ChatColor.LIGHT_PURPLE
-							+ "Corner 1 set at [X: " + corner1.getX() + ", Y: "
-							+ corner1.getY() + ", Z: " + corner1.getZ() + ", W: "
-							+ corner1.getWorld().getName() + "]");
-				}
-				return;
+				this.corner.get(player.getName()).setCorner1(
+						event.getClickedBlock().getLocation());
+				Location corner1 = this.corner.get(player.getName())
+						.getCorner1();
+				player.sendMessage(ChatColor.LIGHT_PURPLE
+						+ "Corner 1 set at [X: " + corner1.getX() + ", Y: "
+						+ corner1.getY() + ", Z: " + corner1.getZ() + ", W: "
+						+ corner1.getWorld().getName() + "]");
+			}
+			return;
 		}
 	}
 
 	public void onPlayerBucketEmpty(PlayerBucketEmptyEvent event) {
 		Player player = event.getPlayer();
-		
-		if (!plugin.lots.canBuildHere(player, event.getBlockClicked().getLocation())) {
+
+		if (!plugin.lots.canBuildHere(player, event.getBlockClicked()
+				.getLocation())) {
 			event.setCancelled(true);
 			player.sendMessage("You cannot build here.");
 		}
 	}
 
 	public void onPlayerBucketFill(PlayerBucketFillEvent event) {
-Player player = event.getPlayer();
-		
-		if (!plugin.lots.canBuildHere(player, event.getBlockClicked().getLocation())) {
+		Player player = event.getPlayer();
+
+		if (!plugin.lots.canBuildHere(player, event.getBlockClicked()
+				.getLocation())) {
 			event.setCancelled(true);
 			player.sendMessage("You cannot build here.");
 		}

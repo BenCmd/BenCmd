@@ -41,7 +41,10 @@ public class ProtectBlockListener extends BlockListener {
 						+ "'s protected chest (id: "
 						+ String.valueOf(block.GetId()) + ") at position (" + w
 						+ "," + x + "," + y + "," + z + ")");
-				plugin.bLog.info("PROTECTION REMOVED: " + String.valueOf(block.GetId()) + " (" + block.getOwner().getName() + ") by " + user.getDisplayName());
+				plugin.bLog.info("PROTECTION REMOVED: "
+						+ String.valueOf(block.GetId()) + " ("
+						+ block.getOwner().getName() + ") by "
+						+ user.getDisplayName());
 				user.sendMessage(ChatColor.GREEN
 						+ "The protection on that block was removed.");
 			}

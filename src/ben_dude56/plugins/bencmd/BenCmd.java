@@ -112,7 +112,7 @@ import ben_dude56.plugins.bencmd.weather.WeatherPListener;
  */
 public class BenCmd extends JavaPlugin implements PermissionsProvider {
 	public final static boolean debug = true;
-	public final static int buildId = 2;
+	public final static int buildId = 3;
 	public final static int cbbuild = 1051;
 	public final static String downloadServer = "cloud.github.com";
 	public final static String verLoc = "http://cloud.github.com/downloads/BenCmd/BenCmd/version.txt";
@@ -150,23 +150,24 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 			"chest.db", "disp.db", "items.txt", "kits.db", "lever.db",
 			"lots.db", "main.properties", "npc.db", "portals.db", "prices.db",
 			"protection.db", "shelves.db", "sparea.db", "tickets.db" };
-	/* public final File mainProp = new File(propDir + "main.properties");
-	public final File itemAlias = new File(propDir + "items.txt");
-	public final File unlDisp = new File(propDir + "disp.db");
-	public final File dispChests = new File(propDir + "chest.db");
-	public final File lotFile = new File(propDir + "lots.db");
-	public final File kitFile = new File(propDir + "kits.db");
-	public final File proFile = new File(propDir + "protection.db");
-	public final File chatFile = new File(propDir + "channels.db");
-	public final File ticketFile = new File(propDir + "tickets.db");
-	public final File pricesFile = new File(propDir + "prices.db");
-	public final File portalFile = new File(propDir + "portals.db");
-	public final File shelfFile = new File(propDir + "shelves.db");
-	public final File actionFile = new File(propDir + "action.db");
-	public final File spareaFile = new File(propDir + "sparea.db");
-	public final File bankFile = new File(propDir + "bank.db");
-	public final File NPCFile = new File(propDir + "npc.db");
-	public final File RFile = new File(propDir + "lever.db"); */
+	/*
+	 * public final File mainProp = new File(propDir + "main.properties");
+	 * public final File itemAlias = new File(propDir + "items.txt"); public
+	 * final File unlDisp = new File(propDir + "disp.db"); public final File
+	 * dispChests = new File(propDir + "chest.db"); public final File lotFile =
+	 * new File(propDir + "lots.db"); public final File kitFile = new
+	 * File(propDir + "kits.db"); public final File proFile = new File(propDir +
+	 * "protection.db"); public final File chatFile = new File(propDir +
+	 * "channels.db"); public final File ticketFile = new File(propDir +
+	 * "tickets.db"); public final File pricesFile = new File(propDir +
+	 * "prices.db"); public final File portalFile = new File(propDir +
+	 * "portals.db"); public final File shelfFile = new File(propDir +
+	 * "shelves.db"); public final File actionFile = new File(propDir +
+	 * "action.db"); public final File spareaFile = new File(propDir +
+	 * "sparea.db"); public final File bankFile = new File(propDir + "bank.db");
+	 * public final File NPCFile = new File(propDir + "npc.db"); public final
+	 * File RFile = new File(propDir + "lever.db");
+	 */
 	public PluginProperties mainProperties;
 	public PluginProperties itemAliases;
 	public LotFile lots;
@@ -372,12 +373,18 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 			}
 		}
 		// Check for an instance of WorldEdit
-		/* bLog.info("Checking for running instances of WorldEdit...");
-		if (getServer().getPluginManager().isPluginEnabled("WorldEdit")) {
-			bLog.info("WorldEdit found! Attaching as permissions provider...");
-			((WorldEditPlugin) getServer().getPluginManager().getPlugin("WorldEdit")).getPermissionsResolver().setPluginPermissionsResolver(new WorldEditPermissions());
-			log.info(String.valueOf(((WorldEditPlugin) getServer().getPluginManager().getPlugin("WorldEdit")).getPermissionsResolver().hasPermission("ben_dude56", "canFly")));
-		} */
+		/*
+		 * bLog.info("Checking for running instances of WorldEdit..."); if
+		 * (getServer().getPluginManager().isPluginEnabled("WorldEdit")) {
+		 * bLog.info("WorldEdit found! Attaching as permissions provider...");
+		 * ((WorldEditPlugin)
+		 * getServer().getPluginManager().getPlugin("WorldEdit"
+		 * )).getPermissionsResolver().setPluginPermissionsResolver(new
+		 * WorldEditPermissions()); log.info(String.valueOf(((WorldEditPlugin)
+		 * getServer
+		 * ().getPluginManager().getPlugin("WorldEdit")).getPermissionsResolver
+		 * ().hasPermission("ben_dude56", "canFly"))); }
+		 */
 		bLog.info("Registering events...");
 		// Register all necessary events
 		PluginManager pm = getServer().getPluginManager();
@@ -482,12 +489,15 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 			log.severe("Non-channel chat using BenCmd is being phased out... Please move to channel-based chat...");
 		}
 	}
-	
+
 	public void update(boolean force) {
 		if (!updateAvailable && !force) {
 			return;
 		}
-		getServer().broadcastMessage(ChatColor.RED + "BenCmd is updating... Some features may reset after it is updated...");
+		getServer()
+				.broadcastMessage(
+						ChatColor.RED
+								+ "BenCmd is updating... Some features may reset after it is updated...");
 		log.info("BenCmd update in progress...");
 		log.info("Opening connection...");
 		try {
@@ -503,7 +513,7 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public boolean checkForUpdates(boolean output) {
 		if (updateAvailable) {
 			return true; // Skip the version check
@@ -513,12 +523,14 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 		}
 		try {
 			Socket s = new Socket(downloadServer, 80);
-			BufferedReader i = new BufferedReader(new InputStreamReader(s.getInputStream()));
+			BufferedReader i = new BufferedReader(new InputStreamReader(
+					s.getInputStream()));
 			DataOutputStream o = new DataOutputStream(s.getOutputStream());
 			o.writeBytes("GET " + verLoc + " HTTP/1.1\r\n\r\n");
 			o.flush();
 			long end = new Date().getTime() + 5000;
-			while (!i.ready() && new Date().getTime() < end) { }
+			while (!i.ready() && new Date().getTime() < end) {
+			}
 			if (!i.ready()) {
 				if (output) {
 					log.warning("Update request timed out...");
@@ -542,7 +554,8 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 					if (output) {
 						log.info("A new BenCmd update is available! Use \"bencmd update\" to update your server...");
 						for (User u : perm.userFile.allWithPerm("canUpdate")) {
-							u.sendMessage(ChatColor.RED + "A new BenCmd update was detected! Use \"/bencmd update\" to update your server...");
+							u.sendMessage(ChatColor.RED
+									+ "A new BenCmd update was detected! Use \"/bencmd update\" to update your server...");
 						}
 					}
 					updateAvailable = true;
@@ -555,7 +568,8 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 				}
 			} else {
 				if (output) {
-					log.warning("Failed to check for updates! Server returned code " + l.get(0).split(" ", 3)[1] + ":");
+					log.warning("Failed to check for updates! Server returned code "
+							+ l.get(0).split(" ", 3)[1] + ":");
 					log.warning(l.get(0).split(" ", 3)[2]);
 				}
 				return false;
@@ -755,12 +769,12 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 			return true;
 		}
 	}
-	
+
 	@Override
 	public boolean hasPermission(String name, String permission) {
 		return PermissionUser.matchUser(name, this).hasPerm(permission);
 	}
-	
+
 	@Override
 	public boolean hasPermission(String worldName, String name,
 			String permission) {
@@ -769,7 +783,8 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 
 	@Override
 	public boolean inGroup(String player, String group) {
-		return PermissionUser.matchUser(player, this).inGroup(perm.groupFile.getGroup(group));
+		return PermissionUser.matchUser(player, this).inGroup(
+				perm.groupFile.getGroup(group));
 	}
 
 	@Override
@@ -781,7 +796,7 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 		}
 		return sa;
 	}
-	
+
 	public class Update implements Runnable {
 		@Override
 		public void run() {
@@ -819,13 +834,13 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 			}
 		}
 	}
-	
+
 	public static boolean isRunning() {
 		return Bukkit.getServer().getPluginManager().isPluginEnabled("BenCmd");
 	}
 
 	public static BenCmd getPlugin() {
 		return (BenCmd) Bukkit.getServer().getPluginManager()
-			.getPlugin("BenCmd");
+				.getPlugin("BenCmd");
 	}
 }

@@ -168,9 +168,10 @@ public class HomeList {
 					bw.newLine();
 				}
 			} catch (IOException e) {
-				plugin.bLog.log(Level.SEVERE, "BenCmd failed to save home " + value.split(":")[0] + ":", e);
-				plugin.log.severe("BenCmd failed to save home " + value.split(":")[0]
-						+ ":");
+				plugin.bLog.log(Level.SEVERE, "BenCmd failed to save home "
+						+ value.split(":")[0] + ":", e);
+				plugin.log.severe("BenCmd failed to save home "
+						+ value.split(":")[0] + ":");
 				e.printStackTrace();
 			}
 		}

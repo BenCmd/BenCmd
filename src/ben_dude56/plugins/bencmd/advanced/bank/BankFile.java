@@ -25,7 +25,8 @@ public class BankFile extends Properties {
 		banks = new HashMap<String, BankInventory>();
 		if (new File("plugins/BenCmd/_bank.db").exists()) {
 			plugin.log.warning("Bank backup file found... Restoring...");
-			if (FileUtil.copy(new File("plugins/BenCmd/_bank.db"), new File(file))) {
+			if (FileUtil.copy(new File("plugins/BenCmd/_bank.db"), new File(
+					file))) {
 				new File("plugins/BenCmd/_bank.db").delete();
 				plugin.log.info("Restoration suceeded!");
 			} else {
@@ -105,6 +106,21 @@ public class BankFile extends Properties {
 		saveBank(banks.get(player));
 	}
 
+	public boolean canDowngradeBank(String player) {
+		return ((LargeBankInventory) getBank(player)).inv2.isEmpty();
+	}
+
+	public void downgradeBank(String player) {
+		if (!getBank(player).isUpgraded()) {
+			return;
+		}
+		if (!((LargeBankInventory) getBank(player)).inv2.isEmpty()) {
+			return;
+		}
+		banks.put(player, new BankInventory(getBank(player)));
+		saveBank(banks.get(player));
+	}
+
 	public void addBank(BankInventory bank) {
 		banks.put(bank.p, bank);
 		saveBank(bank);
@@ -123,7 +139,8 @@ public class BankFile extends Properties {
 		} catch (IOException e) {
 			plugin.log.warning("Failed to back up bank database!");
 		}
-		if (!FileUtil.copy(new File(filename), new File("/plugins/BenCmd/_bank.db"))) {
+		if (!FileUtil.copy(new File(filename), new File(
+				"/plugins/BenCmd/_bank.db"))) {
 			plugin.log.warning("Failed to back up bank database!");
 		}
 		for (BankInventory bank : banks.values()) {

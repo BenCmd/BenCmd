@@ -46,7 +46,7 @@ public class ProtectPlayerListener extends PlayerListener {
 			if (!block.canUse(user)) {
 				event.setCancelled(true);
 				user.sendMessage(ChatColor.RED
-						+ "That block is protected from use!  Use /protect info for more information...");
+						+ "That block is locked! Use /protect info for more information...");
 			} else {
 				if (!user.getName()
 						.equalsIgnoreCase(block.getOwner().getName())) {

@@ -155,7 +155,8 @@ public class InventoryCommands implements Commands {
 		if (args.length == 3) {
 			User user2;
 			if ((user2 = User.matchUser(args[2], plugin)) == null) {
-				user.sendMessage("Cannot find the player '" + args[2] + "'");
+				user.sendMessage(ChatColor.RED + "Cannot find the player '"
+						+ args[2] + "'");
 				return;
 			}
 			for (Integer amount : splitamount) {
@@ -240,10 +241,10 @@ public class InventoryCommands implements Commands {
 			User user2;
 			if ((user2 = User.matchUser(args[0], plugin)) != null) {
 				user2.getHandle().getInventory().clear();
-				plugin.log.info(user.getDisplayName() + " has cleared " + args[0]
-						+ "'s inventory.");
-				plugin.bLog.info(user.getDisplayName() + " has cleared " + args[0]
-				                                       						+ "'s inventory.");
+				plugin.log.info(user.getDisplayName() + " has cleared "
+						+ args[0] + "'s inventory.");
+				plugin.bLog.info(user.getDisplayName() + " has cleared "
+						+ args[0] + "'s inventory.");
 			} else {
 				user.sendMessage(ChatColor.RED + args[0]
 						+ " doesn't exist or is not online.");

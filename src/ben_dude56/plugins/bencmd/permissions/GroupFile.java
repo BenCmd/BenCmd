@@ -22,7 +22,7 @@ public class GroupFile extends Properties {
 		this.loadFile(); // Load the values into memory.
 		this.loadGroups();
 	}
-	
+
 	public List<String> listGroups() {
 		return new ArrayList<String>(groups.keySet());
 	}
@@ -126,7 +126,8 @@ public class GroupFile extends Properties {
 				this.groups.put(name, new InternalGroup(mainPerm.plugin, name,
 						permissions, users, groups, prefix, color, level));
 			} catch (Exception e) {
-				mainPerm.plugin.bLog.log(Level.WARNING, "Group " + name + " failed to load:", e);
+				mainPerm.plugin.bLog.log(Level.WARNING, "Group " + name
+						+ " failed to load:", e);
 			}
 		}
 	}

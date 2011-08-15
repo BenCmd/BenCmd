@@ -78,9 +78,12 @@ public class ItemBW extends Properties {
 
 	public List<Material> getListed(String group) {
 		if (!groupExists(group) && !addGroup(group)) {
-			mainPerm.plugin.bLog.warning("Failed to retrieve item blacklist/whitelist for group " + group + "!");
-			mainPerm.plugin.log.warning(group
-					+ " was not in plugins/BenCmd/itemsbw.db and couldn't be added due to an unknown error! Returning null...");
+			mainPerm.plugin.bLog
+					.warning("Failed to retrieve item blacklist/whitelist for group "
+							+ group + "!");
+			mainPerm.plugin.log
+					.warning(group
+							+ " was not in plugins/BenCmd/itemsbw.db and couldn't be added due to an unknown error! Returning null...");
 			return null;
 		}
 		List<Material> matList = new ArrayList<Material>();
@@ -91,10 +94,13 @@ public class ItemBW extends Properties {
 				try {
 					mat = Material.getMaterial(Integer.parseInt(material));
 				} catch (NumberFormatException e) {
-					mainPerm.plugin.bLog.warning(material + " in group " + group + " in itembw.db is NaN!");
-					mainPerm.plugin.log.warning("Cannot get a number from input: " + material
-							+ " in plugins/BenCmd/itemsbw.db (Entry: " + group
-							+ ")! Skipping...");
+					mainPerm.plugin.bLog.warning(material + " in group "
+							+ group + " in itembw.db is NaN!");
+					mainPerm.plugin.log
+							.warning("Cannot get a number from input: "
+									+ material
+									+ " in plugins/BenCmd/itemsbw.db (Entry: "
+									+ group + ")! Skipping...");
 					continue;
 				}
 				matList.add(mat);
@@ -108,7 +114,9 @@ public class ItemBW extends Properties {
 		boolean returnValue = false;
 		switch (getSetting(group)) {
 		case BWUnknown:
-			mainPerm.plugin.bLog.warning("Unknown blacklist/whitelist setting for group " + group + "! Assuming blacklist...");
+			mainPerm.plugin.bLog
+					.warning("Unknown blacklist/whitelist setting for group "
+							+ group + "! Assuming blacklist...");
 		case BWBlack:
 			try {
 				returnValue = !(getListed(group).contains(mat));
@@ -124,7 +132,8 @@ public class ItemBW extends Properties {
 			}
 			break;
 		case BWNoRestriction:
-			mainPerm.plugin.bLog.info("Group " + group + " is using a deprecated blacklist/whitelist setting");
+			mainPerm.plugin.bLog.info("Group " + group
+					+ " is using a deprecated blacklist/whitelist setting");
 			returnValue = true;
 			break;
 		default:
@@ -136,9 +145,12 @@ public class ItemBW extends Properties {
 
 	public BWSetting getSetting(String group) {
 		if (!groupExists(group) && !addGroup(group)) {
-			mainPerm.plugin.bLog.warning("Failed to retrieve item blacklist/whitelist setting for group " + group + "!");
-			mainPerm.plugin.log.warning(group
-					+ " was not in plugins/BenCmd/itemsbw.db and couldn't be added due to an unknown error! Returning BWUnknown...");
+			mainPerm.plugin.bLog
+					.warning("Failed to retrieve item blacklist/whitelist setting for group "
+							+ group + "!");
+			mainPerm.plugin.log
+					.warning(group
+							+ " was not in plugins/BenCmd/itemsbw.db and couldn't be added due to an unknown error! Returning BWUnknown...");
 			return BWSetting.BWUnknown;
 		}
 		String set = this.getProperty(group).split("/")[0];
@@ -149,9 +161,11 @@ public class ItemBW extends Properties {
 		} else if (set.equalsIgnoreCase("nr")) {
 			return BWSetting.BWNoRestriction;
 		} else {
-			mainPerm.plugin.bLog.warning("Group " + group + " has an unknown blacklist/whitelist setting! (" + set + ")");
-			mainPerm.plugin.log.warning("Cannot get a BWSetting from input: " + set
-					+ " in plugins/BenCmd/itemsbw.db (Entry: " + group
+			mainPerm.plugin.bLog.warning("Group " + group
+					+ " has an unknown blacklist/whitelist setting! (" + set
+					+ ")");
+			mainPerm.plugin.log.warning("Cannot get a BWSetting from input: "
+					+ set + " in plugins/BenCmd/itemsbw.db (Entry: " + group
 					+ ")! Returning BWUnknown...");
 			return BWSetting.BWUnknown;
 		}

@@ -298,7 +298,9 @@ public class MoneyCommands implements Commands {
 							+ " has deleted a currency. (ID: "
 							+ bitem.getItemId() + "," + bitem.getDurability()
 							+ ")");
-					plugin.bLog.info("CURRENCY DELETED: " + bitem.getItemId() + ":" + bitem.getDurability() + " by user " + user.getDisplayName());
+					plugin.bLog.info("CURRENCY DELETED: " + bitem.getItemId()
+							+ ":" + bitem.getDurability() + " by user "
+							+ user.getDisplayName());
 					user.sendMessage(ChatColor.GREEN
 							+ "That currency was successfully removed!");
 				} else {
@@ -308,7 +310,9 @@ public class MoneyCommands implements Commands {
 							+ " has updated the price of a currency (ID: "
 							+ bitem.getItemId() + "," + bitem.getDurability()
 							+ ") to " + price);
-					plugin.bLog.info("CURRENCY CHANGED: " + bitem.getItemId() + ":" + bitem.getDurability() + " by user " + user.getDisplayName() + " to price " + price);
+					plugin.bLog.info("CURRENCY CHANGED: " + bitem.getItemId()
+							+ ":" + bitem.getDurability() + " by user "
+							+ user.getDisplayName() + " to price " + price);
 					user.sendMessage(ChatColor.GREEN
 							+ "That currency was successfully updated!");
 				}
@@ -325,7 +329,9 @@ public class MoneyCommands implements Commands {
 							+ " has converted an item into a currency (ID: "
 							+ bitem.getItemId() + "," + bitem.getDurability()
 							+ ") with a price of " + price);
-					plugin.bLog.info("ITEM TO CURRENCY: " + bitem.getItemId() + ":" + bitem.getDurability() + " by user " + user.getDisplayName() + " to price " + price);
+					plugin.bLog.info("ITEM TO CURRENCY: " + bitem.getItemId()
+							+ ":" + bitem.getDurability() + " by user "
+							+ user.getDisplayName() + " to price " + price);
 					user.sendMessage(ChatColor.GREEN
 							+ "That item is now a currency!");
 				}
@@ -338,7 +344,9 @@ public class MoneyCommands implements Commands {
 					+ " has created a currency (ID: " + currency.getItemId()
 					+ "," + currency.getDurability() + ") with a price of "
 					+ price);
-			plugin.bLog.info("CURRENCY CREATED: " + currency.getItemId() + ":" + currency.getDurability() + " by user " + user.getDisplayName() + ", with price " + price);
+			plugin.bLog.info("CURRENCY CREATED: " + currency.getItemId() + ":"
+					+ currency.getDurability() + " by user "
+					+ user.getDisplayName() + ", with price " + price);
 			user.sendMessage(ChatColor.GREEN
 					+ "That currency was successfully created!");
 		}
@@ -376,7 +384,9 @@ public class MoneyCommands implements Commands {
 							+ " has converted an currency into an item (ID: "
 							+ bitem.getItemId() + "," + bitem.getDurability()
 							+ ") with a price of " + price);
-					plugin.bLog.info("CURRENCY TO ITEM: " + bitem.getItemId() + ":" + bitem.getDurability() + " by user " + user.getDisplayName() + " to price " + price);
+					plugin.bLog.info("CURRENCY TO ITEM: " + bitem.getItemId()
+							+ ":" + bitem.getDurability() + " by user "
+							+ user.getDisplayName() + " to price " + price);
 					user.sendMessage(ChatColor.GREEN
 							+ "That currency is now an item!");
 				}
@@ -386,7 +396,9 @@ public class MoneyCommands implements Commands {
 					plugin.log.info(user.getDisplayName()
 							+ " has deleted an item. (ID: " + bitem.getItemId()
 							+ "," + bitem.getDurability() + ")");
-					plugin.bLog.info("ITEM DELETED: " + bitem.getItemId() + ":" + bitem.getDurability() + " by user " + user.getDisplayName());
+					plugin.bLog.info("ITEM DELETED: " + bitem.getItemId() + ":"
+							+ bitem.getDurability() + " by user "
+							+ user.getDisplayName());
 					user.sendMessage(ChatColor.GREEN
 							+ "That item was successfully removed!");
 				} else {
@@ -396,7 +408,9 @@ public class MoneyCommands implements Commands {
 							+ " has updated the price of an item (ID: "
 							+ bitem.getItemId() + "," + bitem.getDurability()
 							+ ") to " + price);
-					plugin.bLog.info("ITEM CHANGED: " + bitem.getItemId() + ":" + bitem.getDurability() + " by user " + user.getDisplayName() + " to price " + price);
+					plugin.bLog.info("ITEM CHANGED: " + bitem.getItemId() + ":"
+							+ bitem.getDurability() + " by user "
+							+ user.getDisplayName() + " to price " + price);
 					user.sendMessage(ChatColor.GREEN
 							+ "That item was successfully updated!");
 				}
@@ -409,7 +423,9 @@ public class MoneyCommands implements Commands {
 					+ " has created a currency (ID: " + newItem.getItemId()
 					+ "," + newItem.getDurability() + ") with a price of "
 					+ price);
-			plugin.bLog.info("ITEM CREATED: " + item.getMaterial().getId() + ":" + item.getDamage() + " by user " + user.getDisplayName() + ", with price " + price);
+			plugin.bLog.info("ITEM CREATED: " + item.getMaterial().getId()
+					+ ":" + item.getDamage() + " by user "
+					+ user.getDisplayName() + ", with price " + price);
 			user.sendMessage(ChatColor.GREEN
 					+ "That item was successfully created!");
 		}
@@ -445,7 +461,9 @@ public class MoneyCommands implements Commands {
 						+ " has changed the supply of an item (ID: "
 						+ bitem.getItemId() + "," + bitem.getDurability()
 						+ ") with a supply of " + supply);
-				plugin.bLog.info("ITEM SUPPLY: " + bitem.getItemId() + ":" + bitem.getDurability() + " by user " + user.getDisplayName() + " to supply " + supply);
+				plugin.bLog.info("ITEM SUPPLY: " + bitem.getItemId() + ":"
+						+ bitem.getDurability() + " by user "
+						+ user.getDisplayName() + " to supply " + supply);
 				user.sendMessage(ChatColor.GREEN
 						+ "That supply count has been updated!");
 			}
