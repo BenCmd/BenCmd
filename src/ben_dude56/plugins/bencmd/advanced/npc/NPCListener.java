@@ -45,6 +45,10 @@ public class NPCListener extends PlayerListener {
 		p.sendMessage(ChatColor.GRAY + "NPC ID: " + n.getID());
 		if (n instanceof BankerNPC) {
 			p.sendMessage(ChatColor.GRAY + "NPC Type: Banker");
+		} else if (n instanceof BankManagerNPC) {
+			p.sendMessage(ChatColor.GRAY + "NPC Type: Bank Manager");
+		} else if (n instanceof BlacksmithNPC) {
+			p.sendMessage(ChatColor.GRAY + "NPC Type: Blacksmith");
 		}
 	}
 }

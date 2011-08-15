@@ -62,3 +62,48 @@ CHANGELOG (STARTING FROM v1.2.2):
       -Fixed miscellanious spelling errors
       -Fixed protections occasionally corrupting
       -Fixed flymod detection system occasionally detecting a player that has teleported as "flying"
+  1.2.6:
+    -Added a new banking system
+      -Anyone with the permission "canBankAnywhere" can use /bank to control their bank
+      -Anyone with the permission "isBankAdmin" can use /bank to control anyone's bank
+      -Single chest size by default, can be upgraded using /bank upgrade.
+        -Price is configurable ("bankUpgradeCost" in main.properties)
+      -Can be downgraded using /bank downgrade
+        -All money used to upgrade is returned
+        -Can only be done if bottom half of bank is empty
+    -Added new NPCs system
+      -3 different types so far:
+        -Banker NPC: Used to access a player's bank, even if they can't use /bank
+        -Bank Manager NPC: Used to upgrade a player's bank, even if they can't use /bank
+        -Blacksmith NPC: Used to repair damaged items and armor. (Prices are individually configurable)
+      -Right click on an NPC to use normally
+      -Players with the "canEditNpc" permission can do the following:
+        -Right click on an NPC with a stick for details on that NPC
+        -Create new NPCs using /npc {banker|bupgrade|blacksmith}
+        -Delete NPCs using /npc remove <id>
+        -Despawn all NPCs using /npc despawnall (For debugging purposes only! Does not delete NPCs!)
+        -Change Blacksmith prices using /npc rep <id> <price>
+    -Added timed levers
+      -Use /lever day or /lever night when pointing at a lever
+      -The lever will be on during the day when /lever day is used and during the night when /lever night is used
+    -/spawn can now work across worlds
+      -/spawn <world> to spawn to another world (If the user has the permission "canSpawnAllWorlds")
+      -"perWorldSpawn" in main.properties, when set to true, causes players to spawn in their current world
+      -If "perWorldSpawn" is disabled, players will spawn to the world set in "defaultSpawn"
+    -Added automatic updating
+      -BenCmd checks for updates when it starts and every half-hour
+      -Alerts users with the permission "canUpdate" when an update is detected
+      -/bencmd update is used to update IF there is a new version
+      -/bencmd fupdate can be used to force BenCmd to update, even if it is the newest version
+    -Bukkit scheduler now used instead of timers
+    -Added BenCmd-only log files in plugins/BenCmd/mm-dd-yyyy.log
+    -Huge improvements to how ticket searches + lists are handled (They are now threaded to reduce server latency)
+    -File checking methods have been cleaned up
+    -/gentree and /lemonpledge removed
+    -BenCmd can now link in and provide permissions support for WorldEdit
+    -Huge code cleanup
+    -Bug fixes
+      -Fixed tickets with UIDs > 128 glitching out
+      -Tickets now organize by ID instead of being in random order
+      -Lots are now multi-world compatible
+      -Repeatedly selecting the same block using the wooden shovel no longer spams your chat
