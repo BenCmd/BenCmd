@@ -77,7 +77,7 @@ public class Report implements Comparable<Report> {
 		plugin.reports.saveTicket(this);
 	}
 
-	public String readReport(Boolean isAdmin) {
+	public String readReport(Boolean isAdmin, Boolean isAnon) {
 		if (this.status == ReportStatus.UNREAD && isAdmin) {
 			this.status = ReportStatus.READ;
 			plugin.reports.saveTicket(this);
@@ -85,8 +85,13 @@ public class Report implements Comparable<Report> {
 		String message = "";
 		message += ChatColor.GRAY + "(" + this.status.toString() + ") "
 				+ this.idNumber.toString() + "\n";
-		message += ChatColor.GRAY + this.sender.getName() + " reported "
-				+ this.accused.getName() + "!\n";
+		if (isAnon) {
+			message += ChatColor.GRAY + "ANONYMOUS reported "
+					+ this.accused.getName() + "!\n";
+		} else {
+			message += ChatColor.GRAY + this.sender.getName() + " reported "
+					+ this.accused.getName() + "!\n";
+		}
 		message += ChatColor.GRAY + "Reasoning: " + this.reason;
 		if (!this.addedInfo.isEmpty() && !this.addedInfo.get(0).isEmpty()) {
 			message += "\n" + ChatColor.GRAY + "Added info:";
@@ -107,6 +112,14 @@ public class Report implements Comparable<Report> {
 		message = "(" + this.status.toString() + ") "
 				+ this.idNumber.toString() + " : " + this.sender.getName()
 				+ " -> " + this.accused.getName();
+		return message;
+	}
+
+	public String readShorthandAnon() {
+		String message = "";
+		message = "(" + this.status.toString() + ") "
+				+ this.idNumber.toString() + " : ? -> "
+				+ this.accused.getName();
 		return message;
 	}
 
@@ -149,13 +162,16 @@ public class Report implements Comparable<Report> {
 	}
 
 	public boolean canRead(PermissionUser user) {
-		return (user.getName().equalsIgnoreCase(accused.getName()) && user.hasPerm("bencmd.ticket.readown"))
-				|| (user.getName().equalsIgnoreCase(sender.getName()) && user.hasPerm("bencmd.ticket.readown"))
+		return (user.getName().equalsIgnoreCase(accused.getName()) && user
+				.hasPerm("bencmd.ticket.readown"))
+				|| (user.getName().equalsIgnoreCase(sender.getName()) && user
+						.hasPerm("bencmd.ticket.readown"))
 				|| user.hasPerm("bencmd.ticket.readall");
 	}
 
 	public boolean canBasicChange(PermissionUser user) {
-		return (user.getName().equalsIgnoreCase(sender.getName()) && user.hasPerm("bencmd.ticket.editown"))
+		return (user.getName().equalsIgnoreCase(sender.getName()) && user
+				.hasPerm("bencmd.ticket.editown"))
 				|| user.hasPerm("bencmd.ticket.editall");
 	}
 

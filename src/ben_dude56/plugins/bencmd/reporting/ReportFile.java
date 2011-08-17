@@ -425,19 +425,39 @@ public class ReportFile extends Properties {
 		for (Report r : pages.get(page)) {
 			switch (r.getStatus()) {
 			case UNREAD:
-				user.sendMessage(ChatColor.RED + r.readShorthand());
+				if (user.getName().equals(r.getAccused().getName()) && !user.hasPerm("bencmd.ticket.readall")) {
+					user.sendMessage(ChatColor.RED + r.readShorthandAnon());
+				} else {
+					user.sendMessage(ChatColor.RED + r.readShorthand());
+				}
 				break;
 			case READ:
-				user.sendMessage(ChatColor.YELLOW + r.readShorthand());
+				if (user.getName().equals(r.getAccused().getName()) && !user.hasPerm("bencmd.ticket.readall")) {
+					user.sendMessage(ChatColor.YELLOW + r.readShorthandAnon());
+				} else {
+					user.sendMessage(ChatColor.YELLOW + r.readShorthand());
+				}
 				break;
 			case INVESTIGATING:
-				user.sendMessage(ChatColor.GREEN + r.readShorthand());
+				if (user.getName().equals(r.getAccused().getName()) && !user.hasPerm("bencmd.ticket.readall")) {
+					user.sendMessage(ChatColor.GREEN + r.readShorthandAnon());
+				} else {
+					user.sendMessage(ChatColor.GREEN + r.readShorthand());
+				}
 				break;
 			case CLOSED:
-				user.sendMessage(ChatColor.GRAY + r.readShorthand());
+				if (user.getName().equals(r.getAccused().getName()) && !user.hasPerm("bencmd.ticket.readall")) {
+					user.sendMessage(ChatColor.GRAY + r.readShorthandAnon());
+				} else {
+					user.sendMessage(ChatColor.GRAY + r.readShorthand());
+				}
 				break;
 			case LOCKED:
-				user.sendMessage(ChatColor.DARK_GRAY + r.readShorthand());
+				if (user.getName().equals(r.getAccused().getName()) && !user.hasPerm("bencmd.ticket.readall")) {
+					user.sendMessage(ChatColor.DARK_GRAY + r.readShorthandAnon());
+				} else {
+					user.sendMessage(ChatColor.DARK_GRAY + r.readShorthand());
+				}
 				break;
 			}
 		}

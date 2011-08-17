@@ -950,7 +950,7 @@ public class LotCommands implements Commands {
 			if (args.length == 2) {
 				group = args[1];
 				LotID = plugin.lots.ownsHere(player, player.getLocation());
-				if (LotID.equalsIgnoreCase("false")) {
+				if (LotID.equalsIgnoreCase("false") && !user.hasPerm("bencmd.lot.group")) {
 					user.sendMessage(ChatColor.RED + "You do not own this lot!");
 					return;
 				}

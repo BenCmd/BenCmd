@@ -206,9 +206,13 @@ public class ReportCommands implements Commands {
 						+ " doesn't exist!");
 				return;
 			}
+			if (!report.canRead(user)) {
+				user.sendMessage(ChatColor.RED + "You can't read that ticket!");
+				return;
+			}
 			if (args.length == 1) {
-				for (String s : plugin.reports.getTicketById(id)
-						.readReport(user.hasPerm("bencmd.ticket.editall")).split("\n")) {
+				for (String s : report
+						.readReport(user.hasPerm("bencmd.ticket.editall"), user.getName().equals(report.getAccused().getName()) && !user.hasPerm("bencmd.ticket.readall")).split("\n")) {
 					user.sendMessage(s);
 				}
 			} else if (args[1].equalsIgnoreCase("close")) {

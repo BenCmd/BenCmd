@@ -112,7 +112,7 @@ import ben_dude56.plugins.bencmd.weather.WeatherPListener;
  */
 public class BenCmd extends JavaPlugin implements PermissionsProvider {
 	public final static boolean debug = true;
-	public final static int buildId = 5;
+	public final static int buildId = 6;
 	public final static int cbbuild = 1051;
 	public final static String downloadServer = "cloud.github.com";
 	public final static String verLoc = "http://cloud.github.com/downloads/BenCmd/BenCmd/version.txt";
@@ -830,6 +830,30 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 				}
 				lastTime = getServer().getWorlds().get(0).getFullTime();
 			}
+		}
+	}
+	
+	public static int getMajorBuildNum() {
+		if (BenCmd.isRunning()) {
+			return Integer.parseInt(BenCmd.getPlugin().getDescription().getVersion().split("\\.")[0]);
+		} else {
+			return 0;
+		}
+	}
+	
+	public static int getMinorBuildNum() {
+		if (BenCmd.isRunning()) {
+			return Integer.parseInt(BenCmd.getPlugin().getDescription().getVersion().split("\\.")[1]);
+		} else {
+			return 0;
+		}
+	}
+	
+	public static int getRevNum() {
+		if (BenCmd.isRunning()) {
+			return Integer.parseInt(BenCmd.getPlugin().getDescription().getVersion().split("\\.")[2]);
+		} else {
+			return 0;
 		}
 	}
 
