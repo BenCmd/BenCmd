@@ -826,7 +826,7 @@ public class PermissionCommands implements Commands {
 			return;
 		}
 		plugin.actions.removeAction(puser2.isBanned());
-		user.sendMessage(ChatColor.GREEN + "That user has been unjailed!");
+		user.sendMessage(ChatColor.GREEN + "That user has been unbanned!");
 	}
 
 	private long getValue(TimeType tt) {

@@ -27,7 +27,7 @@ public class WarpCommands implements Commands {
 		} catch (ClassCastException e) {
 			user = User.getUser(plugin);
 		}
-		if (commandLabel.equalsIgnoreCase("warp") && user.hasPerm("canWarp")) {
+		if (commandLabel.equalsIgnoreCase("warp") && user.hasPerm("bencmd.warp.self")) {
 			Warp(args, user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("setwarp")
