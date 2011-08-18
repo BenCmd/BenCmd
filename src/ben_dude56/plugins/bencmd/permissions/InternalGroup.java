@@ -92,13 +92,12 @@ class InternalGroup {
 	}
 
 	public boolean hasPerm(String perm, boolean testStar, boolean testGroup) {
-		if (!perm.contains(".")) {
-			throw new InvalidPermissionError();
+		if (perm.contains(",")) {
+			throw new InvalidPermissionError(perm, "Permissions cannot contain commans!");
+		} else if (!perm.contains(".") && !perm.equals("*")) {
+			throw new InvalidPermissionError(perm, "Permissions in the root namespace are not allowed!");
 		}
 		List<String> perms = getPermissions(testGroup);
-		/* if (perms.contains("*") && testStar) {
-			return true;
-		} */
 		List<String> possibleStars = new ArrayList<String>();
 		String currentNamespace = "";
 		for (String splt : perm.split("\\.")) {

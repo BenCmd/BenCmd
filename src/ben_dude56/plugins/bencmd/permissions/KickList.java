@@ -30,7 +30,7 @@ public class KickList {
 	}
 
 	public void addUser(PermissionUser user) {
-		if (user.hasPerm("noKickDelay")) {
+		if (user.hasPerm("bencmd.action.kick.nodelay")) {
 			return;
 		}
 		users.put(

@@ -97,7 +97,7 @@ public class LotCommands implements Commands {
 		if (args[0].equalsIgnoreCase("info")
 				|| args[0].equalsIgnoreCase("properties")
 				|| args[0].equalsIgnoreCase("check")) {
-			if (!user.hasPerm("bencmd.lot.check")) {
+			if (!user.hasPerm("bencmd.lot.info")) {
 				user.sendMessage(ChatColor.RED
 						+ "You do not have permission to check lots!");
 				return;

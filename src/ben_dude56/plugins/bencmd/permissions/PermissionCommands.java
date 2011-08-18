@@ -41,7 +41,7 @@ public class PermissionCommands implements Commands {
 			Status(args, user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("kick")
-				&& user.hasPerm("bencmd.action.kick,normal")) {
+				&& user.hasPerm("bencmd.action.kick.normal")) {
 			Kick(args, user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("mute")
