@@ -9,6 +9,7 @@ import java.util.Properties;
 
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.util.FileUtil;
 
 import ben_dude56.plugins.bencmd.BenCmd;
 
@@ -23,6 +24,16 @@ public class ShelfFile extends Properties {
 		plugin = instance;
 		fileName = file;
 		shelves = new HashMap<Location, Shelf>();
+		if (new File("plugins/BenCmd/_shelves.db").exists()) {
+			plugin.log.warning("Shelf backup file found... Restoring...");
+			if (FileUtil.copy(new File("plugins/BenCmd/_shelves.db"), new File(
+					file))) {
+				new File("plugins/BenCmd/_shelves.db").delete();
+				plugin.log.info("Restoration suceeded!");
+			} else {
+				plugin.log.warning("Failed to restore from backup!");
+			}
+		}
 		loadFile();
 		loadList();
 	}
@@ -111,7 +122,19 @@ public class ShelfFile extends Properties {
 				loc.getWorld().getName() + "," + loc.getBlockX() + ","
 						+ loc.getBlockY() + "," + loc.getBlockZ(),
 				shelf.getText());
+		try {
+			new File("plugins/BenCmd/_shelves.db").createNewFile();
+			if (!FileUtil.copy(new File(fileName), new File(
+					"plugins/BenCmd/_shelves.db"))) {
+				plugin.log.warning("Failed to back up shelf database!");
+			}
+		} catch (IOException e) {
+			plugin.log.warning("Failed to back up shelf database!");
+		}
 		saveFile();
+		try {
+			new File("plugins/BenCmd/_shelves.db").delete();
+		} catch (Exception e) { }
 	}
 
 	public void remShelf(Location loc) {
@@ -131,7 +154,19 @@ public class ShelfFile extends Properties {
 			shelves.remove(shelf.getLocation());
 			this.remove(loc.getWorld().getName() + "," + loc.getBlockX() + ","
 					+ loc.getBlockY() + "," + loc.getBlockZ());
+			try {
+				new File("plugins/BenCmd/_shelves.db").createNewFile();
+				if (!FileUtil.copy(new File(fileName), new File(
+						"plugins/BenCmd/_shelves.db"))) {
+					plugin.log.warning("Failed to back up shelf database!");
+				}
+			} catch (IOException e) {
+				plugin.log.warning("Failed to back up shelf database!");
+			}
 			saveFile();
+			try {
+				new File("plugins/BenCmd/_shelves.db").delete();
+			} catch (Exception e) { }
 		}
 	}
 }

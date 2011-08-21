@@ -10,6 +10,7 @@ import java.util.Properties;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.util.FileUtil;
 
 import ben_dude56.plugins.bencmd.BenCmd;
 import ben_dude56.plugins.bencmd.User;
@@ -24,6 +25,16 @@ public class LotFile extends Properties {
 
 	public LotFile(BenCmd instance) {
 		plugin = instance;
+		if (new File("plugins/BenCmd/_lots.db").exists()) {
+			plugin.log.warning("Lot backup file found... Restoring...");
+			if (FileUtil.copy(new File("plugins/BenCmd/_lots.db"), new File(
+					"plugins/BenCmd/lots.db"))) {
+				new File("plugins/BenCmd/_lots.db").delete();
+				plugin.log.info("Restoration suceeded!");
+			} else {
+				plugin.log.warning("Failed to restore from backup!");
+			}
+		}
 		this.reload(); // Load the values into memory.
 	}
 
@@ -65,6 +76,7 @@ public class LotFile extends Properties {
 	 * This method saves all of the lots.
 	 */
 	public void save() {
+		// TODO Add a method that saves only one lot
 		file = new File("plugins/BenCmd/lots.db"); // Prepare the file
 		if (!file.exists()) {
 			try {
@@ -75,6 +87,15 @@ public class LotFile extends Properties {
 				ex.printStackTrace();
 				return;
 			}
+		}
+		try {
+			new File("plugins/BenCmd/_lots.db").createNewFile();
+			if (!FileUtil.copy(new File("plugins/BenCmd/lots.db"), new File(
+					"plugins/BenCmd/_lots.db"))) {
+				plugin.log.warning("Failed to back up lot database!");
+			}
+		} catch (IOException e) {
+			plugin.log.warning("Failed to back up lot database!");
 		}
 		this.clear();
 		for (Lot lotVal : lot.values()) {
@@ -115,6 +136,9 @@ public class LotFile extends Properties {
 			plugin.log.severe("BenCmd had a problem:");
 			ex.printStackTrace();
 		}
+		try {
+			new File("plugins/BenCmd/_lots.db").delete();
+		} catch (Exception e) { }
 	}
 
 	/**

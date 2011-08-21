@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.bukkit.Bukkit;
+import org.bukkit.util.FileUtil;
 
 import ben_dude56.plugins.bencmd.BenCmd;
 
@@ -24,6 +25,16 @@ public class SPAreaFile extends Properties {
 	public SPAreaFile(BenCmd instance, String file) {
 		plugin = instance;
 		proFile = file;
+		if (new File("plugins/BenCmd/_sparea.db").exists()) {
+			plugin.log.warning("SPArea backup file found... Restoring...");
+			if (FileUtil.copy(new File("plugins/BenCmd/_sparea.db"), new File(
+					file))) {
+				new File("plugins/BenCmd/_sparea.db").delete();
+				plugin.log.info("Restoration suceeded!");
+			} else {
+				plugin.log.warning("Failed to restore from backup!");
+			}
+		}
 		loadFile();
 		loadAreas();
 		Bukkit.getServer().getScheduler()
@@ -103,7 +114,19 @@ public class SPAreaFile extends Properties {
 
 	public void updateArea(SPArea area) throws UnsupportedOperationException {
 		this.put(area.getAreaID().toString(), area.getValue());
+		try {
+			new File("plugins/BenCmd/_sparea.db").createNewFile();
+			if (!FileUtil.copy(new File(proFile), new File(
+					"plugins/BenCmd/_sparea.db"))) {
+				plugin.log.warning("Failed to back up SPArea database!");
+			}
+		} catch (IOException e) {
+			plugin.log.warning("Failed to back up SPArea database!");
+		}
 		saveFile("--SPECIAL PURPOSE AREAS--");
+		try {
+			new File("plugins/BenCmd/_sparea.db").delete();
+		} catch (Exception e) { }
 	}
 
 	public int nextId() {
@@ -131,7 +154,19 @@ public class SPAreaFile extends Properties {
 		area.delete();
 		this.remove(area.getAreaID().toString());
 		areas.remove(area.getAreaID());
+		try {
+			new File("plugins/BenCmd/_sparea.db").createNewFile();
+			if (!FileUtil.copy(new File(proFile), new File(
+					"plugins/BenCmd/_sparea.db"))) {
+				plugin.log.warning("Failed to back up SPArea database!");
+			}
+		} catch (IOException e) {
+			plugin.log.warning("Failed to back up SPArea database!");
+		}
 		saveFile("--SPECIAL PURPOSE AREAS--");
+		try {
+			new File("plugins/BenCmd/_sparea.db").delete();
+		} catch (Exception e) { }
 	}
 
 	public class TimeCheck implements Runnable {

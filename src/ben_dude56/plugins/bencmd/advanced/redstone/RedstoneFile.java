@@ -11,6 +11,7 @@ import java.util.Properties;
 
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.util.FileUtil;
 
 import ben_dude56.plugins.bencmd.BenCmd;
 
@@ -25,6 +26,16 @@ public class RedstoneFile extends Properties {
 		plugin = instance;
 		filename = file;
 		levers = new HashMap<Location, RedstoneLever>();
+		if (new File("plugins/BenCmd/_lever.db").exists()) {
+			plugin.log.warning("Lever backup file found... Restoring...");
+			if (FileUtil.copy(new File("plugins/BenCmd/_lever.db"), new File(
+					file))) {
+				new File("plugins/BenCmd/_lever.db").delete();
+				plugin.log.info("Restoration suceeded!");
+			} else {
+				plugin.log.warning("Failed to restore from backup!");
+			}
+		}
 		loadFile();
 		loadLevers();
 	}
@@ -103,13 +114,31 @@ public class RedstoneFile extends Properties {
 				+ l.getBlockY() + "," + l.getBlockZ());
 		saveFile();
 	}
-
+	
 	public void saveLever(RedstoneLever lever) {
+		saveLever(lever, true);
+	}
+
+	public void saveLever(RedstoneLever lever, boolean saveFile) {
 		Location l = lever.getLocation();
 		this.put(
 				l.getWorld().getName() + "," + l.getBlockX() + ","
 						+ l.getBlockY() + "," + l.getBlockZ(), lever.getValue());
-		saveFile();
+		if (saveFile) {
+			try {
+				new File("plugins/BenCmd/_lever.db").createNewFile();
+				if (!FileUtil.copy(new File(filename), new File(
+						"plugins/BenCmd/_lever.db"))) {
+					plugin.log.warning("Failed to back up lever database!");
+				}
+			} catch (IOException e) {
+				plugin.log.warning("Failed to back up lever database!");
+			}
+			saveFile();
+			try {
+				new File("plugins/BenCmd/_lever.db").delete();
+			} catch (Exception e) { }
+		}
 	}
 
 	public void saveAll() {

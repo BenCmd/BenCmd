@@ -10,6 +10,7 @@ import java.util.Properties;
 
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.util.FileUtil;
 
 import ben_dude56.plugins.bencmd.BenCmd;
 import ben_dude56.plugins.bencmd.permissions.PermissionUser;
@@ -23,6 +24,16 @@ public class ProtectFile extends Properties {
 	public ProtectFile(BenCmd instance, String protectList) {
 		plugin = instance;
 		proFile = protectList;
+		if (new File("plugins/BenCmd/_protection.db").exists()) {
+			plugin.log.warning("Protection backup file found... Restoring...");
+			if (FileUtil.copy(new File("plugins/BenCmd/_protection.db"), new File(
+					protectList))) {
+				new File("plugins/BenCmd/_protection.db").delete();
+				plugin.log.info("Restoration suceeded!");
+			} else {
+				plugin.log.warning("Failed to restore from backup!");
+			}
+		}
 		loadFile();
 		loadValues();
 	}
@@ -229,12 +240,36 @@ public class ProtectFile extends Properties {
 					+ String.valueOf(blockLoc.getBlockZ());
 			this.put(key, value);
 		}
-		this.saveFile(proFile);
+		try {
+			new File("plugins/BenCmd/_protection.db").createNewFile();
+			if (!FileUtil.copy(new File(proFile), new File(
+					"plugins/BenCmd/_protection.db"))) {
+				plugin.log.warning("Failed to back up protection database!");
+			}
+		} catch (IOException e) {
+			plugin.log.warning("Failed to back up protection database!");
+		}
+		saveFile(proFile);
+		try {
+			new File("plugins/BenCmd/_protection.db").delete();
+		} catch (Exception e) { }
 	}
 
 	public void remValue(Integer id) {
 		this.remove(id.toString());
-		this.saveFile(proFile);
+		try {
+			new File("plugins/BenCmd/_protection.db").createNewFile();
+			if (!FileUtil.copy(new File(proFile), new File(
+					"plugins/BenCmd/_protection.db"))) {
+				plugin.log.warning("Failed to back up protection database!");
+			}
+		} catch (IOException e) {
+			plugin.log.warning("Failed to back up protection database!");
+		}
+		saveFile(proFile);
+		try {
+			new File("plugins/BenCmd/_protection.db").delete();
+		} catch (Exception e) { }
 	}
 
 	public int getProtection(Location loc) {

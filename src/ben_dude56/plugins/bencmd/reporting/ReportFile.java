@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.bukkit.ChatColor;
+import org.bukkit.util.FileUtil;
 
 import ben_dude56.plugins.bencmd.BenCmd;
 import ben_dude56.plugins.bencmd.User;
@@ -31,6 +32,16 @@ public class ReportFile extends Properties {
 
 	public ReportFile(BenCmd instance) {
 		plugin = instance;
+		if (new File("plugins/BenCmd/_tickets.db").exists()) {
+			plugin.log.warning("Ticket backup file found... Restoring...");
+			if (FileUtil.copy(new File("plugins/BenCmd/_tickets.db"), new File(
+					proFile))) {
+				new File("plugins/BenCmd/_tickets.db").delete();
+				plugin.log.info("Restoration suceeded!");
+			} else {
+				plugin.log.warning("Failed to restore from backup!");
+			}
+		}
 		this.loadFile();
 		this.loadTickets();
 	}
@@ -73,7 +84,7 @@ public class ReportFile extends Properties {
 
 	public void copyToOld() throws IOException, FileNotFoundException {
 		File current = new File(proFile);
-		File old = new File("plugins/BenCmd/tickets.db");
+		File old = new File("plugins/BenCmd/oldtickets.db");
 		if (!old.exists()) {
 			old.createNewFile();
 		}
@@ -248,14 +259,6 @@ public class ReportFile extends Properties {
 				finalRemark, timesReopened, new ArrayList<String>());
 	}
 
-	/**
-	 * @deprecated Causes excessive lag
-	 */
-	public void saveAll() {
-		saveTickets();
-		saveFile("== BenCmd Tickets ==");
-	}
-
 	public void saveFile(String header) {
 		File file = new File(proFile);
 		if (file.exists()) {
@@ -265,49 +268,6 @@ public class ReportFile extends Properties {
 				System.out.println("BenCmd had a problem:");
 				e.printStackTrace();
 			}
-		}
-	}
-
-	/**
-	 * @deprecated Causes excessive lag
-	 */
-	public void saveTickets() {
-		this.clear();
-		for (Report ticket : reports.values()) {
-			String key = ticket.getId().toString();
-			String value = ticket.getSender().getName() + "/";
-			value += ticket.getAccused().getName() + "/";
-			value += ticket.getReason() + "/";
-			value += ticket.getTimesReopened().toString() + "/";
-			value += ticket.getRemark() + "/";
-			boolean first = true;
-			for (String info : ticket.getAddedInfo()) {
-				if (first) {
-					first = false;
-					value += info;
-				} else {
-					value += "," + info;
-				}
-			}
-			value += "/";
-			switch (ticket.getStatus()) {
-			case UNREAD:
-				value += "u";
-				break;
-			case READ:
-				value += "r";
-				break;
-			case INVESTIGATING:
-				value += "i";
-				break;
-			case CLOSED:
-				value += "c";
-				break;
-			case LOCKED:
-				value += "l";
-				break;
-			}
-			this.put(key, value);
 		}
 	}
 
@@ -498,7 +458,19 @@ public class ReportFile extends Properties {
 			break;
 		}
 		this.put(key, value);
+		try {
+			new File("plugins/BenCmd/_tickets.db").createNewFile();
+			if (!FileUtil.copy(new File(proFile), new File(
+					"plugins/BenCmd/_tickets.db"))) {
+				plugin.log.warning("Failed to back up ticket database!");
+			}
+		} catch (IOException e) {
+			plugin.log.warning("Failed to back up ticket database!");
+		}
 		saveFile("== BenCmd Tickets ==");
+		try {
+			new File("plugins/BenCmd/_tickets.db").delete();
+		} catch (Exception e) { }
 		if (ticket.getStatus() == ReportStatus.UNREAD) {
 			setUnread(ticket);
 		} else {

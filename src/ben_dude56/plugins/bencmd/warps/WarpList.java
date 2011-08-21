@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 import org.bukkit.entity.Player;
+import org.bukkit.util.FileUtil;
 
 import ben_dude56.plugins.bencmd.*;
 
@@ -24,6 +25,16 @@ public class WarpList {
 
 	public WarpList(BenCmd instance) {
 		plugin = instance;
+		if (new File("plugins/BenCmd/_warps.db").exists()) {
+			plugin.log.warning("Warp backup file found... Restoring...");
+			if (FileUtil.copy(new File("plugins/BenCmd/_warps.db"), new File(
+					"plugins/BenCmd/warps.db"))) {
+				new File("plugins/BenCmd/_warps.db").delete();
+				plugin.log.info("Restoration suceeded!");
+			} else {
+				plugin.log.warning("Failed to restore from backup!");
+			}
+		}
 		LoadWarps();
 	}
 
@@ -45,7 +56,19 @@ public class WarpList {
 		} else {
 			warpString.add(ind, value);
 		}
+		try {
+			new File("plugins/BenCmd/_warps.db").createNewFile();
+			if (!FileUtil.copy(new File("plugins/BenCmd/warps.db"), new File(
+					"plugins/BenCmd/_warps.db"))) {
+				plugin.log.warning("Failed to back up warp database!");
+			}
+		} catch (IOException e) {
+			plugin.log.warning("Failed to back up warp database!");
+		}
 		SaveFile();
+		try {
+			new File("plugins/BenCmd/_warps.db").delete();
+		} catch (Exception e) { }
 		return true;
 	}
 
@@ -55,7 +78,19 @@ public class WarpList {
 			return false;
 		}
 		warpString.remove(ind);
+		try {
+			new File("plugins/BenCmd/_warps.db").createNewFile();
+			if (!FileUtil.copy(new File("plugins/BenCmd/warps.db"), new File(
+					"plugins/BenCmd/_warps.db"))) {
+				plugin.log.warning("Failed to back up warp database!");
+			}
+		} catch (IOException e) {
+			plugin.log.warning("Failed to back up warp database!");
+		}
 		SaveFile();
+		try {
+			new File("plugins/BenCmd/_warps.db").delete();
+		} catch (Exception e) { }
 		return true;
 	}
 

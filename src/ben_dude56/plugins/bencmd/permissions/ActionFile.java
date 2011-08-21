@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Timer;
 
+import org.bukkit.util.FileUtil;
+
 import ben_dude56.plugins.bencmd.BenCmd;
 import ben_dude56.plugins.bencmd.permissions.Action.ActionType;
 
@@ -23,6 +25,16 @@ public class ActionFile extends Properties {
 
 	public ActionFile(BenCmd instance) {
 		plugin = instance;
+		if (new File("plugins/BenCmd/_action.db").exists()) {
+			plugin.log.warning("Action backup file found... Restoring...");
+			if (FileUtil.copy(new File("plugins/BenCmd/_action.db"), new File(
+					"plugins/BenCmd/action.db"))) {
+				new File("plugins/BenCmd/_action.db").delete();
+				plugin.log.info("Restoration suceeded!");
+			} else {
+				plugin.log.warning("Failed to restore from backup!");
+			}
+		}
 		this.loadFile();
 		this.loadActions();
 		time.schedule(new ActionTask(this), 0, 1000);
@@ -173,7 +185,19 @@ public class ActionFile extends Properties {
 				action.getUser().getName() + "/" + action.getActionLetter()
 						+ "/" + String.valueOf(action.getExpiry()));
 		actions.put(action.getId(), action);
-		this.saveFile();
+		try {
+			new File("plugins/BenCmd/_action.db").createNewFile();
+			if (!FileUtil.copy(new File("plugins/BenCmd/action.db"), new File(
+					"plugins/BenCmd/_action.db"))) {
+				plugin.log.warning("Failed to back up action database!");
+			}
+		} catch (IOException e) {
+			plugin.log.warning("Failed to back up action database!");
+		}
+		saveFile();
+		try {
+			new File("plugins/BenCmd/_action.db").delete();
+		} catch (Exception e) { }
 	}
 
 	public void removeAction(Action action) {
@@ -182,7 +206,19 @@ public class ActionFile extends Properties {
 		}
 		this.remove(String.valueOf(action.getId()));
 		actions.remove(action.getId());
-		this.saveFile();
+		try {
+			new File("plugins/BenCmd/_action.db").createNewFile();
+			if (!FileUtil.copy(new File("plugins/BenCmd/action.db"), new File(
+					"plugins/BenCmd/_action.db"))) {
+				plugin.log.warning("Failed to back up action database!");
+			}
+		} catch (IOException e) {
+			plugin.log.warning("Failed to back up action database!");
+		}
+		saveFile();
+		try {
+			new File("plugins/BenCmd/_action.db").delete();
+		} catch (Exception e) { }
 	}
 
 	public void saveFile() {

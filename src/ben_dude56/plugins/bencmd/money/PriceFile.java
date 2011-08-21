@@ -13,6 +13,7 @@ import java.util.Properties;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.FileUtil;
 
 import ben_dude56.plugins.bencmd.BenCmd;
 import ben_dude56.plugins.bencmd.invtools.BCItem;
@@ -33,6 +34,16 @@ public class PriceFile extends Properties {
 		plugin = instance;
 		proFile = priceLocation;
 		back = new InventoryBackend(plugin);
+		if (new File("plugins/BenCmd/_prices.db").exists()) {
+			plugin.log.warning("Price backup file found... Restoring...");
+			if (FileUtil.copy(new File("plugins/BenCmd/_prices.db"), new File(
+					priceLocation))) {
+				new File("plugins/BenCmd/_prices.db").delete();
+				plugin.log.info("Restoration suceeded!");
+			} else {
+				plugin.log.warning("Failed to restore from backup!");
+			}
+		}
 		loadFile();
 		loadPrices();
 		if (plugin.mainProperties.getInteger("updateTime", 1800000) == -1) {
@@ -242,14 +253,38 @@ public class PriceFile extends Properties {
 		}
 		this.put(key, value);
 		items.put(key, item);
+		try {
+			new File("plugins/BenCmd/_prices.db").createNewFile();
+			if (!FileUtil.copy(new File(proFile), new File(
+					"plugins/BenCmd/_prices.db"))) {
+				plugin.log.warning("Failed to back up price database!");
+			}
+		} catch (IOException e) {
+			plugin.log.warning("Failed to back up price database!");
+		}
 		saveFile();
+		try {
+			new File("plugins/BenCmd/_prices.db").delete();
+		} catch (Exception e) { }
 	}
 
 	public void remPrice(BuyableItem item) {
 		String key = item.getItemId() + "," + item.getDurability();
 		this.remove(key);
 		items.remove(key);
+		try {
+			new File("plugins/BenCmd/_prices.db").createNewFile();
+			if (!FileUtil.copy(new File(proFile), new File(
+					"plugins/BenCmd/_prices.db"))) {
+				plugin.log.warning("Failed to back up price database!");
+			}
+		} catch (IOException e) {
+			plugin.log.warning("Failed to back up price database!");
+		}
 		saveFile();
+		try {
+			new File("plugins/BenCmd/_prices.db").delete();
+		} catch (Exception e) { }
 	}
 
 	public void pollUpdate() {
@@ -325,7 +360,19 @@ public class PriceFile extends Properties {
 
 	public void saveUpdateTime() {
 		this.put("nextUpdate", String.valueOf(nextUpdate));
+		try {
+			new File("plugins/BenCmd/_prices.db").createNewFile();
+			if (!FileUtil.copy(new File(proFile), new File(
+					"plugins/BenCmd/_prices.db"))) {
+				plugin.log.warning("Failed to back up price database!");
+			}
+		} catch (IOException e) {
+			plugin.log.warning("Failed to back up price database!");
+		}
 		saveFile();
+		try {
+			new File("plugins/BenCmd/_prices.db").delete();
+		} catch (Exception e) { }
 	}
 
 	public BuyableItem getItem(BCItem item) {

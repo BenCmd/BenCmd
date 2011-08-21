@@ -114,7 +114,7 @@ import ben_dude56.plugins.bencmd.weather.WeatherPListener;
  */
 public class BenCmd extends JavaPlugin implements PermissionsProvider {
 	public final static boolean debug = true;
-	public final static int buildId = 8;
+	public final static int buildId = 9;
 	public final static int cbbuild = 1051;
 	public final static String downloadServer = "cloud.github.com";
 	public final static String verLoc = "http://cloud.github.com/downloads/BenCmd/BenCmd/version.txt";
@@ -489,8 +489,6 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 		pm.registerEvent(Event.Type.CHUNK_LOAD, this.npccl,
 				Event.Priority.Monitor, this);
 		pm.registerEvent(Event.Type.CHUNK_UNLOAD, this.npccl,
-				Event.Priority.Monitor, this);
-		pm.registerEvent(Event.Type.WORLD_SAVE, this.npccl,
 				Event.Priority.Monitor, this);
 		pm.registerEvent(Event.Type.CUSTOM_EVENT, new BenCmdSpoutListener(), Event.Priority.Normal, this);
 		PluginDescriptionFile pdfFile = this.getDescription();

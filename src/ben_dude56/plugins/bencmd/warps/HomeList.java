@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.bukkit.util.FileUtil;
+
 import ben_dude56.plugins.bencmd.BenCmd;
 
 public class HomeList {
@@ -22,6 +24,16 @@ public class HomeList {
 
 	public HomeList(BenCmd instance) {
 		plugin = instance;
+		if (new File("plugins/BenCmd/_homes.db").exists()) {
+			plugin.log.warning("Home backup file found... Restoring...");
+			if (FileUtil.copy(new File("plugins/BenCmd/_homes.db"), new File(
+					"plugins/BenCmd/homes.db"))) {
+				new File("plugins/BenCmd/_homes.db").delete();
+				plugin.log.info("Restoration suceeded!");
+			} else {
+				plugin.log.warning("Failed to restore from backup!");
+			}
+		}
 		LoadHomes();
 	}
 
@@ -43,7 +55,19 @@ public class HomeList {
 		} else {
 			warpString.add(ind, value);
 		}
+		try {
+			new File("plugins/BenCmd/_homes.db").createNewFile();
+			if (!FileUtil.copy(new File("plugins/BenCmd/homes.db"), new File(
+					"plugins/BenCmd/_homes.db"))) {
+				plugin.log.warning("Failed to back up home database!");
+			}
+		} catch (IOException e) {
+			plugin.log.warning("Failed to back up home database!");
+		}
 		SaveFile();
+		try {
+			new File("plugins/BenCmd/_homes.db").delete();
+		} catch (Exception e) { }
 		return true;
 	}
 
@@ -53,7 +77,19 @@ public class HomeList {
 			return false;
 		}
 		warpString.remove(ind);
+		try {
+			new File("plugins/BenCmd/_homes.db").createNewFile();
+			if (!FileUtil.copy(new File("plugins/BenCmd/homes.db"), new File(
+					"plugins/BenCmd/_homes.db"))) {
+				plugin.log.warning("Failed to back up home database!");
+			}
+		} catch (IOException e) {
+			plugin.log.warning("Failed to back up home database!");
+		}
 		SaveFile();
+		try {
+			new File("plugins/BenCmd/_homes.db").delete();
+		} catch (Exception e) { }
 		return true;
 	}
 

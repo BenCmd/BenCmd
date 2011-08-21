@@ -13,6 +13,7 @@ import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.CraftChunk;
+import org.bukkit.util.FileUtil;
 
 import ben_dude56.plugins.bencmd.BenCmd;
 import ben_dude56.plugins.bencmd.advanced.npc.BlacksmithNPC.*;
@@ -28,6 +29,16 @@ public class NPCFile extends Properties {
 		plugin = instance;
 		filename = file;
 		npcs = new HashMap<Integer, NPC>();
+		if (new File("plugins/BenCmd/_npc.db").exists()) {
+			plugin.log.warning("NPC backup file found... Restoring...");
+			if (FileUtil.copy(new File("plugins/BenCmd/_npc.db"), new File(
+					file))) {
+				new File("plugins/BenCmd/_npc.db").delete();
+				plugin.log.info("Restoration suceeded!");
+			} else {
+				plugin.log.warning("Failed to restore from backup!");
+			}
+		}
 		loadFile();
 		loadNPCs();
 	}
@@ -155,15 +166,46 @@ public class NPCFile extends Properties {
 		this.remove(String.valueOf(npc.getID()));
 		saveFile();
 	}
-
+	
 	public void saveNPC(NPC npc) {
+		saveNPC(npc, true);
+	}
+
+	public void saveNPC(NPC npc, boolean saveFile) {
 		this.put(String.valueOf(npc.getID()), npc.getValue());
-		saveFile();
+		if (saveFile) {
+			try {
+				new File("plugins/BenCmd/_npc.db").createNewFile();
+				if (!FileUtil.copy(new File(filename), new File(
+						"plugins/BenCmd/_npc.db"))) {
+					plugin.log.warning("Failed to back up NPC database!");
+				}
+			} catch (IOException e) {
+				plugin.log.warning("Failed to back up NPC database!");
+			}
+			saveFile();
+			try {
+				new File("plugins/BenCmd/_npc.db").delete();
+			} catch (Exception e) { }
+		}
 	}
 
 	public void saveAll() {
 		for (NPC npc : npcs.values()) {
-			saveNPC(npc);
+			saveNPC(npc, false);
 		}
+		try {
+			new File("plugins/BenCmd/_npc.db").createNewFile();
+			if (!FileUtil.copy(new File(filename), new File(
+					"plugins/BenCmd/_npc.db"))) {
+				plugin.log.warning("Failed to back up NPC database!");
+			}
+		} catch (IOException e) {
+			plugin.log.warning("Failed to back up NPC database!");
+		}
+		saveFile();
+		try {
+			new File("plugins/BenCmd/_npc.db").delete();
+		} catch (Exception e) { }
 	}
 }

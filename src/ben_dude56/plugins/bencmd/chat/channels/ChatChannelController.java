@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.bukkit.ChatColor;
+import org.bukkit.util.FileUtil;
 
 import ben_dude56.plugins.bencmd.BenCmd;
 import ben_dude56.plugins.bencmd.User;
@@ -25,6 +26,16 @@ public class ChatChannelController extends Properties {
 		plugin = instance;
 		this.fileName = fileName;
 		channels = new ArrayList<ChatChannel>();
+		if (new File("plugins/BenCmd/_channels.db").exists()) {
+			plugin.log.warning("Channel backup file found... Restoring...");
+			if (FileUtil.copy(new File("plugins/BenCmd/_channels.db"), new File(
+					fileName))) {
+				new File("plugins/BenCmd/_channels.db").delete();
+				plugin.log.info("Restoration suceeded!");
+			} else {
+				plugin.log.warning("Failed to restore from backup!");
+			}
+		}
 		loadFile();
 		loadChannels();
 	}
@@ -42,7 +53,19 @@ public class ChatChannelController extends Properties {
 
 	protected void saveChannel(ChatChannel channel) {
 		this.put(channel.getName(), channel.getValue());
-		this.saveFile("-BenCmd Channel List-");
+		try {
+			new File("plugins/BenCmd/_channels.db").createNewFile();
+			if (!FileUtil.copy(new File(fileName), new File(
+					"plugins/BenCmd/_channels.db"))) {
+				plugin.log.warning("Failed to back up channel database!");
+			}
+		} catch (IOException e) {
+			plugin.log.warning("Failed to back up channel database!");
+		}
+		saveFile("-BenCmd Channel List-");
+		try {
+			new File("plugins/BenCmd/_channels.db").delete();
+		} catch (Exception e) { }
 	}
 
 	public ChatChannel getChannel(String name) {

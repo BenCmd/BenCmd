@@ -9,6 +9,7 @@ import java.util.Properties;
 
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.util.FileUtil;
 
 import ben_dude56.plugins.bencmd.BenCmd;
 import ben_dude56.plugins.bencmd.permissions.PermissionGroup;
@@ -24,6 +25,16 @@ public class PortalFile extends Properties {
 		plugin = instance;
 		this.fileName = fileName;
 		portals = new HashMap<Location, Portal>();
+		if (new File("plugins/BenCmd/_portals.db").exists()) {
+			plugin.log.warning("Portal backup file found... Restoring...");
+			if (FileUtil.copy(new File("plugins/BenCmd/_portals.db"), new File(
+					fileName))) {
+				new File("plugins/BenCmd/_portals.db").delete();
+				plugin.log.info("Restoration suceeded!");
+			} else {
+				plugin.log.warning("Failed to restore from backup!");
+			}
+		}
 		loadFile();
 		loadPortals();
 	}
@@ -162,7 +173,19 @@ public class PortalFile extends Properties {
 					+ loc.getBlockY() + "," + loc.getBlockZ(), groupname + "/"
 					+ portal.getWarp().warpName);
 		}
+		try {
+			new File("plugins/BenCmd/_portals.db").createNewFile();
+			if (!FileUtil.copy(new File(fileName), new File(
+					"plugins/BenCmd/_portals.db"))) {
+				plugin.log.warning("Failed to back up portal database!");
+			}
+		} catch (IOException e) {
+			plugin.log.warning("Failed to back up portal database!");
+		}
 		saveFile();
+		try {
+			new File("plugins/BenCmd/_portals.db").delete();
+		} catch (Exception e) { }
 	}
 
 	public void addPortal(Portal portal) {
@@ -174,6 +197,18 @@ public class PortalFile extends Properties {
 		portals.remove(loc);
 		this.remove(loc.getWorld().getName() + "," + loc.getBlockX() + ","
 					+ loc.getBlockY() + "," + loc.getBlockZ());
+		try {
+			new File("plugins/BenCmd/_portals.db").createNewFile();
+			if (!FileUtil.copy(new File(fileName), new File(
+					"plugins/BenCmd/_portals.db"))) {
+				plugin.log.warning("Failed to back up portal database!");
+			}
+		} catch (IOException e) {
+			plugin.log.warning("Failed to back up portal database!");
+		}
 		saveFile();
+		try {
+			new File("plugins/BenCmd/_portals.db").delete();
+		} catch (Exception e) { }
 	}
 }

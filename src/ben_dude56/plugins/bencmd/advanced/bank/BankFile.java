@@ -35,6 +35,14 @@ public class BankFile extends Properties {
 		}
 		loadFile();
 		loadBanks();
+		plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
+
+			@Override
+			public void run() {
+				saveAll();
+			}
+			
+		}, 12000, 12000);
 	}
 
 	public void loadFile() {
@@ -131,22 +139,40 @@ public class BankFile extends Properties {
 			this.put(bank.p, bank.getValue());
 		} catch (Exception e) {
 		}
-	}
-
-	public void saveAll() {
 		try {
-			new File("/plugins/BenCmd/_bank.db").createNewFile();
+			new File("plugins/BenCmd/_bank.db").createNewFile();
+			if (!FileUtil.copy(new File(filename), new File(
+					"plugins/BenCmd/_bank.db"))) {
+				plugin.log.warning("Failed to back up bank database!");
+			}
 		} catch (IOException e) {
 			plugin.log.warning("Failed to back up bank database!");
 		}
-		if (!FileUtil.copy(new File(filename), new File(
-				"/plugins/BenCmd/_bank.db"))) {
-			plugin.log.warning("Failed to back up bank database!");
-		}
+		saveFile();
+		try {
+			new File("plugins/BenCmd/_bank.db").delete();
+		} catch (Exception e) { }
+	}
+
+	public void saveAll() {
 		for (BankInventory bank : banks.values()) {
 			saveBank(bank);
 		}
+		for (Player p : plugin.getServer().getOnlinePlayers()) {
+			p.saveData();
+		}
+		try {
+			new File("plugins/BenCmd/_bank.db").createNewFile();
+			if (!FileUtil.copy(new File(filename), new File(
+					"plugins/BenCmd/_bank.db"))) {
+				plugin.log.warning("Failed to back up bank database!");
+			}
+		} catch (IOException e) {
+			plugin.log.warning("Failed to back up bank database!");
+		}
 		saveFile();
-		new File("/plugins/BenCmd/_bank.db").delete();
+		try {
+			new File("plugins/BenCmd/_bank.db").delete();
+		} catch (Exception e) { }
 	}
 }

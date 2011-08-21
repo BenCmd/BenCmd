@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 
+import org.bukkit.util.FileUtil;
+
 public class GroupFile extends Properties {
 
 	private static final long serialVersionUID = 0L;
@@ -19,6 +21,16 @@ public class GroupFile extends Properties {
 
 	public GroupFile(MainPermissions mainPermissions) {
 		mainPerm = mainPermissions; // Initialize the value of the parent
+		if (new File("plugins/BenCmd/_groups.db").exists()) {
+			mainPerm.plugin.log.warning("Group backup file found... Restoring...");
+			if (FileUtil.copy(new File("plugins/BenCmd/_groups.db"), new File(
+					"plugins/BenCmd/groups.db"))) {
+				new File("plugins/BenCmd/_groups.db").delete();
+				mainPerm.plugin.log.info("Restoration suceeded!");
+			} else {
+				mainPerm.plugin.log.warning("Failed to restore from backup!");
+			}
+		}
 		this.loadFile(); // Load the values into memory.
 		this.loadGroups();
 	}
@@ -80,7 +92,19 @@ public class GroupFile extends Properties {
 						+ group.getPrefix() + "/"
 						+ Integer.toString(group.getColorCode(), 16) + "/"
 						+ group.getLevel().toString());
+		try {
+			new File("plugins/BenCmd/_groups.db").createNewFile();
+			if (!FileUtil.copy(new File("plugins/BenCmd/groups.db"), new File(
+					"plugins/BenCmd/_groups.db"))) {
+				mainPerm.plugin.log.warning("Failed to back up group database!");
+			}
+		} catch (IOException e) {
+			mainPerm.plugin.log.warning("Failed to back up group database!");
+		}
 		saveFile();
+		try {
+			new File("plugins/BenCmd/_groups.db").delete();
+		} catch (Exception e) { }
 	}
 
 	public void addGroup(PermissionGroup group) {
@@ -93,7 +117,19 @@ public class GroupFile extends Properties {
 		}
 		this.remove(group.getName());
 		groups.remove(group.getName());
+		try {
+			new File("plugins/BenCmd/_groups.db").createNewFile();
+			if (!FileUtil.copy(new File("plugins/BenCmd/groups.db"), new File(
+					"plugins/BenCmd/_groups.db"))) {
+				mainPerm.plugin.log.warning("Failed to back up group database!");
+			}
+		} catch (IOException e) {
+			mainPerm.plugin.log.warning("Failed to back up group database!");
+		}
 		saveFile();
+		try {
+			new File("plugins/BenCmd/_groups.db").delete();
+		} catch (Exception e) { }
 	}
 
 	public void loadGroups() {

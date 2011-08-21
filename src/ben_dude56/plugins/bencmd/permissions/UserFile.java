@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.util.FileUtil;
 
 import ben_dude56.plugins.bencmd.User;
 
@@ -26,6 +27,16 @@ public class UserFile extends Properties {
 
 	public UserFile(MainPermissions mainPermissions) {
 		mainPerm = mainPermissions; // Initialize the value of the parent
+		if (new File("plugins/BenCmd/_users.db").exists()) {
+			mainPerm.plugin.log.warning("User backup file found... Restoring...");
+			if (FileUtil.copy(new File("plugins/BenCmd/_users.db"), new File(
+					"plugins/BenCmd/users.db"))) {
+				new File("plugins/BenCmd/_users.db").delete();
+				mainPerm.plugin.log.info("Restoration suceeded!");
+			} else {
+				mainPerm.plugin.log.warning("Failed to restore from backup!");
+			}
+		}
 		loadFile();
 		loadUsers();
 	}
@@ -62,13 +73,37 @@ public class UserFile extends Properties {
 		}
 		this.put(user.getName(), value);
 		users.put(user.getName(), user);
+		try {
+			new File("plugins/BenCmd/_users.db").createNewFile();
+			if (!FileUtil.copy(new File("plugins/BenCmd/users.db"), new File(
+					"plugins/BenCmd/_users.db"))) {
+				mainPerm.plugin.log.warning("Failed to back up user database!");
+			}
+		} catch (IOException e) {
+			mainPerm.plugin.log.warning("Failed to back up user database!");
+		}
 		saveFile();
+		try {
+			new File("plugins/BenCmd/_users.db").delete();
+		} catch (Exception e) { }
 	}
 
 	public void removeUser(PermissionUser user) {
 		this.remove(user.getName());
 		users.remove(user.getName());
+		try {
+			new File("plugins/BenCmd/_users.db").createNewFile();
+			if (!FileUtil.copy(new File("plugins/BenCmd/users.db"), new File(
+					"plugins/BenCmd/_users.db"))) {
+				mainPerm.plugin.log.warning("Failed to back up user database!");
+			}
+		} catch (IOException e) {
+			mainPerm.plugin.log.warning("Failed to back up user database!");
+		}
 		saveFile();
+		try {
+			new File("plugins/BenCmd/_users.db").delete();
+		} catch (Exception e) { }
 	}
 
 	public void loadUsers() {
