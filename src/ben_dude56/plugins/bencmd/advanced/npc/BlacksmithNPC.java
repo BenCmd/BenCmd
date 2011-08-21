@@ -2,10 +2,14 @@ package ben_dude56.plugins.bencmd.advanced.npc;
 
 import java.util.HashMap;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.craftbukkit.CraftServer;
+import org.bukkit.craftbukkit.entity.CraftHumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.getspout.spoutapi.SpoutManager;
 
 import ben_dude56.plugins.bencmd.BenCmd;
 import ben_dude56.plugins.bencmd.User;
@@ -14,6 +18,19 @@ import ben_dude56.plugins.bencmd.money.BuyableItem;
 public class BlacksmithNPC extends NPC implements Clickable {
 	private HashMap<ToolMaterial, HashMap<ToolType, Double>> toolPrices;
 	private HashMap<ArmorMaterial, HashMap<ArmorType, Double>> armorPrices;
+	
+	@Override
+	public void spawn() {
+		super.spawn();
+		if (plugin.spoutcraft) { 
+			SpoutManager.getAppearanceManager().setGlobalSkin(new CraftHumanEntity((CraftServer) Bukkit.getServer(), super.enpc), "https://s3.amazonaws.com/squirt/i4e3a60f8b073748006686458381081478116.png");
+		}
+	}
+	
+	@Override
+	public String getSkinURL() {
+		return "https://s3.amazonaws.com/squirt/i4e3a60f8b073748006686458381081478116.png";
+	}
 
 	public static HashMap<ToolMaterial, HashMap<ToolType, Double>> readTools(
 			String s) {
@@ -236,6 +253,9 @@ public class BlacksmithNPC extends NPC implements Clickable {
 		}
 		if (armor == null) {
 			armorPrices = new HashMap<ArmorMaterial, HashMap<ArmorType, Double>>();
+		}
+		if (plugin.spoutcraft) { 
+			SpoutManager.getAppearanceManager().setGlobalSkin(new CraftHumanEntity((CraftServer) Bukkit.getServer(), super.enpc), "https://s3.amazonaws.com/squirt/i4e3a60f8b073748006686458381081478116.png");
 		}
 	}
 

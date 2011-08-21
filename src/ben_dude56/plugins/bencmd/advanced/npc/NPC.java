@@ -7,6 +7,9 @@ import net.minecraft.server.WorldServer;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.entity.Player;
+import org.getspout.spoutapi.packet.PacketSkinURL;
+import org.getspout.spoutapi.player.SpoutPlayer;
 
 import ben_dude56.plugins.bencmd.BenCmd;
 
@@ -26,6 +29,18 @@ public class NPC {
 			spawn();
 		}
 	}
+	
+	public boolean isSpawned() {
+		return enpc != null;
+	}
+	
+	public int getEntityId() {
+		if (isSpawned()) {
+			return enpc.id;
+		} else {
+			return -1;
+		}
+	}
 
 	public void spawn() {
 		if (enpc == null) {
@@ -36,6 +51,14 @@ public class NPC {
 					l.getPitch());
 			ws.addEntity(enpc);
 			ws.players.remove(enpc);
+			if (plugin.spoutcraft) {
+				for (Player p : plugin.getServer().getOnlinePlayers()) {
+					SpoutPlayer player = ((SpoutPlayer) p);
+					if (player.getVersion() > 4) {
+						player.sendPacket(new PacketSkinURL(enpc.id, getSkinURL()));
+					}
+				}
+			}
 		}
 	}
 
@@ -51,6 +74,10 @@ public class NPC {
 	public String getValue() {
 		throw new UnsupportedOperationException("getValue() not overridden!");
 	}
+	
+	public String getSkinURL() {
+		throw new UnsupportedOperationException("No skin URL provided!");
+	}
 
 	public int getID() {
 		return id;
@@ -58,6 +85,15 @@ public class NPC {
 
 	public String getName() {
 		return enpc.name;
+	}
+	
+	public void setName(String name) {
+		despawn();
+		n = name;
+		spawn();
+		despawn();
+		spawn();
+		plugin.npcs.saveNPC(this);
 	}
 
 	public Location getCurrentLocation() {

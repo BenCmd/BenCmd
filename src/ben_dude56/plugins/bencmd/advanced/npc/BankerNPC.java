@@ -2,7 +2,6 @@ package ben_dude56.plugins.bencmd.advanced.npc;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-
 import ben_dude56.plugins.bencmd.BenCmd;
 import ben_dude56.plugins.bencmd.advanced.bank.BankInventory;
 
@@ -10,6 +9,11 @@ public class BankerNPC extends NPC implements Clickable {
 
 	public BankerNPC(BenCmd instance, int id, Location l) {
 		super(instance, "Banker", id, l);
+	}
+	
+	@Override
+	public String getSkinURL() {
+		return "http://s3.amazonaws.com/squirt/i4e2869fa774793133401218182131713162132.png";
 	}
 
 	@Override

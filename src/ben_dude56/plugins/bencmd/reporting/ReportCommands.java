@@ -3,6 +3,7 @@ package ben_dude56.plugins.bencmd.reporting;
 import java.util.ArrayList;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -11,6 +12,8 @@ import ben_dude56.plugins.bencmd.BenCmd;
 import ben_dude56.plugins.bencmd.Commands;
 import ben_dude56.plugins.bencmd.User;
 import ben_dude56.plugins.bencmd.permissions.PermissionUser;
+
+import org.getspout.spoutapi.player.*;
 
 public class ReportCommands implements Commands {
 	BenCmd plugin;
@@ -80,9 +83,13 @@ public class ReportCommands implements Commands {
 			User onlineUser;
 			if ((onlineUser = User.getUser(plugin, onlinePlayer))
 					.hasPerm("bencmd.ticket.readall")) {
-				onlineUser.sendMessage(ChatColor.RED
-						+ "A new report has been filed! Use /ticket " + id
-						+ " to see details!");
+				if (plugin.spoutcraft && ((SpoutPlayer) onlinePlayer).isSpoutCraftEnabled()) {
+					((SpoutPlayer)onlinePlayer).sendNotification("New report filed!", "Ticket ID: " + id, Material.PAPER);
+				} else {
+					onlineUser.sendMessage(ChatColor.RED
+							+ "A new report has been filed! Use /ticket " + id
+							+ " to see details!");
+				}
 			}
 		}
 	}
@@ -452,10 +459,14 @@ public class ReportCommands implements Commands {
 						User onlineUser;
 						if ((onlineUser = User.getUser(plugin, onlinePlayer))
 								.hasPerm("bencmd.ticket.readall")) {
-							onlineUser
-									.sendMessage(ChatColor.RED
-											+ "Info has been added to a report! Use /ticket "
-											+ id + " to see details!");
+							if (plugin.spoutcraft && ((SpoutPlayer) onlinePlayer).isSpoutCraftEnabled()) {
+								((SpoutPlayer)onlinePlayer).sendNotification("Report info added!", "Ticket ID: " + id, Material.PAPER);
+							} else {
+								onlineUser
+								.sendMessage(ChatColor.RED
+										+ "Info has been added to a report! Use /ticket "
+										+ id + " to see details!");
+							}
 						}
 					}
 				} else {

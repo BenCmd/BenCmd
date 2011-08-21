@@ -22,8 +22,13 @@ public class PermLoginListener extends PlayerListener {
 	public void onPlayerLogin(PlayerLoginEvent event) {
 		PermissionUser user;
 		if (!plugin.perm.userFile.userExists(event.getPlayer().getName())) {
-			plugin.perm.userFile.addUser(user = new PermissionUser(plugin,
-					event.getPlayer().getName(), new ArrayList<String>()));
+			if (plugin.mainProperties.getBoolean("disallowNewUsers", false)) {
+				event.disallow(Result.KICK_WHITELIST, plugin.mainProperties.getString("newUserKick", "You aren't whitelisted on this server!"));
+				return;
+			} else {
+				plugin.perm.userFile.addUser(user = new PermissionUser(plugin,
+						event.getPlayer().getName(), new ArrayList<String>()));
+			}
 		} else {
 			user = PermissionUser
 					.matchUser(event.getPlayer().getName(), plugin);

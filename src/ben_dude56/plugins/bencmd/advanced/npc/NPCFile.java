@@ -82,6 +82,12 @@ public class NPCFile extends Properties {
 				}
 				npcs.put(key, new BlacksmithNPC(plugin, key, l, t, a));
 				break;
+			case 'n':
+				l = toLocation(value.split("/")[1]);
+				String s = value.split("/")[2];
+				String n = value.split("/")[3];
+				npcs.put(key, new SkinnableNPC(plugin, n, s, key, l));
+				break;
 			default:
 				plugin.bLog
 						.warning("NPC ERROR: An invalid NPC type was detected in NPC with UID "

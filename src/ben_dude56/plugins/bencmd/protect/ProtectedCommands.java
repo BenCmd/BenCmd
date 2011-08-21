@@ -6,6 +6,7 @@ import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.getspout.spoutapi.player.SpoutPlayer;
 
 import ben_dude56.plugins.bencmd.BenCmd;
 import ben_dude56.plugins.bencmd.Commands;
@@ -140,6 +141,14 @@ public class ProtectedCommands implements Commands {
 						+ ")");
 				plugin.bLog.info("PROTECTION ADDED: " + String.valueOf(id)
 						+ " by " + user.getDisplayName());
+				for (Player onlinePlayer : plugin.getServer().getOnlinePlayers()) {
+					if (User.getUser(plugin, onlinePlayer)
+							.hasPerm("bencmd.ticket.readall")) {
+						if (plugin.spoutcraft && ((SpoutPlayer) onlinePlayer).isSpoutCraftEnabled()) {
+							((SpoutPlayer)onlinePlayer).sendNotification("Lock: " + user.getName(), "Protection ID: " + id, Material.CHEST);
+						}
+					}
+				}
 			} else if (pointedAt.getType() == Material.WOODEN_DOOR) {
 				int id = plugin.protectFile.addProtection(user,
 						pointedAt.getLocation(), ProtectionType.Door);
@@ -157,6 +166,14 @@ public class ProtectedCommands implements Commands {
 						+ ")");
 				plugin.bLog.info("PROTECTION ADDED: " + String.valueOf(id)
 						+ " by " + user.getDisplayName());
+				for (Player onlinePlayer : plugin.getServer().getOnlinePlayers()) {
+					if (User.getUser(plugin, onlinePlayer)
+							.hasPerm("bencmd.ticket.readall")) {
+						if (plugin.spoutcraft && ((SpoutPlayer) onlinePlayer).isSpoutCraftEnabled()) {
+							((SpoutPlayer)onlinePlayer).sendNotification("Lock: " + user.getName(), "Protection ID: " + id, Material.WOOD_DOOR);
+						}
+					}
+				}
 			}
 		} else if (args.length == 2) {
 			PermissionUser user2;
@@ -181,6 +198,14 @@ public class ProtectedCommands implements Commands {
 				plugin.bLog.info("PROTECTION ADDED: " + String.valueOf(id)
 						+ " (" + user2.getName() + ") by "
 						+ user.getDisplayName());
+				for (Player onlinePlayer : plugin.getServer().getOnlinePlayers()) {
+					if (User.getUser(plugin, onlinePlayer)
+							.hasPerm("bencmd.ticket.readall")) {
+						if (plugin.spoutcraft && ((SpoutPlayer) onlinePlayer).isSpoutCraftEnabled()) {
+							((SpoutPlayer)onlinePlayer).sendNotification("Lock: " + user.getName(), "Protection ID: " + id, Material.CHEST);
+						}
+					}
+				}
 			} else if (pointedAt.getType() == Material.WOODEN_DOOR) {
 				int id = plugin.protectFile.addProtection(user2,
 						pointedAt.getLocation(), ProtectionType.Door);
@@ -198,6 +223,14 @@ public class ProtectedCommands implements Commands {
 				plugin.bLog.info("PROTECTION ADDED: " + String.valueOf(id)
 						+ " (" + user2.getName() + ") by "
 						+ user.getDisplayName());
+				for (Player onlinePlayer : plugin.getServer().getOnlinePlayers()) {
+					if (User.getUser(plugin, onlinePlayer)
+							.hasPerm("bencmd.ticket.readall")) {
+						if (plugin.spoutcraft && ((SpoutPlayer) onlinePlayer).isSpoutCraftEnabled()) {
+							((SpoutPlayer)onlinePlayer).sendNotification("Lock: " + user.getName(), "Protection ID: " + id, Material.WOOD_DOOR);
+						}
+					}
+				}
 			}
 		} else {
 			user.sendMessage(ChatColor.YELLOW
@@ -245,6 +278,14 @@ public class ProtectedCommands implements Commands {
 						+ x + "," + y + "," + z + ")");
 				plugin.bLog.info("PUBLIC PROTECTION ADDED: "
 						+ String.valueOf(id) + " by " + user.getDisplayName());
+				for (Player onlinePlayer : plugin.getServer().getOnlinePlayers()) {
+					if (User.getUser(plugin, onlinePlayer)
+							.hasPerm("bencmd.ticket.readall")) {
+						if (plugin.spoutcraft && ((SpoutPlayer) onlinePlayer).isSpoutCraftEnabled()) {
+							((SpoutPlayer)onlinePlayer).sendNotification("Public: " + user.getName(), "Protection ID: " + id, Material.CHEST);
+						}
+					}
+				}
 			} else if (pointedAt.getType() == Material.WOODEN_DOOR) {
 				int id = plugin.protectFile.addProtection(user,
 						pointedAt.getLocation(), ProtectionType.PDoor);
@@ -261,6 +302,14 @@ public class ProtectedCommands implements Commands {
 						+ x + "," + y + "," + z + ")");
 				plugin.bLog.info("PUBLIC PROTECTION ADDED: "
 						+ String.valueOf(id) + " by " + user.getDisplayName());
+				for (Player onlinePlayer : plugin.getServer().getOnlinePlayers()) {
+					if (User.getUser(plugin, onlinePlayer)
+							.hasPerm("bencmd.ticket.readall")) {
+						if (plugin.spoutcraft && ((SpoutPlayer) onlinePlayer).isSpoutCraftEnabled()) {
+							((SpoutPlayer)onlinePlayer).sendNotification("Public: " + user.getName(), "Protection ID: " + id, Material.WOOD_DOOR);
+						}
+					}
+				}
 			}
 		} else if (args.length == 2) {
 			PermissionUser user2;
@@ -285,6 +334,14 @@ public class ProtectedCommands implements Commands {
 				plugin.bLog.info("PUBLIC PROTECTION ADDED: "
 						+ String.valueOf(id) + "(" + user2.getName() + ") by "
 						+ user.getDisplayName());
+				for (Player onlinePlayer : plugin.getServer().getOnlinePlayers()) {
+					if (User.getUser(plugin, onlinePlayer)
+							.hasPerm("bencmd.ticket.readall")) {
+						if (plugin.spoutcraft && ((SpoutPlayer) onlinePlayer).isSpoutCraftEnabled()) {
+							((SpoutPlayer)onlinePlayer).sendNotification("Public: " + user.getName(), "Protection ID: " + id, Material.CHEST);
+						}
+					}
+				}
 			} else if (pointedAt.getType() == Material.WOODEN_DOOR) {
 				int id = plugin.protectFile.addProtection(user2,
 						pointedAt.getLocation(), ProtectionType.PDoor);
@@ -302,6 +359,14 @@ public class ProtectedCommands implements Commands {
 				plugin.bLog.info("PUBLIC PROTECTION ADDED: "
 						+ String.valueOf(id) + "(" + user2.getName() + ") by "
 						+ user.getDisplayName());
+				for (Player onlinePlayer : plugin.getServer().getOnlinePlayers()) {
+					if (User.getUser(plugin, onlinePlayer)
+							.hasPerm("bencmd.ticket.readall")) {
+						if (plugin.spoutcraft && ((SpoutPlayer) onlinePlayer).isSpoutCraftEnabled()) {
+							((SpoutPlayer)onlinePlayer).sendNotification("Public: " + user.getName(), "Protection ID: " + id, Material.WOOD_DOOR);
+						}
+					}
+				}
 			}
 		} else {
 			user.sendMessage(ChatColor.YELLOW
@@ -344,6 +409,14 @@ public class ProtectedCommands implements Commands {
 								+ user.getDisplayName());
 						user.sendMessage(ChatColor.GREEN
 								+ "The protection on that block was removed.");
+						for (Player onlinePlayer : plugin.getServer().getOnlinePlayers()) {
+							if (User.getUser(plugin, onlinePlayer)
+									.hasPerm("bencmd.ticket.readall")) {
+								if (plugin.spoutcraft && ((SpoutPlayer) onlinePlayer).isSpoutCraftEnabled()) {
+									((SpoutPlayer)onlinePlayer).sendNotification("Unlock: " + user.getName(), "Protection ID: " + id, Material.CHEST);
+								}
+							}
+						}
 					}
 				} else {
 					user.sendMessage(ChatColor.RED
@@ -375,6 +448,14 @@ public class ProtectedCommands implements Commands {
 								+ user.getDisplayName());
 						user.sendMessage(ChatColor.GREEN
 								+ "The protection on that block was removed.");
+					}
+					for (Player onlinePlayer : plugin.getServer().getOnlinePlayers()) {
+						if (User.getUser(plugin, onlinePlayer)
+								.hasPerm("bencmd.ticket.readall")) {
+							if (plugin.spoutcraft && ((SpoutPlayer) onlinePlayer).isSpoutCraftEnabled()) {
+								((SpoutPlayer)onlinePlayer).sendNotification("Unlock: " + user.getName(), "Protection ID: " + id, Material.WOOD_DOOR);
+							}
+						}
 					}
 				} else {
 					user.sendMessage(ChatColor.RED

@@ -89,6 +89,9 @@ public class PermissionCommands implements Commands {
 			if (user2 == null) {
 				user.sendMessage(ChatColor.RED + "That user doesn't exist!");
 			} else {
+				/*for (InternalGroup g : plugin.perm.groupFile.groups.values()) {
+					
+				}*/
 				plugin.perm.userFile.removeUser(user2);
 				user.sendMessage(ChatColor.GREEN + "User " + args[0]
 						+ " was successfully removed!");
