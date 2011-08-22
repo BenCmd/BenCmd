@@ -59,7 +59,7 @@ public class BankManagerNPC extends NPC implements Clickable {
 	@Override
 	public String getValue() {
 		Location l = super.getLocation();
-		return "m/" + l.getWorld().getName() + "," + l.getX() + "," + l.getY()
+		return "m|" + l.getWorld().getName() + "," + l.getX() + "," + l.getY()
 				+ "," + l.getZ() + "," + l.getYaw() + "," + l.getPitch();
 	}
 

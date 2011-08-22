@@ -38,7 +38,7 @@ public class SkinnableNPC extends NPC {
 	
 	public String getValue() {
 		Location l = super.getLocation();
-		return "n/" + l.getWorld().getName() + "," + l.getX() + "," + l.getY()
-		+ "," + l.getZ() + "," + l.getYaw() + "," + l.getPitch() + "/" + skin + "/" + super.getName();
+		return "n|" + l.getWorld().getName() + "," + l.getX() + "," + l.getY()
+		+ "," + l.getZ() + "," + l.getYaw() + "," + l.getPitch() + "|" + skin + "|" + super.getName();
 	}
 }

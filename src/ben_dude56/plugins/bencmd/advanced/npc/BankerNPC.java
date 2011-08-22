@@ -32,7 +32,7 @@ public class BankerNPC extends NPC implements Clickable {
 	@Override
 	public String getValue() {
 		Location l = super.getLocation();
-		return "b/" + l.getWorld().getName() + "," + l.getX() + "," + l.getY()
+		return "b|" + l.getWorld().getName() + "," + l.getX() + "," + l.getY()
 				+ "," + l.getZ() + "," + l.getYaw() + "," + l.getPitch();
 	}
 

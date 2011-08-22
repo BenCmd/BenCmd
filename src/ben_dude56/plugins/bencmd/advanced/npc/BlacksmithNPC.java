@@ -450,9 +450,9 @@ public class BlacksmithNPC extends NPC implements Clickable {
 	@Override
 	public String getValue() {
 		Location l = super.getLocation();
-		return "s/" + l.getWorld().getName() + "," + l.getX() + "," + l.getY()
-				+ "," + l.getZ() + "," + l.getYaw() + "," + l.getPitch() + "/"
-				+ valueOfT(toolPrices) + "/" + valueOfA(armorPrices);
+		return "s|" + l.getWorld().getName() + "," + l.getX() + "," + l.getY()
+				+ "," + l.getZ() + "," + l.getYaw() + "," + l.getPitch() + "|"
+				+ valueOfT(toolPrices) + "|" + valueOfA(armorPrices);
 	}
 
 	public enum ToolMaterial {
