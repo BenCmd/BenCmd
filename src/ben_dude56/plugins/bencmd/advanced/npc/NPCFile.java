@@ -72,31 +72,31 @@ public class NPCFile extends Properties {
 			Integer key = Integer.parseInt((String) this.keySet().toArray()[i]);
 			String value = this.getProperty(key.toString());
 			Location l = null;
-			switch (value.split("|")[0].charAt(0)) {
+			switch (value.split("\\|")[0].charAt(0)) {
 			case 'b':
-				l = toLocation(value.split("|")[1]);
+				l = toLocation(value.split("\\|")[1]);
 				npcs.put(key, new BankerNPC(plugin, key, l));
 				break;
 			case 'm':
-				l = toLocation(value.split("|")[1]);
+				l = toLocation(value.split("\\|")[1]);
 				npcs.put(key, new BankManagerNPC(plugin, key, l));
 				break;
 			case 's':
-				l = toLocation(value.split("|")[1]);
+				l = toLocation(value.split("\\|")[1]);
 				HashMap<ToolMaterial, HashMap<ToolType, Double>> t = null;
 				HashMap<ArmorMaterial, HashMap<ArmorType, Double>> a = null;
-				if (value.split("|").length == 4) {
-					t = BlacksmithNPC.readTools(value.split("|")[2]);
-					a = BlacksmithNPC.readArmor(value.split("|")[3]);
-				} else if (value.split("|").length == 3) {
-					t = BlacksmithNPC.readTools(value.split("|")[2]);
+				if (value.split("\\|").length == 4) {
+					t = BlacksmithNPC.readTools(value.split("\\|")[2]);
+					a = BlacksmithNPC.readArmor(value.split("\\|")[3]);
+				} else if (value.split("\\|").length == 3) {
+					t = BlacksmithNPC.readTools(value.split("\\|")[2]);
 				}
 				npcs.put(key, new BlacksmithNPC(plugin, key, l, t, a));
 				break;
 			case 'n':
-				l = toLocation(value.split("|")[1]);
-				String s = value.split("|")[2];
-				String n = value.split("|")[3];
+				l = toLocation(value.split("\\|")[1]);
+				String s = value.split("\\|")[2];
+				String n = value.split("\\|")[3];
 				npcs.put(key, new SkinnableNPC(plugin, n, s, key, l));
 				break;
 			default:
