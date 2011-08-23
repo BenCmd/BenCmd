@@ -6,7 +6,6 @@ import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.getspout.spoutapi.player.SpoutPlayer;
 
 import ben_dude56.plugins.bencmd.BenCmd;
 import ben_dude56.plugins.bencmd.Commands;
@@ -143,10 +142,8 @@ public class ProtectedCommands implements Commands {
 						+ " by " + user.getDisplayName());
 				for (Player onlinePlayer : plugin.getServer().getOnlinePlayers()) {
 					if (User.getUser(plugin, onlinePlayer)
-							.hasPerm("bencmd.ticket.readall")) {
-						if (plugin.spoutcraft && ((SpoutPlayer) onlinePlayer).isSpoutCraftEnabled()) {
-							((SpoutPlayer)onlinePlayer).sendNotification("Lock: " + user.getName(), "Protection ID: " + id, Material.CHEST);
-						}
+							.hasPerm("bencmd.lock.hearall") && plugin.spoutcraft) {
+						plugin.spoutconnect.sendNotification(onlinePlayer, "Lock: " + user.getName(), "Protection ID: " + id, Material.CHEST);
 					}
 				}
 			} else if (pointedAt.getType() == Material.WOODEN_DOOR) {
@@ -168,10 +165,8 @@ public class ProtectedCommands implements Commands {
 						+ " by " + user.getDisplayName());
 				for (Player onlinePlayer : plugin.getServer().getOnlinePlayers()) {
 					if (User.getUser(plugin, onlinePlayer)
-							.hasPerm("bencmd.ticket.readall")) {
-						if (plugin.spoutcraft && ((SpoutPlayer) onlinePlayer).isSpoutCraftEnabled()) {
-							((SpoutPlayer)onlinePlayer).sendNotification("Lock: " + user.getName(), "Protection ID: " + id, Material.WOOD_DOOR);
-						}
+							.hasPerm("bencmd.lock.hearall") && plugin.spoutcraft) {
+						plugin.spoutconnect.sendNotification(onlinePlayer, "Lock: " + user.getName(), "Protection ID: " + id, Material.WOOD_DOOR);
 					}
 				}
 			}
@@ -200,10 +195,8 @@ public class ProtectedCommands implements Commands {
 						+ user.getDisplayName());
 				for (Player onlinePlayer : plugin.getServer().getOnlinePlayers()) {
 					if (User.getUser(plugin, onlinePlayer)
-							.hasPerm("bencmd.ticket.readall")) {
-						if (plugin.spoutcraft && ((SpoutPlayer) onlinePlayer).isSpoutCraftEnabled()) {
-							((SpoutPlayer)onlinePlayer).sendNotification("Lock: " + user.getName(), "Protection ID: " + id, Material.CHEST);
-						}
+							.hasPerm("bencmd.lock.hearall") && plugin.spoutcraft) {
+						plugin.spoutconnect.sendNotification(onlinePlayer, "Lock: " + user.getName(), "Protection ID: " + id, Material.CHEST);
 					}
 				}
 			} else if (pointedAt.getType() == Material.WOODEN_DOOR) {
@@ -225,10 +218,8 @@ public class ProtectedCommands implements Commands {
 						+ user.getDisplayName());
 				for (Player onlinePlayer : plugin.getServer().getOnlinePlayers()) {
 					if (User.getUser(plugin, onlinePlayer)
-							.hasPerm("bencmd.ticket.readall")) {
-						if (plugin.spoutcraft && ((SpoutPlayer) onlinePlayer).isSpoutCraftEnabled()) {
-							((SpoutPlayer)onlinePlayer).sendNotification("Lock: " + user.getName(), "Protection ID: " + id, Material.WOOD_DOOR);
-						}
+							.hasPerm("bencmd.lock.hearall") && plugin.spoutcraft) {
+						plugin.spoutconnect.sendNotification(onlinePlayer, "Lock: " + user.getName(), "Protection ID: " + id, Material.WOOD_DOOR);
 					}
 				}
 			}
@@ -280,10 +271,8 @@ public class ProtectedCommands implements Commands {
 						+ String.valueOf(id) + " by " + user.getDisplayName());
 				for (Player onlinePlayer : plugin.getServer().getOnlinePlayers()) {
 					if (User.getUser(plugin, onlinePlayer)
-							.hasPerm("bencmd.ticket.readall")) {
-						if (plugin.spoutcraft && ((SpoutPlayer) onlinePlayer).isSpoutCraftEnabled()) {
-							((SpoutPlayer)onlinePlayer).sendNotification("Public: " + user.getName(), "Protection ID: " + id, Material.CHEST);
-						}
+							.hasPerm("bencmd.lock.hearall") && plugin.spoutcraft) {
+						plugin.spoutconnect.sendNotification(onlinePlayer, "Public: " + user.getName(), "Protection ID: " + id, Material.CHEST);
 					}
 				}
 			} else if (pointedAt.getType() == Material.WOODEN_DOOR) {
@@ -304,10 +293,8 @@ public class ProtectedCommands implements Commands {
 						+ String.valueOf(id) + " by " + user.getDisplayName());
 				for (Player onlinePlayer : plugin.getServer().getOnlinePlayers()) {
 					if (User.getUser(plugin, onlinePlayer)
-							.hasPerm("bencmd.ticket.readall")) {
-						if (plugin.spoutcraft && ((SpoutPlayer) onlinePlayer).isSpoutCraftEnabled()) {
-							((SpoutPlayer)onlinePlayer).sendNotification("Public: " + user.getName(), "Protection ID: " + id, Material.WOOD_DOOR);
-						}
+							.hasPerm("bencmd.lock.hearall") && plugin.spoutcraft) {
+						plugin.spoutconnect.sendNotification(onlinePlayer, "Public: " + user.getName(), "Protection ID: " + id, Material.WOOD_DOOR);
 					}
 				}
 			}
@@ -336,10 +323,8 @@ public class ProtectedCommands implements Commands {
 						+ user.getDisplayName());
 				for (Player onlinePlayer : plugin.getServer().getOnlinePlayers()) {
 					if (User.getUser(plugin, onlinePlayer)
-							.hasPerm("bencmd.ticket.readall")) {
-						if (plugin.spoutcraft && ((SpoutPlayer) onlinePlayer).isSpoutCraftEnabled()) {
-							((SpoutPlayer)onlinePlayer).sendNotification("Public: " + user.getName(), "Protection ID: " + id, Material.CHEST);
-						}
+							.hasPerm("bencmd.lock.hearall") && plugin.spoutcraft) {
+						plugin.spoutconnect.sendNotification(onlinePlayer, "Public: " + user.getName(), "Protection ID: " + id, Material.CHEST);
 					}
 				}
 			} else if (pointedAt.getType() == Material.WOODEN_DOOR) {
@@ -361,10 +346,8 @@ public class ProtectedCommands implements Commands {
 						+ user.getDisplayName());
 				for (Player onlinePlayer : plugin.getServer().getOnlinePlayers()) {
 					if (User.getUser(plugin, onlinePlayer)
-							.hasPerm("bencmd.ticket.readall")) {
-						if (plugin.spoutcraft && ((SpoutPlayer) onlinePlayer).isSpoutCraftEnabled()) {
-							((SpoutPlayer)onlinePlayer).sendNotification("Public: " + user.getName(), "Protection ID: " + id, Material.WOOD_DOOR);
-						}
+							.hasPerm("bencmd.lock.hearall") && plugin.spoutcraft) {
+						plugin.spoutconnect.sendNotification(onlinePlayer, "Public: " + user.getName(), "Protection ID: " + id, Material.WOOD_DOOR);
 					}
 				}
 			}
@@ -411,10 +394,8 @@ public class ProtectedCommands implements Commands {
 								+ "The protection on that block was removed.");
 						for (Player onlinePlayer : plugin.getServer().getOnlinePlayers()) {
 							if (User.getUser(plugin, onlinePlayer)
-									.hasPerm("bencmd.ticket.readall")) {
-								if (plugin.spoutcraft && ((SpoutPlayer) onlinePlayer).isSpoutCraftEnabled()) {
-									((SpoutPlayer)onlinePlayer).sendNotification("Unlock: " + user.getName(), "Protection ID: " + id, Material.CHEST);
-								}
+									.hasPerm("bencmd.lock.hearall") && plugin.spoutcraft) {
+								plugin.spoutconnect.sendNotification(onlinePlayer, "Unlock: " + user.getName(), "Protection ID: " + id, Material.CHEST);
 							}
 						}
 					}
@@ -451,10 +432,8 @@ public class ProtectedCommands implements Commands {
 					}
 					for (Player onlinePlayer : plugin.getServer().getOnlinePlayers()) {
 						if (User.getUser(plugin, onlinePlayer)
-								.hasPerm("bencmd.ticket.readall")) {
-							if (plugin.spoutcraft && ((SpoutPlayer) onlinePlayer).isSpoutCraftEnabled()) {
-								((SpoutPlayer)onlinePlayer).sendNotification("Unlock: " + user.getName(), "Protection ID: " + id, Material.WOOD_DOOR);
-							}
+								.hasPerm("bencmd.lock.hearall") && plugin.spoutcraft) {
+							plugin.spoutconnect.sendNotification(onlinePlayer, "Unlock: " + user.getName(), "Protection ID: " + id, Material.WOOD_DOOR);
 						}
 					}
 				} else {

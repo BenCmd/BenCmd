@@ -1,14 +1,17 @@
 package ben_dude56.plugins.bencmd.advanced.npc;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+
 import ben_dude56.plugins.bencmd.BenCmd;
 import ben_dude56.plugins.bencmd.advanced.bank.BankInventory;
 
 public class BankerNPC extends NPC implements Clickable {
 
 	public BankerNPC(BenCmd instance, int id, Location l) {
-		super(instance, "Banker", id, l);
+		super(instance, "Banker", id, l, new ItemStack(Material.PAPER));
 	}
 	
 	@Override

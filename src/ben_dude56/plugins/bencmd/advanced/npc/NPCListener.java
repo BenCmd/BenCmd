@@ -42,19 +42,23 @@ public class NPCListener extends PlayerListener {
 	}
 
 	public void info(Player p, NPC n) {
-		p.sendMessage(ChatColor.GRAY + "NPC ID: " + n.getID());
-		if (n instanceof BankerNPC) {
-			p.sendMessage(ChatColor.GRAY + "NPC Type: Banker");
-		} else if (n instanceof BankManagerNPC) {
-			p.sendMessage(ChatColor.GRAY + "NPC Type: Bank Manager");
-		} else if (n instanceof BlacksmithNPC) {
-			p.sendMessage(ChatColor.GRAY + "NPC Type: Blacksmith");
-		} else if (n instanceof SkinnableNPC) {
-			p.sendMessage(ChatColor.GRAY + "NPC Type: Static");
-			p.sendMessage(ChatColor.GRAY + "NPC Name: " + n.getName());
-			p.sendMessage(ChatColor.GRAY + "Skin URL: " + ((SkinnableNPC)n).getSkinURL());
+		if (plugin.spoutcraft && plugin.spoutconnect.enabled(p)) {
+			plugin.spoutconnect.showNPCScreen(p, n);
 		} else {
-			p.sendMessage(ChatColor.GRAY + "NPC Type: Unknown");
+			p.sendMessage(ChatColor.GRAY + "NPC ID: " + n.getID());
+			if (n instanceof BankerNPC) {
+				p.sendMessage(ChatColor.GRAY + "NPC Type: Banker");
+			} else if (n instanceof BankManagerNPC) {
+				p.sendMessage(ChatColor.GRAY + "NPC Type: Bank Manager");
+			} else if (n instanceof BlacksmithNPC) {
+				p.sendMessage(ChatColor.GRAY + "NPC Type: Blacksmith");
+			} else if (n instanceof SkinnableNPC) {
+				p.sendMessage(ChatColor.GRAY + "NPC Type: Static");
+				p.sendMessage(ChatColor.GRAY + "NPC Name: " + n.getName());
+				p.sendMessage(ChatColor.GRAY + "Skin URL: " + ((SkinnableNPC)n).getSkinURL());
+			} else {
+				p.sendMessage(ChatColor.GRAY + "NPC Type: Unknown");
+			}
 		}
 	}
 }

@@ -34,8 +34,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.getspout.spoutapi.packet.PacketSkinURL;
-import org.getspout.spoutapi.player.SpoutPlayer;
 
 import ben_dude56.plugins.bencmd.advanced.AdvancedCommands;
 import ben_dude56.plugins.bencmd.advanced.Grave;
@@ -49,6 +47,7 @@ import ben_dude56.plugins.bencmd.advanced.npc.NPCChunkListener;
 import ben_dude56.plugins.bencmd.advanced.npc.NPCCommands;
 import ben_dude56.plugins.bencmd.advanced.npc.NPCFile;
 import ben_dude56.plugins.bencmd.advanced.npc.NPCListener;
+import ben_dude56.plugins.bencmd.advanced.npc.NPCScreenListener;
 import ben_dude56.plugins.bencmd.advanced.redstone.RedstoneCommands;
 import ben_dude56.plugins.bencmd.advanced.redstone.RedstoneFile;
 import ben_dude56.plugins.bencmd.chat.ChatCommands;
@@ -114,7 +113,7 @@ import ben_dude56.plugins.bencmd.weather.WeatherPListener;
  */
 public class BenCmd extends JavaPlugin implements PermissionsProvider {
 	public final static boolean debug = true;
-	public final static int buildId = 10;
+	public final static int buildId = 11;
 	public final static int cbbuild = 1051;
 	public final static String downloadServer = "cloud.github.com";
 	public final static String verLoc = "http://cloud.github.com/downloads/BenCmd/BenCmd/version.txt";
@@ -212,6 +211,7 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 	public Logger log = Logger.getLogger("Minecraft");
 	public Calendar clog;
 	public boolean spoutcraft;
+	public SpoutConnector spoutconnect;
 
 	public boolean checkID(int id) {
 		for (Material item : Material.values()) {
@@ -309,6 +309,7 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 		bLog.info("Checking for Spout plugin...");
 		if (getServer().getPluginManager().isPluginEnabled("Spout")) {
 			spoutcraft = true;
+			spoutconnect = new SpoutConnector();
 			bLog.info("Spout found!");
 		} else {
 			spoutcraft = false;
@@ -385,13 +386,11 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 					|| jt == JoinType.NO_SLOT_RESERVED) {
 				user.Kick("The server ran out of player slots when reloading... :(");
 			}
-			if (spoutcraft && ((SpoutPlayer)player).isSpoutCraftEnabled()) {
-				SpoutPlayer p = (SpoutPlayer) player;
-				if (p.getVersion() > 4) {
-					for (NPC n : BenCmd.getPlugin().npcs.allNPCs()) {
-						if (n.isSpawned()) {
-							p.sendPacket(new PacketSkinURL(n.getEntityId(), n.getSkinURL()));
-						}
+			if (spoutcraft && spoutconnect.enabled(player)) {
+				for (NPC n : BenCmd.getPlugin().npcs.allNPCs()) {
+					if (n.isSpawned()) {
+						spoutconnect.sendSkin(player, n.getEntityId(),
+								n.getSkinURL());
 					}
 				}
 			}
@@ -490,7 +489,12 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 				Event.Priority.Monitor, this);
 		pm.registerEvent(Event.Type.CHUNK_UNLOAD, this.npccl,
 				Event.Priority.Monitor, this);
-		pm.registerEvent(Event.Type.CUSTOM_EVENT, new BenCmdSpoutListener(), Event.Priority.Normal, this);
+		if (spoutcraft) {
+			pm.registerEvent(Event.Type.CUSTOM_EVENT,
+					new BenCmdSpoutListener(), Event.Priority.Normal, this);
+			pm.registerEvent(Event.Type.CUSTOM_EVENT, new NPCScreenListener(),
+					Event.Priority.Normal, this);
+		}
 		PluginDescriptionFile pdfFile = this.getDescription();
 		// Prepare the update timer...
 		bLog.info("Preparing update timer...");
@@ -574,7 +578,8 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 				if (buildId < b) {
 					if (output) {
 						log.info("A new BenCmd update is available! Use \"bencmd update\" to update your server...");
-						for (User u : perm.userFile.allWithPerm("bencmd.update")) {
+						for (User u : perm.userFile
+								.allWithPerm("bencmd.update")) {
 							u.sendMessage(ChatColor.RED
 									+ "A new BenCmd update was detected! Use \"/bencmd update\" to update your server...");
 						}
@@ -855,26 +860,29 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 			}
 		}
 	}
-	
+
 	public static int getMajorBuildNum() {
 		if (BenCmd.isRunning()) {
-			return Integer.parseInt(BenCmd.getPlugin().getDescription().getVersion().split("\\.")[0]);
+			return Integer.parseInt(BenCmd.getPlugin().getDescription()
+					.getVersion().split("\\.")[0]);
 		} else {
 			return 0;
 		}
 	}
-	
+
 	public static int getMinorBuildNum() {
 		if (BenCmd.isRunning()) {
-			return Integer.parseInt(BenCmd.getPlugin().getDescription().getVersion().split("\\.")[1]);
+			return Integer.parseInt(BenCmd.getPlugin().getDescription()
+					.getVersion().split("\\.")[1]);
 		} else {
 			return 0;
 		}
 	}
-	
+
 	public static int getRevNum() {
 		if (BenCmd.isRunning()) {
-			return Integer.parseInt(BenCmd.getPlugin().getDescription().getVersion().split("\\.")[2]);
+			return Integer.parseInt(BenCmd.getPlugin().getDescription()
+					.getVersion().split("\\.")[2]);
 		} else {
 			return 0;
 		}

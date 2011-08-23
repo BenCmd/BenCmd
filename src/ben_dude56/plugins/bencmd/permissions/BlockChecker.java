@@ -10,7 +10,6 @@ import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
 import org.bukkit.event.block.BlockListener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.SignChangeEvent;
-import org.getspout.spoutapi.player.SpoutPlayer;
 
 import ben_dude56.plugins.bencmd.*;
 import ben_dude56.plugins.bencmd.multiworld.Portal;
@@ -107,8 +106,8 @@ public class BlockChecker extends BlockListener {
 			if (spy.getName().equals(p.getName()) || firstLine == -1) {
 				continue;
 			}
-			if (plugin.spoutcraft && ((SpoutPlayer) spy.getHandle()).isSpoutCraftEnabled()) {
-				((SpoutPlayer)spy.getHandle()).sendNotification("Sign by " + p.getName(), ls[firstLine], Material.SIGN);
+			if (plugin.spoutcraft && plugin.spoutconnect.enabled(spy.getHandle())) {
+				plugin.spoutconnect.sendNotification(spy.getHandle(), "Sign by " + p.getName(), ls[firstLine], Material.SIGN);
 			} else {
 				spy.sendMessage(ChatColor.GRAY + p.getName() + " placed a sign: "
 						+ ls[firstLine]);

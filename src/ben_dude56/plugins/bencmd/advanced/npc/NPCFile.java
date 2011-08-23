@@ -13,6 +13,7 @@ import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.CraftChunk;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.FileUtil;
 
 import ben_dude56.plugins.bencmd.BenCmd;
@@ -97,7 +98,8 @@ public class NPCFile extends Properties {
 				l = toLocation(value.split("\\|")[1]);
 				String s = value.split("\\|")[2];
 				String n = value.split("\\|")[3];
-				npcs.put(key, new SkinnableNPC(plugin, n, s, key, l));
+				ItemStack item = new ItemStack(Integer.parseInt(value.split("\\|")[4].split(":")[0]), Integer.parseInt(value.split("\\|")[4].split(":")[1]));
+				npcs.put(key, new SkinnableNPC(plugin, n, s, key, l, item));
 				break;
 			default:
 				plugin.bLog

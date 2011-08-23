@@ -1,10 +1,11 @@
 package ben_dude56.plugins.bencmd.advanced.npc;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.getspout.spoutapi.player.SpoutPlayer;
+import org.bukkit.inventory.ItemStack;
 
 import ben_dude56.plugins.bencmd.BenCmd;
 import ben_dude56.plugins.bencmd.Commands;
@@ -54,13 +55,13 @@ public class NPCCommands implements Commands {
 		} else if (args[0].equalsIgnoreCase("static")) {
 			if (args.length == 1) {
 				plugin.npcs.addNPC(new SkinnableNPC(plugin, "Unnamed NPC", "", plugin.npcs.nextId(),
-						user.getHandle().getLocation()));
+						user.getHandle().getLocation(), new ItemStack(Material.AIR)));
 			} else if (args.length == 2) {
-				plugin.npcs.addNPC(new SkinnableNPC(plugin, args[1].replace('-', ' '), "", plugin.npcs.nextId(),
-						user.getHandle().getLocation()));
+				plugin.npcs.addNPC(new SkinnableNPC(plugin, args[1].replace('-', ' '), args[1].replace('-', ' '), plugin.npcs.nextId(),
+						user.getHandle().getLocation(), new ItemStack(Material.AIR)));
 			} else if (args.length == 3) {
 				plugin.npcs.addNPC(new SkinnableNPC(plugin, args[1].replace('-', ' '), args[2], plugin.npcs.nextId(),
-						user.getHandle().getLocation()));
+						user.getHandle().getLocation(), new ItemStack(Material.AIR)));
 			} else {
 				user.sendMessage(ChatColor.YELLOW
 						+ "Proper usage: /npc static [name] [skin]");
@@ -77,13 +78,28 @@ public class NPCCommands implements Commands {
 				}
 				((SkinnableNPC)npc).setSkin(args[2]);
 				user.sendMessage(ChatColor.GREEN + "That NPCs skin was changed successfully!");
-				if (!((SpoutPlayer) user.getHandle()).isSpoutCraftEnabled()) {
+				if (!plugin.spoutcraft || !plugin.spoutconnect.enabled(user.getHandle())) {
 					user.sendMessage(ChatColor.YELLOW + "Please note: To see this change, you must first install SpoutCraft!");
 				}
 			} else {
 				user.sendMessage(ChatColor.YELLOW
 						+ "Proper usage: /npc skin <id> <skin>");
 			}
+		} else if (args[0].equalsIgnoreCase("item")) {
+			NPC npc = plugin.npcs.getNPC(Integer.parseInt(args[1]));
+			if (npc == null) {
+				user.sendMessage(ChatColor.RED + "No NPC with that ID exists!");
+				return;
+			} else if (!(npc instanceof SkinnableNPC)) {
+				user.sendMessage(ChatColor.RED + "The NPC with that ID cannot have a custom item!");
+				return;
+			}
+			if (user.getHandle().getInventory().getItemInHand() == null) {
+				user.sendMessage(ChatColor.RED + "You must hold an item to do that!");
+				return;
+			}
+			npc.setHeldItem(user.getHandle().getInventory().getItemInHand());
+			user.sendMessage(ChatColor.GREEN + "That NPCs item was changed successfully!");
 		} else if (args[0].equalsIgnoreCase("name")) {
 			if (args.length == 3) {
 				NPC npc = plugin.npcs.getNPC(Integer.parseInt(args[1]));

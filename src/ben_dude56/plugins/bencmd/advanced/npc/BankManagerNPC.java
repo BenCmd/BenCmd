@@ -2,6 +2,8 @@ package ben_dude56.plugins.bencmd.advanced.npc;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.entity.Player;
 import ben_dude56.plugins.bencmd.BenCmd;
 import ben_dude56.plugins.bencmd.User;
@@ -11,7 +13,7 @@ import ben_dude56.plugins.bencmd.money.BuyableItem;
 public class BankManagerNPC extends NPC implements Clickable {
 
 	public BankManagerNPC(BenCmd instance, int id, Location l) {
-		super(instance, "Bank Manager", id, l);
+		super(instance, "Bank Manager", id, l, new ItemStack(Material.BOOK));
 	}
 	
 	@Override
