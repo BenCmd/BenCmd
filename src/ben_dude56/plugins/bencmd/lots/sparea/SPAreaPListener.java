@@ -14,6 +14,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 
 import ben_dude56.plugins.bencmd.BenCmd;
+import ben_dude56.plugins.bencmd.advanced.npc.NPC;
 import ben_dude56.plugins.bencmd.money.Currency;
 
 public class SPAreaPListener extends PlayerListener {
@@ -37,6 +38,13 @@ public class SPAreaPListener extends PlayerListener {
 	}
 
 	public void onPlayerMove(PlayerMoveEvent event) {
+		if (plugin.spoutcraft){ 
+			for (NPC n : BenCmd.getPlugin().npcs.allNPCs()) {
+				if (n.isSpawned() && event.getTo().distance(n.getCurrentLocation()) > 30 && event.getTo().distance(n.getCurrentLocation()) < 40) {
+					plugin.spoutconnect.sendSkin(event.getPlayer(), n.getEntityId(), n.getSkinURL());
+				}
+			}
+		}
 		Player p = event.getPlayer();
 		if (ignore.contains(p)) {
 			event.setCancelled(true);

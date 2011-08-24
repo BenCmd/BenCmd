@@ -52,13 +52,13 @@ public class NPCListener extends PlayerListener {
 				p.sendMessage(ChatColor.GRAY + "NPC Type: Bank Manager");
 			} else if (n instanceof BlacksmithNPC) {
 				p.sendMessage(ChatColor.GRAY + "NPC Type: Blacksmith");
-			} else if (n instanceof SkinnableNPC) {
+			} else if (n instanceof StaticNPC) {
 				p.sendMessage(ChatColor.GRAY + "NPC Type: Static");
-				p.sendMessage(ChatColor.GRAY + "NPC Name: " + n.getName());
-				p.sendMessage(ChatColor.GRAY + "Skin URL: " + ((SkinnableNPC)n).getSkinURL());
 			} else {
 				p.sendMessage(ChatColor.GRAY + "NPC Type: Unknown");
 			}
+			p.sendMessage(ChatColor.GRAY + "NPC Name: " + n.getName());
+			p.sendMessage(ChatColor.GRAY + "Skin URL: " + ((StaticNPC)n).getSkinURL());
 		}
 	}
 }

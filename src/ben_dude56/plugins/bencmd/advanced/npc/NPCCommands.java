@@ -54,14 +54,14 @@ public class NPCCommands implements Commands {
 					user.getHandle().getLocation(), null, null));
 		} else if (args[0].equalsIgnoreCase("static")) {
 			if (args.length == 1) {
-				plugin.npcs.addNPC(new SkinnableNPC(plugin, "Unnamed NPC", "", plugin.npcs.nextId(),
-						user.getHandle().getLocation(), new ItemStack(Material.AIR)));
+				plugin.npcs.addNPC(new StaticNPC(plugin, "Unnamed NPC", "", plugin.npcs.nextId(),
+						user.getHandle().getLocation(), new ItemStack(Material.AIR), true));
 			} else if (args.length == 2) {
-				plugin.npcs.addNPC(new SkinnableNPC(plugin, args[1].replace('-', ' '), args[1].replace('-', ' '), plugin.npcs.nextId(),
-						user.getHandle().getLocation(), new ItemStack(Material.AIR)));
+				plugin.npcs.addNPC(new StaticNPC(plugin, args[1].replace('-', ' '), args[1].replace('-', ' '), plugin.npcs.nextId(),
+						user.getHandle().getLocation(), new ItemStack(Material.AIR), true));
 			} else if (args.length == 3) {
-				plugin.npcs.addNPC(new SkinnableNPC(plugin, args[1].replace('-', ' '), args[2], plugin.npcs.nextId(),
-						user.getHandle().getLocation(), new ItemStack(Material.AIR)));
+				plugin.npcs.addNPC(new StaticNPC(plugin, args[1].replace('-', ' '), args[2], plugin.npcs.nextId(),
+						user.getHandle().getLocation(), new ItemStack(Material.AIR), true));
 			} else {
 				user.sendMessage(ChatColor.YELLOW
 						+ "Proper usage: /npc static [name] [skin]");
@@ -72,11 +72,11 @@ public class NPCCommands implements Commands {
 				if (npc == null) {
 					user.sendMessage(ChatColor.RED + "No NPC with that ID exists!");
 					return;
-				} else if (!(npc instanceof SkinnableNPC)) {
+				} else if (!(npc instanceof StaticNPC)) {
 					user.sendMessage(ChatColor.RED + "The NPC with that ID cannot have a custom skin!");
 					return;
 				}
-				((SkinnableNPC)npc).setSkin(args[2]);
+				((StaticNPC)npc).setSkin(args[2]);
 				user.sendMessage(ChatColor.GREEN + "That NPCs skin was changed successfully!");
 				if (!plugin.spoutcraft || !plugin.spoutconnect.enabled(user.getHandle())) {
 					user.sendMessage(ChatColor.YELLOW + "Please note: To see this change, you must first install SpoutCraft!");
@@ -90,7 +90,7 @@ public class NPCCommands implements Commands {
 			if (npc == null) {
 				user.sendMessage(ChatColor.RED + "No NPC with that ID exists!");
 				return;
-			} else if (!(npc instanceof SkinnableNPC)) {
+			} else if (!(npc instanceof StaticNPC)) {
 				user.sendMessage(ChatColor.RED + "The NPC with that ID cannot have a custom item!");
 				return;
 			}
@@ -106,11 +106,11 @@ public class NPCCommands implements Commands {
 				if (npc == null) {
 					user.sendMessage(ChatColor.RED + "No NPC with that ID exists!");
 					return;
-				} else if (!(npc instanceof SkinnableNPC)) {
+				} else if (!(npc instanceof StaticNPC)) {
 					user.sendMessage(ChatColor.RED + "The NPC with that ID cannot have a custom name!");
 					return;
 				}
-				((SkinnableNPC)npc).setName(args[2].replace('-', ' '));
+				((StaticNPC)npc).setName(args[2].replace('-', ' '));
 				user.sendMessage(ChatColor.GREEN + "That NPCs name was changed successfully!");
 			} else {
 				user.sendMessage(ChatColor.YELLOW

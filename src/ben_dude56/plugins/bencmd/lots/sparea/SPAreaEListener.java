@@ -11,14 +11,20 @@ import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.block.CraftSign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageByProjectileEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityListener;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.craftbukkit.entity.CraftArrow;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
 
 import ben_dude56.plugins.bencmd.BenCmd;
 import ben_dude56.plugins.bencmd.User;
 import ben_dude56.plugins.bencmd.advanced.Grave;
+import ben_dude56.plugins.bencmd.advanced.npc.EntityNPC;
+import ben_dude56.plugins.bencmd.advanced.npc.NPC;
+import ben_dude56.plugins.bencmd.advanced.npc.Damageable;
 
 public class SPAreaEListener extends EntityListener {
 	BenCmd plugin;
@@ -32,8 +38,25 @@ public class SPAreaEListener extends EntityListener {
 			EntityDamageByEntityEvent event = (EntityDamageByEntityEvent) e;
 			if (event.getDamager() instanceof Player
 					&& event.getEntity() instanceof Player) {
+				if (((CraftPlayer)event.getDamager()).getHandle() instanceof EntityNPC)
+				{
+					if (plugin.isGod((Player)event.getEntity())) 
+						event.setCancelled(true);
+					return;
+				}
+				NPC npc = plugin.npcs.getNPC((EntityNPC) ((CraftPlayer) event.getEntity()).getHandle());
+				if(npc instanceof Damageable)
+				{
+					((Damageable) npc).onDamage(event.getDamager(), event.getDamage());
+					return;
+				}
 				event.setCancelled(!(inPVP((Player) event.getDamager()) != null && inPVP((Player) event
 						.getEntity()) != null));
+			}
+		} else if (e instanceof EntityDamageByProjectileEvent) {
+			if (e.getEntity().equals(((CraftArrow)((EntityDamageByProjectileEvent) e).getDamager()).getShooter())) {
+				e.setCancelled(true);
+				return;
 			}
 		}
 	}

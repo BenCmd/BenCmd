@@ -9,10 +9,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.CraftChunk;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.FileUtil;
 
@@ -40,6 +40,11 @@ public class NPCFile extends Properties {
 				plugin.log.warning("Failed to restore from backup!");
 			}
 		}
+		Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
+			public void run() {
+				tickAll();
+			}
+		}, 1, 1);
 		loadFile();
 		loadNPCs();
 	}
@@ -99,7 +104,7 @@ public class NPCFile extends Properties {
 				String s = value.split("\\|")[2];
 				String n = value.split("\\|")[3];
 				ItemStack item = new ItemStack(Integer.parseInt(value.split("\\|")[4].split(":")[0]), Integer.parseInt(value.split("\\|")[4].split(":")[1]));
-				npcs.put(key, new SkinnableNPC(plugin, n, s, key, l, item));
+				npcs.put(key, new StaticNPC(plugin, n, s, key, l, item, true));
 				break;
 			default:
 				plugin.bLog
@@ -114,10 +119,15 @@ public class NPCFile extends Properties {
 	protected List<NPC> inChunk(Chunk c) {
 		List<NPC> list = new ArrayList<NPC>();
 		for (NPC n : npcs.values()) {
-			CraftChunk c2 = (CraftChunk) n.getLocation().getBlock().getChunk();
-			if (c2.getX() == c.getX() && c2.getZ() == c.getZ()) {
+			if (c.getX() * 16 < n.getLocation().getX() && n.getLocation().getX() < (c.getX() * 16) + 16
+					&& c.getZ() * 16 < n.getLocation().getZ() && n.getLocation().getZ() < (c.getZ() * 16) + 16)
+			{
 				list.add(n);
 			}
+			/*CraftChunk c2 = (CraftChunk) n.getLocation().getBlock().getChunk();
+			if (c2.getX() == c.getX() && c2.getZ() == c.getZ()) {
+				list.add(n);
+			}*/
 		}
 		return list;
 	}
@@ -209,5 +219,11 @@ public class NPCFile extends Properties {
 		try {
 			new File("plugins/BenCmd/_npc.db").delete();
 		} catch (Exception e) { }
+	}
+	
+	public void tickAll() {
+		for(NPC n : allNPCs()) {
+			n.tick();
+		}
 	}
 }

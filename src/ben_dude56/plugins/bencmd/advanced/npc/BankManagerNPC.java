@@ -20,6 +20,10 @@ public class BankManagerNPC extends NPC implements Clickable {
 	public String getSkinURL() {
 		return "http://s3.amazonaws.com/squirt/i4e4d4fbbb8f288300604535471306130503032.png";
 	}
+	
+	public void tick() {
+		this.faceNearest();
+	}
 
 	@Override
 	public void onRightClick(Player p) {

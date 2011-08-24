@@ -5,11 +5,12 @@ import org.bukkit.inventory.ItemStack;
 
 import ben_dude56.plugins.bencmd.BenCmd;
 
-public class SkinnableNPC extends NPC {
+public class StaticNPC extends NPC implements Skinnable {
 
 	private String skin = "";
+	private boolean facePlayer;
 	
-	public SkinnableNPC(BenCmd instance, String name, String skin, int id, Location l, ItemStack heldItem) {
+	public StaticNPC(BenCmd instance, String name, String skin, int id, Location l, ItemStack heldItem, boolean facePlayer) {
 		super(instance, name, id, l, heldItem);
 		this.skin = skin;
 		despawn();
@@ -36,6 +37,10 @@ public class SkinnableNPC extends NPC {
 		} else {
 			return skin;
 		}
+	}
+	
+	public void tick() {
+		this.faceNearest();
 	}
 	
 	public String getValue() {

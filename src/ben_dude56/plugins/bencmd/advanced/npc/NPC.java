@@ -1,5 +1,6 @@
 package ben_dude56.plugins.bencmd.advanced.npc;
 
+import net.minecraft.server.EntityHuman;
 import net.minecraft.server.ItemInWorldManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.WorldServer;
@@ -77,6 +78,27 @@ public class NPC {
 			enpc = null;
 		}
 	}
+	
+	public void faceNearest() {
+		EntityHuman h;
+		if ((h = getClosestPlayer(5.0D)) != null) {
+			NPC.faceEntity(enpc, h);
+		} else if (this.getLocation().getYaw() != this.getCurrentLocation().getYaw()) {
+			enpc.setLocation(enpc.locX, enpc.locY, enpc.locZ, this.getLocation().getYaw(), enpc.pitch);
+		}
+	}
+	
+	protected EntityHuman getClosestPlayer(double range) {
+		if (range <= 0.0D) {
+			return null;
+		}
+		EntityHuman entityhuman = enpc.world.findNearbyPlayer(enpc, range);
+		return entityhuman != null && enpc.e(entityhuman) ? entityhuman : null;
+	}
+	
+	public void tick() {
+		
+	}
 
 	public String getValue() {
 		throw new UnsupportedOperationException("getValue() not overridden!");
@@ -119,5 +141,22 @@ public class NPC {
 
 	public Location getLocation() {
 		return l;
+	}
+	
+	public static void faceEntity(EntityNPC enpc, EntityHuman human) {
+		Location loc = enpc.getBukkitEntity().getLocation();
+		Location loc2 = human.getBukkitEntity().getLocation();
+		double xDiff = loc2.getX() - loc.getX();
+		double yDiff = loc2.getY() - loc.getY();
+		double zDiff = loc2.getZ() - loc.getZ();
+		double DistanceXZ = Math.sqrt(xDiff * xDiff + zDiff * zDiff);
+		double DistanceY = Math.sqrt(DistanceXZ * DistanceXZ + yDiff * yDiff);
+		double yaw = (Math.acos(xDiff / DistanceXZ) * 180 / Math.PI);
+		double pitch = (Math.acos(yDiff / DistanceY) * 180 / Math.PI) - 90;
+		if (zDiff < 0.0) {
+			yaw = yaw + (Math.abs(180 - yaw) * 2);
+		}
+		enpc.setLocation(loc.getX(), loc.getY(), loc.getZ(), (float) yaw - 90,
+		(float) pitch);
 	}
 }

@@ -1,12 +1,19 @@
 package ben_dude56.plugins.bencmd;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.getspout.spoutapi.player.SpoutPlayer;
 import org.getspout.spoutapi.gui.*;
 
+import ben_dude56.plugins.bencmd.advanced.npc.BankManagerNPC;
+import ben_dude56.plugins.bencmd.advanced.npc.BankerNPC;
+import ben_dude56.plugins.bencmd.advanced.npc.BlacksmithNPC;
 import ben_dude56.plugins.bencmd.advanced.npc.NPC;
-import ben_dude56.plugins.bencmd.advanced.npc.SkinnableNPC;
+import ben_dude56.plugins.bencmd.advanced.npc.Skinnable;
+import ben_dude56.plugins.bencmd.advanced.npc.StaticNPC;
 
 public class SpoutConnector {
 
@@ -27,6 +34,53 @@ public class SpoutConnector {
 		}
 	}
 	
+	public List<Integer> getValidIDs() {
+		List<Integer> valid = new ArrayList<Integer>();
+		for (int i = 1; i <= 2257; i++) {
+			if (Material.getMaterial(i) != null)
+				valid.add(i);
+		}
+		return valid;
+	}
+	
+	public void nextItem(NPCScreen s) {
+		int id = s.item.getTypeId();
+		List<Integer> valid = getValidIDs();
+		if (!valid.contains(id)) {
+			return;
+		}
+		if (valid.lastIndexOf(id) == valid.size() - 1) {
+			s.removeWidget(s.item);
+			s.item.setTypeId(1);
+			s.item.setData((short) 0);
+			s.attachWidget(BenCmd.getPlugin(), s.item);
+		} else {
+			s.removeWidget(s.item);
+			s.item.setTypeId(valid.get(valid.lastIndexOf(id) + 1));
+			s.item.setData((short) 0);
+			s.attachWidget(BenCmd.getPlugin(), s.item);
+		}
+	}
+	
+	public void prevItem(NPCScreen s) {
+		int id = s.item.getTypeId();
+		List<Integer> valid = getValidIDs();
+		if (!valid.contains(id)) {
+			return;
+		}
+		if (valid.lastIndexOf(id) == 1) {
+			s.removeWidget(s.item);
+			s.item.setTypeId(2257);
+			s.item.setData((short) 0);
+			s.attachWidget(BenCmd.getPlugin(), s.item);
+		} else {
+			s.removeWidget(s.item);
+			s.item.setTypeId(valid.get(valid.lastIndexOf(id) - 1));
+			s.item.setData((short) 0);
+			s.attachWidget(BenCmd.getPlugin(), s.item);
+		}
+	}
+	
 	public void showNPCScreen(Player p, NPC n) {
 		User u = User.getUser(BenCmd.getPlugin(), p);
 		NPCScreen infoscr = new NPCScreen();
@@ -35,41 +89,93 @@ public class SpoutConnector {
 		
 		// idlabel
 		GenericLabel idlabel = new GenericLabel();
-		idlabel.setText("NPC ID:     " + n.getID()).setX(10).setY(20).setWidth(40).setHeight(12);
+		idlabel.setText("NPC ID:").setX(10).setY(20).setWidth(40).setHeight(12);
 		infoscr.attachWidget(BenCmd.getPlugin(), idlabel);
+		
+		// idlabel2
+		GenericLabel idlabel2 = new GenericLabel();
+		idlabel2.setText(String.valueOf(n.getID())).setHexColor(0xD2D230).setX(65).setY(20).setWidth(100).setHeight(12);
+		infoscr.attachWidget(BenCmd.getPlugin(), idlabel2);
+		
+		// typelabel
+		GenericLabel typelabel = new GenericLabel();
+		typelabel.setText("NPC Type:").setX(10).setY(40).setWidth(40).setHeight(12);
+		infoscr.attachWidget(BenCmd.getPlugin(), typelabel);
+		
+		// typelabel2
+		GenericLabel typelabel2 = new GenericLabel();
+		String text;
+		if (n instanceof BankerNPC) {
+			text = "Banker";
+		} else if (n instanceof BankManagerNPC) {
+			text = "Bank Manager";
+		} else if (n instanceof BlacksmithNPC) {
+			text = "Blacksmith";
+		} else if (n instanceof StaticNPC) {
+			text = "Static";
+		} else {
+			text = "Unknown";
+		}
+		typelabel2.setText(text).setHexColor(0x10D010).setX(65).setY(40).setWidth(100).setHeight(12);
+		infoscr.attachWidget(BenCmd.getPlugin(), typelabel2);
 		
 		// namefield
 		GenericTextField namefield = new GenericTextField();
-		namefield.setText(n.getName()).setMaximumCharacters(20).setEnabled(n instanceof SkinnableNPC && u.hasPerm("bencmd.npc.create")).setX(65).setY(40).setWidth(200).setHeight(12);
+		namefield.setText(n.getName()).setMaximumCharacters(20).setEnabled(n instanceof Skinnable && u.hasPerm("bencmd.npc.create")).setX(65).setY(60).setWidth(200).setHeight(12);
 		infoscr.attachWidget(BenCmd.getPlugin(), namefield);
 		infoscr.name = namefield;
 		
 		// namelabel
 		GenericLabel namelabel = new GenericLabel();
-		namelabel.setText("NPC Name:").setX(10).setY(40).setWidth(40).setHeight(12);
+		namelabel.setText("NPC Name:").setX(10).setY(60).setWidth(40).setHeight(12);
 		infoscr.attachWidget(BenCmd.getPlugin(), namelabel);
 		
 		// skinfield
 		GenericTextField skinfield = new GenericTextField();
-		skinfield.setText(n.getSkinURL()).setMaximumCharacters(500).setEnabled(n instanceof SkinnableNPC && u.hasPerm("bencmd.npc.create")).setX(65).setY(60).setWidth(350).setHeight(12);
+		skinfield.setText(n.getSkinURL()).setMaximumCharacters(500).setEnabled(n instanceof Skinnable && u.hasPerm("bencmd.npc.create")).setX(65).setY(80).setWidth(350).setHeight(12);
 		infoscr.attachWidget(BenCmd.getPlugin(), skinfield);
 		infoscr.skin = skinfield;
 		
 		// skinlabel
 		GenericLabel skinlabel = new GenericLabel();
-		skinlabel.setText("NPC Skin:").setX(10).setY(60).setWidth(40).setHeight(12);
+		skinlabel.setText("NPC Skin:").setX(10).setY(80).setWidth(40).setHeight(12);
 		infoscr.attachWidget(BenCmd.getPlugin(), skinlabel);
+		
+		// itemlabel
+		GenericLabel itemlabel = new GenericLabel();
+		itemlabel.setText("Item Held:").setX(10).setY(105).setWidth(40).setHeight(12);
+		infoscr.attachWidget(BenCmd.getPlugin(), itemlabel);
+		
+		// itemimage
+		GenericItemWidget itemimage = new GenericItemWidget();
+		itemimage.setTypeId(n.getHeldItem().getTypeId()).setDepth(16).setData(n.getHeldItem().getDurability()).setX(65).setY(100).setWidth(16).setHeight(16);
+		infoscr.attachWidget(BenCmd.getPlugin(), itemimage);
+		infoscr.item = itemimage;
+		
+		// idownbutton
+		GenericButton idownbutton = new GenericButton();
+		idownbutton.setEnabled((n instanceof Skinnable) && u.hasPerm("bencmd.npc.create"));
+		idownbutton.setText("v").setX(90).setY(110).setWidth(12).setHeight(10);
+		infoscr.attachWidget(BenCmd.getPlugin(), idownbutton);
+		infoscr.idown = idownbutton;
+		
+		// iupbutton
+		GenericButton iupbutton = new GenericButton();
+		iupbutton.setEnabled((n instanceof Skinnable) && u.hasPerm("bencmd.npc.create"));
+		iupbutton.setText("^").setX(90).setY(100).setWidth(12).setHeight(10);
+		infoscr.attachWidget(BenCmd.getPlugin(), iupbutton);
+		infoscr.iup = iupbutton;
 		
 		// applybutton
 		GenericButton applybutton = new GenericButton();
-		applybutton.setEnabled((n instanceof SkinnableNPC) && u.hasPerm("bencmd.npc.create"));
+		applybutton.setEnabled((n instanceof Skinnable) && u.hasPerm("bencmd.npc.create"));
 		applybutton.setText("Apply").setY(210).setX(325).setWidth(40).setHeight(20);
 		infoscr.attachWidget(BenCmd.getPlugin(), applybutton);
 		infoscr.apply = applybutton;
 		
 		// okbutton
 		GenericButton okbutton = new GenericButton();
-		okbutton.setEnabled((n instanceof SkinnableNPC) && u.hasPerm("bencmd.npc.create"));
+		okbutton.setEnabled((n instanceof Skinnable) && u.hasPerm("bencmd.npc.create"));
 		okbutton.setText("OK").setY(210).setX(275).setWidth(40).setHeight(20);
 		infoscr.attachWidget(BenCmd.getPlugin(), okbutton);
 		infoscr.ok = okbutton;
@@ -91,5 +197,8 @@ public class SpoutConnector {
 		public Button apply;
 		public Button ok;
 		public Button cancel;
+		public ItemWidget item;
+		public Button iup;
+		public Button idown;
 	}
 }

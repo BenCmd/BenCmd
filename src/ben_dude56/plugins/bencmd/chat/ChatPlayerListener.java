@@ -106,6 +106,28 @@ public class ChatPlayerListener extends PlayerListener {
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		ViewableInventory.replInv((CraftPlayer) event.getPlayer());
 		User user = User.getUser(plugin, event.getPlayer());
+		String cheatstring = "";
+		if (!user.hasPerm("bencmd.allowfly")) {
+			// No Zombe-mod flying
+			cheatstring += "&f &f &1 &0 &2 &4 ";
+
+			// No CJB flying
+			cheatstring += "&3 &9 &2 &0 &0 &1 ";
+		}
+		if (!user.hasPerm("bencmd.allowcheat")) {
+			// No Zombe-mod cheats
+			cheatstring += "&f &f &2 &0 &4 &8 ";
+
+			// No CJB cheats
+			cheatstring += "&3 &9 &2 &0 &0 &2 ";
+
+			// No entities on minimap
+			cheatstring += "&3 &9 &2 &0 &0 &3 ";
+		}
+		if (!cheatstring.isEmpty()) {
+			cheatstring = cheatstring.replaceAll("(&([a-f0-9]))", "\u00A7$2");
+			user.sendMessage(cheatstring);
+		}
 		if (BenCmd.updateAvailable && user.hasPerm("bencmd.update")) {
 			user.sendMessage(ChatColor.RED
 					+ "A new BenCmd update was detected! Use \"/bencmd update\" to update your server...");

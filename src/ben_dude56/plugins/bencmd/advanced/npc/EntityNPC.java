@@ -1,5 +1,7 @@
 package ben_dude56.plugins.bencmd.advanced.npc;
 
+import java.util.Random;
+
 import org.bukkit.entity.Player;
 
 import net.minecraft.server.EntityHuman;
@@ -50,6 +52,23 @@ public class EntityNPC extends EntityPlayer {
 			this.yaw = yaw;
 			this.pitch = pitch;
 		}
+	}
+	
+	public float checkYawDiff(float diff) {
+		for (this.aA = this.aE; diff < -180.0F; diff += 360.0F) {
+		}
+		while (diff >= 180.0F) {
+			diff -= 360.0F;
+		}
+		return diff;
+	}
+	
+	public void forward() {
+		this.a(this.az, this.aA);
+	}
+	
+	public Random getRandom() {
+		return random;
 	}
 
 	private boolean chunkLoaded() {
