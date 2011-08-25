@@ -18,6 +18,7 @@ import ben_dude56.plugins.bencmd.advanced.npc.StaticNPC;
 public class SpoutConnector {
 
 	public void sendSkin(Player p, int id, String skin) {
+		BenCmd.getPlugin().log.info("Sendskin");
 		org.getspout.spoutapi.player.SpoutPlayer player = ((org.getspout.spoutapi.player.SpoutPlayer) p);
 		if (player.isSpoutCraftEnabled()) {
 			player.sendPacket(new org.getspout.spoutapi.packet.PacketSkinURL(id, skin));

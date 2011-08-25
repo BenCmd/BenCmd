@@ -5,7 +5,6 @@ import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
 import ben_dude56.plugins.bencmd.BenCmd;
-import ben_dude56.plugins.bencmd.advanced.npc.NPC;
 
 public class FlyListener extends PlayerListener {
 	private BenCmd plugin;
@@ -20,11 +19,7 @@ public class FlyListener extends PlayerListener {
 		}
 		plugin.flyDetect.lastL.put(event.getPlayer(), event.getTo());
 		if (plugin.spoutcraft) { 
-			for (NPC n : BenCmd.getPlugin().npcs.allNPCs()) {
-				if (n.isSpawned() && event.getTo().distance(n.getCurrentLocation()) < 50) {
-					plugin.spoutconnect.sendSkin(event.getPlayer(), n.getEntityId(), n.getSkinURL());
-				}
-			}
+			plugin.spaplisten.sendSkins(event.getPlayer(), event.getTo());
 		}
 	}
 
@@ -34,11 +29,7 @@ public class FlyListener extends PlayerListener {
 		}
 		plugin.flyDetect.lastL.put(event.getPlayer(), event.getTo());
 		if (plugin.spoutcraft) { 
-			for (NPC n : BenCmd.getPlugin().npcs.allNPCs()) {
-				if (n.isSpawned() && event.getTo().distance(n.getCurrentLocation()) < 50) {
-					plugin.spoutconnect.sendSkin(event.getPlayer(), n.getEntityId(), n.getSkinURL());
-				}
-			}
+			plugin.spaplisten.sendSkins(event.getPlayer(), event.getTo());
 		}
 	}
 }

@@ -21,11 +21,13 @@ public class SPAreaPListener extends PlayerListener {
 	BenCmd plugin;
 	HashMap<Player, List<SPArea>> areas;
 	List<Player> ignore;
+	HashMap<Player, List<NPC>> sent;
 
 	public SPAreaPListener(BenCmd instance) {
 		plugin = instance;
 		areas = new HashMap<Player, List<SPArea>>();
 		ignore = new ArrayList<Player>();
+		sent = new HashMap<Player, List<NPC>>();
 	}
 
 	public void onPlayerRespawn(PlayerRespawnEvent event) {
@@ -36,15 +38,30 @@ public class SPAreaPListener extends PlayerListener {
 			plugin.returns.remove(event.getPlayer());
 		}
 	}
-
-	public void onPlayerMove(PlayerMoveEvent event) {
-		if (plugin.spoutcraft) { 
+	
+	public void sendSkins(Player p, Location l) {
+		if (plugin.spoutcraft) {
+			if(!sent.containsKey(p)) {
+				sent.put(p, new ArrayList<NPC>());
+			}
 			for (NPC n : BenCmd.getPlugin().npcs.allNPCs()) {
-				if (n.isSpawned() && event.getTo().getWorld().equals(n.getCurrentLocation().getWorld()) && event.getTo().distance(n.getCurrentLocation()) > 30 && event.getTo().distance(n.getCurrentLocation()) < 40) {
-					plugin.spoutconnect.sendSkin(event.getPlayer(), n.getEntityId(), n.getSkinURL());
+				if (n.isSpawned() && l.getWorld().equals(n.getCurrentLocation().getWorld()) && l.distance(n.getCurrentLocation()) < 50) {
+					if (!sent.get(p).contains(n)) {
+						sent.get(p).add(n);
+						plugin.spoutconnect.sendSkin(p, n.getEntityId(), n.getSkinURL());
+					}
+				} else {
+					if (sent.get(p).contains(n)) {
+						sent.get(p).remove(n);
+						plugin.spoutconnect.sendSkin(p, n.getEntityId(), "http://s3.amazonaws.com/MinecraftSkins/" + n.getName() + ".png");
+					}
 				}
 			}
 		}
+	}
+
+	public void onPlayerMove(PlayerMoveEvent event) {
+		sendSkins(event.getPlayer(), event.getTo());
 		Player p = event.getPlayer();
 		if (ignore.contains(p)) {
 			event.setCancelled(true);
