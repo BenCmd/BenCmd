@@ -1,8 +1,10 @@
 package ben_dude56.plugins.bencmd.advanced.npc;
 
+import net.minecraft.server.Entity;
 import net.minecraft.server.EntityHuman;
 import net.minecraft.server.ItemInWorldManager;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.Vec3D;
 import net.minecraft.server.WorldServer;
 
 import org.bukkit.Location;
@@ -20,8 +22,13 @@ public class NPC {
 	protected BenCmd plugin;
 	private String n;
 	private ItemStack itemHeld;
-
+	protected boolean faceNearestPlayer;
+	
 	public NPC(BenCmd instance, String name, int id, Location l, ItemStack itemHeld) {
+		this(instance, name, id, l, itemHeld, true);
+	}
+
+	public NPC(BenCmd instance, String name, int id, Location l, ItemStack itemHeld, boolean facePlayer) {
 		plugin = instance;
 		this.id = id;
 		this.l = l;
@@ -97,7 +104,9 @@ public class NPC {
 	}
 	
 	public void tick() {
-		
+		if (faceNearestPlayer) {
+			this.faceNearest();
+		}
 	}
 
 	public String getValue() {
@@ -143,12 +152,17 @@ public class NPC {
 		return l;
 	}
 	
-	public static void faceEntity(EntityNPC enpc, EntityHuman human) {
+	public static void faceEntity(EntityNPC enpc, Entity e) {
+		try {
+			faceLocation(enpc, Vec3D.a(e.locX, e.locY, e.locZ));
+		} catch (Exception ex) { }
+	}
+	
+	public static void faceLocation(EntityNPC enpc, Vec3D loc2) {
 		Location loc = enpc.getBukkitEntity().getLocation();
-		Location loc2 = human.getBukkitEntity().getLocation();
-		double xDiff = loc2.getX() - loc.getX();
-		double yDiff = loc2.getY() - loc.getY();
-		double zDiff = loc2.getZ() - loc.getZ();
+		double xDiff = loc2.a - loc.getX();
+		double yDiff = loc2.b - loc.getY();
+		double zDiff = loc2.c - loc.getZ();
 		double DistanceXZ = Math.sqrt(xDiff * xDiff + zDiff * zDiff);
 		double DistanceY = Math.sqrt(DistanceXZ * DistanceXZ + yDiff * yDiff);
 		double yaw = (Math.acos(xDiff / DistanceXZ) * 180 / Math.PI);

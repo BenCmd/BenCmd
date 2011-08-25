@@ -38,7 +38,7 @@ public class SPAreaPListener extends PlayerListener {
 	}
 
 	public void onPlayerMove(PlayerMoveEvent event) {
-		if (plugin.spoutcraft){ 
+		if (plugin.spoutcraft) { 
 			for (NPC n : BenCmd.getPlugin().npcs.allNPCs()) {
 				if (n.isSpawned() && event.getTo().getWorld().equals(n.getCurrentLocation().getWorld()) && event.getTo().distance(n.getCurrentLocation()) > 30 && event.getTo().distance(n.getCurrentLocation()) < 40) {
 					plugin.spoutconnect.sendSkin(event.getPlayer(), n.getEntityId(), n.getSkinURL());

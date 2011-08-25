@@ -31,10 +31,6 @@ public class BankerNPC extends NPC implements Clickable {
 	public void onLeftClick(Player p) {
 
 	}
-	
-	public void tick() {
-		this.faceNearest();
-	}
 
 	@Override
 	public String getValue() {

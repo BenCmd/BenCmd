@@ -20,10 +20,6 @@ public class BlacksmithNPC extends NPC implements Clickable {
 	public String getSkinURL() {
 		return "https://s3.amazonaws.com/squirt/i4e3a60f8b073748006686458381081478116.png";
 	}
-	
-	public void tick() {
-		this.faceNearest();
-	}
 
 	public static HashMap<ToolMaterial, HashMap<ToolType, Double>> readTools(
 			String s) {

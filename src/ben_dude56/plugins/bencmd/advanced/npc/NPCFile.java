@@ -106,6 +106,24 @@ public class NPCFile extends Properties {
 				ItemStack item = new ItemStack(Integer.parseInt(value.split("\\|")[4].split(":")[0]), Integer.parseInt(value.split("\\|")[4].split(":")[1]));
 				npcs.put(key, new StaticNPC(plugin, n, s, key, l, item, true));
 				break;
+			case 'p':
+				/*l = toLocation(value.split("\\|")[1]);
+				String s1 = value.split("\\|")[2];
+				String n1 = value.split("\\|")[3];
+				ItemStack item1 = new ItemStack(Integer.parseInt(value.split("\\|")[4].split(":")[0]), Integer.parseInt(value.split("\\|")[4].split(":")[1]));
+				String[] slocs = value.split("\\|")[5].split("/");
+				List<Location> locs = new ArrayList<Location>();
+				for (String loc : slocs) {
+					if (!loc.isEmpty()) {
+						locs.add(toLocation(loc));
+					}
+				}
+				if (locs.isEmpty()) {
+					npcs.put(key, new PathableNPC())
+				} else {
+					
+				}
+				break;*/
 			default:
 				plugin.bLog
 						.warning("NPC ERROR: An invalid NPC type was detected in NPC with UID "

@@ -207,7 +207,7 @@ public class FlyDetect {
 			} else {
 				rise.put(player, change);
 			}
-			if (rise.get(player) >= 2) {
+			if (rise.get(player) >= 3) {
 				rise.remove(player);
 				action(player);
 			}

@@ -8,10 +8,9 @@ import ben_dude56.plugins.bencmd.BenCmd;
 public class StaticNPC extends NPC implements Skinnable {
 
 	private String skin = "";
-	private boolean facePlayer;
 	
 	public StaticNPC(BenCmd instance, String name, String skin, int id, Location l, ItemStack heldItem, boolean facePlayer) {
-		super(instance, name, id, l, heldItem);
+		super(instance, name, id, l, heldItem, facePlayer);
 		this.skin = skin;
 		despawn();
 		spawn();
