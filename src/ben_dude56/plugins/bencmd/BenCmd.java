@@ -1,18 +1,17 @@
 package ben_dude56.plugins.bencmd;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.Socket;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.FileHandler;
@@ -113,11 +112,11 @@ import ben_dude56.plugins.bencmd.weather.WeatherPListener;
  */
 public class BenCmd extends JavaPlugin implements PermissionsProvider {
 	public final static boolean debug = true;
-	public final static int buildId = 12;
+	public final static int buildId = 13;
 	public final static int cbbuild = 1051;
-	public final static String downloadServer = "cloud.github.com";
 	public final static String verLoc = "http://cloud.github.com/downloads/BenCmd/BenCmd/version.txt";
-	public final static String downloadLoc = "http://cloud.github.com/downloads/BenCmd/BenCmd/BenCmd.jar";
+	public static String devLoc = "";
+	public static String stableLoc = "";
 	public static boolean updateAvailable = false;
 	private final PermLoginListener permLoginListener = new PermLoginListener(
 			this);
@@ -395,19 +394,6 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 				}
 			}
 		}
-		// Check for an instance of WorldEdit
-		/*
-		 * bLog.info("Checking for running instances of WorldEdit..."); if
-		 * (getServer().getPluginManager().isPluginEnabled("WorldEdit")) {
-		 * bLog.info("WorldEdit found! Attaching as permissions provider...");
-		 * ((WorldEditPlugin)
-		 * getServer().getPluginManager().getPlugin("WorldEdit"
-		 * )).getPermissionsResolver().setPluginPermissionsResolver(new
-		 * WorldEditPermissions()); log.info(String.valueOf(((WorldEditPlugin)
-		 * getServer
-		 * ().getPluginManager().getPlugin("WorldEdit")).getPermissionsResolver
-		 * ().hasPermission("ben_dude56", "canFly"))); }
-		 */
 		bLog.info("Registering events...");
 		// Register all necessary events
 		PluginManager pm = getServer().getPluginManager();
@@ -515,9 +501,9 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 		}
 	}
 
-	public void update(boolean force) {
-		if (!updateAvailable && !force) {
-			return;
+	public boolean update(boolean force) {
+		if (!checkForUpdates() && !force) {
+			return false;
 		}
 		getServer()
 				.broadcastMessage(
@@ -526,87 +512,89 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 		log.info("BenCmd update in progress...");
 		log.info("Opening connection...");
 		try {
-			URL loc = new URL(downloadLoc);
+			URL loc;
+			if (mainProperties.getBoolean("downloadDevUpdates", false)) {
+				loc = new URL(devLoc);
+			} else {
+				loc = new URL(stableLoc);
+			}
 			ReadableByteChannel rbc = Channels.newChannel(loc.openStream());
 			FileOutputStream fos = new FileOutputStream("plugins/BenCmd.jar");
 			log.info("Downloading new JAR file...");
 			fos.getChannel().transferFrom(rbc, 0, 1 << 24);
 			log.info("Download complete! Server is reloading...");
 			getServer().reload();
+			return true;
 		} catch (Exception e) {
 			log.warning("Failed to download update:");
 			e.printStackTrace();
+			return false;
 		}
 	}
 
-	public boolean checkForUpdates(boolean output) {
+	public boolean checkForUpdates() {
 		if (updateAvailable) {
 			return true; // Skip the version check
 		}
-		if (output) {
-			log.info("Checking for BenCmd updates...");
-		}
+		log.info("Checking for BenCmd updates...");
+		URL u;
 		try {
-			Socket s = new Socket(downloadServer, 80);
-			BufferedReader i = new BufferedReader(new InputStreamReader(
-					s.getInputStream()));
-			DataOutputStream o = new DataOutputStream(s.getOutputStream());
-			o.writeBytes("GET " + verLoc + " HTTP/1.1\r\n\r\n");
-			o.flush();
-			long end = new Date().getTime() + 5000;
-			while (!i.ready() && new Date().getTime() < end) {
-			}
-			if (!i.ready()) {
-				if (output) {
-					log.warning("Update request timed out...");
-				}
-				return false;
-			}
-			List<String> l = new ArrayList<String>();
-			for (int j = 0; j < 17 && i.ready(); j++) {
-				String data = i.readLine();
-				l.add(data);
-			}
-			if (l.get(0).split(" ", 3)[1].equals("200")) {
-				int b = 0;
-				for (int j = 0; j < l.size(); j++) {
-					if (l.get(j).isEmpty()) {
-						b = Integer.parseInt(l.get(j + 1));
-						break;
-					}
-				}
-				if (buildId < b) {
-					if (output) {
-						log.info("A new BenCmd update is available! Use \"bencmd update\" to update your server...");
-						for (User u : perm.userFile
-								.allWithPerm("bencmd.update")) {
-							u.sendMessage(ChatColor.RED
-									+ "A new BenCmd update was detected! Use \"/bencmd update\" to update your server...");
-						}
-					}
-					updateAvailable = true;
-					return true;
-				} else {
-					if (output) {
-						log.info("BenCmd is up to date!");
-					}
-					return false;
-				}
-			} else {
-				if (output) {
-					log.warning("Failed to check for updates! Server returned code "
-							+ l.get(0).split(" ", 3)[1] + ":");
-					log.warning(l.get(0).split(" ", 3)[2]);
-				}
-				return false;
-			}
-		} catch (Exception e) {
-			if (output) {
-				log.warning("BenCmd failed to check for updates:");
-				e.printStackTrace();
-			}
+			u = new URL(verLoc);
+		} catch (MalformedURLException e) {
+			log.severe("Could not process download URL... Maybe your copy of BenCmd is corrupted?");
 			return false;
 		}
+		int stableBuild = 0;
+		int devBuild = 0;
+		try {
+			BufferedReader r = new BufferedReader(new InputStreamReader((InputStream)u.getContent()));
+			String l;
+			while ((l = r.readLine()) != null) {
+				try {
+					if (l.startsWith("vdev:")) {
+						devBuild = Integer.parseInt(l.split(":")[1]);
+					} else if (l.startsWith("vstable:")) {
+						stableBuild = Integer.parseInt(l.split(":")[1]);
+					} else if (l.startsWith("ldev:")) {
+						devLoc = l.split(":")[1];
+					} else if (l.startsWith("lstable:")) {
+						stableLoc = l.split(":")[1];
+					} else {
+						log.warning("Failed to get info from line: ");
+						log.warning(l);
+					}
+				} catch (NumberFormatException e) {
+					log.warning("Failed to get info from line: ");
+					log.warning(l);
+				}
+			}
+		} catch (IOException e) {
+			log.severe("BenCmd failed to check for updates:");
+			e.printStackTrace();
+		}
+		if (mainProperties.getBoolean("dowloadDevUpdates", false)) {
+			if (buildId < devBuild) {
+				log.info("A new BenCmd update is available! Use \"bencmd update\" to update your server...");
+				for (User user : perm.userFile
+						.allWithPerm("bencmd.update")) {
+					user.sendMessage(ChatColor.RED
+							+ "A new BenCmd update was detected! Use \"/bencmd update\" to update your server...");
+				}
+				return true;
+			}
+		} else {
+			if (buildId < stableBuild) {
+				log.info("A new BenCmd update is available! Use \"bencmd update\" to update your server...");
+				for (User user : perm.userFile
+						.allWithPerm("bencmd.update")) {
+					user.sendMessage(ChatColor.RED
+							+ "A new BenCmd update was detected! Use \"/bencmd update\" to update your server...");
+				}
+				return true;
+			}
+		}
+		log.info("BenCmd is up to date!");
+		return false;
 	}
 
 	/**
@@ -661,7 +649,7 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 		if (debug) {
 			log.warning("You are running a version of BenCmd marked for DEBUGGING ONLY! Use of this version may cause world/database corruption. Use at your own risk!");
 		}
-		checkForUpdates(true);
+		checkForUpdates();
 		Integer v = null;
 		try {
 			v = Integer.parseInt(getServer().getVersion().split("-")[5]
@@ -826,7 +814,7 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 	public class Update implements Runnable {
 		@Override
 		public void run() {
-			checkForUpdates(true); // Check for new BenCmd versions
+			checkForUpdates(); // Check for new BenCmd versions
 		}
 	}
 

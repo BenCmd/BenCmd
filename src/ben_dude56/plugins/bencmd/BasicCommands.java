@@ -494,9 +494,7 @@ public class BasicCommands implements Commands {
 					+ " has reloaded the BenCmd configuration.");
 		} else if (args[0].equalsIgnoreCase("update")
 				&& user.hasPerm("bencmd.update")) {
-			if (plugin.checkForUpdates(true)) {
-				plugin.update(false);
-			} else {
+			if (!plugin.update(false)) {
 				user.sendMessage(ChatColor.RED
 						+ "BenCmd is up to date... Use /bencmd fupdate to force an update...");
 			}
