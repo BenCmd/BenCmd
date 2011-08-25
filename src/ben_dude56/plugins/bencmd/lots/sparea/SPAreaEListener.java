@@ -38,17 +38,17 @@ public class SPAreaEListener extends EntityListener {
 			EntityDamageByEntityEvent event = (EntityDamageByEntityEvent) e;
 			if (event.getDamager() instanceof Player
 					&& event.getEntity() instanceof Player) {
-				if (((CraftPlayer)event.getDamager()).getHandle() instanceof EntityNPC)
-				{
+				if (((CraftPlayer)event.getDamager()).getHandle() instanceof EntityNPC) {
 					if (plugin.isGod((Player)event.getEntity())) 
 						event.setCancelled(true);
 					return;
 				}
-				NPC npc = plugin.npcs.getNPC((EntityNPC) ((CraftPlayer) event.getEntity()).getHandle());
-				if(npc instanceof Damageable)
-				{
-					((Damageable) npc).onDamage(event.getDamager(), event.getDamage());
-					return;
+				if (((CraftPlayer)event.getEntity()).getHandle() instanceof EntityNPC) {
+					NPC npc = plugin.npcs.getNPC((EntityNPC) ((CraftPlayer) event.getEntity()).getHandle());
+					if(npc instanceof Damageable) {
+						((Damageable) npc).onDamage(event.getDamager(), event.getDamage());
+						return;
+					}
 				}
 				event.setCancelled(!(inPVP((Player) event.getDamager()) != null && inPVP((Player) event
 						.getEntity()) != null));
