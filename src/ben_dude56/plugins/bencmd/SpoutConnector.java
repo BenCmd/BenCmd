@@ -18,7 +18,6 @@ import ben_dude56.plugins.bencmd.advanced.npc.StaticNPC;
 public class SpoutConnector {
 
 	public void sendSkin(Player p, int id, String skin) {
-		BenCmd.getPlugin().log.info("Sendskin");
 		org.getspout.spoutapi.player.SpoutPlayer player = ((org.getspout.spoutapi.player.SpoutPlayer) p);
 		if (player.isSpoutCraftEnabled()) {
 			player.sendPacket(new org.getspout.spoutapi.packet.PacketSkinURL(id, skin));
@@ -37,7 +36,7 @@ public class SpoutConnector {
 	
 	public List<Integer> getValidIDs() {
 		List<Integer> valid = new ArrayList<Integer>();
-		for (int i = 1; i <= 2257; i++) {
+		for (int i = 0; i <= 2257; i++) {
 			if (Material.getMaterial(i) != null)
 				valid.add(i);
 		}
@@ -52,7 +51,7 @@ public class SpoutConnector {
 		}
 		if (valid.lastIndexOf(id) == valid.size() - 1) {
 			s.removeWidget(s.item);
-			s.item.setTypeId(1);
+			s.item.setTypeId(0);
 			s.item.setData((short) 0);
 			s.attachWidget(BenCmd.getPlugin(), s.item);
 		} else {
@@ -69,7 +68,7 @@ public class SpoutConnector {
 		if (!valid.contains(id)) {
 			return;
 		}
-		if (valid.lastIndexOf(id) == 1) {
+		if (valid.lastIndexOf(id) == 0) {
 			s.removeWidget(s.item);
 			s.item.setTypeId(2257);
 			s.item.setData((short) 0);

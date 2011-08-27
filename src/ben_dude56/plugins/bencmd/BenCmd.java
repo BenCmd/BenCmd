@@ -56,6 +56,7 @@ import ben_dude56.plugins.bencmd.chat.channels.ChatChannelController;
 import ben_dude56.plugins.bencmd.invisible.Invisibility;
 import ben_dude56.plugins.bencmd.invisible.InvisibleCommands;
 import ben_dude56.plugins.bencmd.invtools.DispChest;
+import ben_dude56.plugins.bencmd.invtools.InvListen;
 import ben_dude56.plugins.bencmd.invtools.InventoryBlockListener;
 import ben_dude56.plugins.bencmd.invtools.InventoryCommands;
 import ben_dude56.plugins.bencmd.invtools.InventoryPlayerListener;
@@ -111,8 +112,8 @@ import ben_dude56.plugins.bencmd.weather.WeatherPListener;
  * 
  */
 public class BenCmd extends JavaPlugin implements PermissionsProvider {
-	public final static boolean debug = true;
-	public final static int buildId = 15;
+	public final static boolean debug = false;
+	public final static int buildId = 16;
 	public final static int cbbuild = 1051;
 	public final static String verLoc = "http://cloud.github.com/downloads/BenCmd/BenCmd/version.txt";
 	public static String devLoc = "";
@@ -479,6 +480,8 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 			pm.registerEvent(Event.Type.CUSTOM_EVENT,
 					new BenCmdSpoutListener(), Event.Priority.Normal, this);
 			pm.registerEvent(Event.Type.CUSTOM_EVENT, new NPCScreenListener(),
+					Event.Priority.Normal, this);
+			pm.registerEvent(Event.Type.CUSTOM_EVENT, new InvListen(this),
 					Event.Priority.Normal, this);
 		}
 		PluginDescriptionFile pdfFile = this.getDescription();

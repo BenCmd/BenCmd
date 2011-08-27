@@ -58,11 +58,15 @@ public class BasicCommands implements Commands {
 		} else if (commandLabel.equalsIgnoreCase("midnight")) {
 			plugin.getServer().dispatchCommand(sender, "time midnight");
 			return true;
-		} else if (commandLabel.equalsIgnoreCase("svping")) {
+		} else if (commandLabel.equalsIgnoreCase("ping")) {
 			if (user.isServer()) {
-				plugin.log.info("pong");
+				if (args.length == 0) {
+					plugin.log.info("pong");
+				} else {
+					plugin.log.info(args[0]);
+				}
 			} else {
-				user.sendMessage(ChatColor.RED + "Nice try, asshole!");
+				user.sendMessage(ChatColor.RED + "No, you cannot spam the server console, smart one!");
 			}
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("spawn")
