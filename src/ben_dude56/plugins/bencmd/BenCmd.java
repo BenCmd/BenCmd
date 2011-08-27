@@ -575,7 +575,7 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 			log.severe("BenCmd failed to check for updates:");
 			e.printStackTrace();
 		}
-		if (mainProperties.getBoolean("dowloadDevUpdates", false)) {
+		if (mainProperties.getBoolean("downloadDevUpdates", false)) {
 			if (buildId < devBuild) {
 				log.info("A new BenCmd update is available! Use \"bencmd update\" to update your server...");
 				for (User user : perm.userFile

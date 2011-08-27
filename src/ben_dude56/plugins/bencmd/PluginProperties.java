@@ -97,6 +97,7 @@ public class PluginProperties extends Properties {
 					&& (boolString.toLowerCase().charAt(0) == 't');
 		}
 		put(key, value ? "true" : "false");
+		saveFile("-BenCmd Main Config-");
 		return value;
 	}
 
