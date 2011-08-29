@@ -10,6 +10,7 @@ import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.CreatureType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
 
@@ -599,12 +600,90 @@ public class BasicCommands implements Commands {
 				return;
 			}
 		}
+		
+		// Prepare for passengers
+		int passengers = args[0].split(",").length;
+		LivingEntity vehicle = null, passenger, mob;
+		String mobName;
+		// Spawn the mob(s)
 		for (int i = 0; i < amount; i++) {
-			user.getHandle()
-					.getWorld()
-					.spawnCreature(user.getHandle().getLocation(),
-							CreatureType.fromName(args[0]));
+			for (int p = 0; p < passengers; p++) {
+				mobName = getMobAlias(args[p]);
+				if (!mobName.equalsIgnoreCase("ERROR")) {
+					mob = user.getHandle().getWorld()
+						.spawnCreature(user.getHandle().getLocation(),
+								CreatureType.fromName(mobName));
+
+							
+					// Add up the passengers
+					if (p == 0) {
+						vehicle = mob;
+					}
+					else if (p > 0) {
+						passenger = mob;
+						vehicle.setPassenger(passenger);
+						vehicle = mob;
+					}
+				}
+			}
 		}
+	}
+	
+	private String getMobAlias(String alias) {
+		if (alias.equalsIgnoreCase("creeper") || alias.equalsIgnoreCase("creepers")) {
+			alias = "Creeper";
+			return alias;
+		}
+		if (alias.equalsIgnoreCase("zombie") || alias.equalsIgnoreCase("zombies")) {
+			alias = "Zombie";
+			return alias;
+		}
+		if (alias.equalsIgnoreCase("skeleton") || alias.equalsIgnoreCase("skele") || alias.equalsIgnoreCase("skeletons") || alias.equalsIgnoreCase("skeles")) {
+			alias = "Skeleton";
+			return alias;
+		}
+		if (alias.equalsIgnoreCase("spider") || alias.equalsIgnoreCase("spiders")) {
+			alias = "Spider";
+			return alias;
+		}
+		if (alias.equalsIgnoreCase("pig") || alias.equalsIgnoreCase("piggy") || alias.equalsIgnoreCase("pigs")) {
+			alias = "Pig";
+			return alias;
+		}
+		if (alias.equalsIgnoreCase("chicken") || alias.equalsIgnoreCase("chickens")) {
+			alias = "Chicken";
+			return alias;
+		}
+		if (alias.equalsIgnoreCase("cow") || alias.equalsIgnoreCase("cows")) {
+			alias = "Cow";
+			return alias;
+		}
+		if (alias.equalsIgnoreCase("sheep") || alias.equalsIgnoreCase("sheeps")) {
+			alias = "Sheep";
+			return alias;
+		}
+		if (alias.equalsIgnoreCase("wolf") || alias.equalsIgnoreCase("wolves")) {
+			alias = "Wolf";
+			return alias;
+		}
+		if (alias.equalsIgnoreCase("squid") || alias.equalsIgnoreCase("squids")) {
+			alias = "Squid";
+			return alias;
+		}
+		if (alias.equalsIgnoreCase("slime") || alias.equalsIgnoreCase("slimes")) {
+			alias = "Slime";
+			return alias;
+		}
+		if (alias.equalsIgnoreCase("ghast") || alias.equalsIgnoreCase("ghasts")) {
+			alias = "Ghast";
+			return alias;
+		}
+		if (alias.equalsIgnoreCase("pigzombie") || alias.equalsIgnoreCase("zombiepigman") || alias.equalsIgnoreCase("zombiepig")) {
+			alias = "PigZombie";
+			return alias;
+		}
+		alias = "ERROR";
+		return alias;
 	}
 
 	public List<BCommand> getCommands(User user) {
