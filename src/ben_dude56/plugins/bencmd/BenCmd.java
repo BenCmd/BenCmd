@@ -113,7 +113,7 @@ import ben_dude56.plugins.bencmd.weather.WeatherPListener;
  */
 public class BenCmd extends JavaPlugin implements PermissionsProvider {
 	public final static boolean debug = false;
-	public final static int buildId = 18;
+	public final static int buildId = 19;
 	public final static int cbbuild = 1060;
 	public final static String verLoc = "http://cloud.github.com/downloads/BenCmd/BenCmd/version.txt";
 	public static String devLoc = "";

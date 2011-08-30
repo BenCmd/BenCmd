@@ -104,6 +104,10 @@ public class BasicCommands implements Commands {
 				&& user.hasPerm("bencmd.spawnmob")) {
 			SpawnMob(args, user);
 			return true;
+		} else if (commandLabel.equalsIgnoreCase("killall")
+				&& user.hasPerm("bencmd.spawnmob")) {
+			KillEntities(args, user);
+			return true;
 		} else if (commandLabel.equalsIgnoreCase("rechunk")) {
 			Chunk chunk = user.getHandle().getWorld()
 					.getChunkAt(user.getHandle().getLocation());
@@ -634,68 +638,223 @@ public class BasicCommands implements Commands {
 		}
 	}
 	
+	public void KillEntities(String args[], User user) {
+		// Tally up the mobs
+		String mobToKill;
+		for (int i = 0 ; i < args.length ; i++) {
+			mobToKill = getCraftMobAlias(args[i]);
+			if (mobToKill != null) {
+				for (int ii = 0 ; ii < user.getHandle().getWorld().getEntities().size() ; ii++) {
+					String entity = user.getHandle().getWorld().getEntities().get(ii).toString(); {
+						if (entity == mobToKill) {
+							user.getHandle().getWorld().getEntities().get(ii).remove();
+						}
+					}
+				}
+			}
+		}
+	}
+	
 	private String getMobAlias(String alias) {
-		if (alias.equalsIgnoreCase("creeper") || alias.equalsIgnoreCase("creepers")) {
+		if (alias.equalsIgnoreCase("creeper")
+				|| alias.equalsIgnoreCase("creepers")) {
 			alias = "Creeper";
 			return alias;
 		}
-		if (alias.equalsIgnoreCase("zombie") || alias.equalsIgnoreCase("zombies")) {
+		if (alias.equalsIgnoreCase("zombie")
+				|| alias.equalsIgnoreCase("zombies")) {
 			alias = "Zombie";
 			return alias;
 		}
-		if (alias.equalsIgnoreCase("skeleton") || alias.equalsIgnoreCase("skele") || alias.equalsIgnoreCase("skeletons") || alias.equalsIgnoreCase("skeles")) {
+		if (alias.equalsIgnoreCase("skeleton") 
+				|| alias.equalsIgnoreCase("skele") 
+				|| alias.equalsIgnoreCase("skeletons")
+				|| alias.equalsIgnoreCase("skeles")) {
 			alias = "Skeleton";
 			return alias;
 		}
-		if (alias.equalsIgnoreCase("spider") || alias.equalsIgnoreCase("spiders")) {
+		if (alias.equalsIgnoreCase("spider") 
+				|| alias.equalsIgnoreCase("spiders")) {
 			alias = "Spider";
 			return alias;
 		}
-		if (alias.equalsIgnoreCase("pig") || alias.equalsIgnoreCase("piggy") || alias.equalsIgnoreCase("pigs")) {
+		if (alias.equalsIgnoreCase("pig")
+				|| alias.equalsIgnoreCase("piggy")
+				|| alias.equalsIgnoreCase("pigs")) {
 			alias = "Pig";
 			return alias;
 		}
-		if (alias.equalsIgnoreCase("chicken") || alias.equalsIgnoreCase("chickens")) {
+		if (alias.equalsIgnoreCase("chicken") 
+				|| alias.equalsIgnoreCase("chickens")) {
 			alias = "Chicken";
 			return alias;
 		}
-		if (alias.equalsIgnoreCase("cow") || alias.equalsIgnoreCase("cows")) {
+		if (alias.equalsIgnoreCase("cow")
+				|| alias.equalsIgnoreCase("cows")) {
 			alias = "Cow";
 			return alias;
 		}
-		if (alias.equalsIgnoreCase("sheep") || alias.equalsIgnoreCase("sheeps")) {
+		if (alias.equalsIgnoreCase("sheep") 
+				|| alias.equalsIgnoreCase("sheeps")) {
 			alias = "Sheep";
 			return alias;
 		}
-		if (alias.equalsIgnoreCase("wolf") || alias.equalsIgnoreCase("wolves")) {
+		if (alias.equalsIgnoreCase("wolf")
+				|| alias.equalsIgnoreCase("wolves")) {
 			alias = "Wolf";
 			return alias;
 		}
-		if (alias.equalsIgnoreCase("squid") || alias.equalsIgnoreCase("squids")) {
+		if (alias.equalsIgnoreCase("squid")
+				|| alias.equalsIgnoreCase("squids")) {
 			alias = "Squid";
 			return alias;
 		}
-		if (alias.equalsIgnoreCase("slime") || alias.equalsIgnoreCase("slimes")) {
+		if (alias.equalsIgnoreCase("slime")
+				|| alias.equalsIgnoreCase("slimes")) {
 			alias = "Slime";
 			return alias;
 		}
-		if (alias.equalsIgnoreCase("ghast") || alias.equalsIgnoreCase("ghasts")) {
+		if (alias.equalsIgnoreCase("ghast")
+				|| alias.equalsIgnoreCase("ghasts")) {
 			alias = "Ghast";
 			return alias;
 		}
-		if (alias.equalsIgnoreCase("pigzombie") || alias.equalsIgnoreCase("zombiepigman") || alias.equalsIgnoreCase("zombiepig")) {
+		if (alias.equalsIgnoreCase("pigzombie") 
+				|| alias.equalsIgnoreCase("zombiepigman") || alias.equalsIgnoreCase("zombiepig")) {
 			alias = "PigZombie";
 			return alias;
 		}
-		if (alias.equalsIgnoreCase("giant") || alias.equalsIgnoreCase("bigzombie") || alias.equalsIgnoreCase("giantzombie")) {
+		if (alias.equalsIgnoreCase("giant") 
+				|| alias.equalsIgnoreCase("bigzombie") || alias.equalsIgnoreCase("giantzombie")) {
 			alias = "Giant";
 			return alias;
 		}
-		if (alias.equalsIgnoreCase("monster") || alias.equalsIgnoreCase("human") || alias.equalsIgnoreCase("steve")) {
+		if (alias.equalsIgnoreCase("monster") 
+				|| alias.equalsIgnoreCase("human") 
+				|| alias.equalsIgnoreCase("steve")) {
 			alias = "Monster";
 			return alias;
 		}
 		alias = "ERROR";
+		return alias;
+	}
+	
+	private String getCraftMobAlias(String alias) {
+		if (alias.equalsIgnoreCase("creeper") 
+				|| alias.equalsIgnoreCase("creepers")
+				|| alias.equalsIgnoreCase("craftcreeper")
+				|| alias.equalsIgnoreCase("craftcreepers")) {
+			alias = "CraftCreeper";
+			return alias;
+		}
+		if (alias.equalsIgnoreCase("zombie")
+				|| alias.equalsIgnoreCase("zombies")
+				|| alias.equalsIgnoreCase("craftzombie")
+				|| alias.equalsIgnoreCase("craftzombies")) {
+			alias = "CraftZombie";
+			return alias;
+		}
+		if (alias.equalsIgnoreCase("skeleton")
+				|| alias.equalsIgnoreCase("skele")
+				|| alias.equalsIgnoreCase("skeletons")
+				|| alias.equalsIgnoreCase("skeles")
+				|| alias.equalsIgnoreCase("craftskeleton")
+				|| alias.equalsIgnoreCase("craftskeletons")) {
+			alias = "CraftSkeleton";
+			return alias;
+		}
+		if (alias.equalsIgnoreCase("spider")
+				|| alias.equalsIgnoreCase("spiders")
+				|| alias.equalsIgnoreCase("craftspider")
+				|| alias.equalsIgnoreCase("craftspiders")) {
+			alias = "CraftSpider";
+			return alias;
+		}
+		if (alias.equalsIgnoreCase("pig")
+				|| alias.equalsIgnoreCase("piggy")
+				|| alias.equalsIgnoreCase("pigs")
+				|| alias.equalsIgnoreCase("craftpig")
+				|| alias.equalsIgnoreCase("craftpigs")) {
+			alias = "CraftPig";
+			return alias;
+		}
+		if (alias.equalsIgnoreCase("chicken")
+				|| alias.equalsIgnoreCase("chickens")
+				|| alias.equalsIgnoreCase("craftchicken")
+				|| alias.equalsIgnoreCase("craftchickens")) {
+			alias = "CraftChicken";
+			return alias;
+		}
+		if (alias.equalsIgnoreCase("cow")
+				|| alias.equalsIgnoreCase("cows")
+				|| alias.equalsIgnoreCase("craftcow")
+				|| alias.equalsIgnoreCase("craftcows")) {
+			alias = "CraftCow";
+			return alias;
+		}
+		if (alias.equalsIgnoreCase("sheep")
+				|| alias.equalsIgnoreCase("sheeps")
+				|| alias.equalsIgnoreCase("craftsheep")
+				|| alias.equalsIgnoreCase("craftsheeps")) {
+			alias = "CraftSheep";
+			return alias;
+		}
+		if (alias.equalsIgnoreCase("wolf")
+				|| alias.equalsIgnoreCase("wolves")
+				|| alias.equalsIgnoreCase("craftwolf")
+				|| alias.equalsIgnoreCase("craftwolves")) {
+			alias = "CraftWolf";
+			return alias;
+		}
+		if (alias.equalsIgnoreCase("squid")
+				|| alias.equalsIgnoreCase("squids")
+				|| alias.equalsIgnoreCase("craftsquid")
+				|| alias.equalsIgnoreCase("craftsquids")) {
+			alias = "CraftSquid";
+			return alias;
+		}
+		if (alias.equalsIgnoreCase("slime")
+				|| alias.equalsIgnoreCase("slimes")
+				|| alias.equalsIgnoreCase("craftslime")
+				|| alias.equalsIgnoreCase("craftslimes")) {
+			alias = "CraftSlime";
+			return alias;
+		}
+		if (alias.equalsIgnoreCase("ghast")
+				|| alias.equalsIgnoreCase("ghasts")
+				|| alias.equalsIgnoreCase("craftghast")
+				|| alias.equalsIgnoreCase("craftghasts")) {
+			alias = "CraftGhast";
+			return alias;
+		}
+		if (alias.equalsIgnoreCase("pigzombie")
+				|| alias.equalsIgnoreCase("zombiepigman")
+				|| alias.equalsIgnoreCase("zombiepig")
+				|| alias.equalsIgnoreCase("pigzombies")
+				|| alias.equalsIgnoreCase("zombiepigmen")
+				|| alias.equalsIgnoreCase("zombiepigs")
+				|| alias.equalsIgnoreCase("craftpigzombies")
+				|| alias.equalsIgnoreCase("craftpigzombie")) {
+			alias = "CraftPigZombie";
+			return alias;
+		}
+		if (alias.equalsIgnoreCase("giant")
+				|| alias.equalsIgnoreCase("bigzombie")
+				|| alias.equalsIgnoreCase("giantzombie")
+				|| alias.equalsIgnoreCase("craftgiant")
+				|| alias.equalsIgnoreCase("craftgiants")) {
+			alias = "Giant";
+			return alias;
+		}
+		if (alias.equalsIgnoreCase("monster") 
+				|| alias.equalsIgnoreCase("human")
+				|| alias.equalsIgnoreCase("steve")
+				|| alias.equalsIgnoreCase("craftmonster")
+				|| alias.equalsIgnoreCase("craftmonsters")) {
+			alias = "Monster";
+			return alias;
+		}
+		alias = null;
 		return alias;
 	}
 

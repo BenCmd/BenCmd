@@ -179,6 +179,12 @@ commands:
     spawnmob:
         usage:
         description: Spawns mobs
+    mob:
+        usage:
+        description: Spawns mobs too
+    killall:
+        usage:
+        description: Kills entities
     status:
         usage:
         description: Gets someone's status (muted, jailed, reported)
