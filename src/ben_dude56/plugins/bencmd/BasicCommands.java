@@ -100,6 +100,10 @@ public class BasicCommands implements Commands {
 				&& user.hasPerm("bencmd.spawnmob")) {
 			SpawnMob(args, user);
 			return true;
+		} else if (commandLabel.equalsIgnoreCase("mob")
+				&& user.hasPerm("bencmd.spawnmob")) {
+			SpawnMob(args, user);
+			return true;
 		} else if (commandLabel.equalsIgnoreCase("rechunk")) {
 			Chunk chunk = user.getHandle().getWorld()
 					.getChunkAt(user.getHandle().getLocation());
@@ -602,24 +606,25 @@ public class BasicCommands implements Commands {
 		}
 		
 		// Prepare for passengers
-		int passengers = args[0].split(",").length;
+		String[] passengers = args[0].split(",");
 		LivingEntity vehicle = null, passenger, mob;
 		String mobName;
+		
 		// Spawn the mob(s)
 		for (int i = 0; i < amount; i++) {
-			for (int p = 0; p < passengers; p++) {
-				mobName = getMobAlias(args[p]);
+			vehicle = null;
+			for (int p = 0; p < passengers.length; p++) {
+				mobName = getMobAlias(passengers[p]);
 				if (!mobName.equalsIgnoreCase("ERROR")) {
 					mob = user.getHandle().getWorld()
 						.spawnCreature(user.getHandle().getLocation(),
 								CreatureType.fromName(mobName));
-
-							
+		
 					// Add up the passengers
-					if (p == 0) {
+					if (vehicle == null && mob != null) {
 						vehicle = mob;
 					}
-					else if (p > 0) {
+					else if (vehicle != null){
 						passenger = mob;
 						vehicle.setPassenger(passenger);
 						vehicle = mob;
@@ -680,6 +685,14 @@ public class BasicCommands implements Commands {
 		}
 		if (alias.equalsIgnoreCase("pigzombie") || alias.equalsIgnoreCase("zombiepigman") || alias.equalsIgnoreCase("zombiepig")) {
 			alias = "PigZombie";
+			return alias;
+		}
+		if (alias.equalsIgnoreCase("giant") || alias.equalsIgnoreCase("bigzombie") || alias.equalsIgnoreCase("giantzombie")) {
+			alias = "Giant";
+			return alias;
+		}
+		if (alias.equalsIgnoreCase("monster") || alias.equalsIgnoreCase("human") || alias.equalsIgnoreCase("steve")) {
+			alias = "Monster";
 			return alias;
 		}
 		alias = "ERROR";
