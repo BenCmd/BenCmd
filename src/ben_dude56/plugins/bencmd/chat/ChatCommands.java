@@ -148,7 +148,7 @@ public class ChatCommands implements Commands {
 			}
 		}
 		message = ChatColor.WHITE + "*" + user.getColor()
-				+ user.getDisplayName() + " " + ChatColor.WHITE + message;
+				+ user.getName() + " " + ChatColor.WHITE + message;
 		plugin.getServer().broadcastMessage(message);
 		User.getUser(plugin).sendMessage(message);
 	}

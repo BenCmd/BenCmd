@@ -609,6 +609,8 @@ public class BasicCommands implements Commands {
 			}
 		}
 		
+		int mobCounter = 0;
+		
 		// Prepare for passengers
 		String[] passengers = args[0].split(",");
 		LivingEntity vehicle = null, passenger, mob;
@@ -633,26 +635,69 @@ public class BasicCommands implements Commands {
 						vehicle.setPassenger(passenger);
 						vehicle = mob;
 					}
+					if (mob != null) {
+						mobCounter++;
+					}
 				}
 			}
 		}
+		user.sendMessage(ChatColor.GREEN + "" + mobCounter + " mobs spawned!");
 	}
 	
 	public void KillEntities(String args[], User user) {
 		// Tally up the mobs
 		String mobToKill;
+		int mobCounter = 0;
+		int range = -1;
+		try {
+			range = Integer.parseInt(args[args.length-1]);
+		} catch (NumberFormatException e) {
+			range = -1;
+		}
 		for (int i = 0 ; i < args.length ; i++) {
 			mobToKill = getCraftMobAlias(args[i]);
 			if (mobToKill != null) {
 				for (int ii = 0 ; ii < user.getHandle().getWorld().getEntities().size() ; ii++) {
 					String entity = user.getHandle().getWorld().getEntities().get(ii).toString(); {
 						if (entity == mobToKill) {
+							if (range != -1 &&
+									getDistance( user.getHandle().getLocation(),
+											user.getHandle().getWorld().getEntities().get(ii).getLocation(),
+											false) <= range) {
+								user.getHandle().getWorld().getEntities().get(ii).remove();
+								mobCounter++;
+							} else {
 							user.getHandle().getWorld().getEntities().get(ii).remove();
+							mobCounter++;
+							}
 						}
 					}
 				}
 			}
 		}
+		user.sendMessage(ChatColor.GREEN + "" + mobCounter + " mobs were killed!");
+	}
+	
+	private double getDistance(Location loc1, Location loc2, boolean checkY) {
+		
+		double xdis = 0, ydis = 0, zdis = 0;
+		double distance = 0;
+		
+		xdis = loc1.getX() - loc2.getX();
+		ydis = loc1.getY() - loc2.getY();
+		zdis = loc1.getZ() - loc2.getZ();
+		
+		if (checkY) {
+			distance = Math.sqrt(
+					Math.pow(xdis, 2) +
+					Math.pow(ydis, 2) +
+					Math.pow(zdis, 2) );
+		} else {
+			distance = Math.sqrt(
+					Math.pow(xdis, 2) +
+					Math.pow(zdis, 2) );
+		}
+		return distance;
 	}
 	
 	private String getMobAlias(String alias) {
