@@ -1,7 +1,7 @@
 name: BenCmd
 version: 1.2.6
-main: ben_dude56.plugins.bencmd.BenCmd
-website: github.com/bendude56/BenCmd
+main: com.bendude56.bencmd.BenCmd
+website: github.com/BenCmd/BenCmd
 author: ben_dude56
 softdepend: [Spout]
 commands:
