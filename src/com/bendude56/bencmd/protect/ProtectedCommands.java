@@ -10,6 +10,10 @@ import org.bukkit.entity.Player;
 import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.Commands;
 import com.bendude56.bencmd.User;
+import com.bendude56.bencmd.event.protect.ProtectionAddEvent;
+import com.bendude56.bencmd.event.protect.ProtectionEditEvent;
+import com.bendude56.bencmd.event.protect.ProtectionEditEvent.ChangeType;
+import com.bendude56.bencmd.event.protect.ProtectionRemoveEvent;
 import com.bendude56.bencmd.permissions.PermissionUser;
 import com.bendude56.bencmd.protect.ProtectFile.ProtectionType;
 
@@ -127,6 +131,12 @@ public class ProtectedCommands implements Commands {
 			if (pointedAt.getType() == Material.CHEST) {
 				int id = plugin.protectFile.addProtection(user,
 						pointedAt.getLocation(), ProtectionType.Chest);
+				ProtectionAddEvent event = new ProtectionAddEvent(plugin.protectFile.getProtection(id), user);
+				plugin.getServer().getPluginManager().callEvent(event);
+				if (event.isCancelled()) {
+					plugin.protectFile.removeProtection(id);
+					return;
+				}
 				user.sendMessage(ChatColor.GREEN
 						+ "Protected chest created with owner "
 						+ user.getDisplayName() + ".");
@@ -150,6 +160,12 @@ public class ProtectedCommands implements Commands {
 			} else if (pointedAt.getType() == Material.WOODEN_DOOR) {
 				int id = plugin.protectFile.addProtection(user,
 						pointedAt.getLocation(), ProtectionType.Door);
+				ProtectionAddEvent event = new ProtectionAddEvent(plugin.protectFile.getProtection(id), user);
+				plugin.getServer().getPluginManager().callEvent(event);
+				if (event.isCancelled()) {
+					plugin.protectFile.removeProtection(id);
+					return;
+				}
 				user.sendMessage(ChatColor.GREEN
 						+ "Protected door created with owner "
 						+ user.getDisplayName() + ".");
@@ -180,6 +196,12 @@ public class ProtectedCommands implements Commands {
 			if (pointedAt.getType() == Material.CHEST) {
 				int id = plugin.protectFile.addProtection(user2,
 						pointedAt.getLocation(), ProtectionType.Chest);
+				ProtectionAddEvent event = new ProtectionAddEvent(plugin.protectFile.getProtection(id), user);
+				plugin.getServer().getPluginManager().callEvent(event);
+				if (event.isCancelled()) {
+					plugin.protectFile.removeProtection(id);
+					return;
+				}
 				user.sendMessage(ChatColor.GREEN
 						+ "Protected chest created with owner "
 						+ user2.getName() + ".");
@@ -203,6 +225,12 @@ public class ProtectedCommands implements Commands {
 			} else if (pointedAt.getType() == Material.WOODEN_DOOR) {
 				int id = plugin.protectFile.addProtection(user2,
 						pointedAt.getLocation(), ProtectionType.Door);
+				ProtectionAddEvent event = new ProtectionAddEvent(plugin.protectFile.getProtection(id), user);
+				plugin.getServer().getPluginManager().callEvent(event);
+				if (event.isCancelled()) {
+					plugin.protectFile.removeProtection(id);
+					return;
+				}
 				user.sendMessage(ChatColor.GREEN
 						+ "Protected door created with owner "
 						+ user2.getName() + ".");
@@ -257,6 +285,12 @@ public class ProtectedCommands implements Commands {
 			if (pointedAt.getType() == Material.CHEST) {
 				int id = plugin.protectFile.addProtection(user,
 						pointedAt.getLocation(), ProtectionType.PChest);
+				ProtectionAddEvent event = new ProtectionAddEvent(plugin.protectFile.getProtection(id), user);
+				plugin.getServer().getPluginManager().callEvent(event);
+				if (event.isCancelled()) {
+					plugin.protectFile.removeProtection(id);
+					return;
+				}
 				user.sendMessage(ChatColor.GREEN
 						+ "Public chest created with owner "
 						+ user.getDisplayName() + ".");
@@ -279,6 +313,12 @@ public class ProtectedCommands implements Commands {
 			} else if (pointedAt.getType() == Material.WOODEN_DOOR) {
 				int id = plugin.protectFile.addProtection(user,
 						pointedAt.getLocation(), ProtectionType.PDoor);
+				ProtectionAddEvent event = new ProtectionAddEvent(plugin.protectFile.getProtection(id), user);
+				plugin.getServer().getPluginManager().callEvent(event);
+				if (event.isCancelled()) {
+					plugin.protectFile.removeProtection(id);
+					return;
+				}
 				user.sendMessage(ChatColor.GREEN
 						+ "Public door created with owner "
 						+ user.getDisplayName() + ".");
@@ -308,6 +348,12 @@ public class ProtectedCommands implements Commands {
 			if (pointedAt.getType() == Material.CHEST) {
 				int id = plugin.protectFile.addProtection(user2,
 						pointedAt.getLocation(), ProtectionType.PChest);
+				ProtectionAddEvent event = new ProtectionAddEvent(plugin.protectFile.getProtection(id), user);
+				plugin.getServer().getPluginManager().callEvent(event);
+				if (event.isCancelled()) {
+					plugin.protectFile.removeProtection(id);
+					return;
+				}
 				user.sendMessage(ChatColor.GREEN
 						+ "Public chest created with owner " + user2.getName()
 						+ ".");
@@ -331,6 +377,12 @@ public class ProtectedCommands implements Commands {
 			} else if (pointedAt.getType() == Material.WOODEN_DOOR) {
 				int id = plugin.protectFile.addProtection(user2,
 						pointedAt.getLocation(), ProtectionType.PDoor);
+				ProtectionAddEvent event = new ProtectionAddEvent(plugin.protectFile.getProtection(id), user);
+				plugin.getServer().getPluginManager().callEvent(event);
+				if (event.isCancelled()) {
+					plugin.protectFile.removeProtection(id);
+					return;
+				}
 				user.sendMessage(ChatColor.GREEN
 						+ "Public door created with owner " + user2.getName()
 						+ ".");
@@ -376,6 +428,11 @@ public class ProtectedCommands implements Commands {
 						user.sendMessage(ChatColor.RED
 								+ "You don't have permission to remove the protection on that block!");
 					} else {
+						ProtectionRemoveEvent event = new ProtectionRemoveEvent(block, user);
+						plugin.getServer().getPluginManager().callEvent(event);
+						if (event.isCancelled()) {
+							return;
+						}
 						plugin.protectFile.removeProtection(block.GetId());
 						String w = pointedAt.getWorld().getName();
 						String x = String.valueOf(pointedAt.getX());
@@ -409,10 +466,15 @@ public class ProtectedCommands implements Commands {
 				if ((id = plugin.protectFile.getProtection(pointedAt
 						.getLocation())) != -1) {
 					ProtectedBlock block = plugin.protectFile.getProtection(id);
-					if (!block.canChange(user)) {
+					if (!block.canChange(user) && !user.hasPerm("bencmd.lock.remove")) {
 						user.sendMessage(ChatColor.RED
 								+ "You don't have permission to remove the protection on that block!");
 					} else {
+						ProtectionRemoveEvent event = new ProtectionRemoveEvent(block, user);
+						plugin.getServer().getPluginManager().callEvent(event);
+						if (event.isCancelled()) {
+							return;
+						}
 						plugin.protectFile.removeProtection(block.GetId());
 						String w = pointedAt.getWorld().getName();
 						String x = String.valueOf(pointedAt.getX());
@@ -457,11 +519,16 @@ public class ProtectedCommands implements Commands {
 				return;
 			}
 			if (block instanceof ProtectedChest) {
-				if (!block.canChange(user)) {
+				if (!block.canChange(user) && !user.hasPerm("bencmd.lock.remove")) {
 					user.sendMessage(ChatColor.RED
 							+ "You don't have permission to remove the protection on that block!");
 					return;
 				} else {
+					ProtectionRemoveEvent event = new ProtectionRemoveEvent(block, user);
+					plugin.getServer().getPluginManager().callEvent(event);
+					if (event.isCancelled()) {
+						return;
+					}
 					plugin.protectFile.removeProtection(block.GetId());
 					String w = pointedAt.getWorld().getName();
 					String x = String.valueOf(pointedAt.getX());
@@ -481,11 +548,16 @@ public class ProtectedCommands implements Commands {
 					return;
 				}
 			} else if (block instanceof ProtectedDoor) {
-				if (!block.canChange(user)) {
+				if (!block.canChange(user) && !user.hasPerm("bencmd.lock.remove")) {
 					user.sendMessage(ChatColor.RED
 							+ "You don't have permission to remove the protection on that block!");
 					return;
 				} else {
+					ProtectionRemoveEvent event = new ProtectionRemoveEvent(block, user);
+					plugin.getServer().getPluginManager().callEvent(event);
+					if (event.isCancelled()) {
+						return;
+					}
 					plugin.protectFile.removeProtection(block.GetId());
 					String w = pointedAt.getWorld().getName();
 					String x = String.valueOf(pointedAt.getX());
@@ -559,6 +631,11 @@ public class ProtectedCommands implements Commands {
 							+ "That player doesn't exist!");
 					return;
 				}
+				ProtectionEditEvent event = new ProtectionEditEvent(block, user, ChangeType.SET_OWNER, newOwner);
+				plugin.getServer().getPluginManager().callEvent(event);
+				if (event.isCancelled()) {
+					return;
+				}
 				plugin.log.info(user.getDisplayName()
 						+ " has changed the owner of "
 						+ block.getOwner().getName()
@@ -587,7 +664,7 @@ public class ProtectedCommands implements Commands {
 				return;
 			}
 			block = plugin.protectFile.getProtection(id);
-			if (!block.canChange(user)) {
+			if (!block.canChange(user) && !user.hasPerm("bencmd.lock.edit")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to edit the protection on that block!");
 				return;
@@ -595,6 +672,11 @@ public class ProtectedCommands implements Commands {
 			PermissionUser newOwner;
 			if ((newOwner = PermissionUser.matchUser(args[0], plugin)) == null) {
 				user.sendMessage(ChatColor.RED + "That player doesn't exist!");
+				return;
+			}
+			ProtectionEditEvent event = new ProtectionEditEvent(block, user, ChangeType.SET_OWNER, newOwner);
+			plugin.getServer().getPluginManager().callEvent(event);
+			if (event.isCancelled()) {
 				return;
 			}
 			plugin.log.info(user.getDisplayName()
@@ -633,6 +715,11 @@ public class ProtectedCommands implements Commands {
 							+ "That player doesn't exist!");
 					return;
 				}
+				ProtectionEditEvent event = new ProtectionEditEvent(block, user, ChangeType.ADD_GUEST, newOwner);
+				plugin.getServer().getPluginManager().callEvent(event);
+				if (event.isCancelled()) {
+					return;
+				}
 				plugin.log.info(user.getDisplayName() + " has added "
 						+ newOwner.getName() + " to the guest list of "
 						+ block.getOwner().getName()
@@ -650,6 +737,7 @@ public class ProtectedCommands implements Commands {
 						+ "You aren't pointing at a protected block!");
 			}
 		} else if (args.length == 3) {
+			
 			int id;
 			try {
 				id = Integer.parseInt(args[2]);
@@ -658,24 +746,36 @@ public class ProtectedCommands implements Commands {
 						+ "Cannot be converted into a number...");
 				return;
 			}
-			block = plugin.protectFile.getProtection(id);
-			PermissionUser newOwner;
-			if ((newOwner = PermissionUser.matchUser(args[0], plugin)) == null) {
-				user.sendMessage(ChatColor.RED + "That player doesn't exist!");
-				return;
+			if ((block = plugin.protectFile.getProtection(id)) != null) {
+				if (!block.canChange(user) && !user.hasPerm("bencmd.lock.edit")) {
+					user.sendMessage(ChatColor.RED
+							+ "You don't have permission to edit the protection on that block!");
+					return;
+				}
+				block = plugin.protectFile.getProtection(id);
+				PermissionUser newOwner;
+				if ((newOwner = PermissionUser.matchUser(args[0], plugin)) == null) {
+					user.sendMessage(ChatColor.RED + "That player doesn't exist!");
+					return;
+				}
+				ProtectionEditEvent event = new ProtectionEditEvent(block, user, ChangeType.ADD_GUEST, newOwner);
+				plugin.getServer().getPluginManager().callEvent(event);
+				if (event.isCancelled()) {
+					return;
+				}
+				plugin.log.info(user.getDisplayName() + " has added "
+						+ newOwner.getName() + " to the guest list of "
+						+ block.getOwner().getName() + "'s protected block (id: "
+						+ block.GetId() + ")");
+				plugin.bLog.info("PROTECTION EDITED: "
+						+ String.valueOf(block.GetId()) + " ("
+						+ block.getOwner().getName() + ") by "
+						+ user.getDisplayName());
+				plugin.bLog.info(newOwner.getName() + " added as guest!");
+				user.sendMessage(ChatColor.GREEN + newOwner.getName()
+						+ " now has guest access to that block.");
+				plugin.protectFile.addGuest(block.GetId(), newOwner);
 			}
-			plugin.log.info(user.getDisplayName() + " has added "
-					+ newOwner.getName() + " to the guest list of "
-					+ block.getOwner().getName() + "'s protected block (id: "
-					+ block.GetId() + ")");
-			plugin.bLog.info("PROTECTION EDITED: "
-					+ String.valueOf(block.GetId()) + " ("
-					+ block.getOwner().getName() + ") by "
-					+ user.getDisplayName());
-			plugin.bLog.info(newOwner.getName() + " added as guest!");
-			user.sendMessage(ChatColor.GREEN + newOwner.getName()
-					+ " now has guest access to that block.");
-			plugin.protectFile.addGuest(block.GetId(), newOwner);
 		} else {
 			user.sendMessage(ChatColor.YELLOW
 					+ "Proper use is /protect addguest <Guest> [ID]");
@@ -697,6 +797,11 @@ public class ProtectedCommands implements Commands {
 				if ((newOwner = PermissionUser.matchUser(args[1], plugin)) == null) {
 					user.sendMessage(ChatColor.RED
 							+ "That player doesn't exist!");
+					return;
+				}
+				ProtectionEditEvent event = new ProtectionEditEvent(block, user, ChangeType.REMOVE_GUEST, newOwner);
+				plugin.getServer().getPluginManager().callEvent(event);
+				if (event.isCancelled()) {
 					return;
 				}
 				plugin.log.info(user.getDisplayName() + " has removed "
@@ -725,24 +830,35 @@ public class ProtectedCommands implements Commands {
 						+ "Cannot be converted into a number...");
 				return;
 			}
-			block = plugin.protectFile.getProtection(id);
-			PermissionUser newOwner;
-			if ((newOwner = PermissionUser.matchUser(args[0], plugin)) == null) {
-				user.sendMessage(ChatColor.RED + "That player doesn't exist!");
-				return;
+			if ((block = plugin.protectFile.getProtection(id)) != null) {
+				if (!block.canChange(user) && !user.hasPerm("bencmd.lock.edit")) {
+					user.sendMessage(ChatColor.RED
+							+ "You don't have permission to edit the protection on that block!");
+					return;
+				}
+				PermissionUser newOwner;
+				if ((newOwner = PermissionUser.matchUser(args[0], plugin)) == null) {
+					user.sendMessage(ChatColor.RED + "That player doesn't exist!");
+					return;
+				}
+				ProtectionEditEvent event = new ProtectionEditEvent(block, user, ChangeType.REMOVE_GUEST, newOwner);
+				plugin.getServer().getPluginManager().callEvent(event);
+				if (event.isCancelled()) {
+					return;
+				}
+				plugin.log.info(user.getDisplayName() + " has removed "
+						+ newOwner.getName() + " from the guest list of "
+						+ block.getOwner().getName() + "'s protected block (id: "
+						+ block.GetId() + ")");
+				plugin.bLog.info("PROTECTION EDITED: "
+						+ String.valueOf(block.GetId()) + " ("
+						+ block.getOwner().getName() + ") by "
+						+ user.getDisplayName());
+				plugin.bLog.info(newOwner.getName() + " removed from guest list!");
+				user.sendMessage(ChatColor.GREEN + newOwner.getName()
+						+ " has now lost guest access to that block.");
+				plugin.protectFile.removeGuest(block.GetId(), newOwner);
 			}
-			plugin.log.info(user.getDisplayName() + " has removed "
-					+ newOwner.getName() + " from the guest list of "
-					+ block.getOwner().getName() + "'s protected block (id: "
-					+ block.GetId() + ")");
-			plugin.bLog.info("PROTECTION EDITED: "
-					+ String.valueOf(block.GetId()) + " ("
-					+ block.getOwner().getName() + ") by "
-					+ user.getDisplayName());
-			plugin.bLog.info(newOwner.getName() + " removed from guest list!");
-			user.sendMessage(ChatColor.GREEN + newOwner.getName()
-					+ " has now lost guest access to that block.");
-			plugin.protectFile.removeGuest(block.GetId(), newOwner);
 		} else {
 			user.sendMessage(ChatColor.YELLOW
 					+ "Proper use is /protect remguest <Guest> [ID]");

@@ -21,7 +21,7 @@ public class HomeWarps {
 
 	public void SetOwnHome(Player player, Integer HomeNumber) {
 		int maxHomes = plugin.mainProperties.getInteger("maxHomes", 3);
-		if (HomeNumber <= maxHomes) {
+		if (HomeNumber <= maxHomes && HomeNumber > 0) {
 			double x = player.getLocation().getX();
 			double y = player.getLocation().getY();
 			double z = player.getLocation().getZ();
@@ -43,7 +43,7 @@ public class HomeWarps {
 
 	public void WarpOwnHome(Player player, Integer HomeNumber) {
 		int maxHomes = plugin.mainProperties.getInteger("maxHomes", 3);
-		if (HomeNumber <= maxHomes) {
+		if (HomeNumber <= maxHomes && HomeNumber > 0) {
 			String name = player.getName() + HomeNumber.toString();
 			if (homes.warps.containsKey(name)) {
 				homes.getHome(name).WarpHere(new WarpableUser(plugin, player));
@@ -60,7 +60,7 @@ public class HomeWarps {
 	public void WarpOtherHome(Player player, String otherPlayer,
 			Integer HomeNumber) {
 		int maxHomes = plugin.mainProperties.getInteger("maxHomes", 3);
-		if (HomeNumber <= maxHomes) {
+		if (HomeNumber <= maxHomes && HomeNumber > 0) {
 			String name = otherPlayer + HomeNumber.toString();
 			if (homes.warps.containsKey(name)) {
 				homes.getHome(name).WarpHere(new WarpableUser(plugin, player));
@@ -78,7 +78,7 @@ public class HomeWarps {
 	public void SetOtherHome(Player player, String otherPlayer,
 			Integer HomeNumber) {
 		int maxHomes = plugin.mainProperties.getInteger("maxHomes", 3);
-		if (HomeNumber <= maxHomes) {
+		if (HomeNumber <= maxHomes && HomeNumber > 0) {
 			double x = player.getLocation().getX();
 			double y = player.getLocation().getY();
 			double z = player.getLocation().getZ();
@@ -100,7 +100,7 @@ public class HomeWarps {
 
 	public boolean DeleteHome(String player, Integer HomeNumber) {
 		String name = player + HomeNumber.toString();
-		if (homes.warps.containsKey(name)) {
+		if (homes.warps.containsKey(name) && HomeNumber > 0) {
 			homes.removeHome(name);
 			return true;
 		} else {
