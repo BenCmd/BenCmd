@@ -559,7 +559,7 @@ public class BasicCommands implements Commands {
 				pageToShow = Integer.parseInt(args[0]);
 			} catch (NumberFormatException e) {
 				user.sendMessage(ChatColor.RED + args[0]
-						+ " cannot be converted to a number!");
+						+ " is an invalid page number!");
 				return;
 			}
 		}
@@ -567,17 +567,17 @@ public class BasicCommands implements Commands {
 		int max;
 		if (pageToShow > (max = (int) Math.ceil((commands.size() - 1) / 6) + 1)) {
 			user.sendMessage(ChatColor.RED + "There are only " + max
-					+ " pages to show!");
+					+ " pages!");
 			return;
 		} else if (pageToShow <= 0) {
 			user.sendMessage(ChatColor.RED
-					+ "The page number must be a natural number, retard!");
+					+ "There are no negative pages.");
 			return;
 		}
 		int i = (pageToShow - 1) * 6;
 		user.sendMessage(ChatColor.YELLOW + "Displaying help page "
-				+ ChatColor.GREEN + pageToShow + ChatColor.YELLOW + " of "
-				+ ChatColor.GREEN + max + ChatColor.YELLOW + ":");
+				+ ChatColor.RED + pageToShow + ChatColor.YELLOW + " of "
+				+ ChatColor.RED + max + ChatColor.YELLOW + ":");
 		while (i < (pageToShow - 1) * 6 + 6) {
 			if (i >= commands.size()) {
 				break;
@@ -661,15 +661,12 @@ public class BasicCommands implements Commands {
 				for (int ii = 0 ; ii < user.getHandle().getWorld().getEntities().size() ; ii++) {
 					String entity = user.getHandle().getWorld().getEntities().get(ii).toString(); {
 						if (entity == mobToKill) {
-							if (range != -1 &&
-									getDistance( user.getHandle().getLocation(),
+							if (range == -1 ||
+									getDistance(user.getHandle().getLocation(),
 											user.getHandle().getWorld().getEntities().get(ii).getLocation(),
 											false) <= range) {
 								user.getHandle().getWorld().getEntities().get(ii).remove();
 								mobCounter++;
-							} else {
-							user.getHandle().getWorld().getEntities().get(ii).remove();
-							mobCounter++;
 							}
 						}
 					}
@@ -903,115 +900,137 @@ public class BasicCommands implements Commands {
 		alias = null;
 		return alias;
 	}
-
+	
 	public List<BCommand> getCommands(User user) {
 		List<BCommand> commands = new ArrayList<BCommand>();
 		commands.add(new BCommand("/help [page]",
 				"Displays the xth page of the command list...", "."));
 		commands.add(new BCommand("/slow [delay]",
-				"Makes each user wait x seconds between chats.", "canSlowMode"));
+				"Makes each user wait x seconds between chats.", "bencmd.chat.slow"));
 		commands.add(new BCommand("/mute <player>", "Mutes a player.",
-				"canMute"));
+				"bencmd.action.mute"));
 		commands.add(new BCommand("/unmute <player>", "Unmutes a player.",
-				"canMute"));
+				"bencmd.action.unmute"));
 		commands.add(new BCommand("/list", "Lists the players online.",
-				"canListPlayers"));
+				"bencmd.chat.list"));
 		commands.add(new BCommand("/time {day|night|lock}",
-				"Sets the time of day or locks the time.", "canChangeTime"));
+				"Sets the time of day or locks the time.", "bencmd.time.set"));
 		commands.add(new BCommand("/spawn", "Sends you to the spawn.",
-				"canSpawn"));
+				"bencmd.spawn.normal"));
+		commands.add(new BCommand("/spawn <world>", "Sends you to the specified world's spawn.",
+				"bencmd.spawn.all"));
 		commands.add(new BCommand("/item <ID>[:damage] [amount] [player]",
-				"Gives you an item.", "canSpawnItems"));
+				"Gives you an item.", "bencmd.inv.spawn"));
+		commands.add(new BCommand("/god",
+				"Makes you invincible.", "bencmd.god.self"));
 		commands.add(new BCommand("/god [player]",
-				"Makes you or another player a god.", "canMakeGod"));
+				"Makes another player invincible.", "bencmd.god.other"));
+		commands.add(new BCommand("/heal",
+				"Gives you full health.", "bencmd.heal.self"));
 		commands.add(new BCommand("/heal [player]",
-				"Heals you or another player", "canHeal"));
+				"Gives another player full health.", "bencmd.heal.other"));
 		commands.add(new BCommand("/bencmd reload",
-				"Reloads the BenCmd Config", "canReloadConfig"));
+				"Reloads the BenCmd Config", "bencmd.reload"));
 		commands.add(new BCommand(
-				"/user <name> {add|remove|g:<group>|<permissions>}",
-				"Controls user permissions", "canChangePerm"));
+				"/user <name> {add|remove|+/-<permissions>}",
+				"Controls user permissions", "bencmd.editpermissions"));
 		commands.add(new BCommand(
 				"/group <name> {add|remove|g:<group>|<permissions>}",
-				"Controls group permissions", "canChangePerm"));
+				"Controls group permissions", "bencmd.editpermissions"));
 		commands.add(new BCommand("/warp <warp>",
-				"Warps you to a pre-defined point.", "canWarp"));
+				"Warps you to a pre-defined point.", "bencmd.warp.self"));
 		commands.add(new BCommand("/warp <warp> <player>",
-				"Warps another player to a pre-defined point.", "canWarpOthers"));
+				"Warps another player to a pre-defined point.", "bencmd.warp.other"));
 		commands.add(new BCommand("/setwarp <warp>", "Sets a new warp.",
-				"canEditWarps"));
+				"bencmd.warp.set"));
 		commands.add(new BCommand("/delwarp <warp>", "Deletes a warp.",
-				"canEditWarps"));
+				"bencmd.warp.remove"));
 		commands.add(new BCommand("/back",
-				"Warps you back to before your last warp.", "canWarp"));
+				"Warps you back to before your last warp.", "bencmd.warp.back"));
 		commands.add(new BCommand("/home <number>",
-				"Teleports to your xth home.", "canWarpOwnHomes"));
+				"Teleports to your xth home.", "bencmd.home.self"));
 		commands.add(new BCommand("/home <number> <player>",
-				"Teleports to another player's xth home.", "canWarpOtherHomes"));
+				"Teleports to another player's xth home.", "bencmd.home.warpall"));
 		commands.add(new BCommand("/sethome <number>", "Sets your xth home.",
-				"canEditOwnHomes"));
+				"bencmd.home.set"));
 		commands.add(new BCommand("/sethome <number> <player>",
-				"Sets another player's xth home.", "canEditOtherHomes"));
+				"Sets another player's xth home.", "bencmd.home.setall"));
 		commands.add(new BCommand("/delhome <number>",
-				"Deletes your xth home.", "canEditOwnHomes"));
+				"Deletes your xth home.", "bencmd.home.remove"));
 		commands.add(new BCommand("/delhome <number> <player>",
-				"Deletes another player's xth home.", "canEditOtherHomes"));
+				"Deletes another player's xth home.", "bencmd.home.removeall"));
 		commands.add(new BCommand("/clearinventory [player]",
 				"Clears your own or another player's inventory.",
-				"canClearInventory"));
-		commands.add(new BCommand("/jail <player>", "Jails a player.",
-				"canJail"));
+				"bencmd.inv.clr.self"));
+		commands.add(new BCommand("/jail <player> <time>", "Jails a player for the set time.",
+				"bencmd.action.jail"));
 		commands.add(new BCommand("/unjail <player>", "Unjails a  player.",
-				"canJail"));
+				"bnecmd.action.unjail"));
 		commands.add(new BCommand("/setjail", "Sets the jail location.",
-				"canJail"));
+				"bencmd.action.setjail"));
 		commands.add(new BCommand("/unl <ID>[:Damage]",
-				"Creates an unlimited dispenser", "canMakeUnlDisp"));
+				"Creates an unlimited dispenser", "bencmd.unlimited.create"));
 		commands.add(new BCommand("/disp", "Creates a disposal chest.",
-				"canMakeDispChest"));
-		commands.add(new BCommand("/lot <command>",
-				"Edits or gets info on lots.", "."));
+				"bencmd.disposal.create"));
+		commands.add(new BCommand("/lot info",
+				"Gets information on a lot.", "bencmd.lot.info"));
+		commands.add(new BCommand("/lot set/advset",
+				"Creates a new lot from your current selection.", "bencmd.lot.create"));
+		commands.add(new BCommand("/lot extend/advext",
+				"Expands a lot to your current selection.", "bencmd.lot.extend"));
+		commands.add(new BCommand("/lot remove [id]",
+				"Deletes a lot.", "bencmd.lot.remove"));
 		commands.add(new BCommand("/kit <kitname>", "Spawns a kit.",
-				"canSpawnKit"));
-		commands.add(new BCommand("/poof", "Makes you invisible.", "canPoof"));
+				"bencmd.inv.kit.spawn"));
+		commands.add(new BCommand("/poof", "Makes you invisible.", "bencmd.poof.poof"));
 		commands.add(new BCommand("/nopoof",
-				"Makes you able to see invisible players.", "canNoPoof"));
+				"Makes you able to see invisible players.", "bencmd.poof.nopoof"));
+		commands.add(new BCommand("/allpoof",
+				"Makes you invisible to /nopoof players.", "bencmd.poof.allpoof"));
 		commands.add(new BCommand(
 				"/protect {add|remove|info|setowner|addguest|remguest}",
-				"Deals with protection.", "."));
-		commands.add(new BCommand("/lock", "Locks a chest", "canProtect"));
+				"Deals with protection.", "bencmd.lock.*"));
+		commands.add(new BCommand("/lock", "Locks a chest", "bencmd.lock.create"));
 		commands.add(new BCommand("/public", "Publicly locks a chest",
-				"canProtect"));
-		commands.add(new BCommand("/unlock", "Unlocks a chest", "canProtect"));
+				"bencmd.lock.public"));
+		commands.add(new BCommand("/unlock", "Unlocks a chest", "bencmd.lock.create"));
 		commands.add(new BCommand("/share", "Adds a guest to a chest",
-				"canProtect"));
+				"bencmd.lock.create"));
 		commands.add(new BCommand("/unshare", "Removes a guest from a chest",
-				"canProtect"));
+				"bencmd.lock.create"));
 		commands.add(new BCommand("/setspawn", "Sets the map spawn point.",
-				"canSetSpawn"));
-		commands.add(new BCommand("/me <message>",
-				"Shows a message in the format \"*<player> <message>\".", "."));
+				"bencmd.spawn.set"));
+		commands.add(new BCommand("/me <emote>",
+				"Allows you to emote something", "."));
 		commands.add(new BCommand("/tell <player> <message>", "PMs a player.",
 				"."));
 		commands.add(new BCommand("/storm {off|rain|thunder}",
-				"Changes the current map's storm status.", "canControlWeather"));
+				"Changes the current map's weather.", "bencmd.storm.change"));
 		commands.add(new BCommand("/strike",
 				"Strikes lightning where you are pointing.",
-				"canControlWeather"));
+				"bnemcd.storm.strike.location"));
+		commands.add(new BCommand("/strike <player>",
+				"Strikes that player with lightning.",
+				"bencmd.storm.strike.player"));
+		commands.add(new BCommand("/strike bind",
+				"Binds/unbinds right-click striking to the current tool.",
+				"bencmd.storm.strike.bind"));
 		commands.add(new BCommand("/offline",
-				"Makes you appear to be offline.", "canOffline"));
+				"Makes you appear to be offline.", "bnecmd.poof.offline"));
 		commands.add(new BCommand("/online",
-				"Makes you re-appear to be online.", "canOffline"));
+				"Makes you re-appear to be online.", "bencmd.poof.offline"));
 		commands.add(new BCommand("/report <player> <reason>",
-				"Reports a player to the admins.", "canReport"));
+				"Reports a player to the admins.", "bencmd.ticket.set"));
 		commands.add(new BCommand(
 				"/ticket",
 				"Lists and changes existing reports. Type /ticket for more info...",
-				"."));
+				"bencmd.ticket.readown"));
 		commands.add(new BCommand("/kill <player>", "Kills the player listed.",
-				"canKill"));
-		commands.add(new BCommand("/spawnmob <Mob Name> [Amount]",
-				"Spawns a specific amount of a specific mob.", "canSpawnMobs"));
+				"bemcmd.kill.*"));
+		commands.add(new BCommand("/mob <Mob Name>,<Passenger>,.. [Amount]",
+				"Spawns a specific amount of a specific mob.", "bencmd.spawnmob"));
+		commands.add(new BCommand("/killall <Mob Name> <Mob Name> etc <range>",
+				"Kills all specified mobs within the given range.", "bencmd.spawmnmob"));
 		commands.add(new BCommand("/buy <Item> [Amount]", "Buys an item.", "."));
 		commands.add(new BCommand("/sell <Item> [Amount]",
 				"Sells an item from your inventory.", "."));
@@ -1019,11 +1038,13 @@ public class BasicCommands implements Commands {
 				"Lists the price of a specific item.", "."));
 		commands.add(new BCommand("/market",
 				"Used to administrate the economic functions of BenCmd.",
-				"canControlMarket"));
-		commands.add(new BCommand("/tp <player> [player]",
-				"Teleports a player to another player.", "canTpSelf"));
+				"bencmd.market.*"));
+		commands.add(new BCommand("/tp <player>",
+				"Teleports you to another player.", "bencmd.tp.self"));
+		commands.add(new BCommand("/tp <plater> [player]",
+				"Teleports one player to another.", "bencmd.tp.other"));
 		commands.add(new BCommand("/tphere <player>",
-				"Teleports a player to you.", "canTpOther"));
+				"Teleports a player to you.", "bnecmd.tp.other"));
 
 		for (int i = 0; i < commands.size(); i++) {
 			if (!commands.get(i).canUse(user)) {
