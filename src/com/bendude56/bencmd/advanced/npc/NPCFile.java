@@ -73,6 +73,14 @@ public class NPCFile extends Properties {
 			}
 		}
 	}
+	
+	public void reloadNPCs() {
+		for(NPC n : allNPCs()) {
+			n.despawn();
+		}
+		npcs.clear();
+		loadNPCs();
+	}
 
 	public void loadNPCs() {
 		for (int i = 0; i < this.size(); i++) {

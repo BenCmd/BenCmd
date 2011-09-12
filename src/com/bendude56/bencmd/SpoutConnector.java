@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.getspout.spoutapi.SpoutManager;
 import org.getspout.spoutapi.player.SpoutPlayer;
 import org.getspout.spoutapi.gui.*;
 
@@ -27,6 +28,22 @@ public class SpoutConnector {
 	
 	public boolean enabled(Player p) {
 		return ((SpoutPlayer)p).isSpoutCraftEnabled();
+	}
+	
+	public void setItemName(Material m, short d, String name) {
+		SpoutManager.getItemManager().setItemName(m, d, name);
+	}
+	
+	public void playMusic(Player p, String loc) {
+		if (enabled(p)) {
+			SpoutManager.getSoundManager().playCustomMusic(BenCmd.getPlugin(), (SpoutPlayer) p, loc, true);
+		}
+	}
+	
+	public void playSound(Player p, String loc) {
+		if (enabled(p)) {
+			SpoutManager.getSoundManager().playCustomSoundEffect(BenCmd.getPlugin(), (SpoutPlayer) p, loc, false);
+		}
 	}
 	
 	public void sendNotification(Player p, String title, String message, Material m) {
@@ -95,7 +112,7 @@ public class SpoutConnector {
 		
 		// idlabel2
 		GenericLabel idlabel2 = new GenericLabel();
-		idlabel2.setText(String.valueOf(n.getID())).setHexColor(0xD2D230).setX(65).setY(20).setWidth(100).setHeight(12);
+		idlabel2.setText(String.valueOf(n.getID())).setTextColor(new Color(50F/255F, 1F, 50F/255F)).setX(65).setY(20).setWidth(100).setHeight(12);
 		infoscr.attachWidget(BenCmd.getPlugin(), idlabel2);
 		
 		// typelabel
@@ -117,7 +134,7 @@ public class SpoutConnector {
 		} else {
 			text = "Unknown";
 		}
-		typelabel2.setText(text).setHexColor(0x10D010).setX(65).setY(40).setWidth(100).setHeight(12);
+		typelabel2.setText(text).setTextColor(new Color(50F/255F, 50F/255F, 1F)).setX(65).setY(40).setWidth(100).setHeight(12);
 		infoscr.attachWidget(BenCmd.getPlugin(), typelabel2);
 		
 		// namefield

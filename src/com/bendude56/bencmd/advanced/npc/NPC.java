@@ -36,7 +36,7 @@ public class NPC {
 		this.n = name;
 		this.itemHeld = itemHeld;
 		this.faceNearestPlayer = facePlayer;
-		if (l.getWorld().isChunkLoaded(l.getBlock().getChunk())) {
+		if (l.getWorld() != null && l.getWorld().isChunkLoaded(l.getBlock().getChunk())) {
 			spawn();
 		}
 	}
