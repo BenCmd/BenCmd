@@ -33,7 +33,7 @@ public class EntityNPC extends EntityPlayer {
 	}
 
 	@Override
-	public void b(EntityHuman entity) {
+	public void a_(EntityHuman entity) {
 		if (lastBounceId != entity.id
 				|| System.currentTimeMillis() - lastBounceTick > 1000) {
 			lastBounceTick = System.currentTimeMillis();
@@ -72,6 +72,6 @@ public class EntityNPC extends EntityPlayer {
 	}
 
 	private boolean chunkLoaded() {
-		return this.bukkitEntity.getWorld().isChunkLoaded(this.A.x, this.A.z);
+		return this.bukkitEntity.getWorld().isChunkLoaded(this.E.x, this.E.z);
 	}
 }

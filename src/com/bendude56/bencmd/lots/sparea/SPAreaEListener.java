@@ -11,12 +11,10 @@ import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.block.CraftSign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageByProjectileEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityListener;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.craftbukkit.entity.CraftArrow;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 
 import com.bendude56.bencmd.BenCmd;
@@ -53,11 +51,6 @@ public class SPAreaEListener extends EntityListener {
 				}
 				event.setCancelled(!(inPVP((Player) event.getDamager()) != null && inPVP((Player) event
 						.getEntity()) != null));
-			}
-		} else if (e instanceof EntityDamageByProjectileEvent) {
-			if (e.getEntity().equals(((CraftArrow)((EntityDamageByProjectileEvent) e).getDamager()).getShooter())) {
-				e.setCancelled(true);
-				return;
 			}
 		}
 	}

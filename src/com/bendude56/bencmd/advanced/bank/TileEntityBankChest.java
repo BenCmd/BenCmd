@@ -80,7 +80,7 @@ public class TileEntityBankChest extends TileEntityChest {
 	}
 
 	@Override
-	public boolean a_(EntityHuman entityhuman) {
+	public boolean a(EntityHuman entityhuman) {
 		return true;
 	}
 

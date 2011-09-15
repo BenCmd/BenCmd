@@ -24,7 +24,7 @@ public class ViewableInventory extends InventoryPlayer {
 		this.items = inv.items;
 		this.itemInHandIndex = inv.itemInHandIndex;
 		this.e = inv.e;
-		this.b(inv.j());
+		this.b(inv.l());
 		inv.d.defaultContainer = new ContainerPlayer(this,
 				!inv.d.world.isStatic);
 		inv.d.activeContainer = inv.d.defaultContainer;
