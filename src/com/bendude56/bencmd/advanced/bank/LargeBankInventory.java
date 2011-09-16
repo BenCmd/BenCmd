@@ -16,15 +16,15 @@ public class LargeBankInventory extends BankInventory {
 	public LargeBankInventory(String player, BenCmd instance) {
 		super(player, instance);
 		inv2 = new TileEntityBankChest();
-		inv2.setName(player + "'s bank");
-		lc = new InventoryLargeChest(player + "'s bank", chest, inv2);
+		inv2.setName("Bank");
+		lc = new InventoryLargeChest("Bank", chest, inv2);
 	}
 
 	public LargeBankInventory(BankInventory inv1) {
 		super(inv1);
 		inv2 = new TileEntityBankChest();
-		inv2.setName(super.p + "'s bank");
-		lc = new InventoryLargeChest(super.p + "'s bank", chest, inv2);
+		inv2.setName("Bank");
+		lc = new InventoryLargeChest("Bank", chest, inv2);
 	}
 
 	@Override

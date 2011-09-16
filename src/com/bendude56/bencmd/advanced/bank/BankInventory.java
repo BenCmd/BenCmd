@@ -17,7 +17,7 @@ public class BankInventory {
 		plugin = instance;
 		p = player;
 		chest = new TileEntityBankChest();
-		chest.setName(player + "'s bank");
+		chest.setName("Bank");
 	}
 
 	public BankInventory(BankInventory i) {

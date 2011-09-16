@@ -59,7 +59,7 @@ public class NPCListener extends PlayerListener {
 				p.sendMessage(ChatColor.GRAY + "NPC Type: Unknown");
 			}
 			p.sendMessage(ChatColor.GRAY + "NPC Name: " + n.getName());
-			p.sendMessage(ChatColor.GRAY + "Skin URL: " + ((StaticNPC)n).getSkinURL());
+			p.sendMessage(ChatColor.GRAY + "Skin URL: " + n.getSkinURL());
 		}
 	}
 }

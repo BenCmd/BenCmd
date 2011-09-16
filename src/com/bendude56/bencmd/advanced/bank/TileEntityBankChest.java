@@ -26,6 +26,16 @@ public class TileEntityBankChest extends TileEntityChest {
 	}
 
 	@Override
+	public void t_() {
+		this.h -= 1;
+	}
+
+	@Override
+	public void e() {
+		this.h += 1;
+	}
+
+	@Override
 	public String getName() {
 		return name;
 	}
