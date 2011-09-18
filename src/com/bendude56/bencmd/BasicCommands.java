@@ -778,6 +778,31 @@ public class BasicCommands implements Commands {
 			alias = "Monster";
 			return alias;
 		}
+		if (alias.equalsIgnoreCase("enderman")
+				|| alias.equalsIgnoreCase("eman")
+				|| alias.equalsIgnoreCase("endman")
+				|| alias.equalsIgnoreCase("endermen")
+				|| alias.equalsIgnoreCase("emen")
+				|| alias.equalsIgnoreCase("endmen")) {
+			alias = "Enderman";
+			return alias;
+		}
+		if (alias.equalsIgnoreCase("bluespider")
+				|| alias.equalsIgnoreCase("cavespider")
+				|| alias.equalsIgnoreCase("smallspider")
+				|| alias.equalsIgnoreCase("poisonspider")
+				|| alias.equalsIgnoreCase("cavespiders")
+				|| alias.equalsIgnoreCase("bluespiders")) {
+			alias = "CaveSpider";
+			return alias;
+		}
+		if (alias.equalsIgnoreCase("silverfish")
+				|| alias.equalsIgnoreCase("sliverfish")
+				|| alias.equalsIgnoreCase("caterpillar")
+				|| alias.equalsIgnoreCase("caterpillars")) {
+			alias = "Silverfish";
+			return alias;
+		}
 		alias = "ERROR";
 		return alias;
 	}
@@ -886,7 +911,7 @@ public class BasicCommands implements Commands {
 				|| alias.equalsIgnoreCase("giantzombie")
 				|| alias.equalsIgnoreCase("craftgiant")
 				|| alias.equalsIgnoreCase("craftgiants")) {
-			alias = "Giant";
+			alias = "CraftGiant";
 			return alias;
 		}
 		if (alias.equalsIgnoreCase("monster") 
@@ -894,9 +919,35 @@ public class BasicCommands implements Commands {
 				|| alias.equalsIgnoreCase("steve")
 				|| alias.equalsIgnoreCase("craftmonster")
 				|| alias.equalsIgnoreCase("craftmonsters")) {
-			alias = "Monster";
+			alias = "CraftMonster";
 			return alias;
 		}
+		if (alias.equalsIgnoreCase("enderman")
+				|| alias.equalsIgnoreCase("eman")
+				|| alias.equalsIgnoreCase("endman")
+				|| alias.equalsIgnoreCase("endermen")
+				|| alias.equalsIgnoreCase("emen")
+				|| alias.equalsIgnoreCase("endmen")) {
+			alias = "CraftEnderman";
+			return alias;
+		}
+		if (alias.equalsIgnoreCase("bluespider")
+			|| alias.equalsIgnoreCase("cavespider")
+			|| alias.equalsIgnoreCase("smallspider")
+			|| alias.equalsIgnoreCase("bluespiders")
+			|| alias.equalsIgnoreCase("cavespiders")
+			|| alias.equalsIgnoreCase("smallspiders")) {
+			alias = "CraftCaveSpider";
+			return alias;
+		}
+		if (alias.equalsIgnoreCase("silverfish")
+				|| alias.equalsIgnoreCase("sliverfish")
+				|| alias.equalsIgnoreCase("caterpillar")
+				|| alias.equalsIgnoreCase("caterpillars")) {
+			alias = "CraftSilverfish";
+			return alias;
+		}
+		
 		alias = null;
 		return alias;
 	}
