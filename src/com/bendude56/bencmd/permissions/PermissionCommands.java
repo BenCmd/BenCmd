@@ -171,7 +171,7 @@ public class PermissionCommands implements Commands {
 	public void Group(String[] args, User user) {
 		if (args.length == 0 || args[0].equalsIgnoreCase("help")) {
 			user.sendMessage(ChatColor.YELLOW
-					+ "Proper use is: /group <name> {add|remove|c:<color>|p:<prefix>|<permissions>}");
+					+ "Proper use is: /group <name> {add|remove|c:<color>|p:<prefix>|<permissions>|plist}");
 			user.sendMessage(ChatColor.YELLOW
 					+ "   -<name> is the name of the group.");
 			user.sendMessage(ChatColor.YELLOW
@@ -467,7 +467,7 @@ public class PermissionCommands implements Commands {
 			}
 		}
 		user.sendMessage(ChatColor.RED +
-				"Proper use is: /group <name> {add|remove|c:<color>|p:<prefix>|<permissions>}");
+				"Proper use is: /group <name> {add|remove|c:<color>|p:<prefix>|<permissions>|plist}");
 		return;
 	}
 
