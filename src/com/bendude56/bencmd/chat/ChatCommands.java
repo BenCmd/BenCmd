@@ -103,7 +103,7 @@ public class ChatCommands implements Commands {
 				playerString += user2.getColor() + user2.getName()
 						+ ChatColor.WHITE + ", ";
 			}
-			user.sendMessage("The following players are online: "
+			user.sendMessage("The following players are online: (" + playerList.length + ")"
 					+ playerString);
 		}
 	}

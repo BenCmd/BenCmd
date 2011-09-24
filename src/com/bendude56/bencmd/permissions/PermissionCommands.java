@@ -458,7 +458,17 @@ public class PermissionCommands implements Commands {
 							+ " has lost permission " + args[1]);
 				}
 			}
+		} else if (args[1].equalsIgnoreCase("plist")) {
+			if (group == null) {
+				user.sendMessage(ChatColor.RED + "That group doesn't exist!");
+			} else {
+				user.sendMessage(group.listPermissions());
+				return;
+			}
 		}
+		user.sendMessage(ChatColor.RED +
+				"Proper use is: /group <name> {add|remove|c:<color>|p:<prefix>|<permissions>}");
+		return;
 	}
 
 	public void Status(String[] args, User user) {
