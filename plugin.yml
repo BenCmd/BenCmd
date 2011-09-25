@@ -272,3 +272,6 @@ commands:
     ping:
         usage:
         description: Annoying McMyAdmin compatibility stuff
+    mainprop:
+        usage:
+        description: Changes a value in the main.properties file

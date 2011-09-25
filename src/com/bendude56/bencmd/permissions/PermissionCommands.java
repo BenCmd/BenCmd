@@ -465,10 +465,11 @@ public class PermissionCommands implements Commands {
 				user.sendMessage(group.listPermissions());
 				return;
 			}
-		}
-		user.sendMessage(ChatColor.RED +
+		} else {
+			user.sendMessage(ChatColor.RED +
 				"Proper use is: /group <name> {add|remove|c:<color>|p:<prefix>|<permissions>|plist}");
-		return;
+			return;
+		}
 	}
 
 	public void Status(String[] args, User user) {

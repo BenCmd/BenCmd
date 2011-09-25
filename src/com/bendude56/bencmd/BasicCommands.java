@@ -132,6 +132,12 @@ public class BasicCommands implements Commands {
 			user.sendMessage(ChatColor.GREEN
 					+ "All area-specific fire-spread is now disabled.");
 			return true;
+		} else if (commandLabel.equalsIgnoreCase("mainprop")
+				&& user.hasPerm("bencmd.mainedit")) {
+			BenCmd.getPlugin().mainProperties.setProperty(args[0], args[1]);
+			BenCmd.getPlugin().mainProperties.saveFile("");
+			user.sendMessage(ChatColor.GREEN + "Success!");
+			return true;
 		} else if (commandLabel.equalsIgnoreCase("debug")) {
 			return true;
 		}

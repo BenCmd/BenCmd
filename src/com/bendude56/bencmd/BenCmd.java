@@ -148,9 +148,10 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 	public final List<ActionableUser> offline = new ArrayList<ActionableUser>();
 	public final String propDir = "plugins/BenCmd/";
 	public final String[] files = { "action.db", "bank.db", "channels.db",
-			"chest.db", "disp.db", "items.txt", "kits.db", "lever.db",
-			"lots.db", "main.properties", "npc.db", "portals.db", "prices.db",
-			"protection.db", "shelves.db", "sparea.db", "tickets.db" };
+			"chest.db", "disp.db", "groups.db", "homes.db", "itembw.db", "items.txt",
+			"kits.db", "lever.db", "lots.db", "main.properties", "npc.db", "portals.db",
+			"prices.db", "protection.db", "shelves.db", "sparea.db", "tickets.db", "users.db",
+			"warps.db" };
 	/*
 	 * public final File mainProp = new File(propDir + "main.properties");
 	 * public final File itemAlias = new File(propDir + "items.txt"); public
@@ -499,7 +500,7 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 		for (World w : getServer().getWorlds()) {
 			w.setPVP(true);
 		}
-		if (!mainProperties.getBoolean("channelsEnabled", false)) {
+		if (!mainProperties.getBoolean("channelsEnabled", true)) {
 			log.severe("Non-channel chat using BenCmd is being phased out... Please move to channel-based chat...");
 		}
 	}
