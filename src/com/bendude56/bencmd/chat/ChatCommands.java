@@ -209,18 +209,18 @@ public class ChatCommands implements Commands {
 				plugin.chatListen.slow.playerAdd(user.getName());
 			}
 		}
-		user2.sendMessage(ChatColor.GRAY + "(" + user.getColor()
+		user2.sendMessage(ChatColor.GRAY + "(" + ((user.isDev()) ? ChatColor.DARK_GREEN + "*" : "") + user.getColor()
 				+ user.getDisplayName() + ChatColor.GRAY + " => You) "
 				+ message);
-		user.sendMessage(ChatColor.GRAY + "(You => " + user2.getColor()
+		user.sendMessage(ChatColor.GRAY + "(You => "+ ((user2.isDev()) ? ChatColor.DARK_GREEN + "*" : "") + user2.getColor()
 				+ user2.getDisplayName() + ChatColor.GRAY + ") " + message);
 		for (User spy : plugin.perm.userFile.allWithPerm("bencmd.chat.tellspy")) {
 			if (spy.getName().equals(user.getName())
 					|| spy.getName().equals(user2.getName())) {
 				continue;
 			}
-			spy.sendMessage(ChatColor.GRAY + "(" + user.getColor()
-					+ user.getDisplayName() + ChatColor.GRAY + " => "
+			spy.sendMessage(ChatColor.GRAY + "(" + ((user.isDev()) ? ChatColor.DARK_GREEN + "*" : "") + user.getColor()
+					+ user.getDisplayName() + ChatColor.GRAY + " => "+ ((user2.isDev()) ? ChatColor.DARK_GREEN + "*" : "")
 					+ user2.getColor() + user2.getDisplayName()
 					+ ChatColor.GRAY + ") " + message);
 		}

@@ -114,12 +114,13 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public class BenCmd extends JavaPlugin implements PermissionsProvider {
 	public final static boolean debug = false;
-	public final static int buildId = 23;
+	public final static int buildId = 24;
 	public final static int cbbuild = 1060;
 	public final static String verLoc = "http://cloud.github.com/downloads/BenCmd/BenCmd/version.txt";
 	public static String devLoc = "";
 	public static String stableLoc = "";
 	public static boolean updateAvailable = false;
+	public static String[] devs;
 	private final PermLoginListener permLoginListener = new PermLoginListener(
 			this);
 	private final InventoryBlockListener invBlockListen = new InventoryBlockListener(
@@ -381,8 +382,26 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 			this.getServer().getPluginManager().disablePlugin(this);
 			return;
 		}
+		log.info("Retreiving dev list... Please wait...");
+		try {
+			URL devlistloc = new URL("http://cloud.github.com/downloads/BenCmd/BenCmd/devlist.txt");
+			BufferedReader r = new BufferedReader(new InputStreamReader((InputStream)devlistloc.getContent()));
+			String l;
+			while ((l = r.readLine()) != null) {
+				if (l.startsWith("$")) {
+					l = l.substring(1);
+					devs = l.split(",");
+					break;
+				}
+			}
+			r.close();
+		} catch (Exception e) {
+			log.severe("Failed to retreive dev list: (Will assume default)");
+			e.printStackTrace();
+			devs = new String[] { "ben_dude56", "Deaboy" };
+		}
 		// Check for existing players (on reload) and add them to the maxPlayers
-		// class
+		// class and join them to the general channel
 		for (Player player : this.getServer().getOnlinePlayers()) {
 			User user;
 			JoinType jt = maxPlayers.join(user = User.getUser(this, player));
@@ -397,6 +416,9 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 								n.getSkinURL());
 					}
 				}
+			}
+			if (mainProperties.getBoolean("channelsEnabled", true)) {
+				getServer().dispatchCommand(player, "channel join general");
 			}
 		}
 		bLog.info("Registering events...");
@@ -563,9 +585,9 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 					} else if (l.startsWith("vstable:")) {
 						stableBuild = Integer.parseInt(l.split(":")[1]);
 					} else if (l.startsWith("ldev:")) {
-						devLoc = l.split(":")[1];
+						devLoc = l.split(":", 2)[1];
 					} else if (l.startsWith("lstable:")) {
-						stableLoc = l.split(":")[1];
+						stableLoc = l.split(":", 2)[1];
 					} else {
 						log.warning("Failed to get info from line: ");
 						log.warning(l);

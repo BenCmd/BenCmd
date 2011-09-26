@@ -175,6 +175,10 @@ public class ChatPlayerListener extends PlayerListener {
 		if (user.isJailed() != null) {
 			plugin.jail.SendToJail(event.getPlayer());
 		}
+		if (user.isDev()) {
+			user.getHandle().getWorld().strikeLightningEffect(user.getHandle().getLocation());
+			plugin.getServer().broadcastMessage(ChatColor.DARK_GREEN + "A BenCmd developer has joined the game!");
+		}
 	}
 
 	public void onPlayerQuit(PlayerQuitEvent event) {

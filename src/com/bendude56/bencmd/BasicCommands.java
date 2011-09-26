@@ -134,9 +134,28 @@ public class BasicCommands implements Commands {
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("mainprop")
 				&& user.hasPerm("bencmd.mainedit")) {
-			BenCmd.getPlugin().mainProperties.setProperty(args[0], args[1]);
-			BenCmd.getPlugin().mainProperties.saveFile("");
-			user.sendMessage(ChatColor.GREEN + "Success!");
+			if (args.length == 0) {
+				user.sendMessage(ChatColor.YELLOW + "Proper use is: /mainprop <property> [value]");
+			} else if (args.length == 1) {
+				if (plugin.mainProperties.containsKey(args[0])) {
+					user.sendMessage(ChatColor.YELLOW + "That property is currently set to:");
+					user.sendMessage(BenCmd.getPlugin().mainProperties.getProperty(args[0]));
+				} else {
+					user.sendMessage(ChatColor.RED + "That property doesn't exist!");
+				}
+			} else {
+				String val = "";
+				for (int i = 1; i < args.length; i++) {
+					if (val.isEmpty()) {
+						val += args[i];
+					} else {
+						val += " " + args[i];
+					}
+				}
+				BenCmd.getPlugin().mainProperties.setProperty(args[0], val);
+				BenCmd.getPlugin().mainProperties.saveFile("");
+				user.sendMessage(ChatColor.GREEN + "Success!");
+			}
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("debug")) {
 			return true;

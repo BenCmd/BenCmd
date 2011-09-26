@@ -190,6 +190,10 @@ public class PermissionUser {
 			return list;
 		}
 	}
+	
+	public boolean isDev() {
+		return user.isDev();
+	}
 
 	public String listGroups() {
 		String groups = "";

