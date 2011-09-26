@@ -11,6 +11,7 @@ import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.Commands;
 import com.bendude56.bencmd.User;
 import com.bendude56.bencmd.permissions.Action.ActionType;
+import com.bendude56.bencmd.permissions.ActionLogEntry.ActionLogType;
 import com.bendude56.bencmd.reporting.Report;
 import com.bendude56.bencmd.reporting.Report.ReportStatus;
 
@@ -68,6 +69,14 @@ public class PermissionCommands implements Commands {
 		} else if ((commandLabel.equalsIgnoreCase("pardon") || commandLabel
 				.equalsIgnoreCase("pardon")) && user.hasPerm("bencmd.action.unban")) {
 			Unban(args, user);
+			return true;
+		} else if (commandLabel.equalsIgnoreCase("note")
+				&& user.hasPerm("bencmd.action.note")) {
+			Note(args, user);
+			return true;
+		} else if (commandLabel.equalsIgnoreCase("record")
+				&& user.hasPerm("bencmd.action.record")) {
+			Record(args, user);
 			return true;
 		}
 		return false;
@@ -601,6 +610,7 @@ public class PermissionCommands implements Commands {
 			user.sendMessage(ChatColor.RED + "That player is protected from being godded/ungodded by others!");
 			return;
 		}
+		plugin.alog.log(new ActionLogEntry(ActionLogType.KICK, toKick.getName(), user.getName(), (reason.isEmpty()) ? "Reason not provided" : reason));
 		if (anon) {
 			if (reason.isEmpty()) {
 				toKick.Kick();
@@ -661,6 +671,11 @@ public class PermissionCommands implements Commands {
 			user.sendMessage(ChatColor.RED + "You cannot permanently mute somebody! Specify a time limit!");
 			return;
 		}
+		if (duration == -1) {
+			plugin.alog.log(new ActionLogEntry(ActionLogType.MUTE_PERM, puser2.getName(), user.getName()));
+		} else {
+			plugin.alog.log(new ActionLogEntry(ActionLogType.MUTE_TEMP, puser2.getName(), user.getName(), duration));
+		}
 		plugin.actions.addAction(puser2, ActionType.ALLMUTE, duration);
 		User user2;
 		if ((user2 = User.matchUser(args[0], plugin)) != null) {
@@ -684,6 +699,7 @@ public class PermissionCommands implements Commands {
 			user.sendMessage(ChatColor.RED + "That user isn't muted!");
 			return;
 		}
+		plugin.alog.log(new ActionLogEntry(ActionLogType.UNMUTE_MAN, puser2.getName(), user.getName()));
 		plugin.actions.removeAction(puser2.isMuted());
 		User user2;
 		if ((user2 = User.matchUser(args[0], plugin)) != null) {
@@ -737,6 +753,11 @@ public class PermissionCommands implements Commands {
 			user.sendMessage(ChatColor.RED + "You cannot permanently jail somebody! Specify a time limit!");
 			return;
 		}
+		if (duration == -1) {
+			plugin.alog.log(new ActionLogEntry(ActionLogType.JAIL_PERM, puser2.getName(), user.getName()));
+		} else {
+			plugin.alog.log(new ActionLogEntry(ActionLogType.JAIL_TEMP, puser2.getName(), user.getName(), duration));
+		}
 		plugin.actions.addAction(puser2, ActionType.JAIL, duration);
 		User user2;
 		if ((user2 = User.matchUser(args[0], plugin)) != null) {
@@ -761,6 +782,7 @@ public class PermissionCommands implements Commands {
 			user.sendMessage(ChatColor.RED + "That user isn't jailed!");
 			return;
 		}
+		plugin.alog.log(new ActionLogEntry(ActionLogType.UNJAIL_MAN, puser2.getName(), user.getName()));
 		plugin.actions.removeAction(puser2.isJailed());
 		User user2;
 		if ((user2 = User.matchUser(args[0], plugin)) != null) {
@@ -817,6 +839,11 @@ public class PermissionCommands implements Commands {
 			user.sendMessage(ChatColor.RED + "You cannot permanently ban somebody! Specify a time limit!");
 			return;
 		}
+		if (duration == -1) {
+			plugin.alog.log(new ActionLogEntry(ActionLogType.BAN_PERM, puser2.getName(), user.getName()));
+		} else {
+			plugin.alog.log(new ActionLogEntry(ActionLogType.BAN_TEMP, puser2.getName(), user.getName(), duration));
+		}
 		plugin.actions.addAction(puser2, ActionType.BAN, duration);
 		User user2;
 		if ((user2 = User.matchUser(args[0], plugin)) != null) {
@@ -840,8 +867,73 @@ public class PermissionCommands implements Commands {
 			user.sendMessage(ChatColor.RED + "That user isn't banned!");
 			return;
 		}
+		plugin.alog.log(new ActionLogEntry(ActionLogType.UNBAN_MAN, puser2.getName(), user.getName()));
 		plugin.actions.removeAction(puser2.isBanned());
 		user.sendMessage(ChatColor.GREEN + "That user has been unbanned!");
+	}
+	
+	public void Note(String[] args, User user) {
+		if (args.length < 2) {
+			user.sendMessage(ChatColor.YELLOW + "Proper use is: /note <player> <note>");
+			return;
+		}
+		PermissionUser puser2;
+		if ((puser2 = PermissionUser.matchUser(args[0], plugin)) == null) {
+			user.sendMessage(ChatColor.RED + "That user could not be found!");
+			return;
+		}
+		String m = "";
+		for (int i = 1; i < args.length; i++) {
+			if (m.isEmpty()) {
+				m += args[i];
+			} else {
+				m += " " + args[i];
+			}
+		}
+		plugin.alog.log(new ActionLogEntry(ActionLogType.NOTE, puser2.getName(), user.getName(), m));
+		user.sendMessage(ChatColor.GREEN + "That note was successfully appended to " + puser2.getName() + "'s record");
+	}
+	
+	public void Record(String[] args, User user) {
+		if (args.length == 0 || args.length > 3) {
+			user.sendMessage(ChatColor.YELLOW + "Proper use is: /record <player> [-f] <page>");
+			return;
+		}
+		String u = args[0];
+		int p;
+		boolean from = false;
+		if (args.length == 1) {
+			p = 1;
+		} else if (args[1].equals("-f")) {
+			from = true;
+			if (args.length == 2) {
+				p = 1;
+			} else {
+				try {
+					p = Integer.parseInt(args[2]);
+				} catch (NumberFormatException e) {
+					user.sendMessage(ChatColor.RED + "'" + args[2] + "' is not a number!");
+					return;
+				}
+			}
+		} else if (args.length == 3) {
+			user.sendMessage(ChatColor.YELLOW + "Proper use is: /record <player> [-f] <page>");
+			return;
+		} else {
+			try {
+				p = Integer.parseInt(args[1]);
+			} catch (NumberFormatException e) {
+				user.sendMessage(ChatColor.RED + "'" + args[1] + "' is not a number!");
+				return;
+			}
+		}
+		if (from) {
+			plugin.alog.searchEntriesFrom(user, u, p);
+		} else if (u.equals("*")) {
+			plugin.alog.searchEntries(user, p);
+		} else {
+			plugin.alog.searchEntries(user, u, p);
+		}
 	}
 
 	private long getValue(TimeType tt) {

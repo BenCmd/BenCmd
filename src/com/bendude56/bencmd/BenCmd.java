@@ -63,6 +63,7 @@ import com.bendude56.bencmd.multiworld.PortalListener;
 import com.bendude56.bencmd.nofly.FlyDetect;
 import com.bendude56.bencmd.nofly.FlyListener;
 import com.bendude56.bencmd.permissions.ActionFile;
+import com.bendude56.bencmd.permissions.ActionLog;
 import com.bendude56.bencmd.permissions.BlockChecker;
 import com.bendude56.bencmd.permissions.CreeperListener;
 import com.bendude56.bencmd.permissions.EntityPermListen;
@@ -113,7 +114,7 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public class BenCmd extends JavaPlugin implements PermissionsProvider {
 	public final static boolean debug = false;
-	public final static int buildId = 22;
+	public final static int buildId = 23;
 	public final static int cbbuild = 1060;
 	public final static String verLoc = "http://cloud.github.com/downloads/BenCmd/BenCmd/version.txt";
 	public static String devLoc = "";
@@ -213,6 +214,7 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 	public Calendar clog;
 	public boolean spoutcraft;
 	public SpoutConnector spoutconnect;
+	public ActionLog alog;
 
 	public boolean checkID(int id) {
 		for (Material item : Material.values()) {
@@ -372,6 +374,7 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 		banks = new BankFile(this, propDir + "bank.db");
 		npcs = new NPCFile(this, propDir + "npc.db");
 		levers = new RedstoneFile(this, propDir + "lever.db");
+		alog = new ActionLog(propDir + "action.log");
 		bLog.info("Performing configuration check...");
 		// SANITY CHECK
 		if (!sanityCheck()) {

@@ -275,3 +275,9 @@ commands:
     mainprop:
         usage:
         description: Changes a value in the main.properties file
+    note:
+        usage:
+        description: Provides a note on a player's action record
+    record:
+        usage:
+        description: Looks up a player's action record

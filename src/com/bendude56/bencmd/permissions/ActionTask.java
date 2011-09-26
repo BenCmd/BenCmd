@@ -6,8 +6,10 @@ import java.util.TimerTask;
 
 import org.bukkit.ChatColor;
 
+import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.User;
 import com.bendude56.bencmd.permissions.Action.ActionType;
+import com.bendude56.bencmd.permissions.ActionLogEntry.ActionLogType;
 
 
 public class ActionTask extends TimerTask {
@@ -23,6 +25,7 @@ public class ActionTask extends TimerTask {
 		for (Action action : ac) {
 			if (action.isExpired()) {
 				if (action.getActionType() == ActionType.JAIL) {
+					BenCmd.getPlugin().alog.log(new ActionLogEntry(ActionLogType.UNJAIL_AUTO, action.getUser().getName(), "N/A"));
 					User user2;
 					if ((user2 = User.matchUser(action.getUser().getName(),
 							actions.plugin)) == null) {
@@ -34,12 +37,15 @@ public class ActionTask extends TimerTask {
 								+ "You've been unjailed!");
 					}
 				} else if (action.getActionType() == ActionType.ALLMUTE) {
+					BenCmd.getPlugin().alog.log(new ActionLogEntry(ActionLogType.UNMUTE_AUTO, action.getUser().getName(), "N/A"));
 					User user2;
 					if ((user2 = User.matchUser(action.getUser().getName(),
 							actions.plugin)) != null) {
 						user2.sendMessage(ChatColor.GREEN
 								+ "You've been unmuted!");
 					}
+				} else if (action.getActionType() == ActionType.BAN){
+					BenCmd.getPlugin().alog.log(new ActionLogEntry(ActionLogType.UNBAN_AUTO, action.getUser().getName(), "N/A"));
 				}
 				actions.removeAction(action);
 			}
