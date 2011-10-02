@@ -55,6 +55,7 @@ import com.bendude56.bencmd.lots.sparea.SPAreaEListener;
 import com.bendude56.bencmd.lots.sparea.SPAreaFile;
 import com.bendude56.bencmd.lots.sparea.SPAreaPListener;
 import com.bendude56.bencmd.maps.MapCommands;
+import com.bendude56.bencmd.mobs.EndermenListener;
 import com.bendude56.bencmd.money.MoneyCommands;
 import com.bendude56.bencmd.money.PriceFile;
 import com.bendude56.bencmd.multiworld.PortalCommands;
@@ -114,8 +115,8 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public class BenCmd extends JavaPlugin implements PermissionsProvider {
 	public final static boolean debug = false;
-	public final static int buildId = 25;
-	public final static int cbbuild = 1219;
+	public final static int buildId = 26;
+	public final static int cbbuild = 1185;
 	public final static String verLoc = "http://cloud.github.com/downloads/BenCmd/BenCmd/version.txt";
 	public static String devLoc = "";
 	public static String stableLoc = "";
@@ -143,6 +144,7 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 	public final FlyListener flyListen = new FlyListener(this);
 	public final NPCListener npcl = new NPCListener(this);
 	public final NPCChunkListener npccl = new NPCChunkListener(this);
+	public final EndermenListener endl = new EndermenListener(this);
 	public final HashMap<Player, Boolean> godmode = new HashMap<Player, Boolean>();
 	public final List<Player> invisible = new ArrayList<Player>();
 	public final List<Player> noinvisible = new ArrayList<Player>();
@@ -502,6 +504,10 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 				Event.Priority.Monitor, this);
 		pm.registerEvent(Event.Type.CHUNK_UNLOAD, this.npccl,
 				Event.Priority.Monitor, this);
+		pm.registerEvent(Event.Type.ENDERMAN_PICKUP, this.endl,
+				Event.Priority.Highest, this);
+		pm.registerEvent(Event.Type.ENDERMAN_PLACE, this.endl,
+				Event.Priority.Highest, this);
 		if (spoutcraft) {
 			pm.registerEvent(Event.Type.CUSTOM_EVENT,
 					new BenCmdSpoutListener(), Event.Priority.Normal, this);

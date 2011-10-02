@@ -103,6 +103,134 @@ public class ProtectedCommands implements Commands {
 					+ "Proper use is /protect {add|remove|info|setowner|addguest|remguest}");
 		}
 	}
+	
+	public boolean Lock(Block l, User u, boolean p) {
+		return Lock(l, u, u, p);
+	}
+	
+	public boolean Lock(Block l, User u, PermissionUser o, boolean p) {
+		ProtectionType t;
+		if (l.getType() == Material.CHEST) {
+			t = (p) ? ProtectionType.PChest : ProtectionType.Chest;
+		} else if (l.getType() == Material.WOOD_DOOR) {
+			t = (p) ? ProtectionType.PDoor : ProtectionType.Door;
+		} else if (l.getType() == Material.FURNACE) {
+			t = (p) ? ProtectionType.PFurnace : ProtectionType.Furnace;
+		} else {
+			u.sendMessage(ChatColor.RED + "That type of block cannot be protected!");
+			return false;
+		}
+		if (plugin.protectFile.getProtection(l.getLocation()) != -1) {
+			u.sendMessage(ChatColor.RED + "That block is already protected!");
+			return false;
+		}
+		int id = plugin.protectFile.addProtection(o, l.getLocation(), t);
+		ProtectionAddEvent event = new ProtectionAddEvent(plugin.protectFile.getProtection(id), u);
+		plugin.getServer().getPluginManager().callEvent(event);
+		if (event.isCancelled()) {
+			plugin.protectFile.removeProtection(id);
+			return false;
+		}
+		u.sendMessage(ChatColor.GREEN
+				+ "Protected block created with owner "
+				+ o.getName() + ".");
+		String w = l.getWorld().getName();
+		String x = String.valueOf(l.getX());
+		String y = String.valueOf(l.getY());
+		String z = String.valueOf(l.getX());
+		plugin.log.info(u.getDisplayName()
+				+ " created protected block (id: " + id
+				+ ") with owner " + o.getName()
+				+ " at position (" + w + "," + x + "," + y + "," + z
+				+ ")");
+		plugin.bLog.info("PROTECTION ADDED: " + String.valueOf(id)
+				+ ((o.getName().equals(u.getName())) ? "" : " (" + o.getName() + ")")+ " by " + u.getDisplayName());
+		for (Player onlinePlayer : plugin.getServer().getOnlinePlayers()) {
+			if (User.getUser(plugin, onlinePlayer)
+					.hasPerm("bencmd.lock.hearall") && plugin.spoutcraft) {
+				plugin.spoutconnect.sendNotification(onlinePlayer, ((p) ? "Public: " : "Lock: ") + u.getName(), "Protection ID: " + id, l.getType());
+			}
+		}
+		return true;
+	}
+	
+	public boolean Unlock(Block l, User u) {
+		int id;
+		if ((id = plugin.protectFile.getProtection(l
+				.getLocation())) != -1) {
+			ProtectedBlock block = plugin.protectFile.getProtection(id);
+			if (!block.canChange(u) && !u.hasPerm("bencmd.lock.remove")) {
+				u.sendMessage(ChatColor.RED
+						+ "You don't have permission to remove the protection on that block!");
+				return false;
+			} else {
+				ProtectionRemoveEvent event = new ProtectionRemoveEvent(block, u);
+				plugin.getServer().getPluginManager().callEvent(event);
+				if (event.isCancelled()) {
+					return false;
+				}
+				plugin.protectFile.removeProtection(block.GetId());
+				String w = l.getWorld().getName();
+				String x = String.valueOf(l.getX());
+				String y = String.valueOf(l.getY());
+				String z = String.valueOf(l.getZ());
+				plugin.log.info(u.getDisplayName() + " removed "
+						+ block.getOwner().getName()
+						+ "'s protected chest (id: "
+						+ String.valueOf(block.GetId())
+						+ ") at position (" + w + "," + x + "," + y
+						+ "," + z + ")");
+				plugin.bLog.info("PROTECTION REMOVED: "
+						+ String.valueOf(block.GetId()) + " ("
+						+ block.getOwner().getName() + ") by "
+						+ u.getDisplayName());
+				u.sendMessage(ChatColor.GREEN
+						+ "The protection on that block was removed.");
+				for (Player onlinePlayer : plugin.getServer().getOnlinePlayers()) {
+					if (User.getUser(plugin, onlinePlayer)
+							.hasPerm("bencmd.lock.hearall") && plugin.spoutcraft) {
+						plugin.spoutconnect.sendNotification(onlinePlayer, "Unlock: " + u.getName(), "Protection ID: " + id, l.getType());
+					}
+				}
+				return true;
+			}
+		} else {
+			u.sendMessage(ChatColor.RED
+					+ "You aren't pointing at a protected block!");
+			return false;
+		}
+	}
+	
+	public void Info(Block b, User u) {
+		int id;
+		if ((id = plugin.protectFile.getProtection(b
+				.getLocation())) != -1) {
+			ProtectedBlock block = plugin.protectFile.getProtection(id);
+			Info(block, u);
+		} else {
+			u.sendMessage(ChatColor.RED
+					+ "You aren't pointing at a protected block!");
+			return;
+		}
+	}
+	
+	public void Info(ProtectedBlock b, User u) {
+		String owner = b.getOwner().getName();
+		String id = String.valueOf(b.GetId());
+		String guests = "";
+		boolean init = false;
+		for (PermissionUser guest : b.getGuests()) {
+			if (init) {
+				guests += ",";
+			} else {
+				init = true;
+			}
+			guests += guest.getName();
+		}
+		u.sendMessage(ChatColor.DARK_GRAY + "Protection ID: " + id);
+		u.sendMessage(ChatColor.DARK_GRAY + "Owner: " + owner);
+		u.sendMessage(ChatColor.DARK_GRAY + "Guests: " + guests);
+	}
 
 	public void AddProtect(String[] args, User user) {
 		if (!user.hasPerm("bencmd.lock.create")) {
@@ -111,146 +239,14 @@ public class ProtectedCommands implements Commands {
 			return;
 		}
 		Block pointedAt = user.getHandle().getTargetBlock(null, 4);
-		if (pointedAt.getType() != Material.CHEST
-				&& pointedAt.getType() != Material.WOODEN_DOOR) {
-			user.sendMessage(ChatColor.RED
-					+ "You are not pointing at a protectable block!");
-			return;
-		}
-		if (plugin.protectFile.getProtection(pointedAt.getLocation()) != -1) {
-			user.sendMessage(ChatColor.RED + "That block is already protected!");
-			return;
-		}
-		if (!plugin.lots
-				.canBuildHere(user.getHandle(), pointedAt.getLocation())) {
-			user.sendMessage(ChatColor.RED
-					+ "You're not allowed to protect blocks in other peoples' lots.");
-			return;
-		}
 		if (args.length == 1) {
-			if (pointedAt.getType() == Material.CHEST) {
-				int id = plugin.protectFile.addProtection(user,
-						pointedAt.getLocation(), ProtectionType.Chest);
-				ProtectionAddEvent event = new ProtectionAddEvent(plugin.protectFile.getProtection(id), user);
-				plugin.getServer().getPluginManager().callEvent(event);
-				if (event.isCancelled()) {
-					plugin.protectFile.removeProtection(id);
-					return;
-				}
-				user.sendMessage(ChatColor.GREEN
-						+ "Protected chest created with owner "
-						+ user.getDisplayName() + ".");
-				String w = pointedAt.getWorld().getName();
-				String x = String.valueOf(pointedAt.getX());
-				String y = String.valueOf(pointedAt.getY());
-				String z = String.valueOf(pointedAt.getX());
-				plugin.log.info(user.getDisplayName()
-						+ " created protected chest (id: " + id
-						+ ") with owner " + user.getDisplayName()
-						+ " at position (" + w + "," + x + "," + y + "," + z
-						+ ")");
-				plugin.bLog.info("PROTECTION ADDED: " + String.valueOf(id)
-						+ " by " + user.getDisplayName());
-				for (Player onlinePlayer : plugin.getServer().getOnlinePlayers()) {
-					if (User.getUser(plugin, onlinePlayer)
-							.hasPerm("bencmd.lock.hearall") && plugin.spoutcraft) {
-						plugin.spoutconnect.sendNotification(onlinePlayer, "Lock: " + user.getName(), "Protection ID: " + id, Material.CHEST);
-					}
-				}
-			} else if (pointedAt.getType() == Material.WOODEN_DOOR) {
-				int id = plugin.protectFile.addProtection(user,
-						pointedAt.getLocation(), ProtectionType.Door);
-				ProtectionAddEvent event = new ProtectionAddEvent(plugin.protectFile.getProtection(id), user);
-				plugin.getServer().getPluginManager().callEvent(event);
-				if (event.isCancelled()) {
-					plugin.protectFile.removeProtection(id);
-					return;
-				}
-				user.sendMessage(ChatColor.GREEN
-						+ "Protected door created with owner "
-						+ user.getDisplayName() + ".");
-				String w = pointedAt.getWorld().getName();
-				String x = String.valueOf(pointedAt.getX());
-				String y = String.valueOf(pointedAt.getY());
-				String z = String.valueOf(pointedAt.getX());
-				plugin.log.info(user.getDisplayName()
-						+ " created protected door (id: " + id
-						+ ") with owner " + user.getDisplayName()
-						+ " at position (" + w + "," + x + "," + y + "," + z
-						+ ")");
-				plugin.bLog.info("PROTECTION ADDED: " + String.valueOf(id)
-						+ " by " + user.getDisplayName());
-				for (Player onlinePlayer : plugin.getServer().getOnlinePlayers()) {
-					if (User.getUser(plugin, onlinePlayer)
-							.hasPerm("bencmd.lock.hearall") && plugin.spoutcraft) {
-						plugin.spoutconnect.sendNotification(onlinePlayer, "Lock: " + user.getName(), "Protection ID: " + id, Material.WOOD_DOOR);
-					}
-				}
-			}
+			this.Lock(pointedAt, user, false);
 		} else if (args.length == 2) {
-			PermissionUser user2;
-			if ((user2 = PermissionUser.matchUser(args[1], plugin)) == null) {
-				user.sendMessage(ChatColor.RED + "That player doesn't exist!");
-				return;
-			}
-			if (pointedAt.getType() == Material.CHEST) {
-				int id = plugin.protectFile.addProtection(user2,
-						pointedAt.getLocation(), ProtectionType.Chest);
-				ProtectionAddEvent event = new ProtectionAddEvent(plugin.protectFile.getProtection(id), user);
-				plugin.getServer().getPluginManager().callEvent(event);
-				if (event.isCancelled()) {
-					plugin.protectFile.removeProtection(id);
-					return;
-				}
-				user.sendMessage(ChatColor.GREEN
-						+ "Protected chest created with owner "
-						+ user2.getName() + ".");
-				String w = pointedAt.getWorld().getName();
-				String x = String.valueOf(pointedAt.getX());
-				String y = String.valueOf(pointedAt.getY());
-				String z = String.valueOf(pointedAt.getX());
-				plugin.log.info(user.getDisplayName()
-						+ " created protected chest (id: " + id
-						+ ") with owner " + user2.getName() + " at position ("
-						+ w + "," + x + "," + y + "," + z + ")");
-				plugin.bLog.info("PROTECTION ADDED: " + String.valueOf(id)
-						+ " (" + user2.getName() + ") by "
-						+ user.getDisplayName());
-				for (Player onlinePlayer : plugin.getServer().getOnlinePlayers()) {
-					if (User.getUser(plugin, onlinePlayer)
-							.hasPerm("bencmd.lock.hearall") && plugin.spoutcraft) {
-						plugin.spoutconnect.sendNotification(onlinePlayer, "Lock: " + user.getName(), "Protection ID: " + id, Material.CHEST);
-					}
-				}
-			} else if (pointedAt.getType() == Material.WOODEN_DOOR) {
-				int id = plugin.protectFile.addProtection(user2,
-						pointedAt.getLocation(), ProtectionType.Door);
-				ProtectionAddEvent event = new ProtectionAddEvent(plugin.protectFile.getProtection(id), user);
-				plugin.getServer().getPluginManager().callEvent(event);
-				if (event.isCancelled()) {
-					plugin.protectFile.removeProtection(id);
-					return;
-				}
-				user.sendMessage(ChatColor.GREEN
-						+ "Protected door created with owner "
-						+ user2.getName() + ".");
-				String w = pointedAt.getWorld().getName();
-				String x = String.valueOf(pointedAt.getX());
-				String y = String.valueOf(pointedAt.getY());
-				String z = String.valueOf(pointedAt.getX());
-				plugin.log.info(user.getDisplayName()
-						+ " created protected door (id: " + id
-						+ ") with owner " + user2.getName() + " at position ("
-						+ w + "," + x + "," + y + "," + z + ")");
-				plugin.bLog.info("PROTECTION ADDED: " + String.valueOf(id)
-						+ " (" + user2.getName() + ") by "
-						+ user.getDisplayName());
-				for (Player onlinePlayer : plugin.getServer().getOnlinePlayers()) {
-					if (User.getUser(plugin, onlinePlayer)
-							.hasPerm("bencmd.lock.hearall") && plugin.spoutcraft) {
-						plugin.spoutconnect.sendNotification(onlinePlayer, "Lock: " + user.getName(), "Protection ID: " + id, Material.WOOD_DOOR);
-					}
-				}
+			PermissionUser p = PermissionUser.matchUser(args[1], plugin);
+			if (p != null) {
+				this.Lock(pointedAt, user, p, false);
+			} else {
+				user.sendMessage(ChatColor.RED + "That user doesn't exist!");
 			}
 		} else {
 			user.sendMessage(ChatColor.YELLOW
@@ -265,252 +261,32 @@ public class ProtectedCommands implements Commands {
 			return;
 		}
 		Block pointedAt = user.getHandle().getTargetBlock(null, 4);
-		if (pointedAt.getType() != Material.CHEST
-				&& pointedAt.getType() != Material.WOODEN_DOOR) {
-			user.sendMessage(ChatColor.RED
-					+ "You are not pointing at a protectable block!");
-			return;
-		}
-		if (plugin.protectFile.getProtection(pointedAt.getLocation()) != -1) {
-			user.sendMessage(ChatColor.RED + "That block is already protected!");
-			return;
-		}
-		if (!plugin.lots
-				.canBuildHere(user.getHandle(), pointedAt.getLocation())) {
-			user.sendMessage(ChatColor.RED
-					+ "You're not allowed to protect blocks in other peoples' lots.");
-			return;
-		}
 		if (args.length == 1) {
-			if (pointedAt.getType() == Material.CHEST) {
-				int id = plugin.protectFile.addProtection(user,
-						pointedAt.getLocation(), ProtectionType.PChest);
-				ProtectionAddEvent event = new ProtectionAddEvent(plugin.protectFile.getProtection(id), user);
-				plugin.getServer().getPluginManager().callEvent(event);
-				if (event.isCancelled()) {
-					plugin.protectFile.removeProtection(id);
-					return;
-				}
-				user.sendMessage(ChatColor.GREEN
-						+ "Public chest created with owner "
-						+ user.getDisplayName() + ".");
-				String w = pointedAt.getWorld().getName();
-				String x = String.valueOf(pointedAt.getX());
-				String y = String.valueOf(pointedAt.getY());
-				String z = String.valueOf(pointedAt.getX());
-				plugin.log.info(user.getDisplayName()
-						+ " created public chest (id: " + id + ") with owner "
-						+ user.getDisplayName() + " at position (" + w + ","
-						+ x + "," + y + "," + z + ")");
-				plugin.bLog.info("PUBLIC PROTECTION ADDED: "
-						+ String.valueOf(id) + " by " + user.getDisplayName());
-				for (Player onlinePlayer : plugin.getServer().getOnlinePlayers()) {
-					if (User.getUser(plugin, onlinePlayer)
-							.hasPerm("bencmd.lock.hearall") && plugin.spoutcraft) {
-						plugin.spoutconnect.sendNotification(onlinePlayer, "Public: " + user.getName(), "Protection ID: " + id, Material.CHEST);
-					}
-				}
-			} else if (pointedAt.getType() == Material.WOODEN_DOOR) {
-				int id = plugin.protectFile.addProtection(user,
-						pointedAt.getLocation(), ProtectionType.PDoor);
-				ProtectionAddEvent event = new ProtectionAddEvent(plugin.protectFile.getProtection(id), user);
-				plugin.getServer().getPluginManager().callEvent(event);
-				if (event.isCancelled()) {
-					plugin.protectFile.removeProtection(id);
-					return;
-				}
-				user.sendMessage(ChatColor.GREEN
-						+ "Public door created with owner "
-						+ user.getDisplayName() + ".");
-				String w = pointedAt.getWorld().getName();
-				String x = String.valueOf(pointedAt.getX());
-				String y = String.valueOf(pointedAt.getY());
-				String z = String.valueOf(pointedAt.getX());
-				plugin.log.info(user.getDisplayName()
-						+ " created public door (id: " + id + ") with owner "
-						+ user.getDisplayName() + " at position (" + w + ","
-						+ x + "," + y + "," + z + ")");
-				plugin.bLog.info("PUBLIC PROTECTION ADDED: "
-						+ String.valueOf(id) + " by " + user.getDisplayName());
-				for (Player onlinePlayer : plugin.getServer().getOnlinePlayers()) {
-					if (User.getUser(plugin, onlinePlayer)
-							.hasPerm("bencmd.lock.hearall") && plugin.spoutcraft) {
-						plugin.spoutconnect.sendNotification(onlinePlayer, "Public: " + user.getName(), "Protection ID: " + id, Material.WOOD_DOOR);
-					}
-				}
-			}
+			this.Lock(pointedAt, user, true);
 		} else if (args.length == 2) {
-			PermissionUser user2;
-			if ((user2 = PermissionUser.matchUser(args[1], plugin)) == null) {
-				user.sendMessage(ChatColor.RED + "That player doesn't exist!");
-				return;
-			}
-			if (pointedAt.getType() == Material.CHEST) {
-				int id = plugin.protectFile.addProtection(user2,
-						pointedAt.getLocation(), ProtectionType.PChest);
-				ProtectionAddEvent event = new ProtectionAddEvent(plugin.protectFile.getProtection(id), user);
-				plugin.getServer().getPluginManager().callEvent(event);
-				if (event.isCancelled()) {
-					plugin.protectFile.removeProtection(id);
-					return;
-				}
-				user.sendMessage(ChatColor.GREEN
-						+ "Public chest created with owner " + user2.getName()
-						+ ".");
-				String w = pointedAt.getWorld().getName();
-				String x = String.valueOf(pointedAt.getX());
-				String y = String.valueOf(pointedAt.getY());
-				String z = String.valueOf(pointedAt.getX());
-				plugin.log.info(user.getDisplayName()
-						+ " created public chest (id: " + id + ") with owner "
-						+ user2.getName() + " at position (" + w + "," + x
-						+ "," + y + "," + z + ")");
-				plugin.bLog.info("PUBLIC PROTECTION ADDED: "
-						+ String.valueOf(id) + "(" + user2.getName() + ") by "
-						+ user.getDisplayName());
-				for (Player onlinePlayer : plugin.getServer().getOnlinePlayers()) {
-					if (User.getUser(plugin, onlinePlayer)
-							.hasPerm("bencmd.lock.hearall") && plugin.spoutcraft) {
-						plugin.spoutconnect.sendNotification(onlinePlayer, "Public: " + user.getName(), "Protection ID: " + id, Material.CHEST);
-					}
-				}
-			} else if (pointedAt.getType() == Material.WOODEN_DOOR) {
-				int id = plugin.protectFile.addProtection(user2,
-						pointedAt.getLocation(), ProtectionType.PDoor);
-				ProtectionAddEvent event = new ProtectionAddEvent(plugin.protectFile.getProtection(id), user);
-				plugin.getServer().getPluginManager().callEvent(event);
-				if (event.isCancelled()) {
-					plugin.protectFile.removeProtection(id);
-					return;
-				}
-				user.sendMessage(ChatColor.GREEN
-						+ "Public door created with owner " + user2.getName()
-						+ ".");
-				String w = pointedAt.getWorld().getName();
-				String x = String.valueOf(pointedAt.getX());
-				String y = String.valueOf(pointedAt.getY());
-				String z = String.valueOf(pointedAt.getX());
-				plugin.log.info(user.getDisplayName()
-						+ " created public door (id: " + id + ") with owner "
-						+ user2.getName() + " at position (" + w + "," + x
-						+ "," + y + "," + z + ")");
-				plugin.bLog.info("PUBLIC PROTECTION ADDED: "
-						+ String.valueOf(id) + "(" + user2.getName() + ") by "
-						+ user.getDisplayName());
-				for (Player onlinePlayer : plugin.getServer().getOnlinePlayers()) {
-					if (User.getUser(plugin, onlinePlayer)
-							.hasPerm("bencmd.lock.hearall") && plugin.spoutcraft) {
-						plugin.spoutconnect.sendNotification(onlinePlayer, "Public: " + user.getName(), "Protection ID: " + id, Material.WOOD_DOOR);
-					}
-				}
+			PermissionUser p = PermissionUser.matchUser(args[1], plugin);
+			if (p != null) {
+				this.Lock(pointedAt, user, p, true);
+			} else {
+				user.sendMessage(ChatColor.RED + "That user doesn't exist!");
 			}
 		} else {
 			user.sendMessage(ChatColor.YELLOW
-					+ "Proper use is /protect public [owner]");
+					+ "Proper use is /protect protect [owner]");
 		}
 	}
 
 	public void RemoveProtect(String[] args, User user) {
 		Block pointedAt = user.getHandle().getTargetBlock(null, 4);
 		if (args.length == 1) {
-			if (pointedAt.getType() != Material.CHEST
-					&& pointedAt.getType() != Material.WOODEN_DOOR) {
-				user.sendMessage(ChatColor.RED
-						+ "You are not pointing at a protectable block!");
-				return;
-			}
-			if (pointedAt.getType() == Material.CHEST) {
-				int id;
-				if ((id = plugin.protectFile.getProtection(pointedAt
-						.getLocation())) != -1) {
-					ProtectedBlock block = plugin.protectFile.getProtection(id);
-					if (!block.canChange(user) && !user.hasPerm("bencmd.lock.remove")) {
-						user.sendMessage(ChatColor.RED
-								+ "You don't have permission to remove the protection on that block!");
-					} else {
-						ProtectionRemoveEvent event = new ProtectionRemoveEvent(block, user);
-						plugin.getServer().getPluginManager().callEvent(event);
-						if (event.isCancelled()) {
-							return;
-						}
-						plugin.protectFile.removeProtection(block.GetId());
-						String w = pointedAt.getWorld().getName();
-						String x = String.valueOf(pointedAt.getX());
-						String y = String.valueOf(pointedAt.getY());
-						String z = String.valueOf(pointedAt.getZ());
-						plugin.log.info(user.getDisplayName() + " removed "
-								+ block.getOwner().getName()
-								+ "'s protected chest (id: "
-								+ String.valueOf(block.GetId())
-								+ ") at position (" + w + "," + x + "," + y
-								+ "," + z + ")");
-						plugin.bLog.info("PROTECTION REMOVED: "
-								+ String.valueOf(block.GetId()) + " ("
-								+ block.getOwner().getName() + ") by "
-								+ user.getDisplayName());
-						user.sendMessage(ChatColor.GREEN
-								+ "The protection on that block was removed.");
-						for (Player onlinePlayer : plugin.getServer().getOnlinePlayers()) {
-							if (User.getUser(plugin, onlinePlayer)
-									.hasPerm("bencmd.lock.hearall") && plugin.spoutcraft) {
-								plugin.spoutconnect.sendNotification(onlinePlayer, "Unlock: " + user.getName(), "Protection ID: " + id, Material.CHEST);
-							}
-						}
-					}
-				} else {
-					user.sendMessage(ChatColor.RED
-							+ "You aren't pointing at a protected block!");
-				}
-			} else if (pointedAt.getType() == Material.WOODEN_DOOR) {
-				int id;
-				if ((id = plugin.protectFile.getProtection(pointedAt
-						.getLocation())) != -1) {
-					ProtectedBlock block = plugin.protectFile.getProtection(id);
-					if (!block.canChange(user) && !user.hasPerm("bencmd.lock.remove")) {
-						user.sendMessage(ChatColor.RED
-								+ "You don't have permission to remove the protection on that block!");
-					} else {
-						ProtectionRemoveEvent event = new ProtectionRemoveEvent(block, user);
-						plugin.getServer().getPluginManager().callEvent(event);
-						if (event.isCancelled()) {
-							return;
-						}
-						plugin.protectFile.removeProtection(block.GetId());
-						String w = pointedAt.getWorld().getName();
-						String x = String.valueOf(pointedAt.getX());
-						String y = String.valueOf(pointedAt.getY());
-						String z = String.valueOf(pointedAt.getZ());
-						plugin.log.info(user.getDisplayName() + " removed "
-								+ block.getOwner().getName()
-								+ "'s protected chest (id: "
-								+ String.valueOf(block.GetId())
-								+ ") at position (" + w + "," + x + "," + y
-								+ "," + z + ")");
-						plugin.bLog.info("PROTECTION REMOVED: "
-								+ String.valueOf(block.GetId()) + " ("
-								+ block.getOwner().getName() + ") by "
-								+ user.getDisplayName());
-						user.sendMessage(ChatColor.GREEN
-								+ "The protection on that block was removed.");
-					}
-					for (Player onlinePlayer : plugin.getServer().getOnlinePlayers()) {
-						if (User.getUser(plugin, onlinePlayer)
-								.hasPerm("bencmd.lock.hearall") && plugin.spoutcraft) {
-							plugin.spoutconnect.sendNotification(onlinePlayer, "Unlock: " + user.getName(), "Protection ID: " + id, Material.WOOD_DOOR);
-						}
-					}
-				} else {
-					user.sendMessage(ChatColor.RED
-							+ "You aren't pointing at a protected block!");
-				}
-			}
+			Unlock(pointedAt, user);
 		} else if (args.length == 2) {
 			int id;
 			try {
 				id = Integer.parseInt(args[1]);
 			} catch (NumberFormatException e) {
-				user.sendMessage(ChatColor.RED + args[1]
-						+ "Cannot be converted into a number...");
+				user.sendMessage(ChatColor.RED + "'" + args[1]
+						+ "' is not a number...");
 				return;
 			}
 			ProtectedBlock block = plugin.protectFile.getProtection(id);
@@ -518,65 +294,7 @@ public class ProtectedCommands implements Commands {
 				user.sendMessage(ChatColor.RED + "That block isn't protected!");
 				return;
 			}
-			if (block instanceof ProtectedChest) {
-				if (!block.canChange(user) && !user.hasPerm("bencmd.lock.remove")) {
-					user.sendMessage(ChatColor.RED
-							+ "You don't have permission to remove the protection on that block!");
-					return;
-				} else {
-					ProtectionRemoveEvent event = new ProtectionRemoveEvent(block, user);
-					plugin.getServer().getPluginManager().callEvent(event);
-					if (event.isCancelled()) {
-						return;
-					}
-					plugin.protectFile.removeProtection(block.GetId());
-					String w = pointedAt.getWorld().getName();
-					String x = String.valueOf(pointedAt.getX());
-					String y = String.valueOf(pointedAt.getY());
-					String z = String.valueOf(pointedAt.getZ());
-					plugin.log.info(user.getDisplayName() + " removed "
-							+ block.getOwner().getName()
-							+ "'s protected chest (id: "
-							+ String.valueOf(block.GetId()) + ") at position ("
-							+ w + "," + x + "," + y + "," + z + ")");
-					plugin.bLog.info("PROTECTION REMOVED: "
-							+ String.valueOf(block.GetId()) + " ("
-							+ block.getOwner().getName() + ") by "
-							+ user.getDisplayName());
-					user.sendMessage(ChatColor.GREEN
-							+ "The protection on that block was removed.");
-					return;
-				}
-			} else if (block instanceof ProtectedDoor) {
-				if (!block.canChange(user) && !user.hasPerm("bencmd.lock.remove")) {
-					user.sendMessage(ChatColor.RED
-							+ "You don't have permission to remove the protection on that block!");
-					return;
-				} else {
-					ProtectionRemoveEvent event = new ProtectionRemoveEvent(block, user);
-					plugin.getServer().getPluginManager().callEvent(event);
-					if (event.isCancelled()) {
-						return;
-					}
-					plugin.protectFile.removeProtection(block.GetId());
-					String w = pointedAt.getWorld().getName();
-					String x = String.valueOf(pointedAt.getX());
-					String y = String.valueOf(pointedAt.getY());
-					String z = String.valueOf(pointedAt.getZ());
-					plugin.log.info(user.getDisplayName() + " removed "
-							+ block.getOwner().getName()
-							+ "'s protected door (id: "
-							+ String.valueOf(block.GetId()) + ") at position ("
-							+ w + "," + x + "," + y + "," + z + ")");
-					plugin.bLog.info("PROTECTION REMOVED: "
-							+ String.valueOf(block.GetId()) + " ("
-							+ block.getOwner().getName() + ") by "
-							+ user.getDisplayName());
-					user.sendMessage(ChatColor.GREEN
-							+ "The protection on that block was removed.");
-					return;
-				}
-			}
+			Unlock(block.getLocation().getWorld().getBlockAt(block.getLocation()), user);
 		} else {
 			user.sendMessage(ChatColor.YELLOW
 					+ "Proper use is /protect remove [ID]");
@@ -590,27 +308,23 @@ public class ProtectedCommands implements Commands {
 			return;
 		}
 		Block pointedAt = user.getHandle().getTargetBlock(null, 4);
-		ProtectedBlock block;
-		if ((block = plugin.protectFile.getProtection(plugin.protectFile
-				.getProtection(pointedAt.getLocation()))) != null) {
-			String owner = block.getOwner().getName();
-			String id = String.valueOf(block.GetId());
-			String guests = "";
-			boolean init = false;
-			for (PermissionUser guest : block.getGuests()) {
-				if (init) {
-					guests += ",";
-				} else {
-					init = true;
-				}
-				guests += guest.getName();
+		if (args.length == 1) {
+			Info(pointedAt, user);
+		} else if (args.length == 2) {
+			int id;
+			try {
+				id = Integer.parseInt(args[1]);
+			} catch (NumberFormatException e) {
+				user.sendMessage(ChatColor.RED + "'" + args[1] + "' is not a valid number!");
+				return;
 			}
-			user.sendMessage(ChatColor.DARK_GRAY + "Protection ID: " + id);
-			user.sendMessage(ChatColor.DARK_GRAY + "Owner: " + owner);
-			user.sendMessage(ChatColor.DARK_GRAY + "Guests: " + guests);
+			if (plugin.protectFile.protectionExists(id)) {
+				Info(plugin.protectFile.getProtection(id), user);
+			} else {
+				user.sendMessage(ChatColor.RED + "No protection exists with id " + id + "!");
+			}
 		} else {
-			user.sendMessage(ChatColor.RED
-					+ "You aren't pointing at a protected block!");
+			
 		}
 	}
 
