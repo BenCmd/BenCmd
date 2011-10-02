@@ -241,6 +241,7 @@ public class InventoryCommands implements Commands {
 			if (!user.hasPerm("bencmd.inv.clr.other")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
+				plugin.logPermFail();
 				return;
 			}
 			// Clear the other player's inventory

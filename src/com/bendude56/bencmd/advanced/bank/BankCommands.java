@@ -126,6 +126,7 @@ public class BankCommands implements Commands {
 				if (!user.hasPerm("bencmd.bank.admin")) {
 					user.sendMessage(ChatColor.RED
 							+ "You need to be an admin to do that!");
+					plugin.logPermFail();
 					return;
 				}
 				if (!plugin.banks.hasBank(args[0])) {
@@ -143,6 +144,7 @@ public class BankCommands implements Commands {
 			if (!user.hasPerm("bencmd.bank.admin")) {
 				user.sendMessage(ChatColor.RED
 						+ "You need to be an admin to do that!");
+				plugin.logPermFail();
 				return;
 			}
 			if (!plugin.banks.hasBank(args[0])) {

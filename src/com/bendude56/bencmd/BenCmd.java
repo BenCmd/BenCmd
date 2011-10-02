@@ -115,7 +115,7 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public class BenCmd extends JavaPlugin implements PermissionsProvider {
 	public final static boolean debug = false;
-	public final static int buildId = 26;
+	public final static int buildId = 27;
 	public final static int cbbuild = 1185;
 	public final static String verLoc = "http://cloud.github.com/downloads/BenCmd/BenCmd/version.txt";
 	public static String devLoc = "";
@@ -151,8 +151,8 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 	public final List<Player> allinvisible = new ArrayList<Player>();
 	public final List<ActionableUser> offline = new ArrayList<ActionableUser>();
 	public final String propDir = "plugins/BenCmd/";
-	public final String[] files = { "action.db", "bank.db", "channels.db",
-			"chest.db", "disp.db", "groups.db", "homes.db", "itembw.db", "items.txt",
+	public final String[] files = { "action.db", "bank.db", "channels.db", "chest.db",
+			"usage.db", "disp.db", "groups.db", "homes.db", "itembw.db", "items.txt",
 			"kits.db", "lever.db", "lots.db", "main.properties", "npc.db", "portals.db",
 			"prices.db", "protection.db", "shelves.db", "sparea.db", "tickets.db", "users.db",
 			"warps.db" };
@@ -176,6 +176,7 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 	 */
 	public PluginProperties mainProperties;
 	public PluginProperties itemAliases;
+	public PluginProperties usageStats;
 	public LotFile lots;
 	public boolean timeRunning = true;
 	public long lastTime = 0;
@@ -218,6 +219,18 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 	public boolean spoutcraft;
 	public SpoutConnector spoutconnect;
 	public ActionLog alog;
+	
+	public void logPermFail() {
+		incStat("permFail");
+	}
+	
+	public void incStat(String statName) {
+		if (!mainProperties.getBoolean("anonUsageStats", true)) {
+			return;
+		}
+		usageStats.setProperty(statName, String.valueOf(usageStats.getInteger(statName, 0) + 1));
+		usageStats.saveFile("--Anonymous usage stats--");
+	}
 
 	public boolean checkID(int id) {
 		for (Material item : Material.values()) {
@@ -351,6 +364,8 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 		mainProperties.loadFile();
 		itemAliases = new PluginProperties(propDir + "items.txt");
 		itemAliases.loadFile();
+		usageStats = new PluginProperties(propDir + "usage.db");
+		usageStats.loadFile();
 		chatListen = new ChatPlayerListener(this);
 		jail = new Jail(this);
 		dispensers = new UnlimitedDisp(propDir + "disp.db");
@@ -752,6 +767,7 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 
 	public boolean onCommand(CommandSender sender, Command command,
 			String commandLabel, String[] args) {
+		incStat("cmd," + commandLabel);
 		if (new BasicCommands(this).onCommand(sender, command, commandLabel,
 				args)) {
 			return true;
@@ -815,6 +831,7 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 			}
 			user.sendMessage(ChatColor.RED
 					+ "You don't have permission to do that!");
+			this.logPermFail();
 			return true;
 		}
 	}

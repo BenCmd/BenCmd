@@ -236,6 +236,7 @@ public class ProtectedCommands implements Commands {
 		if (!user.hasPerm("bencmd.lock.create")) {
 			user.sendMessage(ChatColor.RED
 					+ "You don't have permission to do that!");
+			plugin.logPermFail();
 			return;
 		}
 		Block pointedAt = user.getHandle().getTargetBlock(null, 4);
@@ -258,6 +259,7 @@ public class ProtectedCommands implements Commands {
 		if (!user.hasPerm("bencmd.lock.public")) {
 			user.sendMessage(ChatColor.RED
 					+ "You don't have permission to do that!");
+			plugin.logPermFail();
 			return;
 		}
 		Block pointedAt = user.getHandle().getTargetBlock(null, 4);
@@ -305,6 +307,7 @@ public class ProtectedCommands implements Commands {
 		if (!user.hasPerm("bencmd.lock.info")) {
 			user.sendMessage(ChatColor.RED
 					+ "You don't have permission to do that!");
+			plugin.logPermFail();
 			return;
 		}
 		Block pointedAt = user.getHandle().getTargetBlock(null, 4);

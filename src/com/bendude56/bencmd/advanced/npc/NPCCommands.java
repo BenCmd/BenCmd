@@ -144,6 +144,7 @@ public class NPCCommands implements Commands {
 			if (!user.hasPerm("bencmd.npc.remove")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
+				plugin.logPermFail();
 				return;
 			}
 			if (args.length == 1) {
@@ -156,6 +157,7 @@ public class NPCCommands implements Commands {
 			if (!user.hasPerm("bencmd.npc.despawnall")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
+				plugin.logPermFail();
 				return;
 			}
 			for (NPC npc : plugin.npcs.allNPCs()) {

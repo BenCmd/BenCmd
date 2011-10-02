@@ -487,6 +487,7 @@ public class PermissionCommands implements Commands {
 		if (args.length == 1 && !user.hasPerm("bencmd.action.status.other")) {
 			user.sendMessage(ChatColor.RED
 					+ "You don't have enough permissions to check the status of others!");
+			plugin.logPermFail();
 			return;
 		} else if (args.length == 1) {
 			if ((puser2 = PermissionUser.matchUserIgnoreCase(args[0], plugin)) == null) {
@@ -669,6 +670,7 @@ public class PermissionCommands implements Commands {
 		}
 		if (duration == -1 && !user.hasPerm("bencmd.action.permamute")) {
 			user.sendMessage(ChatColor.RED + "You cannot permanently mute somebody! Specify a time limit!");
+			plugin.logPermFail();
 			return;
 		}
 		if (duration == -1) {
@@ -751,6 +753,7 @@ public class PermissionCommands implements Commands {
 		}
 		if (duration == -1 && !user.hasPerm("bencmd.action.permajail")) {
 			user.sendMessage(ChatColor.RED + "You cannot permanently jail somebody! Specify a time limit!");
+			plugin.logPermFail();
 			return;
 		}
 		if (duration == -1) {
@@ -837,6 +840,7 @@ public class PermissionCommands implements Commands {
 		}
 		if (duration == -1 && !user.hasPerm("bencmd.action.permaban")) {
 			user.sendMessage(ChatColor.RED + "You cannot permanently ban somebody! Specify a time limit!");
+			plugin.logPermFail();
 			return;
 		}
 		if (duration == -1) {

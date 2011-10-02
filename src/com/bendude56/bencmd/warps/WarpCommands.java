@@ -366,6 +366,7 @@ public class WarpCommands implements Commands {
 			if (!user.hasPerm("bencmd.tp.self")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
+				plugin.logPermFail();
 				return;
 			}
 			User user2 = User.matchUser(args[0], plugin);
@@ -394,6 +395,7 @@ public class WarpCommands implements Commands {
 			if (!user.hasPerm("bencmd.tp.other")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
+				plugin.logPermFail();
 				return;
 			}
 			User user1 = User.matchUser(args[0], plugin);
@@ -430,6 +432,7 @@ public class WarpCommands implements Commands {
 			} else {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
+				plugin.logPermFail();
 			}
 		}
 	}

@@ -101,6 +101,7 @@ public class LotCommands implements Commands {
 			if (!user.hasPerm("bencmd.lot.info")) {
 				user.sendMessage(ChatColor.RED
 						+ "You do not have permission to check lots!");
+				plugin.logPermFail();
 				return;
 			}
 			String LotID;
@@ -195,6 +196,7 @@ public class LotCommands implements Commands {
 						&& !lot.isOwner(user.getHandle())) {
 					user.sendMessage(ChatColor.RED
 							+ "You do not have permission to check lots!");
+					plugin.logPermFail();
 					return;
 				}
 				lot.listGuests(user);
@@ -402,6 +404,7 @@ public class LotCommands implements Commands {
 			if (!user.hasPerm("bencmd.lot.create")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to modify lots!");
+				plugin.logPermFail();
 				return;
 			}
 			Location corner1;
@@ -497,6 +500,7 @@ public class LotCommands implements Commands {
 			if (!user.hasPerm("bencmd.lot.create")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to modify lots!");
+				plugin.logPermFail();
 				return;
 			}
 			Location corner1;
@@ -648,6 +652,7 @@ public class LotCommands implements Commands {
 			if (!user.hasPerm("bencmd.lot.remove")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to edit lots!");
+				plugin.logPermFail();
 				return;
 			}
 			String LotID;
@@ -724,6 +729,7 @@ public class LotCommands implements Commands {
 			if (!user.hasPerm("bencmd.lot.owner")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to edit lots!");
+				plugin.logPermFail();
 				return;
 			}
 			if (args.length == 1) {
@@ -1037,6 +1043,7 @@ public class LotCommands implements Commands {
 			if (!user.hasPerm("bencmd.lot.extend")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to modify lots!");
+				plugin.logPermFail();
 				return;
 			}
 			Location corner1;
@@ -1149,6 +1156,7 @@ public class LotCommands implements Commands {
 			if (!user.hasPerm("bencmd.lot.extend")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to modify lots!");
+				plugin.logPermFail();
 				return;
 			}
 			Player player = user.getHandle();
@@ -1325,6 +1333,7 @@ public class LotCommands implements Commands {
 			if (!user.hasPerm("bencmd.area.info")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
+				plugin.logPermFail();
 				return;
 			}
 			SPArea a = null;
@@ -1445,6 +1454,7 @@ public class LotCommands implements Commands {
 			if (!user.hasPerm("bencmd.area.info")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
+				plugin.logPermFail();
 				return;
 			}
 			PVPArea a = null;
@@ -1542,6 +1552,7 @@ public class LotCommands implements Commands {
 				if (!user.hasPerm("bencmd.area.create.msg")) {
 					user.sendMessage(ChatColor.RED
 							+ "You don't have permission to do that!");
+					plugin.logPermFail();
 					return;
 				}
 				int up, down;
@@ -1610,6 +1621,7 @@ public class LotCommands implements Commands {
 				if (!user.hasPerm("bencmd.area.create.heal")) {
 					user.sendMessage(ChatColor.RED
 							+ "You don't have permission to do that!");
+					plugin.logPermFail();
 					return;
 				}
 				int up, down;
@@ -1678,6 +1690,7 @@ public class LotCommands implements Commands {
 				if (!user.hasPerm("bencmd.area.create.dmg")) {
 					user.sendMessage(ChatColor.RED
 							+ "You don't have permission to do that!");
+					plugin.logPermFail();
 					return;
 				}
 				int up, down;
@@ -1746,6 +1759,7 @@ public class LotCommands implements Commands {
 				if (!user.hasPerm("bencmd.area.create.pvp")) {
 					user.sendMessage(ChatColor.RED
 							+ "You don't have permission to do that!");
+					plugin.logPermFail();
 					return;
 				}
 				int reqval, up, down;
@@ -1822,6 +1836,7 @@ public class LotCommands implements Commands {
 				if (!user.hasPerm("bencmd.area.create.time")) {
 					user.sendMessage(ChatColor.RED
 							+ "You don't have permission to do that!");
+					plugin.logPermFail();
 					return;
 				}
 				int time, up, down;
@@ -1903,6 +1918,7 @@ public class LotCommands implements Commands {
 			if (!user.hasPerm("bencmd.area.remove")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
+				plugin.logPermFail();
 				return;
 			}
 			if (args.length != 1 && args.length != 2) {
@@ -1946,6 +1962,7 @@ public class LotCommands implements Commands {
 			if (!user.hasPerm("bencmd.area.create.msg")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
+				plugin.logPermFail();
 				return;
 			}
 			String msg = "";
@@ -1974,6 +1991,7 @@ public class LotCommands implements Commands {
 			if (!user.hasPerm("bencmd.area.create.msg")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
+				plugin.logPermFail();
 				return;
 			}
 			String msg = "";
@@ -2002,6 +2020,7 @@ public class LotCommands implements Commands {
 			if (!user.hasPerm("bencmd.area.table")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
+				plugin.logPermFail();
 				return;
 			}
 			BCItem item;
@@ -2061,6 +2080,7 @@ public class LotCommands implements Commands {
 			if (!user.hasPerm("bencmd.area.table")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
+				plugin.logPermFail();
 				return;
 			}
 			if (args.length == 2) {
@@ -2094,6 +2114,7 @@ public class LotCommands implements Commands {
 			if (!user.hasPerm("bencmd.area.table")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
+				plugin.logPermFail();
 				return;
 			}
 			if (args.length == 2) {
@@ -2163,6 +2184,7 @@ public class LotCommands implements Commands {
 			if (!user.hasPerm("bencmd.area.create.time")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
+				plugin.logPermFail();
 				return;
 			}
 			if (args.length == 2) {

@@ -293,6 +293,7 @@ public class ReportFile extends Properties {
 				} else {
 					user.sendMessage(ChatColor.RED
 							+ "You don't have permission to do that!");
+					plugin.logPermFail();
 					return;
 				}
 				try {
@@ -332,6 +333,7 @@ public class ReportFile extends Properties {
 				} else {
 					user.sendMessage(ChatColor.RED
 							+ "You don't have permission to do that!");
+					plugin.logPermFail();
 					return;
 				}
 				Collections.sort(results);

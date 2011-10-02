@@ -156,6 +156,7 @@ public class MoneyCommands implements Commands {
 			if (!user.hasPerm("bencmd.market.price")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
+				plugin.logPermFail();
 				return;
 			}
 			MarketCurrency(args, user);
@@ -163,6 +164,7 @@ public class MoneyCommands implements Commands {
 			if (!user.hasPerm("bencmd.market.price")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
+				plugin.logPermFail();
 				return;
 			}
 			MarketItem(args, user);
@@ -170,6 +172,7 @@ public class MoneyCommands implements Commands {
 			if (!user.hasPerm("bencmd.market.supply")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
+				plugin.logPermFail();
 				return;
 			}
 			MarketSupply(args, user);
@@ -177,6 +180,7 @@ public class MoneyCommands implements Commands {
 			if (!user.hasPerm("bencmd.market.update")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
+				plugin.logPermFail();
 				return;
 			}
 			MarketUpdate(args, user);
@@ -184,6 +188,7 @@ public class MoneyCommands implements Commands {
 			if (!user.hasPerm("bencmd.market.update")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
+				plugin.logPermFail();
 				return;
 			}
 			if (!plugin.prices.isTimerEnabled()) {
@@ -199,6 +204,7 @@ public class MoneyCommands implements Commands {
 			if (!user.hasPerm("bencmd.market.close")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
+				plugin.logPermFail();
 				return;
 			}
 			if (!plugin.mainProperties.getBoolean("marketOpen", true)) {
@@ -214,6 +220,7 @@ public class MoneyCommands implements Commands {
 			if (!user.hasPerm("bencmd.market.open")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
+				plugin.logPermFail();
 				return;
 			}
 			if (plugin.mainProperties.getBoolean("marketOpen", true)) {
@@ -228,6 +235,7 @@ public class MoneyCommands implements Commands {
 			if (!user.hasPerm("bencmd.market.properties")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
+				plugin.logPermFail();
 				return;
 			}
 			if (args.length != 2) {
@@ -250,6 +258,7 @@ public class MoneyCommands implements Commands {
 			if (!user.hasPerm("bencmd.market.properties")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
+				plugin.logPermFail();
 				return;
 			}
 			if (args.length != 2) {
@@ -272,6 +281,7 @@ public class MoneyCommands implements Commands {
 			if (!user.hasPerm("bencmd.market.properties")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
+				plugin.logPermFail();
 				return;
 			}
 			if (args.length != 2) {

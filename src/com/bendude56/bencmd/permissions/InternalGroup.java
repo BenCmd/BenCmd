@@ -115,6 +115,40 @@ class InternalGroup {
 		}
 		return false;
 	}
+	
+	public String getVar(String variable) {
+		return getVar(variable, null);
+	}
+	
+	public String getVar(String variable, String def) {
+		if (variable.contains(",")) {
+			throw new InvalidPermissionError(variable, "Variable names cannot contain commas!");
+		} else if (!variable.contains(".")) {
+			throw new InvalidPermissionError(variable, "Variables in the root namespace are not allowed!");
+		}
+		for (String perm : getPermissions(false)) {
+			if (perm.startsWith(variable + "=")) {
+				return perm.split("=", 2)[1];
+			}
+		}
+		if (def == null) {
+			return null;
+		} else {
+			addPerm(variable + "=" + def);
+			return def;
+		}
+	}
+	
+	public void remVar(String variable) {
+		String key = variable + "=" + getVar(variable);
+		permissions.remove(key);
+	}
+	
+	public void setVar(String variable, String value) {
+		if (getVar(variable) != null) {
+			remVar(variable);
+		}
+	}
 
 	protected List<String> getGroups() {
 		return groups;

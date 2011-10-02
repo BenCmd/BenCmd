@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.Command;
@@ -157,6 +158,10 @@ public class BasicCommands implements Commands {
 				user.sendMessage(ChatColor.GREEN + "Success!");
 			}
 			return true;
+		} else if (commandLabel.equalsIgnoreCase("cr")
+				&& user.hasPerm("bencmd.creative.self")) {
+			Cr(args, user);
+			return true;
 		} else if (commandLabel.equalsIgnoreCase("debug")) {
 			return true;
 		}
@@ -173,6 +178,7 @@ public class BasicCommands implements Commands {
 			if (!user.hasPerm("bencmd.kill.other")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
+				plugin.logPermFail();
 				return;
 			}
 			User user2;
@@ -200,6 +206,7 @@ public class BasicCommands implements Commands {
 				if (!user.hasPerm("bencmd.time.set")) {
 					user.sendMessage(ChatColor.RED
 							+ "You don't have permission to do that!");
+					plugin.logPermFail();
 					return;
 				}
 				if (user.isServer()) {
@@ -215,6 +222,7 @@ public class BasicCommands implements Commands {
 				if (!user.hasPerm("bencmd.time.set")) {
 					user.sendMessage(ChatColor.RED
 							+ "You don't have permission to do that!");
+					plugin.logPermFail();
 					return;
 				}
 				if (user.isServer()) {
@@ -230,6 +238,7 @@ public class BasicCommands implements Commands {
 				if (!user.hasPerm("bencmd.time.set")) {
 					user.sendMessage(ChatColor.RED
 							+ "You don't have permission to do that!");
+					plugin.logPermFail();
 					return;
 				}
 				int time;
@@ -256,6 +265,7 @@ public class BasicCommands implements Commands {
 				if (!user.hasPerm("bencmd.time.set")) {
 					user.sendMessage(ChatColor.RED
 							+ "You don't have permission to do that!");
+					plugin.logPermFail();
 					return;
 				}
 				if (user.isServer()) {
@@ -271,6 +281,7 @@ public class BasicCommands implements Commands {
 				if (!user.hasPerm("bencmd.time.set")) {
 					user.sendMessage(ChatColor.RED
 							+ "You don't have permission to do that!");
+					plugin.logPermFail();
 					return;
 				}
 				if (user.isServer()) {
@@ -286,6 +297,7 @@ public class BasicCommands implements Commands {
 				if (!user.hasPerm("bencmd.time.set")) {
 					user.sendMessage(ChatColor.RED
 							+ "You don't have permission to do that!");
+					plugin.logPermFail();
 					return;
 				}
 				if (user.isServer()) {
@@ -301,6 +313,7 @@ public class BasicCommands implements Commands {
 				if (!user.hasPerm("bencmd.time.set")) {
 					user.sendMessage(ChatColor.RED
 							+ "You don't have permission to do that!");
+					plugin.logPermFail();
 					return;
 				}
 				if (user.isServer()) {
@@ -316,6 +329,7 @@ public class BasicCommands implements Commands {
 				if (!user.hasPerm("bencmd.time.set")) {
 					user.sendMessage(ChatColor.RED
 							+ "You don't have permission to do that!");
+					plugin.logPermFail();
 					return;
 				}
 				if (user.isServer()) {
@@ -331,6 +345,7 @@ public class BasicCommands implements Commands {
 				if (!user.hasPerm("bencmd.time.set")) {
 					user.sendMessage(ChatColor.RED
 							+ "You don't have permission to do that!");
+					plugin.logPermFail();
 					return;
 				}
 				if (user.isServer()) {
@@ -346,6 +361,7 @@ public class BasicCommands implements Commands {
 				if (!user.hasPerm("bencmd.time.lock")) {
 					user.sendMessage(ChatColor.RED
 							+ "You don't have permission to do that!");
+					plugin.logPermFail();
 					return;
 				}
 				if (plugin.timeRunning) {
@@ -423,6 +439,7 @@ public class BasicCommands implements Commands {
 			if (!user.hasPerm("bencmd.god.other")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
+				plugin.logPermFail();
 				return;
 			}
 			User user2;
@@ -479,6 +496,7 @@ public class BasicCommands implements Commands {
 			if (!user.hasPerm("bencmd.heal.other")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
+				plugin.logPermFail();
 				return;
 			}
 			// Heal the other player
@@ -975,6 +993,44 @@ public class BasicCommands implements Commands {
 		
 		alias = null;
 		return alias;
+	}
+	
+	public void Cr(String[] args, User user) {
+		if (args.length == 0) {
+			if (user.getHandle().getGameMode() == GameMode.CREATIVE) {
+				user.getHandle().setGameMode(GameMode.SURVIVAL);
+				user.sendMessage(ChatColor.GREEN + "You are now in survival mode!");
+				plugin.log.info(user.getName() + " has left creative mode");
+			} else {
+				user.getHandle().setGameMode(GameMode.CREATIVE);
+				user.sendMessage(ChatColor.GREEN + "You are now in creative mode!");
+				plugin.log.info(user.getName() + " has entered creative mode!");
+			}
+		} else if (args.length == 1) {
+			if (!user.hasPerm("bencmd.creative.other")) {
+				user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
+				plugin.logPermFail();
+				return;
+			}
+			User u = User.matchUser(args[0], plugin);
+			if (u == null) {
+				user.sendMessage(ChatColor.RED + args[0] + " isn't online right now!");
+				return;
+			}
+			if (u.getHandle().getGameMode() == GameMode.CREATIVE) {
+				u.getHandle().setGameMode(GameMode.SURVIVAL);
+				u.sendMessage(ChatColor.GREEN + "You are now in survival mode!");
+				user.sendMessage(ChatColor.GREEN + "That user is now in survival mode!");
+				plugin.log.info(u.getName() + " has left creative mode (" + user.getName() + ")");
+			} else {
+				u.getHandle().setGameMode(GameMode.CREATIVE);
+				u.sendMessage(ChatColor.GREEN + "You are now in creative mode!");
+				user.sendMessage(ChatColor.GREEN + "That user is now in creative mode!");
+				plugin.log.info(u.getName() + " has entered creative mode (" + user.getName() + ")");
+			}
+		} else {
+			user.sendMessage(ChatColor.YELLOW + "Proper use: /cr [player]");
+		}
 	}
 	
 	public List<BCommand> getCommands(User user) {

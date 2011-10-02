@@ -92,6 +92,7 @@ public class WeatherCommands implements Commands {
 				if (!user.hasPerm("bencmd.storm.strike.bind")) {
 					user.sendMessage(ChatColor.RED
 							+ "You don't have permission to do that!");
+					plugin.logPermFail();
 					return;
 				}
 				if (user.isServer()) {
@@ -111,6 +112,7 @@ public class WeatherCommands implements Commands {
 				if (!user.hasPerm("bencmd.storm.strike.bind")) {
 					user.sendMessage(ChatColor.RED
 							+ "You don't have permission to do that!");
+					plugin.logPermFail();
 					return;
 				}
 				if (user.isServer()) {
@@ -131,6 +133,7 @@ public class WeatherCommands implements Commands {
 				if (!user.hasPerm("bencmd.storm.strike.player")) {
 					user.sendMessage(ChatColor.RED
 							+ "You don't have permission to do that!");
+					plugin.logPermFail();
 					return;
 				}
 				User user2;

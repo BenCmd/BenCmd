@@ -48,6 +48,7 @@ public class MapCommands implements Commands {
 			if (!user.hasPerm("bencmd.map.zoom")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
+				plugin.logPermFail();
 				return;
 			}
 			map.zoomIn();
@@ -55,6 +56,7 @@ public class MapCommands implements Commands {
 			if (!user.hasPerm("bencmd.map.zoom")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
+				plugin.logPermFail();
 				return;
 			}
 			map.zoomOut();
@@ -62,6 +64,7 @@ public class MapCommands implements Commands {
 			if (!user.hasPerm("bencmd.map.center")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
+				plugin.logPermFail();
 				return;
 			}
 			map.setCenter(user.getHandle().getLocation().getBlockX(), user

@@ -281,3 +281,6 @@ commands:
     record:
         usage:
         description: Looks up a player's action record
+    cr:
+        usage:
+        description: Enters or leaves creative mode
