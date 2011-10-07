@@ -387,12 +387,12 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 		kicked = new KickList(this);
 		portals = new PortalFile(this, propDir + "portals.db");
 		shelff = new ShelfFile(this, propDir + "shelves.db");
+		alog = new ActionLog(propDir + "action.log");
 		actions = new ActionFile(this);
 		spafile = new SPAreaFile(this, propDir + "sparea.db");
 		banks = new BankFile(this, propDir + "bank.db");
 		npcs = new NPCFile(this, propDir + "npc.db");
 		levers = new RedstoneFile(this, propDir + "lever.db");
-		alog = new ActionLog(propDir + "action.log");
 		bLog.info("Performing configuration check...");
 		// SANITY CHECK
 		if (!sanityCheck()) {

@@ -504,6 +504,11 @@ public class PermissionCommands implements Commands {
 					+ "Proper use is: /status [player]");
 			return;
 		}
+		if (plugin.spoutcraft && plugin.spoutconnect.enabled(user.getHandle())) {
+			plugin.spoutconnect.showStatusScreen(user, (user2 == null) ? puser2 : user2,
+					(user.hasPerm("bencmd.action.status.advanced") || user.getName().equals(user2.getName())));
+			return;
+		}
 		boolean banned = puser2.isBanned() != null;
 		boolean jailed = puser2.isJailed() != null;
 		boolean muted = puser2.isMuted() != null;

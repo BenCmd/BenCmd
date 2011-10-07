@@ -7,14 +7,15 @@ import org.getspout.spoutapi.event.screen.ScreenListener;
 import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.SpoutConnector;
 import com.bendude56.bencmd.SpoutConnector.NPCScreen;
+import com.bendude56.bencmd.SpoutConnector.StatusScreen;
 
 
 public class NPCScreenListener extends ScreenListener {
 
 	@Override
 	public void onButtonClick(ButtonClickEvent event) {
-		if (event.getButton().getScreen() instanceof SpoutConnector.NPCScreen) {
-			NPCScreen s = (SpoutConnector.NPCScreen)event.getButton().getScreen();
+		if (event.getButton().getScreen() instanceof NPCScreen) {
+			NPCScreen s = (NPCScreen)event.getButton().getScreen();
 			if (event.getButton().equals(s.ok) && s.ok.isEnabled()) {
 				// Save all changes, then close
 				if (s.npc instanceof Skinnable) {
@@ -36,6 +37,11 @@ public class NPCScreenListener extends ScreenListener {
 				BenCmd.getPlugin().spoutconnect.prevItem(s);
 			} else if (event.getButton().equals(s.cancel) && s.cancel.isEnabled()) {
 				// Don't save any changes
+				s.close();
+			}
+		} else if (event.getButton().getScreen() instanceof StatusScreen) {
+			StatusScreen s = (StatusScreen)event.getButton().getScreen();
+			if (event.getButton().equals(s.close)) {
 				s.close();
 			}
 		}

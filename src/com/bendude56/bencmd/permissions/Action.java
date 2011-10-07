@@ -56,6 +56,15 @@ public class Action {
 	public long getExpiry() {
 		return endTime;
 	}
+	
+	public String formatTimeLeft() {
+		if (endTime != -1) {
+			long dur = endTime - new Date().getTime();
+			return ((int) Math.floor(((double)dur) / 3600000D)) + "h " + ((int) Math.floor((((double) dur) % 3600000D) / 60000D)) + "m";
+		} else {
+			return "PERMANENT";
+		}
+	}
 
 	public int getId() {
 		return id;

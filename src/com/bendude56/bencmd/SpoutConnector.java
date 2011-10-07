@@ -15,6 +15,8 @@ import com.bendude56.bencmd.advanced.npc.BlacksmithNPC;
 import com.bendude56.bencmd.advanced.npc.NPC;
 import com.bendude56.bencmd.advanced.npc.Skinnable;
 import com.bendude56.bencmd.advanced.npc.StaticNPC;
+import com.bendude56.bencmd.permissions.Action;
+import com.bendude56.bencmd.permissions.PermissionUser;
 
 
 public class SpoutConnector {
@@ -27,7 +29,7 @@ public class SpoutConnector {
 	}
 	
 	public boolean enabled(Player p) {
-		return ((SpoutPlayer)p).isSpoutCraftEnabled();
+		return SpoutManager.getPlayer(p).isSpoutCraftEnabled();
 	}
 	
 	public void setItemName(Material m, short d, String name) {
@@ -36,19 +38,19 @@ public class SpoutConnector {
 	
 	public void playMusic(Player p, String loc) {
 		if (enabled(p)) {
-			SpoutManager.getSoundManager().playCustomMusic(BenCmd.getPlugin(), (SpoutPlayer) p, loc, true);
+			SpoutManager.getSoundManager().playCustomMusic(BenCmd.getPlugin(), SpoutManager.getPlayer(p), loc, true);
 		}
 	}
 	
 	public void playSound(Player p, String loc) {
 		if (enabled(p)) {
-			SpoutManager.getSoundManager().playCustomSoundEffect(BenCmd.getPlugin(), (SpoutPlayer) p, loc, false);
+			SpoutManager.getSoundManager().playCustomSoundEffect(BenCmd.getPlugin(), SpoutManager.getPlayer(p), loc, false);
 		}
 	}
 	
 	public void sendNotification(Player p, String title, String message, Material m) {
 		if (enabled(p)) {
-			((SpoutPlayer)p).sendNotification(title, message, m);
+			SpoutManager.getPlayer(p).sendNotification(title, message, m);
 		}
 	}
 	
@@ -99,10 +101,46 @@ public class SpoutConnector {
 		}
 	}
 	
+	public void showStatusScreen(User u) {
+		showStatusScreen(u, u, true);
+	}
+	
+	public void showStatusScreen(User u, PermissionUser u2, boolean adv) {
+		StatusScreen scr = new StatusScreen();
+		InGameHUD hud = SpoutManager.getPlayer(u.getHandle()).getMainScreen();
+		
+		// labelbanned
+		GenericLabel labelbanned = new GenericLabel();
+		Action ban = u2.isBanned();
+		labelbanned.setText("Banned: " + ((ban != null) ? ((adv) ? ban.formatTimeLeft() : "YES") : "NO")).setTextColor((ban != null) ? new Color(194F/255F, 10F/255F, 28F/255F) : new Color(100F/255F, 100F/255F, 100F/255F)).setX(30).setY(20).setWidth(100).setHeight(12);
+		scr.attachWidget(BenCmd.getPlugin(), labelbanned);
+		
+		// labeljailed
+		GenericLabel labeljailed = new GenericLabel();
+		Action jail = u2.isJailed();
+		labeljailed.setText("Jailed: " + ((jail != null) ? ((adv) ? jail.formatTimeLeft() : "YES") : "NO")).setTextColor((jail != null) ? new Color(194F/255F, 10F/255F, 28F/255F) : new Color(100F/255F, 100F/255F, 100F/255F)).setX(30).setY(35).setWidth(100).setHeight(12);
+		scr.attachWidget(BenCmd.getPlugin(), labeljailed);
+		
+		// labelmuted
+		GenericLabel labelmuted = new GenericLabel();
+		Action mute = u2.isMuted();
+		labelmuted.setText("Muted: " + ((mute != null) ? ((adv) ? mute.formatTimeLeft() : "YES") : "NO")).setTextColor((mute != null) ? new Color(194F/255F, 10F/255F, 28F/255F) : new Color(100F/255F, 100F/255F, 100F/255F)).setX(30).setY(50).setWidth(100).setHeight(12);
+		scr.attachWidget(BenCmd.getPlugin(), labelmuted);
+		
+		// buttonclose
+		GenericButton buttonclose = new GenericButton();
+		buttonclose.setText("Close").setY(210).setX(375).setWidth(40).setHeight(20);
+		scr.attachWidget(BenCmd.getPlugin(), buttonclose);
+		scr.close = buttonclose;
+		
+		// Show pop-up
+		hud.attachPopupScreen(scr);
+	}
+	
 	public void showNPCScreen(Player p, NPC n) {
 		User u = User.getUser(BenCmd.getPlugin(), p);
 		NPCScreen infoscr = new NPCScreen();
-		InGameHUD mainscr = ((SpoutPlayer) p).getMainScreen();
+		InGameHUD mainscr = SpoutManager.getPlayer(p).getMainScreen();
 		infoscr.npc = n;
 		
 		// idlabel
@@ -205,7 +243,12 @@ public class SpoutConnector {
 		infoscr.cancel = cancelbutton;
 		
 		// Show pop-up
+		infoscr.setBgVisible(true);
 		mainscr.attachPopupScreen(infoscr);
+	}
+	
+	public class StatusScreen extends GenericPopup {
+		public Button close;
 	}
 	
 	public class NPCScreen extends GenericPopup {

@@ -163,6 +163,11 @@ public class BasicCommands implements Commands {
 			Cr(args, user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("debug")) {
+			if (!user.isDev()) {
+				user.sendMessage(ChatColor.RED + "That command is reserved for BenCmd developers only!");
+				plugin.logPermFail();
+				return true;
+			}
 			return true;
 		}
 		return false;
