@@ -1,6 +1,7 @@
 package com.bendude56.bencmd.permissions;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -85,11 +86,13 @@ public class PermissionCommands implements Commands {
 	public void User(String[] args, User user) {
 		if (args.length == 0 || args[0].equalsIgnoreCase("help")) {
 			user.sendMessage(ChatColor.YELLOW
-					+ "Proper use is: /user <name> {add|remove|g:<group>|c:<color>|<permissions>}");
+					+ "Proper use is: /user <name> {add|remove|info|+-<permissions>}");
 			user.sendMessage(ChatColor.YELLOW
 					+ "   -<name> is the name of the user.");
 			user.sendMessage(ChatColor.YELLOW
 					+ "   -Use add to add a user, and remove to delete one.");
+			user.sendMessage(ChatColor.YELLOW
+					+ "   -Use info to see info on that user.");
 			user.sendMessage(ChatColor.YELLOW
 					+ "   -Otherwise, type +<permission> or -<permission> to add/remove permissions.");
 			return;
@@ -180,13 +183,13 @@ public class PermissionCommands implements Commands {
 	public void Group(String[] args, User user) {
 		if (args.length == 0 || args[0].equalsIgnoreCase("help")) {
 			user.sendMessage(ChatColor.YELLOW
-					+ "Proper use is: /group <name> {add|remove|c:<color>|p:<prefix>|<permissions>|plist}");
+					+ "Proper use is: /group <name> {add|remove|c:<color>|p:<prefix>|l:<level>|<permissions>|plist}");
 			user.sendMessage(ChatColor.YELLOW
 					+ "   -<name> is the name of the group.");
 			user.sendMessage(ChatColor.YELLOW
 					+ "   -Use add to add a group, and remove to delete one.");
 			user.sendMessage(ChatColor.YELLOW
-					+ "   -Use g:<group> to change the group that a group belongs to.");
+					+ "   -Use l:<group> to change the group's priority level.");
 			user.sendMessage(ChatColor.YELLOW
 					+ "   -Use c:<color> to change the color that the group's prefix shows up as.");
 			user.sendMessage(ChatColor.YELLOW
@@ -194,6 +197,31 @@ public class PermissionCommands implements Commands {
 			user.sendMessage(ChatColor.YELLOW
 					+ "   -Otherwise, type +<permission> or -<permission> to add/remove permissions.");
 			return;
+		}
+		if (args.length == 1 && args[0].equalsIgnoreCase("list")) {
+			List<String> groups = plugin.perm.groupFile.listGroups();
+			if (groups == null) {
+				user.sendMessage(ChatColor.RED + "There are no groups! Add some with /group <name> add");
+				return;
+			}
+			String list = "";
+			for (int i=0; i<groups.size(); i++) {
+				if (i >= 1) {
+					if (i<=groups.size()-1) {
+						list += ",";
+					} else if (i==groups.size()-1) {
+						list += ".";
+						user.sendMessage(ChatColor.GREEN
+								+ "The following groups exist: ("
+								+ groups.size());
+						user.sendMessage(list);
+						return;
+					}
+					list += " ";
+				}
+				list += (plugin.perm.groupFile.getGroup(groups.get(i)).getColor()
+						+ plugin.perm.groupFile.getGroup(groups.get(i)).getName());
+			}
 		}
 		PermissionGroup group = plugin.perm.groupFile.getGroup(args[0]);
 		if (args[1].equalsIgnoreCase("remove")) {

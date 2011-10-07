@@ -93,6 +93,8 @@ public class ChatCommands implements Commands {
 		if (playerList.length == 1 && !user.isServer()) {
 			user.sendMessage(ChatColor.GREEN
 					+ "You are the only one online. :(");
+		} else if (playerList.length == 0) {
+			user.sendMessage("The server is empty. :(");
 		} else {
 			String playerString = "";
 			for (Player player2 : playerList) {
