@@ -3,8 +3,8 @@ package com.bendude56.bencmd.permissions;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.command.ConsoleCommandSender;
 
 import com.bendude56.bencmd.BenCmd;
 
@@ -61,7 +61,7 @@ public class PermissionUser {
 			plugin.getServer().broadcastMessage(
 					ChatColor.RED + "Server shutting down...");
 			plugin.getServer().dispatchCommand(
-					new ConsoleCommandSender(plugin.getServer()), "stop");
+					Bukkit.getConsoleSender(), "stop");
 		} else if (user == null) {
 			user = ouser;
 		}

@@ -119,7 +119,7 @@ public class TileEntityBankChest extends TileEntityChest {
 				} else {
 					init = true;
 				}
-				s += is.id + ":" + is.damage + " " + is.count;
+				s += is.id + ":" + is.g() + " " + is.count;
 			}
 		}
 		return s;
