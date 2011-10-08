@@ -464,6 +464,8 @@ public class BasicCommands implements Commands {
 										// list
 					user2.sendMessage(ChatColor.GOLD
 							+ "You are no longer in god mode!");
+					user.sendMessage(ChatColor.GOLD + "You have un-godded "
+							+ user2.getColor() + user2.getDisplayName());
 					plugin.log.info("BenCmd: " + user2.getDisplayName()
 							+ " has been made a non-god by "
 							+ user.getDisplayName() + "!");
@@ -474,6 +476,8 @@ public class BasicCommands implements Commands {
 					user2.makeGod(); // Add them to the list
 					user2.sendMessage(ChatColor.GOLD
 							+ "You are now in god mode!");
+					user.sendMessage(ChatColor.GOLD + "You have godded "
+							+ user2.getColor() + user2.getDisplayName());
 					plugin.log.info("BenCmd: " + user2.getDisplayName()
 							+ " has been made a god by "
 							+ user.getDisplayName() + "!");
@@ -503,7 +507,8 @@ public class BasicCommands implements Commands {
 					+ " has healed " + user.getDisplayName());
 		} else {
 			if (!user.hasPerm("bencmd.heal.other")
-					&& !args[0].equalsIgnoreCase(user.getDisplayName())) {
+					&& !(args[0].equalsIgnoreCase(user.getDisplayName())
+							&& user.hasPerm("bencmd.heal.self"))) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
 				plugin.logPermFail();
@@ -515,6 +520,8 @@ public class BasicCommands implements Commands {
 				user2 = User.matchUser(args[0], plugin);
 				user2.Heal();
 				user2.sendMessage(ChatColor.GREEN + "You have been healed.");
+				user.sendMessage(ChatColor.GREEN + "You have healed "
+						+ user2.getColor() + user2.getDisplayName());
 				plugin.log.info("BenCmd: " + user2.getDisplayName()
 						+ " has been healed by " + user.getDisplayName());
 				plugin.bLog.info("BenCmd: " + user2.getDisplayName()
@@ -542,7 +549,8 @@ public class BasicCommands implements Commands {
 					+ " has been fed by " + user.getDisplayName());
 		} else {
 			if (!user.hasPerm("bencmd.feed.other")
-					&& !args[0].equalsIgnoreCase(user.getDisplayName())) {
+					&& !(args[0].equalsIgnoreCase(user.getDisplayName())
+							&& user.hasPerm("bencmd.feed.self"))) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
 				plugin.logPermFail();
@@ -551,9 +559,11 @@ public class BasicCommands implements Commands {
 			// Feed the other player
 			User user2;
 			if ((user2 = User.matchUser(args[0], plugin)) != null) {
-				user = User.matchUserIgnoreCase(args[0], plugin);
+				user2 = User.matchUserIgnoreCase(args[0], plugin);
 				user2.Feed();
 				user2.sendMessage(ChatColor.GREEN + "You have been fed.");
+				user.sendMessage(ChatColor.GREEN + "You have fed"
+						+ user2.getColor() + user2.getDisplayName());
 				plugin.log.info("BenCmd: " + user2.getDisplayName()
 						+ " has been healed by " + user.getDisplayName());
 				plugin.bLog.info("BenCmd: " + user2.getDisplayName()
