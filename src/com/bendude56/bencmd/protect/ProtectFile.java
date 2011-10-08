@@ -140,6 +140,9 @@ public class ProtectFile extends Properties {
 			} else if (type.equalsIgnoreCase("f")) {
 				protectedBlocks.add(new ProtectedFurnace(plugin, id, owner, guests,
 						loc));
+			} else if (type.equalsIgnoreCase("di")) {
+				protectedBlocks.add(new ProtectedDispenser(plugin, id, owner, guests,
+						loc));
 			} else if (type.equalsIgnoreCase("pc")) {
 				protectedBlocks.add(new PublicChest(plugin, id, owner, guests,
 						loc));
@@ -148,6 +151,9 @@ public class ProtectFile extends Properties {
 						loc));
 			} else if (type.equalsIgnoreCase("pf")) {
 				protectedBlocks.add(new PublicFurnace(plugin, id, owner, guests,
+						loc));
+			} else if (type.equalsIgnoreCase("pdi")) {
+				protectedBlocks.add(new PublicDispenser(plugin, id, owner, guests,
 						loc));
 			} else {
 				plugin.log.warning("Entry " + key + " in " + proFile
@@ -422,6 +428,10 @@ public class ProtectFile extends Properties {
 			protectedBlocks.add(protect = new ProtectedFurnace(plugin, id, owner,
 					new ArrayList<PermissionUser>(), loc));
 			break;
+		case Dispenser:
+			protectedBlocks.add(protect = new ProtectedDispenser(plugin, id, owner,
+					new ArrayList<PermissionUser>(), loc));
+			break;
 		case PDoor:
 			protectedBlocks.add(protect = new PublicDoor(plugin, id, owner,
 					new ArrayList<PermissionUser>(), loc));
@@ -432,6 +442,10 @@ public class ProtectFile extends Properties {
 			break;
 		case PFurnace:
 			protectedBlocks.add(protect = new PublicFurnace(plugin, id, owner,
+					new ArrayList<PermissionUser>(), loc));
+			break;
+		case PDispenser:
+			protectedBlocks.add(protect = new PublicDispenser(plugin, id, owner,
 					new ArrayList<PermissionUser>(), loc));
 			break;
 		}
@@ -508,6 +522,6 @@ public class ProtectFile extends Properties {
 	}
 
 	public static enum ProtectionType {
-		Chest, Door, Furnace, PDoor, PChest, PFurnace
+		Chest, Door, Furnace, Dispenser, PDoor, PChest, PFurnace, PDispenser
 	}
 }

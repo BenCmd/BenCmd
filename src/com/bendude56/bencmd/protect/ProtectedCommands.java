@@ -116,6 +116,8 @@ public class ProtectedCommands implements Commands {
 			t = (p) ? ProtectionType.PDoor : ProtectionType.Door;
 		} else if (l.getType() == Material.FURNACE) {
 			t = (p) ? ProtectionType.PFurnace : ProtectionType.Furnace;
+		} else if (l.getType() == Material.DISPENSER) {
+			t = (p) ? ProtectionType.PDispenser : ProtectionType.Dispenser;
 		} else {
 			u.sendMessage(ChatColor.RED + "That type of block cannot be protected!");
 			return false;
