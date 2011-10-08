@@ -59,6 +59,9 @@ commands:
     heal:
         usage:
         description: Heals a player.
+    feed:
+        usage:
+        description: Feeds a player.
     bencmd:
         usage:
         description: Displays the version info for, or reloads, BenCmd.

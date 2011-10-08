@@ -84,6 +84,10 @@ public class BasicCommands implements Commands {
 				&& user.hasPerm("bencmd.heal.self")) {
 			Heal(args, user);
 			return true;
+		} else if (commandLabel.equalsIgnoreCase("feed") 
+				&& user.hasPerm("bencmd.feed.self")) {
+			Feed(args, user);
+			return true;
 		} else if (commandLabel.equalsIgnoreCase("bencmd")) {
 			BenCmd(args, user);
 			return true;
@@ -493,12 +497,13 @@ public class BasicCommands implements Commands {
 			// Heal the player
 			user.Heal();
 			user.sendMessage(ChatColor.GREEN + "You have been healed.");
-			plugin.log.info("BenCmd: " + user.getDisplayName() + " has healed "
+			plugin.log.info("BenCmd: " + user.getDisplayName() + " has been healed by "
 					+ user.getDisplayName());
 			plugin.bLog.info("BenCmd: " + user.getDisplayName()
 					+ " has healed " + user.getDisplayName());
 		} else {
-			if (!user.hasPerm("bencmd.heal.other")) {
+			if (!user.hasPerm("bencmd.heal.other")
+					&& !args[0].equalsIgnoreCase(user.getDisplayName())) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
 				plugin.logPermFail();
@@ -510,13 +515,52 @@ public class BasicCommands implements Commands {
 				user2 = User.matchUser(args[0], plugin);
 				user2.Heal();
 				user2.sendMessage(ChatColor.GREEN + "You have been healed.");
-				plugin.log.info("BenCmd: " + user.getDisplayName()
-						+ " has healed " + user2.getDisplayName());
-				plugin.bLog.info("BenCmd: " + user.getDisplayName()
-						+ " has healed " + user2.getDisplayName());
+				plugin.log.info("BenCmd: " + user2.getDisplayName()
+						+ " has been healed by " + user.getDisplayName());
+				plugin.bLog.info("BenCmd: " + user2.getDisplayName()
+						+ " has been healed by " + user.getDisplayName());
 			} else {
 				user.sendMessage(ChatColor.RED + args[0]
 						+ " doesn't exist or is not online.");
+			}
+		}
+	}
+	
+	public void Feed(String[] args, User user) {
+		if (args.length == 0) {
+			if (user.isServer()) {
+				user.sendMessage(ChatColor.YELLOW
+						+ "Proper use is /feed [player]");
+				return;
+			}
+			// Feed the player
+			user.Feed();
+			user.sendMessage(ChatColor.GREEN + "You have been fed.");
+			plugin.log.info("BenCmd: " + user.getDisplayName() + " has been fed by "
+					+ user.getDisplayName());
+			plugin.bLog.info("BenCmd: " + user.getDisplayName()
+					+ " has been fed by " + user.getDisplayName());
+		} else {
+			if (!user.hasPerm("bencmd.feed.other")
+					&& !args[0].equalsIgnoreCase(user.getDisplayName())) {
+				user.sendMessage(ChatColor.RED
+						+ "You don't have permission to do that!");
+				plugin.logPermFail();
+				return;
+			}
+			// Feed the other player
+			User user2;
+			if ((user2 = User.matchUser(args[0], plugin)) != null) {
+				user = User.matchUserIgnoreCase(args[0], plugin);
+				user2.Feed();
+				user2.sendMessage(ChatColor.GREEN + "You have been fed.");
+				plugin.log.info("BenCmd: " + user2.getDisplayName()
+						+ " has been healed by " + user.getDisplayName());
+				plugin.bLog.info("BenCmd: " + user2.getDisplayName()
+						+ " has been healed by " + user.getDisplayName());
+			} else {
+				user.sendMessage(ChatColor.RED + args[0]
+				                                      + " doens't exist or is not online.");
 			}
 		}
 	}

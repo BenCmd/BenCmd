@@ -227,6 +227,16 @@ public class ActionableUser extends WarpableUser {
 		}
 		player.setHealth(20);
 	}
+	
+	/**
+	 * Fills the user's hunger meter
+	 */
+	public void Feed() {
+		if (isConsole) {
+			return;
+		}
+		player.setFoodLevel(20);
+	}
 
 	/**
 	 * Makes the user enter god mode
