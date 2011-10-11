@@ -143,6 +143,9 @@ public class ProtectFile extends Properties {
 			} else if (type.equalsIgnoreCase("di")) {
 				protectedBlocks.add(new ProtectedDispenser(plugin, id, owner, guests,
 						loc));
+			} else if (type.equalsIgnoreCase("g")) {
+				protectedBlocks.add(new ProtectedGate(plugin, id, owner, guests,
+						loc));
 			} else if (type.equalsIgnoreCase("pc")) {
 				protectedBlocks.add(new PublicChest(plugin, id, owner, guests,
 						loc));
@@ -154,6 +157,9 @@ public class ProtectFile extends Properties {
 						loc));
 			} else if (type.equalsIgnoreCase("pdi")) {
 				protectedBlocks.add(new PublicDispenser(plugin, id, owner, guests,
+						loc));
+			} else if (type.equalsIgnoreCase("pg")) {
+				protectedBlocks.add(new PublicGate(plugin, id, owner, guests,
 						loc));
 			} else {
 				plugin.log.warning("Entry " + key + " in " + proFile
@@ -208,6 +214,72 @@ public class ProtectFile extends Properties {
 					+ String.valueOf(blockLoc.getBlockY()) + ","
 					+ String.valueOf(blockLoc.getBlockZ());
 			this.put(key, value);
+		} else if (block instanceof ProtectedFurnace) {
+			String value;
+			String key;
+			key = ((comment) ? "." : "") + String.valueOf(block.GetId());
+			value = "";
+			value += "f/";
+			boolean init = false;
+			for (PermissionUser guest : block.getGuests()) {
+				if (init) {
+					value += ",";
+				} else {
+					init = true;
+				}
+				value += guest.getName();
+			}
+			value += "/" + block.getOwner().getName();
+			Location blockLoc = block.getLocation();
+			value += "/" + blockLoc.getWorld().getName() + ","
+					+ String.valueOf(blockLoc.getBlockX()) + ","
+					+ String.valueOf(blockLoc.getBlockY()) + ","
+					+ String.valueOf(blockLoc.getBlockZ());
+			this.put(key, value);
+		} else if (block instanceof ProtectedDispenser) {
+			String value;
+			String key;
+			key = ((comment) ? "." : "") + String.valueOf(block.GetId());
+			value = "";
+			value += "di/";
+			boolean init = false;
+			for (PermissionUser guest : block.getGuests()) {
+				if (init) {
+					value += ",";
+				} else {
+					init = true;
+				}
+				value += guest.getName();
+			}
+			value += "/" + block.getOwner().getName();
+			Location blockLoc = block.getLocation();
+			value += "/" + blockLoc.getWorld().getName() + ","
+					+ String.valueOf(blockLoc.getBlockX()) + ","
+					+ String.valueOf(blockLoc.getBlockY()) + ","
+					+ String.valueOf(blockLoc.getBlockZ());
+			this.put(key, value);
+		} else if (block instanceof ProtectedGate) {
+			String value;
+			String key;
+			key = ((comment) ? "." : "") + String.valueOf(block.GetId());
+			value = "";
+			value += "g/";
+			boolean init = false;
+			for (PermissionUser guest : block.getGuests()) {
+				if (init) {
+					value += ",";
+				} else {
+					init = true;
+				}
+				value += guest.getName();
+			}
+			value += "/" + block.getOwner().getName();
+			Location blockLoc = block.getLocation();
+			value += "/" + blockLoc.getWorld().getName() + ","
+					+ String.valueOf(blockLoc.getBlockX()) + ","
+					+ String.valueOf(blockLoc.getBlockY()) + ","
+					+ String.valueOf(blockLoc.getBlockZ());
+			this.put(key, value);
 		} else if (block instanceof PublicChest) {
 			String value;
 			String key;
@@ -236,6 +308,72 @@ public class ProtectFile extends Properties {
 			key = ((comment) ? "." : "") + String.valueOf(block.GetId());
 			value = "";
 			value += "pd/";
+			boolean init = false;
+			for (PermissionUser guest : block.getGuests()) {
+				if (init) {
+					value += ",";
+				} else {
+					init = true;
+				}
+				value += guest.getName();
+			}
+			value += "/" + block.getOwner().getName();
+			Location blockLoc = block.getLocation();
+			value += "/" + blockLoc.getWorld().getName() + ","
+					+ String.valueOf(blockLoc.getBlockX()) + ","
+					+ String.valueOf(blockLoc.getBlockY()) + ","
+					+ String.valueOf(blockLoc.getBlockZ());
+			this.put(key, value);
+		} else if (block instanceof PublicFurnace) {
+			String value;
+			String key;
+			key = ((comment) ? "." : "") + String.valueOf(block.GetId());
+			value = "";
+			value += "pf/";
+			boolean init = false;
+			for (PermissionUser guest : block.getGuests()) {
+				if (init) {
+					value += ",";
+				} else {
+					init = true;
+				}
+				value += guest.getName();
+			}
+			value += "/" + block.getOwner().getName();
+			Location blockLoc = block.getLocation();
+			value += "/" + blockLoc.getWorld().getName() + ","
+					+ String.valueOf(blockLoc.getBlockX()) + ","
+					+ String.valueOf(blockLoc.getBlockY()) + ","
+					+ String.valueOf(blockLoc.getBlockZ());
+			this.put(key, value);
+		} else if (block instanceof PublicDispenser) {
+			String value;
+			String key;
+			key = ((comment) ? "." : "") + String.valueOf(block.GetId());
+			value = "";
+			value += "pdi/";
+			boolean init = false;
+			for (PermissionUser guest : block.getGuests()) {
+				if (init) {
+					value += ",";
+				} else {
+					init = true;
+				}
+				value += guest.getName();
+			}
+			value += "/" + block.getOwner().getName();
+			Location blockLoc = block.getLocation();
+			value += "/" + blockLoc.getWorld().getName() + ","
+					+ String.valueOf(blockLoc.getBlockX()) + ","
+					+ String.valueOf(blockLoc.getBlockY()) + ","
+					+ String.valueOf(blockLoc.getBlockZ());
+			this.put(key, value);
+		} else if (block instanceof PublicGate) {
+			String value;
+			String key;
+			key = ((comment) ? "." : "") + String.valueOf(block.GetId());
+			value = "";
+			value += "pg/";
 			boolean init = false;
 			for (PermissionUser guest : block.getGuests()) {
 				if (init) {
@@ -432,6 +570,10 @@ public class ProtectFile extends Properties {
 			protectedBlocks.add(protect = new ProtectedDispenser(plugin, id, owner,
 					new ArrayList<PermissionUser>(), loc));
 			break;
+		case Gate:
+			protectedBlocks.add(protect = new ProtectedGate(plugin, id, owner,
+					new ArrayList<PermissionUser>(), loc));
+			break;
 		case PDoor:
 			protectedBlocks.add(protect = new PublicDoor(plugin, id, owner,
 					new ArrayList<PermissionUser>(), loc));
@@ -446,6 +588,10 @@ public class ProtectFile extends Properties {
 			break;
 		case PDispenser:
 			protectedBlocks.add(protect = new PublicDispenser(plugin, id, owner,
+					new ArrayList<PermissionUser>(), loc));
+			break;
+		case PGate:
+			protectedBlocks.add(protect = new PublicGate(plugin, id, owner,
 					new ArrayList<PermissionUser>(), loc));
 			break;
 		}
@@ -522,6 +668,6 @@ public class ProtectFile extends Properties {
 	}
 
 	public static enum ProtectionType {
-		Chest, Door, Furnace, Dispenser, PDoor, PChest, PFurnace, PDispenser
+		Chest, Door, Furnace, Dispenser, Gate, PDoor, PChest, PFurnace, PDispenser, PGate
 	}
 }

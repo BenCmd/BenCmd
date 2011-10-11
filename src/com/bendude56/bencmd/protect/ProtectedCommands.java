@@ -109,15 +109,19 @@ public class ProtectedCommands implements Commands {
 	}
 	
 	public boolean Lock(Block l, User u, PermissionUser o, boolean p) {
+		Material m = l.getType();
 		ProtectionType t;
-		if (l.getType() == Material.CHEST) {
+		if (m == Material.CHEST) {
 			t = (p) ? ProtectionType.PChest : ProtectionType.Chest;
-		} else if (l.getType() == Material.WOOD_DOOR) {
+		} else if (m == Material.WOODEN_DOOR) {
 			t = (p) ? ProtectionType.PDoor : ProtectionType.Door;
-		} else if (l.getType() == Material.FURNACE) {
+			m = Material.WOOD_DOOR;
+		} else if (m == Material.FURNACE) {
 			t = (p) ? ProtectionType.PFurnace : ProtectionType.Furnace;
-		} else if (l.getType() == Material.DISPENSER) {
+		} else if (m == Material.DISPENSER) {
 			t = (p) ? ProtectionType.PDispenser : ProtectionType.Dispenser;
+		} else if (m == Material.FENCE_GATE) {
+			t = (p) ? ProtectionType.PGate : ProtectionType.Gate;
 		} else {
 			u.sendMessage(ChatColor.RED + "That type of block cannot be protected!");
 			return false;
@@ -150,7 +154,7 @@ public class ProtectedCommands implements Commands {
 		for (Player onlinePlayer : plugin.getServer().getOnlinePlayers()) {
 			if (User.getUser(plugin, onlinePlayer)
 					.hasPerm("bencmd.lock.hearall") && plugin.spoutcraft) {
-				plugin.spoutconnect.sendNotification(onlinePlayer, ((p) ? "Public: " : "Lock: ") + u.getName(), "Protection ID: " + id, l.getType());
+				plugin.spoutconnect.sendNotification(onlinePlayer, ((p) ? "Public: " : "Lock: ") + u.getName(), "Protection ID: " + id, m);
 			}
 		}
 		return true;
@@ -191,7 +195,11 @@ public class ProtectedCommands implements Commands {
 				for (Player onlinePlayer : plugin.getServer().getOnlinePlayers()) {
 					if (User.getUser(plugin, onlinePlayer)
 							.hasPerm("bencmd.lock.hearall") && plugin.spoutcraft) {
-						plugin.spoutconnect.sendNotification(onlinePlayer, "Unlock: " + u.getName(), "Protection ID: " + id, l.getType());
+						Material m = l.getType();
+						if (m == Material.WOODEN_DOOR){
+							m = Material.WOOD_DOOR;
+						}
+						plugin.spoutconnect.sendNotification(onlinePlayer, "Unlock: " + u.getName(), "Protection ID: " + id, m);
 					}
 				}
 				return true;
@@ -232,6 +240,7 @@ public class ProtectedCommands implements Commands {
 		u.sendMessage(ChatColor.DARK_GRAY + "Protection ID: " + id);
 		u.sendMessage(ChatColor.DARK_GRAY + "Owner: " + owner);
 		u.sendMessage(ChatColor.DARK_GRAY + "Guests: " + guests);
+		u.sendMessage(ChatColor.DARK_GRAY + "Access: " + ((b instanceof PublicBlock) ? "Public" : "Private"));
 	}
 
 	public void AddProtect(String[] args, User user) {
