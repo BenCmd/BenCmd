@@ -5,7 +5,6 @@ import org.getspout.spoutapi.event.screen.ButtonClickEvent;
 import org.getspout.spoutapi.event.screen.ScreenListener;
 
 import com.bendude56.bencmd.BenCmd;
-import com.bendude56.bencmd.SpoutConnector;
 import com.bendude56.bencmd.SpoutConnector.NPCScreen;
 import com.bendude56.bencmd.SpoutConnector.StatusScreen;
 

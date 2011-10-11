@@ -85,6 +85,9 @@ public class DeathListener extends EntityListener {
 		if (!(event.getEntity() instanceof Player)) {
 			return;
 		}
+		if (User.getUser(plugin, (Player) event.getEntity()).isJailed() != null) {
+			event.setCancelled(true);
+		}
 		if (User.getUser(plugin, (Player) event.getEntity()).isPoofed()) {
 			event.setCancelled(true);
 		}

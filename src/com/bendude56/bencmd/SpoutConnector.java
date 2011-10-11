@@ -6,7 +6,6 @@ import java.util.List;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.getspout.spoutapi.SpoutManager;
-import org.getspout.spoutapi.player.SpoutPlayer;
 import org.getspout.spoutapi.gui.*;
 
 import com.bendude56.bencmd.advanced.npc.BankManagerNPC;
