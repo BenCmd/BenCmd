@@ -36,7 +36,7 @@ public class PermLoginListener extends PlayerListener {
 		}
 		if (plugin.perm.groupFile.getAllUserGroups(user).isEmpty()) {
 			plugin.perm.groupFile.getGroup(
-					plugin.mainProperties.getString("defaultGroup", "group"))
+					plugin.mainProperties.getString("defaultGroup", "default"))
 					.addUser(user);
 		}
 		if ((User.getUser(plugin, event.getPlayer())).isBanned() != null) {

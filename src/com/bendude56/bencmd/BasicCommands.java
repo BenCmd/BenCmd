@@ -3,6 +3,7 @@ package com.bendude56.bencmd;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.GameMode;
@@ -167,10 +168,31 @@ public class BasicCommands implements Commands {
 			Cr(args, user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("debug")) {
-			if (!user.isDev()) {
+			if (!user.isDev() && !user.isServer()) {
 				user.sendMessage(ChatColor.RED + "That command is reserved for BenCmd developers only!");
 				plugin.logPermFail();
 				return true;
+			}
+			if (args.length == 0 || args[0].equalsIgnoreCase("ver")) {
+				user.sendMessage(ChatColor.GRAY + "This server is running BenCmd Build " + BenCmd.buildId + ((BenCmd.debug) ? " (DEBUG)" : ""));
+				user.sendMessage(ChatColor.GRAY + "Supported CraftBukkit version: " + BenCmd.cbbuild);
+				int cb;
+				try {
+					cb = Integer.parseInt(Bukkit.getVersion().split("-")[5].split(" ")[0].replace("b", "").replace("jnks", ""));
+				} catch (NumberFormatException e) {
+					cb = -1;
+				}
+				user.sendMessage(ChatColor.GRAY + "Running CraftBukkit version: " + ((cb == -1) ? "UNKNOWN" : cb));
+			} else if (args[0].equalsIgnoreCase("pfail")) {
+				user.sendMessage(ChatColor.GRAY + "Permission failures: " + BenCmd.getPlugin().usageStats.getInteger("permFail", 0));
+			} else if (args[0].equalsIgnoreCase("chkconfig")) {
+				user.sendMessage(ChatColor.GRAY + "Anonymous usage logging: " + ((BenCmd.getPlugin().mainProperties.getBoolean("anonUsageStats", true)) ? (ChatColor.GREEN + "ON") : (ChatColor.YELLOW + "OFF")));
+				user.sendMessage(ChatColor.GRAY + "Update mode: " + ((BenCmd.getPlugin().mainProperties.getBoolean("downloadDevUpdates", true)) ? (ChatColor.YELLOW + "ALL") : (ChatColor.GREEN + "STABLE ONLY")));
+				String dGroup = BenCmd.getPlugin().mainProperties.getString("defaultGroup", "default");
+				user.sendMessage(ChatColor.GRAY + "Default group: " + ((BenCmd.getPlugin().perm.groupFile.groupExists(dGroup)) ? ChatColor.GREEN : ChatColor.RED) + dGroup);
+				user.sendMessage(ChatColor.GRAY + "Spout connected: " + ((BenCmd.getPlugin().spoutcraft) ? (ChatColor.GREEN + "YES") : (ChatColor.YELLOW + "NO")));
+			} else {
+				user.sendMessage(ChatColor.GRAY + "Invalid debug command");
 			}
 			return true;
 		}

@@ -1,8 +1,8 @@
 name: BenCmd
-version: 1.2.6
+version: 1.3.0
 main: com.bendude56.bencmd.BenCmd
 website: github.com/BenCmd/BenCmd
-author: ben_dude56
+authors: ['ben_dude56', 'Deaboy']
 softdepend: [Spout]
 commands:
     slow:

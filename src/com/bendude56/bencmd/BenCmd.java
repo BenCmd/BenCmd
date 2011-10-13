@@ -115,7 +115,7 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public class BenCmd extends JavaPlugin implements PermissionsProvider {
 	public final static boolean debug = false;
-	public final static int buildId = 28;
+	public final static int buildId = 29;
 	public final static int cbbuild = 1240;
 	public final static String verLoc = "http://cloud.github.com/downloads/BenCmd/BenCmd/version.txt";
 	public static String devLoc = "";

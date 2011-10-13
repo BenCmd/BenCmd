@@ -107,3 +107,63 @@ CHANGELOG (STARTING FROM v1.2.2):
       -Tickets now organize by ID instead of being in random order
       -Lots are now multi-world compatible
       -Repeatedly selecting the same block using the wooden shovel no longer spams your chat
+  1.3.0:
+    -Changed all permissions to use a node-based system
+      -The only permission allowed inside the root node is '*'. Checking any root permission throws an exception.
+      -Permissions cannot contain commas to prevent typos. Any permissions containing commas will throw an exception.
+    -BenCmd now provides permissions to any plugins using WEPIF
+    -Added option to prevent users not in users.db from joining (Basic whitelist)
+    -All databases make auto-backups while saving that are deleted afterwards
+      -If a backup database is found while loading, it is restored
+    -BenCmd now peacefully tells ZombeMods cheats + flymode and CJB Cheats to disable when players join
+    -Auto-updater can now differentiate between dev builds and stable builds
+    -NPC system improved
+      -Static NPCs that just stand around with a specific name
+      -NPCs can now hold items
+      -NPCs now look at the nearest player
+      -Started to add code for pathing NPCs (Not yet working in-game)
+    -Added connection to Spout
+      -For SpoutCraft users only:
+        -Static NPCs have changeable skins independant from names
+        -Some admin notifications that showed in chat now show in small achievement windows
+        -There is now a small GUI for making basic edits to NPCs
+        -Half-completed /status GUI
+      -For all users:
+        -Added ability to disable crafting of certain items via a permission
+    -Major improvements to /spawnmob
+    -Added /killall to allow killing of nearby entities
+    -Moved all classes from ben_dude56.plugins.bencmd to com.bendude56.bencmd
+    -Added a green star in chat and lightning upon joining for BenCmd developers
+    -Channels are now enabled by default
+    -Added ability to change main.properties entries from in-game
+    -Small /list tweaks
+    -Added enderman griefing protection
+    -Added new protectable blocks:
+      -Gates
+      -Furnaces (FINALLY :D)
+      -Dispensers
+    -Added logging of all mutes, bans, jails, kicks, and other custom notes that can be searched from in-game
+    -Added /feed to bring a users' hunger bar to max
+    -Added /debug command for dev use only
+    -Bugfixes
+      -Players that are accused in a ticket now see the ticket sender as 'ANONYMOUS'.
+      -Fixed some typos in messages
+      -Fixed banks not saving properly
+      -Made NPCs use pipe characters ('|') instead of slash to prevent the saving from messing with URLs
+      -Fixed minor glitch in a damage event causing McMyAdmin to spazz out
+      -Fixed a bug where the server would crash if any player was in a world different from any NPC
+      -Fixed rare NPE when a player disconnects causing NPCs to stop ticking properly
+      -Made flymod detection less sensitive so it doesn't falsely detect players flying when the server is lagging
+      -Fixed McMyAdmin compatibility problems
+      -Fixed changing a protection's guestlist using its ID not checking permissions
+      -Fixed players being able to have unlimited homes with negative numbers
+      -Updated /help
+      -Fixed auto-updater sometimes not working
+      -Fixed channels complaining that smilies were "all-caps messages"
+      -Fixed some database files not auto-creating properly
+      -Fixed jailed players being able to damage themselves and die to escape jail
+      -Fixed default group being initialized as "group"
+      -Updated to support 1.8
+        -Fixed banks causing strings that are "too long"
+        -Fixed non-static NPCs glitching out
+        -Fixed CraftBukkit compatibility
