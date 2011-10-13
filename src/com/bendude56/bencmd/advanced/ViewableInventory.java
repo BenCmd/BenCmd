@@ -34,7 +34,7 @@ public class ViewableInventory extends InventoryPlayer {
 		return ((EntityPlayer) this.d).name;
 	}
 
-	public boolean a_(EntityHuman entityHuman) {
+	public boolean a(EntityHuman entityHuman) {
 		return true;
 	}
 }
