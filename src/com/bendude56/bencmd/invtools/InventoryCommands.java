@@ -17,11 +17,9 @@ import com.bendude56.bencmd.invtools.kits.*;
 
 public class InventoryCommands implements Commands {
 	BenCmd plugin;
-	InventoryBackend back;
 
 	public InventoryCommands(BenCmd instance) {
 		plugin = instance;
-		back = new InventoryBackend(plugin);
 	}
 
 	public boolean onCommand(CommandSender sender, Command command,
@@ -68,7 +66,7 @@ public class InventoryCommands implements Commands {
 			return;
 		}
 		BCItem Item;
-		Item = back.checkAlias(args[0]);
+		Item = InventoryBackend.getInstance().checkAlias(args[0]);
 		Block blockToAdd = user.getHandle().getTargetBlock(null, 30);
 		if (blockToAdd.getType() != Material.DISPENSER) {
 			user.sendMessage(ChatColor.RED
@@ -120,7 +118,7 @@ public class InventoryCommands implements Commands {
 			return;
 		}
 		BCItem Item;
-		if ((Item = back.checkAlias(args[0])) == null) {
+		if ((Item = InventoryBackend.getInstance().checkAlias(args[0])) == null) {
 			user.sendMessage(ChatColor.RED + "Invalid item ID or damage!");
 			return;
 		}
@@ -136,7 +134,7 @@ public class InventoryCommands implements Commands {
 		int fullAmount = Amount;
 		List<Integer> splitamount = new ArrayList<Integer>();
 		while (Amount > 0) {
-			Integer maxAmount = back.getStackNumber(Item.getMaterial().getId());
+			Integer maxAmount = InventoryBackend.getInstance().getStackNumber(Item.getMaterial().getId());
 			if (Amount > maxAmount) {
 				splitamount.add(maxAmount);
 				Amount -= maxAmount;

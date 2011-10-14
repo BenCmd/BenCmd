@@ -1,4 +1,4 @@
-package com.bendude56.bencmd.nofly;
+package com.bendude56.bencmd;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -11,8 +11,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
-import com.bendude56.bencmd.BenCmd;
-import com.bendude56.bencmd.User;
 import com.bendude56.bencmd.permissions.Action.ActionType;
 
 
@@ -24,7 +22,7 @@ public class FlyDetect {
 	private HashMap<String, Integer> offenders;
 	private List<FlyResponse> responses;
 	private FlyResponse jailResponse;
-	protected HashMap<Player, Location> lastL;
+	public HashMap<Player, Location> lastL;
 
 	public FlyDetect(BenCmd instance) {
 		plugin = instance;

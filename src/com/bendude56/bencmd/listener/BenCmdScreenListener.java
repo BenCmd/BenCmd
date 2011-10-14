@@ -1,18 +1,42 @@
-package com.bendude56.bencmd.advanced.npc;
+package com.bendude56.bencmd.listener;
 
+import org.bukkit.Bukkit;
+import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.PluginManager;
 import org.getspout.spoutapi.event.screen.ButtonClickEvent;
 import org.getspout.spoutapi.event.screen.ScreenListener;
-
 import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.SpoutConnector.NPCScreen;
 import com.bendude56.bencmd.SpoutConnector.StatusScreen;
+import com.bendude56.bencmd.advanced.npc.Skinnable;
 
 
-public class NPCScreenListener extends ScreenListener {
-
-	@Override
-	public void onButtonClick(ButtonClickEvent event) {
+public class BenCmdScreenListener extends ScreenListener {
+	
+	// Singleton instancing
+	
+	private static BenCmdScreenListener instance = null;
+	
+	public static BenCmdScreenListener getInstance() {
+		if (instance == null) {
+			return instance = new BenCmdScreenListener();
+		} else {
+			return instance;
+		}
+	}
+	
+	public static void destroyInstance() {
+		instance = null;
+	}
+	
+	private BenCmdScreenListener() {
+		PluginManager pm = Bukkit.getPluginManager();
+		pm.registerEvent(Event.Type.CUSTOM_EVENT,
+				this, Event.Priority.Normal, BenCmd.getPlugin());
+	}
+	
+	private void buttonNPC(ButtonClickEvent event) {
 		if (event.getButton().getScreen() instanceof NPCScreen) {
 			NPCScreen s = (NPCScreen)event.getButton().getScreen();
 			if (event.getButton().equals(s.ok) && s.ok.isEnabled()) {
@@ -38,12 +62,22 @@ public class NPCScreenListener extends ScreenListener {
 				// Don't save any changes
 				s.close();
 			}
-		} else if (event.getButton().getScreen() instanceof StatusScreen) {
+		}
+	}
+	
+	private void buttonStatus(ButtonClickEvent event) {
+		if (event.getButton().getScreen() instanceof StatusScreen) {
 			StatusScreen s = (StatusScreen)event.getButton().getScreen();
 			if (event.getButton().equals(s.close)) {
 				s.close();
 			}
 		}
 	}
-
+	
+	// Split-off events
+	
+	public void onButtonClick(ButtonClickEvent event) {
+		buttonNPC(event);
+		buttonStatus(event);
+	}
 }

@@ -142,7 +142,7 @@ public class BuyableItem implements Comparable<BuyableItem> {
 								.toArray()[i];
 						List<Integer> splitamount = new ArrayList<Integer>();
 						while (changeAmount > 0) {
-							Integer maxAmount = new InventoryBackend(instance)
+							Integer maxAmount = InventoryBackend.getInstance()
 									.getStackNumber(changeCurrency.getItemId());
 							if (changeAmount > maxAmount) {
 								splitamount.add(maxAmount);
@@ -262,8 +262,7 @@ public class BuyableItem implements Comparable<BuyableItem> {
 								.toArray()[i];
 						List<Integer> splitamount = new ArrayList<Integer>();
 						while (changeAmount > 0) {
-							Integer maxAmount = new InventoryBackend(
-									priceFile.plugin)
+							Integer maxAmount = InventoryBackend.getInstance()
 									.getStackNumber(changeCurrency.getItemId());
 							if (changeAmount > maxAmount) {
 								splitamount.add(maxAmount);
@@ -296,7 +295,7 @@ public class BuyableItem implements Comparable<BuyableItem> {
 		}
 		List<Integer> splitamount = new ArrayList<Integer>();
 		while (amount > 0) {
-			Integer maxAmount = new InventoryBackend(priceFile.plugin)
+			Integer maxAmount = InventoryBackend.getInstance()
 					.getStackNumber(this.getItemId());
 			if (amount > maxAmount) {
 				splitamount.add(maxAmount);
@@ -381,7 +380,7 @@ public class BuyableItem implements Comparable<BuyableItem> {
 			Integer changeAmount = (Integer) change.values().toArray()[i];
 			List<Integer> splitamount = new ArrayList<Integer>();
 			while (changeAmount > 0) {
-				Integer maxAmount = new InventoryBackend(priceFile.plugin)
+				Integer maxAmount = InventoryBackend.getInstance()
 						.getStackNumber(changeCurrency.getItemId());
 				if (changeAmount > maxAmount) {
 					splitamount.add(maxAmount);

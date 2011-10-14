@@ -33,7 +33,7 @@ public class Kit {
 			if (itemKey.split(" ").length == 1) {
 				if (itemKey.split(" ")[0].split(":").length == 2) {
 					try {
-						itemId = plugin.kits.back
+						itemId = InventoryBackend.getInstance()
 								.checkAlias(itemKey.split(" ")[0])
 								.getMaterial().getId();
 					} catch (NumberFormatException e) {
@@ -62,7 +62,7 @@ public class Kit {
 					itemAmount = 1;
 				} else {
 					try {
-						itemId = new InventoryBackend(plugin)
+						itemId = InventoryBackend.getInstance()
 								.checkAlias(itemKey.split(" ")[0])
 								.getMaterial().getId();
 					} catch (NumberFormatException e) {
@@ -82,7 +82,7 @@ public class Kit {
 			} else if (itemKey.split(" ").length == 2) {
 				if (itemKey.split(" ")[0].split(":").length == 2) {
 					try {
-						itemId = new InventoryBackend(plugin)
+						itemId = InventoryBackend.getInstance()
 								.checkAlias(itemKey.split(" ")[0])
 								.getMaterial().getId();
 					} catch (NumberFormatException e) {
@@ -110,7 +110,7 @@ public class Kit {
 					}
 				} else {
 					try {
-						itemId = new InventoryBackend(plugin)
+						itemId = InventoryBackend.getInstance()
 								.checkAlias(itemKey.split(" ")[0])
 								.getMaterial().getId();
 					} catch (NumberFormatException e) {

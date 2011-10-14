@@ -57,7 +57,7 @@ public class MoneyCommands implements Commands {
 					+ "Proper use is /buy <ID>[:Damage] [Amount]");
 			return;
 		}
-		BCItem item = new InventoryBackend(plugin).checkAlias(args[0]);
+		BCItem item = InventoryBackend.getInstance().checkAlias(args[0]);
 		if (item == null) {
 			user.sendMessage(ChatColor.RED + "Invalid item ID or damage!");
 			return;
@@ -112,7 +112,7 @@ public class MoneyCommands implements Commands {
 					+ "Proper use is /sell <ID>[:Damage] [Amount]");
 			return;
 		}
-		BCItem item = new InventoryBackend(plugin).checkAlias(args[0]);
+		BCItem item = InventoryBackend.getInstance().checkAlias(args[0]);
 		if (item == null) {
 			user.sendMessage(ChatColor.RED + "Invalid item ID or damage!");
 			return;
@@ -338,7 +338,7 @@ public class MoneyCommands implements Commands {
 					+ "Proper use is /market currency <ID>[:Damage] <Value>");
 			return;
 		}
-		BCItem item = new InventoryBackend(plugin).checkAlias(args[1]);
+		BCItem item = InventoryBackend.getInstance().checkAlias(args[1]);
 		if (item == null) {
 			user.sendMessage(ChatColor.RED + "Invalid item ID or damage!");
 			return;
@@ -419,7 +419,7 @@ public class MoneyCommands implements Commands {
 					+ "Proper use is /market item <ID>[:Damage] <Value>");
 			return;
 		}
-		BCItem item = new InventoryBackend(plugin).checkAlias(args[1]);
+		BCItem item = InventoryBackend.getInstance().checkAlias(args[1]);
 		if (item == null) {
 			user.sendMessage(ChatColor.RED + "Invalid item ID or damage!");
 			return;
@@ -498,7 +498,7 @@ public class MoneyCommands implements Commands {
 					+ "Proper use is /market stock <ID>[:Damage] <Stock>");
 			return;
 		}
-		BCItem item = new InventoryBackend(plugin).checkAlias(args[1]);
+		BCItem item = InventoryBackend.getInstance().checkAlias(args[1]);
 		if (item == null) {
 			user.sendMessage(ChatColor.RED + "Invalid item ID or damage!");
 			return;
@@ -540,7 +540,7 @@ public class MoneyCommands implements Commands {
 					+ "Proper use is /price <ID>[:Damage]");
 			return;
 		}
-		BCItem item = new InventoryBackend(plugin).checkAlias(args[0]);
+		BCItem item = InventoryBackend.getInstance().checkAlias(args[0]);
 		if (item == null) {
 			user.sendMessage(ChatColor.RED + "Invalid item ID or damage!");
 			return;

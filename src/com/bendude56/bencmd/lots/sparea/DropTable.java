@@ -17,14 +17,13 @@ public class DropTable {
 
 	public DropTable(BenCmd instance, String value) {
 		drops = new HashMap<BCItem, DropInfo>();
-		InventoryBackend ib = new InventoryBackend(instance);
 		String[] splt = value.split(",");
 		for (String s : splt) {
 			if (s.isEmpty()) {
 				continue;
 			}
 			String[] info = s.split(" ");
-			BCItem i = ib.checkAlias(info[0]);
+			BCItem i = InventoryBackend.getInstance().checkAlias(info[0]);
 			int c = Integer.parseInt(info[1]), min = Integer.parseInt(info[2]), max = Integer
 					.parseInt(info[3]);
 			drops.put(i, new DropInfo(c, min, max));

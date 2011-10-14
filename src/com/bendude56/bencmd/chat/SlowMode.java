@@ -10,7 +10,27 @@ import com.bendude56.bencmd.BenCmd;
 
 
 public class SlowMode {
-	BenCmd plugin;
+	
+	private static SlowMode instance = null;
+	
+	public static SlowMode getInstance() {
+		if (instance == null) {
+			return instance = new SlowMode(BenCmd.getPlugin().mainProperties.getInteger(
+				"slowTime", 1000));
+		} else {
+			return instance;
+		}
+	}
+	
+	public static SlowMode newUnhandledInstance() {
+		return new SlowMode(BenCmd.getPlugin().mainProperties.getInteger(
+				"slowTime", 1000));
+	}
+	
+	public static void destroyInstance() {
+		instance = null;
+	}
+	
 	private boolean enabled;
 	private Integer defTime;
 	private Integer origDefTime;
@@ -31,6 +51,7 @@ public class SlowMode {
 	}
 
 	public void EnableSlow(int millis) {
+		BenCmd plugin = BenCmd.getPlugin();
 		enabled = true;
 		defTime = millis;
 		if (plugin.mainProperties.getBoolean("channelsEnabled", false)) {
@@ -46,8 +67,8 @@ public class SlowMode {
 		return enabled;
 	}
 
-	public SlowMode(BenCmd instance, Integer defaultTime) {
-		plugin = instance;
+	private SlowMode(Integer defaultTime) {
+		BenCmd plugin = BenCmd.getPlugin();
 		defTime = defaultTime;
 		origDefTime = defaultTime;
 		enabled = false;

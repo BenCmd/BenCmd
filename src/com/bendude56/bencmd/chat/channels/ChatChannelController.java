@@ -19,12 +19,11 @@ import com.bendude56.bencmd.permissions.PermissionUser;
 
 public class ChatChannelController extends Properties {
 	private static final long serialVersionUID = 0L;
-	protected BenCmd plugin;
 	private String fileName;
 	private List<ChatChannel> channels;
 
-	public ChatChannelController(String fileName, BenCmd instance) {
-		plugin = instance;
+	public ChatChannelController(String fileName) {
+		BenCmd plugin = BenCmd.getPlugin();
 		this.fileName = fileName;
 		channels = new ArrayList<ChatChannel>();
 		if (new File("plugins/BenCmd/_channels.db").exists()) {
@@ -53,6 +52,7 @@ public class ChatChannelController extends Properties {
 	}
 
 	protected void saveChannel(ChatChannel channel) {
+		BenCmd plugin = BenCmd.getPlugin();
 		this.put(channel.getName(), channel.getValue());
 		try {
 			new File("plugins/BenCmd/_channels.db").createNewFile();

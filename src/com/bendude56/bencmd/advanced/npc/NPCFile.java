@@ -143,7 +143,7 @@ public class NPCFile extends Properties {
 		}
 	}
 
-	protected List<NPC> inChunk(Chunk c) {
+	public List<NPC> inChunk(Chunk c) {
 		List<NPC> list = new ArrayList<NPC>();
 		for (NPC n : npcs.values()) {
 			if (c.getX() * 16 < n.getLocation().getX() && n.getLocation().getX() < (c.getX() * 16) + 16

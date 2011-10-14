@@ -15,6 +15,7 @@ import com.bendude56.bencmd.Commands;
 import com.bendude56.bencmd.User;
 import com.bendude56.bencmd.invtools.BCItem;
 import com.bendude56.bencmd.invtools.InventoryBackend;
+import com.bendude56.bencmd.listener.BenCmdPlayerListener;
 import com.bendude56.bencmd.lots.sparea.DamageArea;
 import com.bendude56.bencmd.lots.sparea.DropInfo;
 import com.bendude56.bencmd.lots.sparea.DropTable;
@@ -410,20 +411,28 @@ public class LotCommands implements Commands {
 			Location corner1;
 			Location corner2;
 			String owner, group;
-			if (!plugin.lotListener.corner.containsKey(user.getName())) {
+			BenCmdPlayerListener l;
+			try {
+				l = BenCmdPlayerListener.getInstance();
+			} catch (Exception e) {
+				user.sendMessage(ChatColor.RED + "Player listener not loaded!");
+				user.sendMessage(ChatColor.RED + "Report this error to a server admin!");
+				return;
+			}
+			if (!l.corner.containsKey(user.getName())) {
 				user.sendMessage(ChatColor.RED
 						+ "You need to mark off some corners first!");
 				user.sendMessage(ChatColor.RED
 						+ "Be sure to use a wooden shovel!");
 				return;
 			}
-			boolean cor1 = plugin.lotListener.corner.get(user.getName()).corner1set;
-			boolean cor2 = plugin.lotListener.corner.get(user.getName()).corner2set;
+			boolean cor1 = l.corner.get(user.getName()).corner1set;
+			boolean cor2 = l.corner.get(user.getName()).corner2set;
 			if (cor1 && cor2) {
 				String LotID = plugin.lots.getNextID();
-				corner1 = plugin.lotListener.corner.get(user.getName())
+				corner1 = l.corner.get(user.getName())
 						.getCorner1();
-				corner2 = plugin.lotListener.corner.get(user.getName())
+				corner2 = l.corner.get(user.getName())
 						.getCorner2();
 
 				World c1world = corner1.getWorld();
@@ -506,22 +515,30 @@ public class LotCommands implements Commands {
 			Location corner1;
 			Location corner2;
 			String owner, group;
-			if (!plugin.lotListener.corner.containsKey(user.getName())) {
+			BenCmdPlayerListener l;
+			try {
+				l = BenCmdPlayerListener.getInstance();
+			} catch (Exception e) {
+				user.sendMessage(ChatColor.RED + "Player listener not loaded!");
+				user.sendMessage(ChatColor.RED + "Report this error to a server admin!");
+				return;
+			}
+			if (!l.corner.containsKey(user.getName())) {
 				user.sendMessage(ChatColor.RED
 						+ "You need to mark off some corners first!");
 				user.sendMessage(ChatColor.RED
 						+ "Be sure to use a wooden shovel!");
 				return;
 			}
-			boolean cor1 = plugin.lotListener.corner.get(user.getName()).corner1set;
-			boolean cor2 = plugin.lotListener.corner.get(user.getName()).corner2set;
+			boolean cor1 = l.corner.get(user.getName()).corner1set;
+			boolean cor2 = l.corner.get(user.getName()).corner2set;
 			int up, down;
 			if (cor1 && cor2) {
 
 				String LotID = plugin.lots.getNextID();
-				corner1 = plugin.lotListener.corner.get(user.getName())
+				corner1 = l.corner.get(user.getName())
 						.getCorner1();
-				corner2 = plugin.lotListener.corner.get(user.getName())
+				corner2 = l.corner.get(user.getName())
 						.getCorner2();
 
 				World c1world = corner1.getWorld();
@@ -1049,7 +1066,15 @@ public class LotCommands implements Commands {
 			Location corner1;
 			Location corner2;
 			String LotID;
-			if (!plugin.lotListener.corner.containsKey(user.getName())) {
+			BenCmdPlayerListener l;
+			try {
+				l = BenCmdPlayerListener.getInstance();
+			} catch (Exception e) {
+				user.sendMessage(ChatColor.RED + "Player listener not loaded!");
+				user.sendMessage(ChatColor.RED + "Report this error to a server admin!");
+				return;
+			}
+			if (!l.corner.containsKey(user.getName())) {
 				user.sendMessage(ChatColor.RED
 						+ "You need to mark off some corners first!");
 				user.sendMessage(ChatColor.RED
@@ -1081,12 +1106,12 @@ public class LotCommands implements Commands {
 					return;
 				}
 			}
-			boolean cor1 = plugin.lotListener.corner.get(user.getName()).corner1set;
-			boolean cor2 = plugin.lotListener.corner.get(user.getName()).corner2set;
+			boolean cor1 = l.corner.get(user.getName()).corner1set;
+			boolean cor2 = l.corner.get(user.getName()).corner2set;
 			if (cor1 && cor2) {
-				corner1 = plugin.lotListener.corner.get(user.getName())
+				corner1 = l.corner.get(user.getName())
 						.getCorner1();
-				corner2 = plugin.lotListener.corner.get(user.getName())
+				corner2 = l.corner.get(user.getName())
 						.getCorner2();
 
 				World c1world = corner1.getWorld();
@@ -1163,20 +1188,28 @@ public class LotCommands implements Commands {
 			Location corner1;
 			Location corner2;
 			String LotID;
-			if (!plugin.lotListener.corner.containsKey(user.getName())) {
+			BenCmdPlayerListener l;
+			try {
+				l = BenCmdPlayerListener.getInstance();
+			} catch (Exception e) {
+				user.sendMessage(ChatColor.RED + "Player listener not loaded!");
+				user.sendMessage(ChatColor.RED + "Report this error to a server admin!");
+				return;
+			}
+			if (!l.corner.containsKey(user.getName())) {
 				user.sendMessage(ChatColor.RED
 						+ "You need to mark off some corners first!");
 				user.sendMessage(ChatColor.RED
 						+ "Be sure to use a wooden shovel!");
 				return;
 			}
-			boolean cor1 = plugin.lotListener.corner.get(user.getName()).corner1set;
-			boolean cor2 = plugin.lotListener.corner.get(user.getName()).corner2set;
+			boolean cor1 = l.corner.get(user.getName()).corner1set;
+			boolean cor2 = l.corner.get(user.getName()).corner2set;
 			int up, down;
 			if (cor1 && cor2) {
-				corner1 = plugin.lotListener.corner.get(user.getName())
+				corner1 = l.corner.get(user.getName())
 						.getCorner1();
-				corner2 = plugin.lotListener.corner.get(user.getName())
+				corner2 = l.corner.get(user.getName())
 						.getCorner2();
 
 				World c1world = corner1.getWorld();
@@ -1327,6 +1360,14 @@ public class LotCommands implements Commands {
 		if (args.length == 0) {
 			user.sendMessage(ChatColor.YELLOW
 					+ "Proper usage: /area {info [id]|table [id]|new {pvp|msg|heal|dmg|time} [options]|delete|emsg <message>|lmsg <message>|addi <item> <chance> [<min> <max>]|remi <item>|die {d|l|k|-}{d|l|k|-}|mtime <seconds>}");
+			return;
+		}
+		BenCmdPlayerListener l;
+		try {
+			l = BenCmdPlayerListener.getInstance();
+		} catch (Exception e) {
+			user.sendMessage(ChatColor.RED + "Player listener not loaded!");
+			user.sendMessage(ChatColor.RED + "Report this error to a server admin!");
 			return;
 		}
 		if (args[0].equalsIgnoreCase("info")) {
@@ -1537,9 +1578,9 @@ public class LotCommands implements Commands {
 			}
 			a = null;
 		} else if (args[0].equalsIgnoreCase("new")) {
-			plugin.lotListener.checkPlayer(user.getName());
-			if (!plugin.lotListener.corner.get(user.getName()).corner1set
-					|| !plugin.lotListener.corner.get(user.getName()).corner2set) {
+			l.checkPlayer(user.getName());
+			if (!l.corner.get(user.getName()).corner1set
+					|| !l.corner.get(user.getName()).corner2set) {
 				user.sendMessage(ChatColor.RED
 						+ "Your corners aren't set! Make sure you use a wooden shovel!");
 				return;
@@ -1556,7 +1597,7 @@ public class LotCommands implements Commands {
 					return;
 				}
 				int up, down;
-				Location c1 = plugin.lotListener.corner.get(user.getName()).corner1, c2 = plugin.lotListener.corner
+				Location c1 = l.corner.get(user.getName()).corner1, c2 = l.corner
 						.get(user.getName()).corner2;
 				if (args.length == 2) {
 					up = 0;
@@ -1625,7 +1666,7 @@ public class LotCommands implements Commands {
 					return;
 				}
 				int up, down;
-				Location c1 = plugin.lotListener.corner.get(user.getName()).corner1, c2 = plugin.lotListener.corner
+				Location c1 = l.corner.get(user.getName()).corner1, c2 = l.corner
 						.get(user.getName()).corner2;
 				if (args.length == 2) {
 					up = 0;
@@ -1694,7 +1735,7 @@ public class LotCommands implements Commands {
 					return;
 				}
 				int up, down;
-				Location c1 = plugin.lotListener.corner.get(user.getName()).corner1, c2 = plugin.lotListener.corner
+				Location c1 = l.corner.get(user.getName()).corner1, c2 = l.corner
 						.get(user.getName()).corner2;
 				if (args.length == 2) {
 					up = 0;
@@ -1763,7 +1804,7 @@ public class LotCommands implements Commands {
 					return;
 				}
 				int reqval, up, down;
-				Location c1 = plugin.lotListener.corner.get(user.getName()).corner1, c2 = plugin.lotListener.corner
+				Location c1 = l.corner.get(user.getName()).corner1, c2 = l.corner
 						.get(user.getName()).corner2;
 				if (args.length == 3) {
 					try {
@@ -1840,7 +1881,7 @@ public class LotCommands implements Commands {
 					return;
 				}
 				int time, up, down;
-				Location c1 = plugin.lotListener.corner.get(user.getName()).corner1, c2 = plugin.lotListener.corner
+				Location c1 = l.corner.get(user.getName()).corner1, c2 = l.corner
 						.get(user.getName()).corner2;
 				if (args.length == 3) {
 					try {
@@ -2026,7 +2067,7 @@ public class LotCommands implements Commands {
 			BCItem item;
 			int chance, max, min;
 			if (args.length == 3) {
-				item = new InventoryBackend(plugin).checkAlias(args[1]);
+				item = InventoryBackend.getInstance().checkAlias(args[1]);
 				if (item == null) {
 					user.sendMessage(ChatColor.YELLOW
 							+ "Proper usage: /area addi <item> <chance> [<min> <max>]");
@@ -2042,7 +2083,7 @@ public class LotCommands implements Commands {
 				max = 1;
 				min = 1;
 			} else if (args.length == 5) {
-				item = new InventoryBackend(plugin).checkAlias(args[1]);
+				item = InventoryBackend.getInstance().checkAlias(args[1]);
 				if (item == null) {
 					user.sendMessage(ChatColor.YELLOW
 							+ "Proper usage: /area addi <item> <chance> [<min> <max>]");
@@ -2085,7 +2126,7 @@ public class LotCommands implements Commands {
 			}
 			if (args.length == 2) {
 				BCItem item = null;
-				item = new InventoryBackend(plugin).checkAlias(args[1]);
+				item = InventoryBackend.getInstance().checkAlias(args[1]);
 				if (item == null) {
 					user.sendMessage(ChatColor.YELLOW
 							+ "Proper usage: /area remi <item>");

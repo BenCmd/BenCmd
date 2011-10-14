@@ -1,7 +1,10 @@
-package com.bendude56.bencmd.invtools;
+package com.bendude56.bencmd.listener;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.event.Event;
+import org.bukkit.plugin.PluginManager;
 import org.getspout.spoutapi.event.inventory.InventoryCraftEvent;
 import org.getspout.spoutapi.event.inventory.InventoryListener;
 
@@ -9,14 +12,32 @@ import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.User;
 
 
-public class InvListen extends InventoryListener {
-	private BenCmd plugin;
+public class BenCmdInventoryListener extends InventoryListener {
 	
-	public InvListen(BenCmd instance) {
-		plugin = instance;
+	// Singleton instancing
+	
+	private static BenCmdInventoryListener instance = null;
+	
+	public static BenCmdInventoryListener getInstance() {
+		if (instance == null) {
+			return instance = new BenCmdInventoryListener();
+		} else {
+			return instance;
+		}
+	}
+	
+	public static void destroyInstance() {
+		instance = null;
+	}
+	
+	private BenCmdInventoryListener() {
+		PluginManager pm = Bukkit.getPluginManager();
+		pm.registerEvent(Event.Type.CUSTOM_EVENT,
+				this, Event.Priority.Normal, BenCmd.getPlugin());
 	}
 	
 	public void onInventoryCraft(InventoryCraftEvent event) {
+		BenCmd plugin = BenCmd.getPlugin();
 		User user = User.getUser(plugin, event.getPlayer());
 		Material m = event.getResult().getType();
 		if (user.hasPerm("bencmd.inv.craft.disallow." + m.getId(), false) && !user.hasPerm("bencmd.inv.craft.override")) {

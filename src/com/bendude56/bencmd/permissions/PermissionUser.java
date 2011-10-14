@@ -31,6 +31,11 @@ public class PermissionUser {
 		}
 		return null;
 	}
+	
+	public static PermissionUser newUser(BenCmd instance, String name,
+			List<String> permissions) {
+		return new PermissionUser(instance, name, permissions);
+	}
 
 	public PermissionUser(BenCmd instance) {
 		plugin = instance;

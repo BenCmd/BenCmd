@@ -9,12 +9,26 @@ import com.bendude56.bencmd.BenCmd;
 
 
 public class InventoryBackend {
-	BenCmd plugin;
 	static final int FULL_STACK = 64;
 	static final int THROWABLE_STACK = 16;
-
-	public InventoryBackend(BenCmd instance) {
-		plugin = instance;
+	
+	// Singleton instancing
+	
+	private static InventoryBackend instance = null;
+	
+	public static InventoryBackend getInstance() {
+		if (instance == null) {
+			return instance = new InventoryBackend();
+		} else {
+			return instance;
+		}
+	}
+	
+	public static void destroyInstance() {
+		instance = null;
+	}
+	
+	private InventoryBackend() {
 	}
 
 	public int getStackNumber(int id) {
@@ -65,6 +79,7 @@ public class InventoryBackend {
 	}
 
 	public BCItem checkAlias(String arg) {
+		BenCmd plugin = BenCmd.getPlugin();
 		int ItemID = -1;
 		int Damage = 0;
 		try {
@@ -105,6 +120,7 @@ public class InventoryBackend {
 	}
 
 	public boolean TryDispense(Block block) {
+		BenCmd plugin = BenCmd.getPlugin();
 		if (plugin.dispensers.isUnlimitedDispenser(block.getLocation())
 				&& block.getType() == Material.DISPENSER) {
 			BCItem mat = plugin.dispensers

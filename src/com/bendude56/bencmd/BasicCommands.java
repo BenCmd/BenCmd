@@ -620,7 +620,6 @@ public class BasicCommands implements Commands {
 			plugin.warps.LoadWarps();
 			plugin.jail = new Jail(plugin);
 			plugin.lots.reload();
-			plugin.lotListener.corner.clear();
 			plugin.godmode.clear();
 			plugin.heroActive = false;
 			plugin.timeRunning = true;

@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.Commands;
 import com.bendude56.bencmd.User;
+import com.bendude56.bencmd.listener.BenCmdPlayerListener;
 
 
 public class ChatCommands implements Commands {
@@ -74,7 +75,7 @@ public class ChatCommands implements Commands {
 	}
 
 	public void slowMode(String[] args, User user) {
-		if ((!plugin.chatListen.slow.isEnabled()) && args.length > 0) {
+		if ((!SlowMode.getInstance().isEnabled()) && args.length > 0) {
 			int millis;
 			try {
 				millis = Integer.parseInt(args[0]);
@@ -82,9 +83,9 @@ public class ChatCommands implements Commands {
 				user.sendMessage(ChatColor.RED + "Invalid delay!");
 				return;
 			}
-			plugin.chatListen.slow.EnableSlow(millis);
+			SlowMode.getInstance().EnableSlow(millis);
 		} else {
-			plugin.chatListen.ToggleSlow(user);
+			BenCmdPlayerListener.getInstance().ToggleSlow(user);
 		}
 	}
 
@@ -136,10 +137,10 @@ public class ChatCommands implements Commands {
 							"You used a blocked word..."));
 			return;
 		}
-		long slowTimeLeft = plugin.chatListen.slow
+		long slowTimeLeft = SlowMode.getInstance()
 				.playerBlocked(user.getName());
 		if (!user.hasPerm("bencmd.chat.noslow")
-				&& plugin.chatListen.slow.isEnabled()) {
+				&& SlowMode.getInstance().isEnabled()) {
 			if (slowTimeLeft > 0) {
 				user.sendMessage(ChatColor.GRAY
 						+ "Slow mode is enabled! You must wait "
@@ -147,7 +148,7 @@ public class ChatCommands implements Commands {
 						+ " more second(s) before you can talk again.");
 				return;
 			} else {
-				plugin.chatListen.slow.playerAdd(user.getName());
+				SlowMode.getInstance().playerAdd(user.getName());
 			}
 		}
 		message = ChatColor.WHITE + "*" + user.getColor()
@@ -197,10 +198,10 @@ public class ChatCommands implements Commands {
 							"You used a blocked word..."));
 			return;
 		}
-		long slowTimeLeft = plugin.chatListen.slow
+		long slowTimeLeft = SlowMode.getInstance()
 				.playerBlocked(user.getName());
 		if (!user.hasPerm("bencmd.chat.noslow")
-				&& plugin.chatListen.slow.isEnabled()) {
+				&& SlowMode.getInstance().isEnabled()) {
 			if (slowTimeLeft > 0) {
 				user.sendMessage(ChatColor.GRAY
 						+ "Slow mode is enabled! You must wait "
@@ -208,7 +209,7 @@ public class ChatCommands implements Commands {
 						+ " more second(s) before you can talk again.");
 				return;
 			} else {
-				plugin.chatListen.slow.playerAdd(user.getName());
+				SlowMode.getInstance().playerAdd(user.getName());
 			}
 		}
 		user2.sendMessage(ChatColor.GRAY + "(" + ((user.isDev()) ? ChatColor.DARK_GREEN + "*" : "") + user.getColor()

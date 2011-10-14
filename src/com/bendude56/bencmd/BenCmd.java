@@ -20,68 +20,51 @@ import java.util.logging.Logger;
 
 import com.bendude56.bencmd.advanced.AdvancedCommands;
 import com.bendude56.bencmd.advanced.Grave;
-import com.bendude56.bencmd.advanced.ShelfBListener;
 import com.bendude56.bencmd.advanced.ShelfFile;
-import com.bendude56.bencmd.advanced.ShelfPListener;
 import com.bendude56.bencmd.advanced.bank.BankCommands;
 import com.bendude56.bencmd.advanced.bank.BankFile;
 import com.bendude56.bencmd.advanced.npc.NPC;
-import com.bendude56.bencmd.advanced.npc.NPCChunkListener;
 import com.bendude56.bencmd.advanced.npc.NPCCommands;
 import com.bendude56.bencmd.advanced.npc.NPCFile;
-import com.bendude56.bencmd.advanced.npc.NPCListener;
-import com.bendude56.bencmd.advanced.npc.NPCScreenListener;
 import com.bendude56.bencmd.advanced.redstone.RedstoneCommands;
 import com.bendude56.bencmd.advanced.redstone.RedstoneFile;
 import com.bendude56.bencmd.chat.ChatCommands;
-import com.bendude56.bencmd.chat.ChatPlayerListener;
 import com.bendude56.bencmd.chat.channels.ChatChannelCommands;
 import com.bendude56.bencmd.chat.channels.ChatChannelController;
 import com.bendude56.bencmd.invisible.Invisibility;
 import com.bendude56.bencmd.invisible.InvisibleCommands;
 import com.bendude56.bencmd.invtools.DispChest;
-import com.bendude56.bencmd.invtools.InvListen;
-import com.bendude56.bencmd.invtools.InventoryBlockListener;
 import com.bendude56.bencmd.invtools.InventoryCommands;
-import com.bendude56.bencmd.invtools.InventoryPlayerListener;
 import com.bendude56.bencmd.invtools.UnlimitedDisp;
 import com.bendude56.bencmd.invtools.kits.KitList;
-import com.bendude56.bencmd.lots.LotBlockListener;
+import com.bendude56.bencmd.listener.BenCmdBlockListener;
+import com.bendude56.bencmd.listener.BenCmdEntityListener;
+import com.bendude56.bencmd.listener.BenCmdPlayerListener;
+import com.bendude56.bencmd.listener.BenCmdScreenListener;
+import com.bendude56.bencmd.listener.BenCmdSpoutListener;
+import com.bendude56.bencmd.listener.BenCmdWorldListener;
+import com.bendude56.bencmd.listener.BenCmdInventoryListener;
 import com.bendude56.bencmd.lots.LotCommands;
 import com.bendude56.bencmd.lots.LotFile;
-import com.bendude56.bencmd.lots.LotPlayerListener;
 import com.bendude56.bencmd.lots.sparea.SPArea;
-import com.bendude56.bencmd.lots.sparea.SPAreaEListener;
 import com.bendude56.bencmd.lots.sparea.SPAreaFile;
-import com.bendude56.bencmd.lots.sparea.SPAreaPListener;
 import com.bendude56.bencmd.maps.MapCommands;
-import com.bendude56.bencmd.mobs.EndermenListener;
 import com.bendude56.bencmd.money.MoneyCommands;
 import com.bendude56.bencmd.money.PriceFile;
 import com.bendude56.bencmd.multiworld.PortalCommands;
 import com.bendude56.bencmd.multiworld.PortalFile;
-import com.bendude56.bencmd.multiworld.PortalListener;
-import com.bendude56.bencmd.nofly.FlyDetect;
-import com.bendude56.bencmd.nofly.FlyListener;
 import com.bendude56.bencmd.permissions.ActionFile;
 import com.bendude56.bencmd.permissions.ActionLog;
-import com.bendude56.bencmd.permissions.BlockChecker;
-import com.bendude56.bencmd.permissions.CreeperListener;
-import com.bendude56.bencmd.permissions.EntityPermListen;
 import com.bendude56.bencmd.permissions.KickList;
 import com.bendude56.bencmd.permissions.MainPermissions;
 import com.bendude56.bencmd.permissions.MaxPlayers;
-import com.bendude56.bencmd.permissions.PermLoginListener;
 import com.bendude56.bencmd.permissions.PermissionCommands;
 import com.bendude56.bencmd.permissions.PermissionUser;
 import com.bendude56.bencmd.permissions.MaxPlayers.JoinType;
-import com.bendude56.bencmd.protect.ProtectBlockListener;
 import com.bendude56.bencmd.protect.ProtectFile;
-import com.bendude56.bencmd.protect.ProtectPlayerListener;
 import com.bendude56.bencmd.protect.ProtectedCommands;
 import com.bendude56.bencmd.reporting.ReportCommands;
 import com.bendude56.bencmd.reporting.ReportFile;
-import com.bendude56.bencmd.warps.DeathListener;
 import com.bendude56.bencmd.warps.HomeWarps;
 import com.bendude56.bencmd.warps.Jail;
 import com.bendude56.bencmd.warps.PreWarp;
@@ -89,7 +72,6 @@ import com.bendude56.bencmd.warps.WarpCommands;
 import com.bendude56.bencmd.warps.WarpList;
 import com.bendude56.bencmd.weather.WeatherBinding;
 import com.bendude56.bencmd.weather.WeatherCommands;
-import com.bendude56.bencmd.weather.WeatherPListener;
 import com.sk89q.bukkit.migration.PermissionsProvider;
 
 import org.bukkit.Bukkit;
@@ -100,7 +82,6 @@ import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
@@ -115,36 +96,13 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public class BenCmd extends JavaPlugin implements PermissionsProvider {
 	public final static boolean debug = false;
-	public final static int buildId = 30;
+	public final static int buildId = 31;
 	public final static int cbbuild = 1317;
 	public final static String verLoc = "http://cloud.github.com/downloads/BenCmd/BenCmd/version.txt";
 	public static String devLoc = "";
 	public static String stableLoc = "";
 	public static boolean updateAvailable = false;
 	public static String[] devs;
-	private final PermLoginListener permLoginListener = new PermLoginListener(
-			this);
-	private final InventoryBlockListener invBlockListen = new InventoryBlockListener(
-			this);
-	private final DeathListener death = new DeathListener(this);
-	private final InventoryPlayerListener invPlayerListen = new InventoryPlayerListener(
-			this);
-	private final ProtectPlayerListener ppListen = new ProtectPlayerListener(
-			this);
-	private final ProtectBlockListener pbListen = new ProtectBlockListener(this);
-	private final EntityPermListen entListen = new EntityPermListen(this);
-	public final LotPlayerListener lotListener = new LotPlayerListener(this);
-	public final LotBlockListener lotBListener = new LotBlockListener(this);
-	public final WeatherPListener wpListen = new WeatherPListener(this);
-	public final PortalListener portalListen = new PortalListener(this);
-	public final ShelfPListener shelflp = new ShelfPListener(this);
-	public final ShelfBListener shelflb = new ShelfBListener(this);
-	public final SPAreaPListener spaplisten = new SPAreaPListener(this);
-	public final SPAreaEListener spaelisten = new SPAreaEListener(this);
-	public final FlyListener flyListen = new FlyListener(this);
-	public final NPCListener npcl = new NPCListener(this);
-	public final NPCChunkListener npccl = new NPCChunkListener(this);
-	public final EndermenListener endl = new EndermenListener(this);
 	public final HashMap<Player, Boolean> godmode = new HashMap<Player, Boolean>();
 	public final List<Player> invisible = new ArrayList<Player>();
 	public final List<Player> noinvisible = new ArrayList<Player>();
@@ -156,24 +114,6 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 			"kits.db", "lever.db", "lots.db", "main.properties", "npc.db", "portals.db",
 			"prices.db", "protection.db", "shelves.db", "sparea.db", "tickets.db", "users.db",
 			"warps.db" };
-	/*
-	 * public final File mainProp = new File(propDir + "main.properties");
-	 * public final File itemAlias = new File(propDir + "items.txt"); public
-	 * final File unlDisp = new File(propDir + "disp.db"); public final File
-	 * dispChests = new File(propDir + "chest.db"); public final File lotFile =
-	 * new File(propDir + "lots.db"); public final File kitFile = new
-	 * File(propDir + "kits.db"); public final File proFile = new File(propDir +
-	 * "protection.db"); public final File chatFile = new File(propDir +
-	 * "channels.db"); public final File ticketFile = new File(propDir +
-	 * "tickets.db"); public final File pricesFile = new File(propDir +
-	 * "prices.db"); public final File portalFile = new File(propDir +
-	 * "portals.db"); public final File shelfFile = new File(propDir +
-	 * "shelves.db"); public final File actionFile = new File(propDir +
-	 * "action.db"); public final File spareaFile = new File(propDir +
-	 * "sparea.db"); public final File bankFile = new File(propDir + "bank.db");
-	 * public final File NPCFile = new File(propDir + "npc.db"); public final
-	 * File RFile = new File(propDir + "lever.db");
-	 */
 	public PluginProperties mainProperties;
 	public PluginProperties itemAliases;
 	public PluginProperties usageStats;
@@ -186,13 +126,10 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 	public WarpList warps;
 	public HomeWarps homes;
 	public PreWarp checkpoints;
-	public ChatPlayerListener chatListen;
-	public BlockChecker blockCheck;
 	public Jail jail;
 	public UnlimitedDisp dispensers;
 	public DispChest chests;
 	public KitList kits;
-	public CreeperListener creeperListen;
 	public Invisibility inv;
 	public ProtectFile protectFile;
 	public MaxPlayers maxPlayers;
@@ -359,23 +296,20 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 		warps = new WarpList(this);
 		homes = new HomeWarps(this);
 		checkpoints = new PreWarp(this);
-		blockCheck = new BlockChecker(this);
 		mainProperties = new PluginProperties(propDir + "main.properties");
 		mainProperties.loadFile();
 		itemAliases = new PluginProperties(propDir + "items.txt");
 		itemAliases.loadFile();
 		usageStats = new PluginProperties(propDir + "usage.db");
 		usageStats.loadFile();
-		chatListen = new ChatPlayerListener(this);
 		jail = new Jail(this);
 		dispensers = new UnlimitedDisp(propDir + "disp.db");
 		chests = new DispChest(propDir + "chest.db");
 		lots = new LotFile(this);
 		kits = new KitList(this);
-		creeperListen = new CreeperListener(this);
 		inv = new Invisibility(this);
 		protectFile = new ProtectFile(this, propDir + "protection.db");
-		channels = new ChatChannelController(propDir + "channels.db", this);
+		channels = new ChatChannelController(propDir + "channels.db");
 		maxPlayers = new MaxPlayers(this, mainProperties.getInteger(
 				"maxPlayers", 10), mainProperties.getInteger("maxReserve", 4),
 				mainProperties.getBoolean("reserveActive", true),
@@ -440,96 +374,39 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 		}
 		bLog.info("Registering events...");
 		// Register all necessary events
-		PluginManager pm = getServer().getPluginManager();
-		pm.registerEvent(Event.Type.PLAYER_JOIN, this.chatListen,
-				Event.Priority.Monitor, this);
-		pm.registerEvent(Event.Type.PLAYER_LOGIN, this.permLoginListener,
-				Event.Priority.Normal, this);
-		pm.registerEvent(Event.Type.PLAYER_CHAT, this.chatListen,
-				Event.Priority.Highest, this);
-		pm.registerEvent(Event.Type.BLOCK_PLACE, this.blockCheck,
-				Event.Priority.High, this);
-		pm.registerEvent(Event.Type.BLOCK_BURN, this.blockCheck,
-				Event.Priority.Highest, this);
-		pm.registerEvent(Event.Type.BLOCK_IGNITE, this.blockCheck,
-				Event.Priority.Highest, this);
-		pm.registerEvent(Event.Type.SIGN_CHANGE, this.blockCheck,
-				Event.Priority.Monitor, this);
-		pm.registerEvent(Event.Type.PLAYER_INTERACT, this.invPlayerListen,
-				Event.Priority.Normal, this);
-		pm.registerEvent(Event.Type.BLOCK_BREAK, this.invBlockListen,
-				Event.Priority.Highest, this);
-		pm.registerEvent(Event.Type.ENTITY_DEATH, this.death,
-				Event.Priority.Highest, this);
-		pm.registerEvent(Event.Type.ENTITY_DAMAGE, this.death,
-				Event.Priority.Highest, this);
-		pm.registerEvent(Event.Type.PLAYER_INTERACT, this.lotListener,
-				Event.Priority.Normal, this);
-		pm.registerEvent(Event.Type.REDSTONE_CHANGE, this.invBlockListen,
-				Event.Priority.Normal, this);
-		pm.registerEvent(Event.Type.BLOCK_BREAK, this.lotBListener,
-				Event.Priority.Normal, this);
-		pm.registerEvent(Event.Type.BLOCK_PLACE, this.lotBListener,
-				Event.Priority.Normal, this);
-		pm.registerEvent(Event.Type.PLAYER_PICKUP_ITEM, this.permLoginListener,
-				Event.Priority.Normal, this);
-		pm.registerEvent(Event.Type.PLAYER_DROP_ITEM, this.permLoginListener,
-				Event.Priority.Normal, this);
-		pm.registerEvent(Event.Type.ENTITY_TARGET, this.creeperListen,
-				Event.Priority.Highest, this);
-		pm.registerEvent(Event.Type.BLOCK_BREAK, this.pbListen,
-				Event.Priority.Normal, this);
-		pm.registerEvent(Event.Type.PLAYER_INTERACT, this.ppListen,
-				Event.Priority.Normal, this);
-		pm.registerEvent(Event.Type.PLAYER_BUCKET_EMPTY, this.lotListener,
-				Event.Priority.Normal, this);
-		pm.registerEvent(Event.Type.PLAYER_BUCKET_FILL, this.lotListener,
-				Event.Priority.Normal, this);
-		pm.registerEvent(Event.Type.PLAYER_INTERACT, this.chatListen,
-				Event.Priority.Highest, this);
-		pm.registerEvent(Event.Type.PLAYER_QUIT, this.chatListen,
-				Event.Priority.Highest, this);
-		pm.registerEvent(Event.Type.PLAYER_KICK, this.chatListen,
-				Event.Priority.Highest, this);
-		pm.registerEvent(Event.Type.EXPLOSION_PRIME, this.entListen,
-				Event.Priority.Highest, this);
-		pm.registerEvent(Event.Type.PLAYER_INTERACT, this.wpListen,
-				Event.Priority.Highest, this);
-		pm.registerEvent(Event.Type.PLAYER_PORTAL, this.portalListen,
-				Event.Priority.Highest, this);
-		pm.registerEvent(Event.Type.PLAYER_INTERACT, this.shelflp,
-				Event.Priority.Highest, this);
-		pm.registerEvent(Event.Type.BLOCK_BREAK, this.shelflb,
-				Event.Priority.Monitor, this);
-		pm.registerEvent(Event.Type.PLAYER_MOVE, this.spaplisten,
-				Event.Priority.Highest, this);
-		pm.registerEvent(Event.Type.PLAYER_RESPAWN, this.spaplisten,
-				Event.Priority.Highest, this);
-		pm.registerEvent(Event.Type.ENTITY_DAMAGE, this.spaelisten,
-				Event.Priority.Highest, this);
-		pm.registerEvent(Event.Type.ENTITY_DEATH, this.spaelisten,
-				Event.Priority.Highest, this);
-		pm.registerEvent(Event.Type.PLAYER_TELEPORT, this.flyListen,
-				Event.Priority.Monitor, this);
-		pm.registerEvent(Event.Type.PLAYER_PORTAL, this.flyListen,
-				Event.Priority.Monitor, this);
-		pm.registerEvent(Event.Type.PLAYER_INTERACT_ENTITY, this.npcl,
-				Event.Priority.Monitor, this);
-		pm.registerEvent(Event.Type.CHUNK_LOAD, this.npccl,
-				Event.Priority.Monitor, this);
-		pm.registerEvent(Event.Type.CHUNK_UNLOAD, this.npccl,
-				Event.Priority.Monitor, this);
-		pm.registerEvent(Event.Type.ENDERMAN_PICKUP, this.endl,
-				Event.Priority.Highest, this);
-		pm.registerEvent(Event.Type.ENDERMAN_PLACE, this.endl,
-				Event.Priority.Highest, this);
+		try {
+			BenCmdPlayerListener.getInstance();
+		} catch (Exception e) {
+			log.severe("Failed to register player events:");
+			e.printStackTrace();
+		}
+		try {
+			BenCmdBlockListener.getInstance();
+		} catch (Exception e) {
+			log.severe("Failed to register block events:");
+			e.printStackTrace();
+		}
+		try {
+			BenCmdEntityListener.getInstance();
+		} catch (Exception e) {
+			log.severe("Failed to register entity events:");
+			e.printStackTrace();
+		}
+		try {
+			BenCmdWorldListener.getInstance();
+		} catch (Exception e) {
+			log.severe("Failed to register world events:");
+			e.printStackTrace();
+		}
 		if (spoutcraft) {
-			pm.registerEvent(Event.Type.CUSTOM_EVENT,
-					new BenCmdSpoutListener(), Event.Priority.Normal, this);
-			pm.registerEvent(Event.Type.CUSTOM_EVENT, new NPCScreenListener(),
-					Event.Priority.Normal, this);
-			pm.registerEvent(Event.Type.CUSTOM_EVENT, new InvListen(this),
-					Event.Priority.Normal, this);
+			try {
+				BenCmdSpoutListener.getInstance();
+				BenCmdScreenListener.getInstance();
+				BenCmdInventoryListener.getInstance();
+			} catch (Exception e) {
+				log.severe("Failed to register spout events:");
+				e.printStackTrace();
+			}
 		}
 		PluginDescriptionFile pdfFile = this.getDescription();
 		// Prepare the update timer...

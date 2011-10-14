@@ -7,6 +7,7 @@ import java.util.Random;
 
 import org.bukkit.ChatColor;
 
+import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.User;
 import com.bendude56.bencmd.chat.ChatChecker;
 import com.bendude56.bencmd.chat.SlowMode;
@@ -38,26 +39,27 @@ public class ChatChannel {
 	// Constructors
 	protected static ChatChannel getChannel(ChatChannelController control,
 			String key, String value) {
+		BenCmd plugin = BenCmd.getPlugin();
 		if (value.split("/").length != 8) {
-			control.plugin.log
+			plugin.log
 					.severe("ChatChannel "
 							+ key
 							+ " encountered a fatal error while loading and has been disabled:");
-			control.plugin.log.severe("Invalid number of entries.");
-			control.plugin.bLog.warning("CHAT CHANNEL ERROR: ChatChannel "
+			plugin.log.severe("Invalid number of entries.");
+			plugin.bLog.warning("CHAT CHANNEL ERROR: ChatChannel "
 					+ key + " failed to load!");
 			return null;
 		}
 		PermissionUser owner = PermissionUser.matchUser(value.split("/")[0],
-				control.plugin);
+				plugin);
 		if (owner == null) {
-			control.plugin.log
+			plugin.log
 					.severe("ChatChannel "
 							+ key
 							+ " encountered a fatal error while loading and has been disabled:");
-			control.plugin.log.severe("Owner \"" + value.split("/")[0]
+			plugin.log.severe("Owner \"" + value.split("/")[0]
 					+ "\" doesn't exist in users.db.");
-			control.plugin.bLog.warning("CHAT CHANNEL ERROR: ChatChannel "
+			plugin.bLog.warning("CHAT CHANNEL ERROR: ChatChannel "
 					+ key + " failed to load!");
 			return null;
 		}
@@ -65,15 +67,15 @@ public class ChatChannel {
 		if (!value.split("/")[1].isEmpty()) {
 			for (String player : value.split("/")[1].split(",")) {
 				PermissionUser mod = PermissionUser.matchUser(player,
-						control.plugin);
+						plugin);
 				if (mod == null) {
-					control.plugin.log
+					plugin.log
 							.severe("ChatChannel "
 									+ key
 									+ " encountered a fatal error while loading and has been disabled:");
-					control.plugin.log.severe("Mod \"" + player
+					plugin.log.severe("Mod \"" + player
 							+ "\" doesn't exist in users.db.");
-					control.plugin.bLog
+					plugin.bLog
 							.warning("CHAT CHANNEL ERROR: ChatChannel " + key
 									+ " failed to load!");
 					return null;
@@ -85,15 +87,15 @@ public class ChatChannel {
 		if (!value.split("/")[2].isEmpty()) {
 			for (String player : value.split("/")[2].split(",")) {
 				PermissionUser guest = PermissionUser.matchUser(player,
-						control.plugin);
+						plugin);
 				if (guest == null) {
-					control.plugin.log
+					plugin.log
 							.severe("ChatChannel "
 									+ key
 									+ " encountered a fatal error while loading and has been disabled:");
-					control.plugin.log.severe("Guest \"" + player
+					plugin.log.severe("Guest \"" + player
 							+ "\" doesn't exist in users.db.");
-					control.plugin.bLog
+					plugin.bLog
 							.warning("CHAT CHANNEL ERROR: ChatChannel " + key
 									+ " failed to load!");
 					return null;
@@ -105,15 +107,15 @@ public class ChatChannel {
 		if (!value.split("/")[3].isEmpty()) {
 			for (String player : value.split("/")[3].split(",")) {
 				PermissionUser ban = PermissionUser.matchUser(player,
-						control.plugin);
+						plugin);
 				if (ban == null) {
-					control.plugin.log
+					plugin.log
 							.severe("ChatChannel "
 									+ key
 									+ " encountered a fatal error while loading and has been disabled:");
-					control.plugin.log.severe("Banned player \"" + player
+					plugin.log.severe("Banned player \"" + player
 							+ "\" doesn't exist in users.db.");
-					control.plugin.bLog
+					plugin.bLog
 							.warning("CHAT CHANNEL ERROR: ChatChannel " + key
 									+ " failed to load!");
 					return null;
@@ -125,15 +127,15 @@ public class ChatChannel {
 		if (!value.split("/")[4].isEmpty()) {
 			for (String player : value.split("/")[4].split(",")) {
 				PermissionUser mute = PermissionUser.matchUser(player,
-						control.plugin);
+						plugin);
 				if (mute == null) {
-					control.plugin.log
+					plugin.log
 							.severe("ChatChannel "
 									+ key
 									+ " encountered a fatal error while loading and has been disabled:");
-					control.plugin.log.severe("Muted player \"" + player
+					plugin.log.severe("Muted player \"" + player
 							+ "\" doesn't exist in users.db.");
-					control.plugin.bLog
+					plugin.bLog
 							.warning("CHAT CHANNEL ERROR: ChatChannel " + key
 									+ " failed to load!");
 					return null;
@@ -151,13 +153,13 @@ public class ChatChannel {
 		} else if (value.split("/")[7].equalsIgnoreCase("d")) {
 			joinType = ChatLevel.DEFAULT;
 		} else {
-			control.plugin.log.warning("ChatChannel " + key
+			plugin.log.warning("ChatChannel " + key
 					+ " encountered a minor error while loading:");
-			control.plugin.log
+			plugin.log
 					.warning("\""
 							+ value.split("/")[7]
 							+ "\" is not a valid value for Default Join Type. Assumed \"d\".");
-			control.plugin.bLog
+			plugin.bLog
 					.warning("CHAT CHANNEL ERROR: ChatChannel "
 							+ key
 							+ " encountered a minor error while loading, but recovered.");
@@ -183,8 +185,7 @@ public class ChatChannel {
 		this.motd = motd;
 		this.inChannel = new ArrayList<User>();
 		this.spies = new ArrayList<User>();
-		this.slow = new SlowMode(control.plugin,
-				control.plugin.mainProperties.getInteger("slowTime", 10000));
+		this.slow = SlowMode.newUnhandledInstance();
 		this.paused = false;
 		this.displayName = displayName;
 	}
@@ -558,6 +559,7 @@ public class ChatChannel {
 
 	// Messaging methods
 	public void sendChat(User user, String message) {
+		BenCmd plugin = BenCmd.getPlugin();
 		if (!isOwner(user) && !isMod(user) && paused) {
 			user.sendMessage(ChatColor.GRAY
 					+ "You can't talk while pause mode is enabled.");
@@ -565,20 +567,20 @@ public class ChatChannel {
 		}
 		if (user.isMuted() != null) {
 			user.sendMessage(ChatColor.GRAY
-					+ control.plugin.mainProperties.getString("muteMessage",
+					+ plugin.mainProperties.getString("muteMessage",
 							"You are muted..."));
 			return;
 		}
 		if (isMuted(user)) {
 			user.sendMessage(ChatColor.GRAY
-					+ control.plugin.mainProperties.getString("muteMessage",
+					+ plugin.mainProperties.getString("muteMessage",
 							"You are muted..."));
 			return;
 		}
-		boolean blocked = ChatChecker.checkBlocked(message, control.plugin);
+		boolean blocked = ChatChecker.checkBlocked(message, plugin);
 		if (blocked) {
 			user.sendMessage(ChatColor.GRAY
-					+ control.plugin.mainProperties.getString("blockMessage",
+					+ plugin.mainProperties.getString("blockMessage",
 							"You used a blocked word..."));
 			return;
 		}
@@ -665,6 +667,7 @@ public class ChatChannel {
 	}
 
 	public void Me(User user, String message) {
+		BenCmd plugin = BenCmd.getPlugin();
 		if (!isOwner(user) && !isMod(user) && paused) {
 			user.sendMessage(ChatColor.GRAY
 					+ "You can't talk while pause mode is enabled.");
@@ -672,20 +675,20 @@ public class ChatChannel {
 		}
 		if (user.isMuted() != null) {
 			user.sendMessage(ChatColor.GRAY
-					+ control.plugin.mainProperties.getString("muteMessage",
+					+ plugin.mainProperties.getString("muteMessage",
 							"You are muted..."));
 			return;
 		}
 		if (isMuted(user)) {
 			user.sendMessage(ChatColor.GRAY
-					+ control.plugin.mainProperties.getString("muteMessage",
+					+ plugin.mainProperties.getString("muteMessage",
 							"You are muted..."));
 			return;
 		}
-		boolean blocked = ChatChecker.checkBlocked(message, control.plugin);
+		boolean blocked = ChatChecker.checkBlocked(message, plugin);
 		if (blocked) {
 			user.sendMessage(ChatColor.GRAY
-					+ control.plugin.mainProperties.getString("blockMessage",
+					+ plugin.mainProperties.getString("blockMessage",
 							"You used a blocked word..."));
 			return;
 		}
@@ -772,9 +775,10 @@ public class ChatChannel {
 	}
 
 	protected void broadcastMessage(String message) {
-		control.plugin.log.info("(" + displayName + ") "
+		BenCmd plugin = BenCmd.getPlugin();
+		plugin.log.info("(" + displayName + ") "
 				+ ChatColor.stripColor(message));
-		control.plugin.bLog.info("(" + displayName + ") "
+		plugin.bLog.info("(" + displayName + ") "
 				+ ChatColor.stripColor(message));
 		for (User user : inChannel) {
 			user.sendMessage(ChatColor.WHITE + message);

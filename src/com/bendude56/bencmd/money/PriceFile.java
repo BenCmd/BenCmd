@@ -27,14 +27,12 @@ public class PriceFile extends Properties {
 	private String proFile;
 	private HashMap<String, BuyableItem> items = new HashMap<String, BuyableItem>();
 	private long nextUpdate;
-	private InventoryBackend back;
 	private int update;
 	private boolean timerenabled;
 
 	public PriceFile(BenCmd instance, String priceLocation) {
 		plugin = instance;
 		proFile = priceLocation;
-		back = new InventoryBackend(plugin);
 		if (new File("plugins/BenCmd/_prices.db").exists()) {
 			plugin.log.warning("Price backup file found... Restoring...");
 			if (FileUtil.copy(new File("plugins/BenCmd/_prices.db"), new File(
@@ -321,7 +319,7 @@ public class PriceFile extends Properties {
 				Double oldPrice = item.getPrice();
 				Double newPrice = oldPrice;
 				newPrice += item.getSupplyDemand()
-						/ ((double) back.getStackNumber(item.getItemId()))
+						/ ((double) InventoryBackend.getInstance().getStackNumber(item.getItemId()))
 						* plugin.mainProperties.getDouble("marketMultiple",
 								0.25);
 				if (newPrice - oldPrice > plugin.mainProperties.getDouble(
@@ -339,7 +337,7 @@ public class PriceFile extends Properties {
 				Double oldPrice = item.getPrice();
 				Double newPrice = oldPrice;
 				newPrice -= -item.getSupplyDemand()
-						/ ((double) back.getStackNumber(item.getItemId()))
+						/ ((double) InventoryBackend.getInstance().getStackNumber(item.getItemId()))
 						* plugin.mainProperties.getDouble("marketMultiple",
 								0.25);
 				if (newPrice < plugin.mainProperties.getDouble("marketMin",

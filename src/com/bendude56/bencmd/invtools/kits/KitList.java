@@ -8,19 +8,16 @@ import java.util.List;
 import java.util.Properties;
 
 import com.bendude56.bencmd.*;
-import com.bendude56.bencmd.invtools.*;
 
 
 public class KitList extends Properties {
 	private static final long serialVersionUID = 0L;
 	File file;
 	BenCmd plugin;
-	InventoryBackend back;
 	public List<Kit> kits = new ArrayList<Kit>();
 
 	public KitList(BenCmd instance) {
 		plugin = instance;
-		back = new InventoryBackend(plugin);
 		this.reload();
 	}
 

@@ -12,11 +12,9 @@ import com.bendude56.bencmd.invtools.InventoryBackend;
 public class WeatherBinding {
 	private HashMap<Player, Material> bindings = new HashMap<Player, Material>();
 	BenCmd plugin;
-	InventoryBackend back;
 
 	public WeatherBinding(BenCmd instance) {
 		plugin = instance;
-		back = new InventoryBackend(plugin);
 	}
 
 	public void clearBinding(Player player) {
@@ -30,7 +28,7 @@ public class WeatherBinding {
 	}
 
 	public boolean tryBind(Player player) {
-		if (back.canBind(player.getItemInHand().getType())) {
+		if (InventoryBackend.getInstance().canBind(player.getItemInHand().getType())) {
 			bindings.put(player, player.getItemInHand().getType());
 			return true;
 		} else {
