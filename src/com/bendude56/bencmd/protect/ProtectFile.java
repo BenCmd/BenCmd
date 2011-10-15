@@ -146,6 +146,9 @@ public class ProtectFile extends Properties {
 			} else if (type.equalsIgnoreCase("g")) {
 				protectedBlocks.add(new ProtectedGate(plugin, id, owner, guests,
 						loc));
+			} else if (type.equalsIgnoreCase("j")) {
+				protectedBlocks.add(new ProtectedJukebox(plugin, id, owner, guests,
+						loc));
 			} else if (type.equalsIgnoreCase("pc")) {
 				protectedBlocks.add(new PublicChest(plugin, id, owner, guests,
 						loc));
@@ -160,6 +163,9 @@ public class ProtectFile extends Properties {
 						loc));
 			} else if (type.equalsIgnoreCase("pg")) {
 				protectedBlocks.add(new PublicGate(plugin, id, owner, guests,
+						loc));
+			} else if (type.equalsIgnoreCase("pj")) {
+				protectedBlocks.add(new PublicJukebox(plugin, id, owner, guests,
 						loc));
 			} else {
 				plugin.log.warning("Entry " + key + " in " + proFile
@@ -280,6 +286,28 @@ public class ProtectFile extends Properties {
 					+ String.valueOf(blockLoc.getBlockY()) + ","
 					+ String.valueOf(blockLoc.getBlockZ());
 			this.put(key, value);
+		} else if (block instanceof ProtectedJukebox) {
+			String value;
+			String key;
+			key = ((comment) ? "." : "") + String.valueOf(block.GetId());
+			value = "";
+			value += "j/";
+			boolean init = false;
+			for (PermissionUser guest : block.getGuests()) {
+				if (init) {
+					value += ",";
+				} else {
+					init = true;
+				}
+				value += guest.getName();
+			}
+			value += "/" + block.getOwner().getName();
+			Location blockLoc = block.getLocation();
+			value += "/" + blockLoc.getWorld().getName() + ","
+					+ String.valueOf(blockLoc.getBlockX()) + ","
+					+ String.valueOf(blockLoc.getBlockY()) + ","
+					+ String.valueOf(blockLoc.getBlockZ());
+			this.put(key, value);
 		} else if (block instanceof PublicChest) {
 			String value;
 			String key;
@@ -374,6 +402,28 @@ public class ProtectFile extends Properties {
 			key = ((comment) ? "." : "") + String.valueOf(block.GetId());
 			value = "";
 			value += "pg/";
+			boolean init = false;
+			for (PermissionUser guest : block.getGuests()) {
+				if (init) {
+					value += ",";
+				} else {
+					init = true;
+				}
+				value += guest.getName();
+			}
+			value += "/" + block.getOwner().getName();
+			Location blockLoc = block.getLocation();
+			value += "/" + blockLoc.getWorld().getName() + ","
+					+ String.valueOf(blockLoc.getBlockX()) + ","
+					+ String.valueOf(blockLoc.getBlockY()) + ","
+					+ String.valueOf(blockLoc.getBlockZ());
+			this.put(key, value);
+		} else if (block instanceof PublicJukebox) {
+			String value;
+			String key;
+			key = ((comment) ? "." : "") + String.valueOf(block.GetId());
+			value = "";
+			value += "pj/";
 			boolean init = false;
 			for (PermissionUser guest : block.getGuests()) {
 				if (init) {
@@ -574,6 +624,10 @@ public class ProtectFile extends Properties {
 			protectedBlocks.add(protect = new ProtectedGate(plugin, id, owner,
 					new ArrayList<PermissionUser>(), loc));
 			break;
+		case Jukebox:
+			protectedBlocks.add(protect = new ProtectedGate(plugin, id, owner,
+					new ArrayList<PermissionUser>(), loc));
+			break;
 		case PDoor:
 			protectedBlocks.add(protect = new PublicDoor(plugin, id, owner,
 					new ArrayList<PermissionUser>(), loc));
@@ -594,6 +648,9 @@ public class ProtectFile extends Properties {
 			protectedBlocks.add(protect = new PublicGate(plugin, id, owner,
 					new ArrayList<PermissionUser>(), loc));
 			break;
+		case PJukebox:
+			protectedBlocks.add(protect = new PublicJukebox(plugin, id, owner,
+					new ArrayList<PermissionUser>(), loc));
 		}
 		updateValue(protect, false);
 		return id;
@@ -668,6 +725,6 @@ public class ProtectFile extends Properties {
 	}
 
 	public static enum ProtectionType {
-		Chest, Door, Furnace, Dispenser, Gate, PDoor, PChest, PFurnace, PDispenser, PGate
+		Chest, Door, Furnace, Dispenser, Gate, Jukebox, PDoor, PChest, PFurnace, PDispenser, PGate, PJukebox
 	}
 }
