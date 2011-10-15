@@ -122,8 +122,6 @@ public class ProtectedCommands implements Commands {
 			t = (p) ? ProtectionType.PDispenser : ProtectionType.Dispenser;
 		} else if (m == Material.FENCE_GATE) {
 			t = (p) ? ProtectionType.PGate : ProtectionType.Gate;
-		} else if (m == Material.JUKEBOX) {
-			t = (p) ? ProtectionType.PJukebox : ProtectionType.Jukebox;
 		} else {
 			u.sendMessage(ChatColor.RED + "That type of block cannot be protected!");
 			return false;
