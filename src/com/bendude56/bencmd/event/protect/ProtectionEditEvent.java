@@ -6,7 +6,7 @@ import com.bendude56.bencmd.User;
 import com.bendude56.bencmd.permissions.PermissionUser;
 import com.bendude56.bencmd.protect.ProtectedBlock;
 
-public class ProtectionEditEvent extends ProtectionEvent implements Cancellable {
+public final class ProtectionEditEvent extends ProtectionEvent implements Cancellable {
 	private static final long serialVersionUID = 0L;
 	private boolean cancelled = false;
 	private PermissionUser changee;

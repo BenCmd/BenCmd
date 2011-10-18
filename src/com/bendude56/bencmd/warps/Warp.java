@@ -13,12 +13,11 @@ public class Warp {
 	public Location loc;
 	public String warpName;
 	public String mustInheritGroup;
-	public BenCmd plugin;
 
 	public Warp(double x, double y, double z, double yaw, double pitch,
-			String world, String name, String group, BenCmd instance) {
+			String world, String name, String group) {
+		BenCmd plugin = BenCmd.getPlugin();
 		warpName = name;
-		plugin = instance;
 		try {
 			loc = new Location(plugin.getServer().getWorld(world), x, y, z,
 					(float) yaw, (float) pitch);
@@ -31,7 +30,8 @@ public class Warp {
 		mustInheritGroup = group;
 	}
 
-	public Warp(Location loc, String name, String group, BenCmd instance) {
+	public Warp(Location loc, String name, String group) {
+		BenCmd plugin = BenCmd.getPlugin();
 		double x = loc.getX();
 		double y = loc.getY();
 		double z = loc.getZ();
@@ -39,7 +39,6 @@ public class Warp {
 		float pitch = loc.getPitch();
 		World world = loc.getWorld();
 		warpName = name;
-		plugin = instance;
 		try {
 			loc = new Location(world, x, y, z, yaw, pitch);
 		} catch (NullPointerException e) {
@@ -52,6 +51,7 @@ public class Warp {
 	}
 
 	public void WarpHere(WarpableUser player) {
+		BenCmd plugin = BenCmd.getPlugin();
 		if (!this.canWarpHere(player)) {
 			player.sendMessage(ChatColor.RED
 					+ "You don't have permission to warp there!");
@@ -78,6 +78,7 @@ public class Warp {
 	}
 
 	public void WarpHere(WarpableUser player, WarpableUser sender) {
+		BenCmd plugin = BenCmd.getPlugin();
 		if (!this.canWarpHere(sender)) {
 			player.sendMessage(ChatColor.RED
 					+ "You don't have permission to warp them there!");
@@ -111,7 +112,7 @@ public class Warp {
 		if (mustInheritGroup == "") {
 			return true;
 		}
-		if (plugin.perm.groupFile.getGroup(mustInheritGroup)
+		if (BenCmdManager.getPermissionManager().getGroupFile().getGroup(mustInheritGroup)
 				.userInGroup(player)) {
 			return true;
 		}

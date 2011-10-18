@@ -86,7 +86,7 @@ public class BenCmdEntityListener extends EntityListener {
 			if (event.getDamager() instanceof Player
 					&& event.getEntity() instanceof Player) {
 				if (((CraftPlayer)event.getDamager()).getHandle() instanceof EntityNPC) {
-					if (plugin.isGod((Player)event.getEntity())) 
+					if (User.getUser(BenCmd.getPlugin(), (Player) event.getEntity()).isGod()) 
 						event.setCancelled(true);
 					return;
 				}
@@ -367,7 +367,7 @@ public class BenCmdEntityListener extends EntityListener {
 			event.setCancelled(true);
 		}
 		Player player = (Player) event.getEntity();
-		if (plugin.isGod(player)) {
+		if (User.getUser(plugin, player).isGod()) {
 			event.setCancelled(true);
 		}
 	}

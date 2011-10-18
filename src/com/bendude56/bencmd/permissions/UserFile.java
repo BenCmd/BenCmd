@@ -17,25 +17,25 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.util.FileUtil;
 
+import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.User;
 
 
 @SuppressWarnings("unused")
 public class UserFile extends Properties {
 	private static final long serialVersionUID = 0L;
-	MainPermissions mainPerm;
 	HashMap<String, InternalUser> users = new HashMap<String, InternalUser>();
 
-	public UserFile(MainPermissions mainPermissions) {
-		mainPerm = mainPermissions; // Initialize the value of the parent
+	public UserFile() {
+		BenCmd plugin = BenCmd.getPlugin();
 		if (new File("plugins/BenCmd/_users.db").exists()) {
-			mainPerm.plugin.log.warning("User backup file found... Restoring...");
+			plugin.log.warning("User backup file found... Restoring...");
 			if (FileUtil.copy(new File("plugins/BenCmd/_users.db"), new File(
 					"plugins/BenCmd/users.db"))) {
 				new File("plugins/BenCmd/_users.db").delete();
-				mainPerm.plugin.log.info("Restoration suceeded!");
+				plugin.log.info("Restoration suceeded!");
 			} else {
-				mainPerm.plugin.log.warning("Failed to restore from backup!");
+				plugin.log.warning("Failed to restore from backup!");
 			}
 		}
 		loadFile();
@@ -43,13 +43,14 @@ public class UserFile extends Properties {
 	}
 
 	public void loadFile() {
+		BenCmd plugin = BenCmd.getPlugin();
 		File file = new File("plugins/BenCmd/users.db"); // Prepare the file
 		if (!file.exists()) {
 			try {
 				file.createNewFile(); // If the file doesn't exist, create it!
 			} catch (IOException ex) {
 				// If you can't, produce an error.
-				mainPerm.plugin.log.severe("BenCmd had a problem:");
+				plugin.log.severe("BenCmd had a problem:");
 				ex.printStackTrace();
 				return;
 			}
@@ -58,12 +59,13 @@ public class UserFile extends Properties {
 			load(new FileInputStream(file)); // Load the values
 		} catch (IOException ex) {
 			// If you can't, produce an error.
-			mainPerm.plugin.log.severe("BenCmd had a problem:");
+			plugin.log.severe("BenCmd had a problem:");
 			ex.printStackTrace();
 		}
 	}
 
 	public void updateUser(InternalUser user) {
+		BenCmd plugin = BenCmd.getPlugin();
 		String value = "";
 		for (String perm : user.getPermissions(false)) {
 			if (value.isEmpty()) {
@@ -78,10 +80,10 @@ public class UserFile extends Properties {
 			new File("plugins/BenCmd/_users.db").createNewFile();
 			if (!FileUtil.copy(new File("plugins/BenCmd/users.db"), new File(
 					"plugins/BenCmd/_users.db"))) {
-				mainPerm.plugin.log.warning("Failed to back up user database!");
+				plugin.log.warning("Failed to back up user database!");
 			}
 		} catch (IOException e) {
-			mainPerm.plugin.log.warning("Failed to back up user database!");
+			plugin.log.warning("Failed to back up user database!");
 		}
 		saveFile();
 		try {
@@ -90,16 +92,17 @@ public class UserFile extends Properties {
 	}
 
 	public void removeUser(PermissionUser user) {
+		BenCmd plugin = BenCmd.getPlugin();
 		this.remove(user.getName());
 		users.remove(user.getName());
 		try {
 			new File("plugins/BenCmd/_users.db").createNewFile();
 			if (!FileUtil.copy(new File("plugins/BenCmd/users.db"), new File(
 					"plugins/BenCmd/_users.db"))) {
-				mainPerm.plugin.log.warning("Failed to back up user database!");
+				plugin.log.warning("Failed to back up user database!");
 			}
 		} catch (IOException e) {
-			mainPerm.plugin.log.warning("Failed to back up user database!");
+			plugin.log.warning("Failed to back up user database!");
 		}
 		saveFile();
 		try {
@@ -108,6 +111,7 @@ public class UserFile extends Properties {
 	}
 
 	public void loadUsers() {
+		BenCmd plugin = BenCmd.getPlugin();
 		users.clear();
 		for (int i = 0; i < this.size(); i++) {
 			String name = (String) this.keySet().toArray()[i];
@@ -115,7 +119,7 @@ public class UserFile extends Properties {
 			permissions
 					.addAll(Arrays.asList(this.getProperty(name).split(",")));
 			users.put(name,
-					new InternalUser(mainPerm.plugin, name, permissions));
+					new InternalUser(plugin, name, permissions));
 		}
 	}
 
@@ -124,13 +128,14 @@ public class UserFile extends Properties {
 	}
 
 	public void saveFile() {
+		BenCmd plugin = BenCmd.getPlugin();
 		File file = new File("plugins/BenCmd/users.db"); // Prepare the file
 		if (!file.exists()) {
 			try {
 				file.createNewFile(); // If the file doesn't exist, create it!
 			} catch (IOException ex) {
 				// If you can't, produce an error.
-				mainPerm.plugin.log.severe("BenCmd had a problem:");
+				plugin.log.severe("BenCmd had a problem:");
 				ex.printStackTrace();
 				return;
 			}
@@ -140,7 +145,7 @@ public class UserFile extends Properties {
 			store(new FileOutputStream(file), "BenCmd User Permissions File");
 		} catch (IOException ex) {
 			// If you can't, produce an error.
-			mainPerm.plugin.log.severe("BenCmd had a problem:");
+			plugin.log.severe("BenCmd had a problem:");
 			ex.printStackTrace();
 		}
 	}

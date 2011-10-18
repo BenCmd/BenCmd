@@ -10,10 +10,11 @@ import java.util.Properties;
 
 import org.bukkit.Material;
 
+import com.bendude56.bencmd.BenCmd;
+
 public class ItemBW extends Properties {
 	private static final long serialVersionUID = 0L;
 	File file;
-	MainPermissions mainPerm;
 
 	/**
 	 * This is used to initialize a GroupFile for use. Use it ONLY ONCE!
@@ -21,8 +22,7 @@ public class ItemBW extends Properties {
 	 * @param mainPermissions
 	 *            The parent of this GroupFile.
 	 */
-	public ItemBW(MainPermissions mainPermissions) {
-		mainPerm = mainPermissions; // Intialize the value of the parent
+	public ItemBW() {
 		this.reload(); // Load the values into memory.
 	}
 
@@ -30,13 +30,14 @@ public class ItemBW extends Properties {
 	 * This method reloads the item database from the hard drive.
 	 */
 	public void reload() {
+		BenCmd plugin = BenCmd.getPlugin();
 		file = new File("plugins/BenCmd/itembw.db"); // Prepare the file
 		if (!file.exists()) {
 			try {
 				file.createNewFile(); // If the file doesn't exist, create it!
 			} catch (IOException ex) {
 				// If you can't, produce an error.
-				mainPerm.plugin.log.severe("BenCmd had a problem:");
+				plugin.log.severe("BenCmd had a problem:");
 				ex.printStackTrace();
 				return;
 			}
@@ -45,7 +46,7 @@ public class ItemBW extends Properties {
 			load(new FileInputStream(file)); // Load the values
 		} catch (IOException ex) {
 			// If you can't, produce an error.
-			mainPerm.plugin.log.severe("BenCmd had a problem:");
+			plugin.log.severe("BenCmd had a problem:");
 			ex.printStackTrace();
 		}
 	}
@@ -54,13 +55,14 @@ public class ItemBW extends Properties {
 	 * This method saves all of the items.
 	 */
 	public void save() {
+		BenCmd plugin = BenCmd.getPlugin();
 		file = new File("plugins/BenCmd/itembw.db"); // Prepare the file
 		if (!file.exists()) {
 			try {
 				file.createNewFile(); // If the file doesn't exist, create it!
 			} catch (IOException ex) {
 				// If you can't, produce an error.
-				mainPerm.plugin.log.severe("BenCmd had a problem:");
+				plugin.log.severe("BenCmd had a problem:");
 				ex.printStackTrace();
 				return;
 			}
@@ -71,17 +73,18 @@ public class ItemBW extends Properties {
 																				// values
 		} catch (IOException ex) {
 			// If you can't, produce an error.
-			mainPerm.plugin.log.severe("BenCmd had a problem:");
+			plugin.log.severe("BenCmd had a problem:");
 			ex.printStackTrace();
 		}
 	}
 
 	public List<Material> getListed(String group) {
+		BenCmd plugin = BenCmd.getPlugin();
 		if (!groupExists(group) && !addGroup(group)) {
-			mainPerm.plugin.bLog
+			plugin.bLog
 					.warning("Failed to retrieve item blacklist/whitelist for group "
 							+ group + "!");
-			mainPerm.plugin.log
+			plugin.log
 					.warning(group
 							+ " was not in plugins/BenCmd/itemsbw.db and couldn't be added due to an unknown error! Returning null...");
 			return null;
@@ -94,9 +97,9 @@ public class ItemBW extends Properties {
 				try {
 					mat = Material.getMaterial(Integer.parseInt(material));
 				} catch (NumberFormatException e) {
-					mainPerm.plugin.bLog.warning(material + " in group "
+					plugin.bLog.warning(material + " in group "
 							+ group + " in itembw.db is NaN!");
-					mainPerm.plugin.log
+					plugin.log
 							.warning("Cannot get a number from input: "
 									+ material
 									+ " in plugins/BenCmd/itemsbw.db (Entry: "
@@ -111,10 +114,11 @@ public class ItemBW extends Properties {
 	}
 
 	public boolean canSpawn(Material mat, String group) {
+		BenCmd plugin = BenCmd.getPlugin();
 		boolean returnValue = false;
 		switch (getSetting(group)) {
 		case BWUnknown:
-			mainPerm.plugin.bLog
+			plugin.bLog
 					.warning("Unknown blacklist/whitelist setting for group "
 							+ group + "! Assuming blacklist...");
 		case BWBlack:
@@ -132,7 +136,7 @@ public class ItemBW extends Properties {
 			}
 			break;
 		case BWNoRestriction:
-			mainPerm.plugin.bLog.info("Group " + group
+			plugin.bLog.info("Group " + group
 					+ " is using a deprecated blacklist/whitelist setting");
 			returnValue = true;
 			break;
@@ -144,11 +148,12 @@ public class ItemBW extends Properties {
 	}
 
 	public BWSetting getSetting(String group) {
+		BenCmd plugin = BenCmd.getPlugin();
 		if (!groupExists(group) && !addGroup(group)) {
-			mainPerm.plugin.bLog
+			plugin.bLog
 					.warning("Failed to retrieve item blacklist/whitelist setting for group "
 							+ group + "!");
-			mainPerm.plugin.log
+			plugin.log
 					.warning(group
 							+ " was not in plugins/BenCmd/itemsbw.db and couldn't be added due to an unknown error! Returning BWUnknown...");
 			return BWSetting.BWUnknown;
@@ -161,10 +166,10 @@ public class ItemBW extends Properties {
 		} else if (set.equalsIgnoreCase("nr")) {
 			return BWSetting.BWNoRestriction;
 		} else {
-			mainPerm.plugin.bLog.warning("Group " + group
+			plugin.bLog.warning("Group " + group
 					+ " has an unknown blacklist/whitelist setting! (" + set
 					+ ")");
-			mainPerm.plugin.log.warning("Cannot get a BWSetting from input: "
+			plugin.log.warning("Cannot get a BWSetting from input: "
 					+ set + " in plugins/BenCmd/itemsbw.db (Entry: " + group
 					+ ")! Returning BWUnknown...");
 			return BWSetting.BWUnknown;
@@ -172,12 +177,13 @@ public class ItemBW extends Properties {
 	}
 
 	public boolean addGroup(String group) {
+		BenCmd plugin = BenCmd.getPlugin();
 		if (this.groupExists(group))
 			return false; // The group already exists and cannot be added again!
 		try {
 			this.put(
 					group,
-					mainPerm.plugin.mainProperties.getString(
+					plugin.mainProperties.getString(
 							"defaultItemAction", "b") + "/"); // Put the new
 																// group into
 																// the

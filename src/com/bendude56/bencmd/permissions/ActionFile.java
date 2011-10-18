@@ -20,12 +20,11 @@ import com.bendude56.bencmd.permissions.Action.ActionType;
 public class ActionFile extends Properties {
 
 	private static final long serialVersionUID = 0L;
-	protected BenCmd plugin;
 	protected HashMap<Integer, Action> actions;
 	private Timer time = new Timer();
 
-	public ActionFile(BenCmd instance) {
-		plugin = instance;
+	public ActionFile() {
+		BenCmd plugin = BenCmd.getPlugin();
 		if (new File("plugins/BenCmd/_action.db").exists()) {
 			plugin.log.warning("Action backup file found... Restoring...");
 			if (FileUtil.copy(new File("plugins/BenCmd/_action.db"), new File(
@@ -42,6 +41,7 @@ public class ActionFile extends Properties {
 	}
 
 	public void loadFile() {
+		BenCmd plugin = BenCmd.getPlugin();
 		File file = new File("plugins/BenCmd/action.db"); // Prepare the file
 		if (!file.exists()) {
 			try {
@@ -63,6 +63,7 @@ public class ActionFile extends Properties {
 	}
 
 	public void loadActions() {
+		BenCmd plugin = BenCmd.getPlugin();
 		actions = new HashMap<Integer, Action>();
 		for (int i = 0; i < this.size(); i++) {
 			String value[] = ((String) this.values().toArray()[i]).split("/");
@@ -182,6 +183,7 @@ public class ActionFile extends Properties {
 	}
 
 	public void updateAction(Action action) {
+		BenCmd plugin = BenCmd.getPlugin();
 		this.put(String.valueOf(action.getId()),
 				action.getUser().getName() + "/" + action.getActionLetter()
 						+ "/" + String.valueOf(action.getExpiry()));
@@ -202,6 +204,7 @@ public class ActionFile extends Properties {
 	}
 
 	public void removeAction(Action action) {
+		BenCmd plugin = BenCmd.getPlugin();
 		if (!this.containsKey(String.valueOf(action.getId()))) {
 			return;
 		}
@@ -223,6 +226,7 @@ public class ActionFile extends Properties {
 	}
 
 	public void saveFile() {
+		BenCmd plugin = BenCmd.getPlugin();
 		File file = new File("plugins/BenCmd/action.db"); // Prepare the file
 		if (!file.exists()) {
 			try {

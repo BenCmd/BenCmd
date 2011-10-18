@@ -620,7 +620,6 @@ public class BasicCommands implements Commands {
 			plugin.warps.LoadWarps();
 			plugin.jail = new Jail(plugin);
 			plugin.lots.reload();
-			plugin.godmode.clear();
 			plugin.heroActive = false;
 			plugin.timeRunning = true;
 			user.sendMessage(ChatColor.GREEN

@@ -1,4 +1,4 @@
-package com.bendude56.bencmd.warps;
+/*package com.bendude56.bencmd.warps;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -51,4 +51,4 @@ public class Jail {
 		jailWarp.WarpHere(new WarpableUser(plugin, player));
 		return true;
 	}
-}
+}*/

@@ -18,10 +18,9 @@ public class BankFile extends Properties {
 
 	private String filename;
 	private HashMap<String, BankInventory> banks;
-	private BenCmd plugin;
 
-	public BankFile(BenCmd instance, String file) {
-		plugin = instance;
+	public BankFile(String file) {
+		BenCmd plugin = BenCmd.getPlugin();
 		filename = file;
 		banks = new HashMap<String, BankInventory>();
 		if (new File("plugins/BenCmd/_bank.db").exists()) {
@@ -87,6 +86,7 @@ public class BankFile extends Properties {
 	}
 
 	public void loadBanks() {
+		BenCmd plugin = BenCmd.getPlugin();
 		for (int i = 0; i < this.size(); i++) {
 			String key = (String) this.keySet().toArray()[i], value = this
 					.getProperty(key);
@@ -136,6 +136,7 @@ public class BankFile extends Properties {
 	}
 
 	public void saveBank(BankInventory bank) {
+		BenCmd plugin = BenCmd.getPlugin();
 		try {
 			this.put(bank.p, bank.getValue());
 		} catch (Exception e) {
@@ -156,6 +157,7 @@ public class BankFile extends Properties {
 	}
 
 	public void saveAll() {
+		BenCmd plugin = BenCmd.getPlugin();
 		for (BankInventory bank : banks.values()) {
 			saveBank(bank);
 		}

@@ -4,7 +4,7 @@ import com.bendude56.bencmd.User;
 import com.bendude56.bencmd.event.BenCmdEvent;
 import com.bendude56.bencmd.protect.ProtectedBlock;
 
-public class ProtectionEvent extends BenCmdEvent {
+public abstract class ProtectionEvent extends BenCmdEvent {
 	private static final long serialVersionUID = 0L;
 	
 	private ProtectedBlock block;

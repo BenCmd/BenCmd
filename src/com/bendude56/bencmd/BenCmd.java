@@ -34,6 +34,7 @@ import com.bendude56.bencmd.chat.channels.ChatChannelController;
 import com.bendude56.bencmd.invisible.Invisibility;
 import com.bendude56.bencmd.invisible.InvisibleCommands;
 import com.bendude56.bencmd.invtools.DispChest;
+import com.bendude56.bencmd.invtools.InventoryBackend;
 import com.bendude56.bencmd.invtools.InventoryCommands;
 import com.bendude56.bencmd.invtools.UnlimitedDisp;
 import com.bendude56.bencmd.invtools.kits.KitList;
@@ -66,7 +67,6 @@ import com.bendude56.bencmd.protect.ProtectedCommands;
 import com.bendude56.bencmd.reporting.ReportCommands;
 import com.bendude56.bencmd.reporting.ReportFile;
 import com.bendude56.bencmd.warps.HomeWarps;
-import com.bendude56.bencmd.warps.Jail;
 import com.bendude56.bencmd.warps.PreWarp;
 import com.bendude56.bencmd.warps.WarpCommands;
 import com.bendude56.bencmd.warps.WarpList;
@@ -103,12 +103,12 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 	public static String stableLoc = "";
 	public static boolean updateAvailable = false;
 	public static String[] devs;
-	public final HashMap<Player, Boolean> godmode = new HashMap<Player, Boolean>();
+	// public final HashMap<Player, Boolean> godmode = new HashMap<Player, Boolean>();
 	public final List<Player> invisible = new ArrayList<Player>();
 	public final List<Player> noinvisible = new ArrayList<Player>();
 	public final List<Player> allinvisible = new ArrayList<Player>();
 	public final List<ActionableUser> offline = new ArrayList<ActionableUser>();
-	public final String propDir = "plugins/BenCmd/";
+	public final static String propDir = "plugins/BenCmd/";
 	public final String[] files = { "action.db", "bank.db", "channels.db", "chest.db",
 			"usage.db", "disp.db", "groups.db", "homes.db", "itembw.db", "items.txt",
 			"kits.db", "lever.db", "lots.db", "main.properties", "npc.db", "portals.db",
@@ -122,28 +122,22 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 	public long lastTime = 0;
 	public long timeFrozenAt = 0;
 	public boolean heroActive = false;
-	public MainPermissions perm;
 	public WarpList warps;
 	public HomeWarps homes;
 	public PreWarp checkpoints;
-	public Jail jail;
 	public UnlimitedDisp dispensers;
 	public DispChest chests;
 	public KitList kits;
 	public Invisibility inv;
 	public ProtectFile protectFile;
-	public MaxPlayers maxPlayers;
 	public ChatChannelController channels;
 	public ReportFile reports;
 	public FlyDetect flyDetect;
 	public WeatherBinding strikeBind;
 	public PriceFile prices;
-	public KickList kicked;
 	public PortalFile portals;
 	public ShelfFile shelff;
-	public ActionFile actions;
 	public SPAreaFile spafile;
-	public BankFile banks;
 	public NPCFile npcs;
 	public RedstoneFile levers;
 	public List<Location> canSpread = new ArrayList<Location>();
@@ -155,7 +149,6 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 	public Calendar clog;
 	public boolean spoutcraft;
 	public SpoutConnector spoutconnect;
-	public ActionLog alog;
 	
 	public void logPermFail() {
 		incStat("permFail");
@@ -208,10 +201,18 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 		for (SPArea a : spafile.listAreas()) {
 			a.delete();
 		}
-		banks.saveAll();
+		// banks.saveAll();
 		for (NPC npc : npcs.allNPCs()) {
 			npc.despawn();
 		}
+		BenCmdBlockListener.destroyInstance();
+		BenCmdPlayerListener.destroyInstance();
+		BenCmdEntityListener.destroyInstance();
+		BenCmdScreenListener.destroyInstance();
+		BenCmdSpoutListener.destroyInstance();
+		BenCmdWorldListener.destroyInstance();
+		BenCmdInventoryListener.destroyInstance();
+		InventoryBackend.destroyInstance();
 		PluginDescriptionFile pdfFile = this.getDescription();
 		log.info(pdfFile.getName() + " v" + pdfFile.getVersion()
 				+ " has been disabled!");
@@ -292,7 +293,6 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 		User.finalizeAll();
 		// Start loading classes
 		bLog.info("Loading databases...");
-		perm = new MainPermissions(this);
 		warps = new WarpList(this);
 		homes = new HomeWarps(this);
 		checkpoints = new PreWarp(this);
@@ -310,21 +310,13 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 		inv = new Invisibility(this);
 		protectFile = new ProtectFile(this, propDir + "protection.db");
 		channels = new ChatChannelController(propDir + "channels.db");
-		maxPlayers = new MaxPlayers(this, mainProperties.getInteger(
-				"maxPlayers", 10), mainProperties.getInteger("maxReserve", 4),
-				mainProperties.getBoolean("reserveActive", true),
-				mainProperties.getBoolean("indefActive", true));
 		reports = new ReportFile(this);
 		flyDetect = new FlyDetect(this);
 		strikeBind = new WeatherBinding(this);
 		prices = new PriceFile(this, propDir + "prices.db");
-		kicked = new KickList(this);
 		portals = new PortalFile(this, propDir + "portals.db");
 		shelff = new ShelfFile(this, propDir + "shelves.db");
-		alog = new ActionLog(propDir + "action.log");
-		actions = new ActionFile(this);
 		spafile = new SPAreaFile(this, propDir + "sparea.db");
-		banks = new BankFile(this, propDir + "bank.db");
 		npcs = new NPCFile(this, propDir + "npc.db");
 		levers = new RedstoneFile(this, propDir + "lever.db");
 		bLog.info("Performing configuration check...");
@@ -532,14 +524,14 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 	 * @param value
 	 *            Whether the player would be godded
 	 */
-	public void setGod(final Player player, final boolean value) {
+	/*public void setGod(final Player player, final boolean value) {
 		if (value) {
 			godmode.put(player, value);
 			player.setHealth(20);
 		} else {
 			godmode.remove(player);
 		}
-	}
+	}*/
 
 	/**
 	 * Checks if a player has god status
@@ -548,13 +540,13 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 	 *            The player to check the status of
 	 * @return Returns whether or not the player has god status
 	 */
-	public boolean isGod(final Player player) {
+	/*public boolean isGod(final Player player) {
 		if (godmode.containsKey(player)) {
 			return godmode.get(player);
 		} else {
 			return false;
 		}
-	}
+	}*/
 
 	public String[] fatalconflicts = new String[] { "Essentials", "KeepChest",
 			"OPImmunity", "Humiliation", "Wrath", "CenZor", "xGive", "getID",

@@ -3,7 +3,7 @@ package com.bendude56.bencmd.event.protect;
 import org.bukkit.event.CustomEventListener;
 import org.bukkit.event.Event;
 
-public class ProtectionListener extends CustomEventListener {
+public abstract class ProtectionListener extends CustomEventListener {
 	
 	public void onProtectionAdd(ProtectionAddEvent event) {
 	}

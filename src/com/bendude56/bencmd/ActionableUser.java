@@ -11,6 +11,7 @@ public class ActionableUser extends WarpableUser {
 	private BenCmd plugin;
 	private Player player;
 	private boolean isConsole;
+	private boolean god;
 
 	/**
 	 * Creates an ActionableUser corresponding to a player entity.
@@ -27,6 +28,7 @@ public class ActionableUser extends WarpableUser {
 		plugin = instance;
 		player = entity;
 		isConsole = false;
+		god = false;
 	}
 
 	/**
@@ -39,6 +41,7 @@ public class ActionableUser extends WarpableUser {
 		super(instance);
 		plugin = instance;
 		isConsole = true;
+		god = false;
 	}
 
 	/**
@@ -209,7 +212,7 @@ public class ActionableUser extends WarpableUser {
 			plugin.log.info("An attempt was made to kill the server!");
 			return false;
 		}
-		if (plugin.isGod(player)) {
+		if (god) {
 			return false;
 		} else {
 			player.setHealth(1);
@@ -245,7 +248,8 @@ public class ActionableUser extends WarpableUser {
 		if (isConsole) {
 			return;
 		}
-		plugin.setGod(player, true);
+		god = true;
+		// plugin.setGod(player, true);
 	}
 
 	/**
@@ -255,7 +259,8 @@ public class ActionableUser extends WarpableUser {
 		if (isConsole) {
 			return;
 		}
-		plugin.setGod(player, false);
+		god = false;
+		// plugin.setGod(player, false);
 	}
 
 	/**
@@ -267,7 +272,8 @@ public class ActionableUser extends WarpableUser {
 		if (isConsole) {
 			return true;
 		}
-		return plugin.isGod(player);
+		return god;
+		// return plugin.isGod(player);
 	}
 
 	public void Mute(long duration) {
