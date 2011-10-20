@@ -1,40 +1,20 @@
 package com.bendude56.bencmd.advanced.bank;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.HashMap;
-import java.util.Properties;
-
 import org.bukkit.entity.Player;
-import org.bukkit.util.FileUtil;
-
 import com.bendude56.bencmd.BenCmd;
+import com.bendude56.bencmd.BenCmdFile;
 
 
-public class BankFile extends Properties {
-	private static final long serialVersionUID = 0L;
-
-	private String filename;
+public class BankFile extends BenCmdFile {
 	private HashMap<String, BankInventory> banks;
 
-	public BankFile(String file) {
+	public BankFile() {
+		super("bank.db", "--BenCmd Bank File--", true);
 		BenCmd plugin = BenCmd.getPlugin();
-		filename = file;
 		banks = new HashMap<String, BankInventory>();
-		if (new File("plugins/BenCmd/_bank.db").exists()) {
-			plugin.log.warning("Bank backup file found... Restoring...");
-			if (FileUtil.copy(new File("plugins/BenCmd/_bank.db"), new File(
-					file))) {
-				new File("plugins/BenCmd/_bank.db").delete();
-				plugin.log.info("Restoration suceeded!");
-			} else {
-				plugin.log.warning("Failed to restore from backup!");
-			}
-		}
 		loadFile();
-		loadBanks();
+		loadAll();
 		plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
 
 			@Override
@@ -43,30 +23,6 @@ public class BankFile extends Properties {
 			}
 			
 		}, 12000, 12000);
-	}
-
-	public void loadFile() {
-		File file = new File(filename);
-		if (file.exists()) {
-			try {
-				load(new FileInputStream(file));
-			} catch (IOException e) {
-				System.out.println("BenCmd had a problem:");
-				e.printStackTrace();
-			}
-		}
-	}
-
-	public void saveFile() {
-		File file = new File(filename);
-		if (file.exists()) {
-			try {
-				store(new FileOutputStream(file), "-BenCmd Shelf List-");
-			} catch (IOException e) {
-				System.out.println("BenCmd had a problem:");
-				e.printStackTrace();
-			}
-		}
 	}
 
 	public boolean hasBank(String pname) {
@@ -85,10 +41,10 @@ public class BankFile extends Properties {
 		getBank(p).open(p2);
 	}
 
-	public void loadBanks() {
+	public void loadAll() {
 		BenCmd plugin = BenCmd.getPlugin();
-		for (int i = 0; i < this.size(); i++) {
-			String key = (String) this.keySet().toArray()[i], value = this
+		for (int i = 0; i < getFile().size(); i++) {
+			String key = (String) getFile().keySet().toArray()[i], value = getFile()
 					.getProperty(key);
 			int comma = 0;
 			for (char c : value.toCharArray()) {
@@ -136,24 +92,11 @@ public class BankFile extends Properties {
 	}
 
 	public void saveBank(BankInventory bank) {
-		BenCmd plugin = BenCmd.getPlugin();
 		try {
-			this.put(bank.p, bank.getValue());
+			getFile().put(bank.p, bank.getValue());
 		} catch (Exception e) {
 		}
-		try {
-			new File("plugins/BenCmd/_bank.db").createNewFile();
-			if (!FileUtil.copy(new File(filename), new File(
-					"plugins/BenCmd/_bank.db"))) {
-				plugin.log.warning("Failed to back up bank database!");
-			}
-		} catch (IOException e) {
-			plugin.log.warning("Failed to back up bank database!");
-		}
 		saveFile();
-		try {
-			new File("plugins/BenCmd/_bank.db").delete();
-		} catch (Exception e) { }
 	}
 
 	public void saveAll() {
@@ -164,18 +107,6 @@ public class BankFile extends Properties {
 		for (Player p : plugin.getServer().getOnlinePlayers()) {
 			p.saveData();
 		}
-		try {
-			new File("plugins/BenCmd/_bank.db").createNewFile();
-			if (!FileUtil.copy(new File(filename), new File(
-					"plugins/BenCmd/_bank.db"))) {
-				plugin.log.warning("Failed to back up bank database!");
-			}
-		} catch (IOException e) {
-			plugin.log.warning("Failed to back up bank database!");
-		}
 		saveFile();
-		try {
-			new File("plugins/BenCmd/_bank.db").delete();
-		} catch (Exception e) { }
 	}
 }

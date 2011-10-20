@@ -20,12 +20,11 @@ import com.bendude56.bencmd.*;
 
 
 public class WarpList {
-	BenCmd plugin;
 	HashMap<String, Warp> warps = new HashMap<String, Warp>();
 	List<String> warpString = new ArrayList<String>();
 
-	public WarpList(BenCmd instance) {
-		plugin = instance;
+	public WarpList() {
+		BenCmd plugin = BenCmd.getPlugin();
 		if (new File("plugins/BenCmd/_warps.db").exists()) {
 			plugin.log.warning("Warp backup file found... Restoring...");
 			if (FileUtil.copy(new File("plugins/BenCmd/_warps.db"), new File(
@@ -40,6 +39,7 @@ public class WarpList {
 	}
 
 	public boolean updateWarp(Warp warp) {
+		BenCmd plugin = BenCmd.getPlugin();
 		int ind = this.getIndex(warp);
 		String name = warp.warpName;
 		double x = warp.loc.getX();
@@ -74,6 +74,7 @@ public class WarpList {
 	}
 
 	public boolean remWarp(String name) {
+		BenCmd plugin = BenCmd.getPlugin();
 		int ind = this.getIndex(name);
 		if (ind == -1) {
 			return false;
@@ -96,10 +97,11 @@ public class WarpList {
 	}
 
 	public boolean LoadWarps() {
+		BenCmd plugin = BenCmd.getPlugin();
 		warpString.clear();
 		warps.clear();
 		File warpFile;
-		warpFile = new File(plugin.propDir + "warps.db");
+		warpFile = new File(BenCmd.propDir + "warps.db");
 		String str = "";
 		BufferedReader br;
 		try {
@@ -147,7 +149,7 @@ public class WarpList {
 						group = str.split(":")[3];
 					}
 					warps.put(name, new Warp(x, y, z, yaw, pitch, world, name,
-							group, plugin));
+							group));
 				} catch (IndexOutOfBoundsException e) {
 					plugin.bLog.log(Level.SEVERE,
 							"Couldn't load one of the warps!", e);
@@ -191,8 +193,9 @@ public class WarpList {
 	}
 
 	public boolean SaveFile() {
+		BenCmd plugin = BenCmd.getPlugin();
 		File warpFile;
-		warpFile = new File(plugin.propDir + "warps.db");
+		warpFile = new File(BenCmd.propDir + "warps.db");
 		BufferedWriter bw;
 		try {
 			bw = new BufferedWriter(new FileWriter(warpFile));
@@ -237,9 +240,10 @@ public class WarpList {
 
 	public boolean addWarp(double x, double y, double z, double yaw,
 			double pitch, String world, String name, String group) {
+		BenCmd plugin = BenCmd.getPlugin();
 		Warp warp;
 		try {
-			warp = new Warp(x, y, z, yaw, pitch, world, name, group, plugin);
+			warp = new Warp(x, y, z, yaw, pitch, world, name, group);
 			warps.put(name, warp);
 		} catch (Exception e) {
 			plugin.bLog.log(Level.SEVERE, "Couldn't add new warp:", e);
@@ -262,7 +266,7 @@ public class WarpList {
 	public List<Warp> listWarps(Player player) {
 		List<Warp> list = new ArrayList<Warp>();
 		for (Warp warp : warps.values()) {
-			if (warp.canWarpHere(new WarpableUser(plugin, player))) {
+			if (warp.canWarpHere(new WarpableUser(BenCmd.getPlugin(), player))) {
 				list.add(warp);
 			}
 		}

@@ -6,6 +6,7 @@ import java.util.List;
 import org.bukkit.inventory.ItemStack;
 
 import com.bendude56.bencmd.BenCmd;
+import com.bendude56.bencmd.BenCmdManager;
 import com.bendude56.bencmd.User;
 import com.bendude56.bencmd.invtools.InventoryBackend;
 
@@ -15,10 +16,9 @@ public class Kit {
 	private String group;
 	private String kitName;
 	private int kitId;
-	BenCmd plugin;
 
-	public Kit(BenCmd instance, int ID, String value, String name) {
-		plugin = instance;
+	public Kit(int ID, String value, String name) {
+		BenCmd plugin = BenCmd.getPlugin();
 		kitName = name;
 		kitId = ID;
 		if (value.split("/").length >= 2) {
@@ -152,7 +152,7 @@ public class Kit {
 		if (user.hasPerm("bencmd.inv.kit.all")) {
 			return true;
 		}
-		return (user.inGroup(plugin.perm.groupFile.getGroup(group)));
+		return (user.inGroup(BenCmdManager.getPermissionManager().getGroupFile().getGroup(group)));
 	}
 
 	public boolean giveKit(User user) {

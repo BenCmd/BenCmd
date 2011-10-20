@@ -1,72 +1,32 @@
 package com.bendude56.bencmd.lots;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Properties;
-
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.util.FileUtil;
-
 import com.bendude56.bencmd.BenCmd;
+import com.bendude56.bencmd.BenCmdFile;
 import com.bendude56.bencmd.User;
 import com.bendude56.bencmd.permissions.PermissionUser;
 
 
-public class LotFile extends Properties {
+public class LotFile extends BenCmdFile {
+	// TODO Use lot instances instead of Strings!
+	
+	protected HashMap<String, Lot> lots = new HashMap<String, Lot>();
 
-	private static final long serialVersionUID = 1L;
-	File file;
-	BenCmd plugin;
-	HashMap<String, Lot> lot = new HashMap<String, Lot>();
-
-	public LotFile(BenCmd instance) {
-		plugin = instance;
-		if (new File("plugins/BenCmd/_lots.db").exists()) {
-			plugin.log.warning("Lot backup file found... Restoring...");
-			if (FileUtil.copy(new File("plugins/BenCmd/_lots.db"), new File(
-					"plugins/BenCmd/lots.db"))) {
-				new File("plugins/BenCmd/_lots.db").delete();
-				plugin.log.info("Restoration suceeded!");
-			} else {
-				plugin.log.warning("Failed to restore from backup!");
-			}
-		}
-		this.reload(); // Load the values into memory.
+	public LotFile() {
+		super("lots.db", "--BenCmd Lot File--", true);
+		this.loadAll(); // Load the values into memory.
 	}
 
-	/**
-	 * This method reloads the lots database from the hard drive.
-	 */
-	public void reload() {
-		file = new File("plugins/BenCmd/lots.db"); // Prepare the file
-		if (!file.exists()) {
-			try {
-				file.createNewFile(); // If the file doesn't exist, create it!
-			} catch (IOException ex) {
-				// If you can't, produce an error.
-				plugin.log.severe("BenCmd had a problem:");
-				ex.printStackTrace();
-				return;
-			}
-		}
-		try {
-			load(new FileInputStream(file)); // Load the values
-		} catch (IOException ex) {
-			// If you can't, produce an error.
-			plugin.log.severe("BenCmd had a problem:");
-			ex.printStackTrace();
-		}
-		lot.clear();
-		for (Object key : this.keySet()) {
+	public void loadAll() {
+		lots.clear();
+		for (Object key : getFile().keySet()) {
 			String LotIDString = (String) key;
 			try {
-				lot.put(LotIDString,
-						new Lot(plugin, LotIDString, (String) this
+				lots.put(LotIDString,
+						new Lot(LotIDString, (String) getFile()
 								.get(LotIDString)));
 			} catch (NumberFormatException e) {
 			}
@@ -76,70 +36,43 @@ public class LotFile extends Properties {
 	/**
 	 * This method saves all of the lots.
 	 */
-	public void save() {
-		// TODO Add a method that saves only one lot
-		file = new File("plugins/BenCmd/lots.db"); // Prepare the file
-		if (!file.exists()) {
-			try {
-				file.createNewFile(); // If the file doesn't exist, create it!
-			} catch (IOException ex) {
-				// If you can't, produce an error.
-				plugin.log.severe("BenCmd had a problem:");
-				ex.printStackTrace();
-				return;
-			}
+	public void saveAll() {
+		for (Lot lotVal : lots.values()) {
+			saveLot(lotVal, false);
 		}
-		try {
-			new File("plugins/BenCmd/_lots.db").createNewFile();
-			if (!FileUtil.copy(new File("plugins/BenCmd/lots.db"), new File(
-					"plugins/BenCmd/_lots.db"))) {
-				plugin.log.warning("Failed to back up lot database!");
-			}
-		} catch (IOException e) {
-			plugin.log.warning("Failed to back up lot database!");
-		}
-		this.clear();
-		for (Lot lotVal : lot.values()) {
-			Location corner1, corner2;
-			corner1 = lotVal.getCorner1();
-			corner2 = lotVal.getCorner2();
+		saveFile();
+	}
+	
+	public void saveLot(Lot lot, boolean saveFile) {
+		Location corner1, corner2;
+		corner1 = lot.getCorner1();
+		corner2 = lot.getCorner2();
 
-			String LotID = lotVal.getFullID();
-			String value = "";
-			value += corner1.getBlockX() + ",";
-			value += corner1.getBlockY() + ",";
-			value += corner1.getBlockZ() + ",";
-			value += corner1.getWorld().getName() + ",";
-			value += corner2.getBlockX() + ",";
-			value += corner2.getBlockY() + ",";
-			value += corner2.getBlockZ() + ",";
-			value += corner2.getWorld().getName();
-			if (lotVal.getSubID().equalsIgnoreCase("0")) {
-				String owner = lotVal.getOwner();
-				String group = lotVal.getLotGroup();
-				List<String> guests = lotVal.guests;
-				value += "," + owner + ",";
-				value += group;
-				int i = 0;
-				while (i < guests.size()) {
-					value += "," + guests.get(i);
-					i++;
-				}
+		String LotID = lot.getFullID();
+		String value = "";
+		value += corner1.getBlockX() + ",";
+		value += corner1.getBlockY() + ",";
+		value += corner1.getBlockZ() + ",";
+		value += corner1.getWorld().getName() + ",";
+		value += corner2.getBlockX() + ",";
+		value += corner2.getBlockY() + ",";
+		value += corner2.getBlockZ() + ",";
+		value += corner2.getWorld().getName();
+		if (lot.getSubID().equalsIgnoreCase("0")) {
+			String owner = lot.getOwner();
+			String group = lot.getLotGroup();
+			List<String> guests = lot.guests;
+			value += "," + owner + ",";
+			value += group;
+			int i = 0;
+			while (i < guests.size()) {
+				value += "," + guests.get(i);
+				i++;
 			}
-			this.put(LotID, value);
 		}
-		try {
-			store(new FileOutputStream(file), "BenCmd Lots File"); // Save
-																	// the
-																	// values
-		} catch (IOException ex) {
-			// If you can't, produce an error.
-			plugin.log.severe("BenCmd had a problem:");
-			ex.printStackTrace();
-		}
-		try {
-			new File("plugins/BenCmd/_lots.db").delete();
-		} catch (Exception e) { }
+		getFile().put(LotID, value);
+		if (saveFile)
+			saveFile();
 	}
 
 	/**
@@ -156,6 +89,7 @@ public class LotFile extends Properties {
 	public boolean addLot(String LotID, Location corner1, Location corner2,
 			String owner, String group) {
 		try {
+			// TODO Make a Lot constructor that doesn't require this!
 			String value = "";
 			value += corner1.getBlockX() + ",";
 			value += corner1.getBlockY() + ",";
@@ -169,8 +103,9 @@ public class LotFile extends Properties {
 				value += "," + owner + ",";
 				value += group;
 			}
-			lot.put(LotID, new Lot(plugin, LotID, value));
-			save();
+			Lot l;
+			lots.put(LotID, l = new Lot(LotID, value));
+			saveLot(l, true);
 			return true;
 		} catch (Exception e) {
 			return false; // An unknown error was encountered!
@@ -195,14 +130,13 @@ public class LotFile extends Properties {
 		LotID = LotID.split(",")[0];
 		if (SubID.equalsIgnoreCase("-1")) {
 			try {
-				for (String key : plugin.lots.getLot(LotID).getSubs())
-					lot.remove(key);
-				save();
+				for (Lot l : getLot(LotID).getSubs())
+					deleteLot(l.getFullID());
 			} catch (Exception e) {
 				return false; // An unknown error was encountered!
 			}
-			return true;
-		} else if (this.lotExists((LotID + "," + SubID))) {
+		} else if (this.lotExists(LotID + "," + SubID)) {
+			// TODO Clean this up!
 			if (SubID.equalsIgnoreCase("0") && this.lotExists(LotID + ",1")) {
 				Lot oldLot = this.getLot(LotID + ",0");
 				Lot newLot = this.getLot(LotID + ",1");
@@ -212,29 +146,29 @@ public class LotFile extends Properties {
 				String group = oldLot.getGroup();
 				List<String> guests = oldLot.guests;
 				try {
-					lot.remove((LotID + ",0"));
+					lots.remove((LotID + ",0"));
 					this.addLot(LotID + ",0", corner1, corner2, owner, group);
 					this.getLot(LotID + ",0").guests = guests;
-					lot.remove(LotID + ",1");
-					save();
+					lots.remove(LotID + ",1");
+					saveLot(this.getLot(LotID + ",0"), false);
 				} catch (Exception e) {
 					return false;
 				}
 				this.sortSubs(LotID);
-				save();
+				saveFile();
 			} else {
 				try {
-					lot.remove((LotID + "," + SubID));
-					save();
+					lots.remove(LotID + "," + SubID);
+					this.sortSubs(LotID);
+					saveFile();
 				} catch (Exception e) {
 					return false;
 				}
-				this.sortSubs(LotID);
-				save();
 			}
-			return true;
+		} else {
+			return false;
 		}
-		return false;
+		return true;
 	}
 
 	/**
@@ -251,14 +185,14 @@ public class LotFile extends Properties {
 		} else {
 			LotID = LotID.split(",")[0] + "," + LotID.split(",")[1];
 		}
-		if (lot.containsKey(LotID))
+		if (lots.containsKey(LotID))
 			return true;
 		else
 			return false;
 	}
 
 	public String isInLot(Location loc) {
-		for (Lot lotVal : lot.values()) {
+		for (Lot lotVal : lots.values()) {
 			if (lotVal.withinLot(loc)) {
 				return lotVal.getFullID();
 			}
@@ -270,7 +204,7 @@ public class LotFile extends Properties {
 		if (LotID.split(",").length == 1)
 			LotID = LotID + ",0";
 		LotID = LotID.split(",")[0] + "," + LotID.split(",")[1];
-		return lot.get(LotID);
+		return lots.get(LotID);
 	}
 
 	public boolean isBetween(int top, int middle, int bottom) {
@@ -284,7 +218,7 @@ public class LotFile extends Properties {
 	public String getNextID() {
 		int i = 0;
 		while (true) {
-			if (!this.containsKey(String.valueOf(i) + ",0")) {
+			if (!getFile().containsKey(String.valueOf(i) + ",0")) {
 				return (String.valueOf(i) + ",0");
 			}
 			i++;
@@ -295,7 +229,7 @@ public class LotFile extends Properties {
 	public String getNextSubID(String LotID) {
 		int i = 0;
 		while (true) {
-			if (!this.containsKey(LotID + "," + i)) {
+			if (!getFile().containsKey(LotID + "," + i)) {
 				return String.valueOf(i);
 			}
 			i++;
@@ -336,10 +270,11 @@ public class LotFile extends Properties {
 		int sub;
 		if (!this.lotExists(LotID))
 			return;
-		for (String lot : this.getLot(LotID).getSubs()) {
+		for (Lot l : this.getLot(LotID).getSubs()) {
 			try {
-				sub = Integer.parseInt(lot.split(",")[1]);
+				sub = Integer.parseInt(l.FullID.split(",")[1]);
 			} catch (NumberFormatException e) {
+				BenCmd plugin = BenCmd.getPlugin();
 				plugin.log.severe("A lot's sub-id is formatted wrong!");
 				plugin.bLog.severe("A lot's sub-id is formatted wrong!");
 				return;
@@ -350,24 +285,27 @@ public class LotFile extends Properties {
 		for (i = 0; i <= max; i++) {
 			if (lotExists((LotID + "," + i))) {
 				if (sort > 0) {
+					// TODO Clean this up!
 					this.addLot((LotID + "," + (i - sort)),
 							this.getLot(LotID + "," + i).getCorner1(), this
 									.getLot(LotID + "," + i).getCorner2(), this
 									.getLot(LotID + "," + i).getOwner(), this
 									.getLot(LotID + "," + i).getGroup());
-					this.lot.remove((LotID + "," + i));
+					this.lots.remove(LotID + "," + i);
 				}
-			} else
+			} else {
 				sort++;
+			}
 		}
+		saveFile();
 	}
 
 	public boolean canBuildHere(Player player, Location location) {
 		boolean inLot = false;
-		for (String LotID : lot.keySet()) {
-			if (plugin.lots.getLot(LotID).withinLot(location)) {
+		for (String LotID : lots.keySet()) {
+			if (getLot(LotID).withinLot(location)) {
 				inLot = true;
-				if (plugin.lots.getLot(LotID).canBuild(player)) {
+				if (getLot(LotID).canBuild(player)) {
 					return true;
 				}
 			}
@@ -376,9 +314,9 @@ public class LotFile extends Properties {
 			return false;
 		} else {
 
-			User user = User.getUser(plugin, player);
+			User user = User.getUser(BenCmd.getPlugin(), player);
 
-			if (plugin.mainProperties.getBoolean("useGlobalLot", false)
+			if (BenCmd.getPlugin().mainProperties.getBoolean("useGlobalLot", false)
 					&& !user.hasPerm("bencmd.lot.globalguest")) {
 				return false;
 			} else {
@@ -387,19 +325,20 @@ public class LotFile extends Properties {
 		}
 	}
 
+	// TODO Return Enum instead of String!
 	public String ownsHere(Player player, Location location) {
 		boolean inLot = false;
-		for (String LotID : lot.keySet()) {
-			if (plugin.lots.getLot(LotID).withinLot(location)) {
+		for (String LotID : lots.keySet()) {
+			if (getLot(LotID).withinLot(location)) {
 				inLot = true;
 				PermissionUser user = PermissionUser.matchUser(
-						player.getName(), plugin);
+						player.getName(), BenCmd.getPlugin());
 				if (user == null) {
 					return "noUser";
 				}
-				if (plugin.lots.getLot(LotID).isOwner(player)
+				if (getLot(LotID).isOwner(player)
 						|| user.hasPerm("bencmd.lot.buildall")) {
-					return plugin.lots.getLot(LotID).getLotID();
+					return getLot(LotID).getLotID();
 				}
 			}
 		}

@@ -1,50 +1,28 @@
 package com.bendude56.bencmd.chat.channels;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
-
 import org.bukkit.ChatColor;
-import org.bukkit.util.FileUtil;
-
-import com.bendude56.bencmd.BenCmd;
+import com.bendude56.bencmd.BenCmdFile;
 import com.bendude56.bencmd.User;
 import com.bendude56.bencmd.chat.channels.ChatChannel.ChatLevel;
 import com.bendude56.bencmd.permissions.PermissionUser;
 
 
-public class ChatChannelController extends Properties {
-	private static final long serialVersionUID = 0L;
-	private String fileName;
+public class ChatChannelController extends BenCmdFile {
 	private List<ChatChannel> channels;
 
 	public ChatChannelController(String fileName) {
-		BenCmd plugin = BenCmd.getPlugin();
-		this.fileName = fileName;
-		channels = new ArrayList<ChatChannel>();
-		if (new File("plugins/BenCmd/_channels.db").exists()) {
-			plugin.log.warning("Channel backup file found... Restoring...");
-			if (FileUtil.copy(new File("plugins/BenCmd/_channels.db"), new File(
-					fileName))) {
-				new File("plugins/BenCmd/_channels.db").delete();
-				plugin.log.info("Restoration suceeded!");
-			} else {
-				plugin.log.warning("Failed to restore from backup!");
-			}
-		}
+		super("channels.db", "--BenCmd Channel File--", true);
 		loadFile();
-		loadChannels();
+		loadAll();
 	}
 
-	private void loadChannels() {
-		for (int i = 0; i < this.size(); i++) {
+	public void loadAll() {
+		for (int i = 0; i < getFile().size(); i++) {
 			ChatChannel channel = ChatChannel
-					.getChannel(this, (String) this.keySet().toArray()[i],
-							(String) this.values().toArray()[i]);
+					.getChannel(this, (String) getFile().keySet().toArray()[i],
+							(String) getFile().values().toArray()[i]);
 			if (channel != null) {
 				channels.add(channel);
 			}
@@ -52,21 +30,15 @@ public class ChatChannelController extends Properties {
 	}
 
 	protected void saveChannel(ChatChannel channel) {
-		BenCmd plugin = BenCmd.getPlugin();
-		this.put(channel.getName(), channel.getValue());
-		try {
-			new File("plugins/BenCmd/_channels.db").createNewFile();
-			if (!FileUtil.copy(new File(fileName), new File(
-					"plugins/BenCmd/_channels.db"))) {
-				plugin.log.warning("Failed to back up channel database!");
-			}
-		} catch (IOException e) {
-			plugin.log.warning("Failed to back up channel database!");
+		getFile().put(channel.getName(), channel.getValue());
+		saveFile();
+	}
+	
+	public void saveAll() {
+		for (ChatChannel channel : channels) {
+			getFile().put(channel.getName(), channel.getValue());
 		}
-		saveFile("-BenCmd Channel List-");
-		try {
-			new File("plugins/BenCmd/_channels.db").delete();
-		} catch (Exception e) { }
+		saveFile();
 	}
 
 	public ChatChannel getChannel(String name) {
@@ -124,31 +96,7 @@ public class ChatChannelController extends Properties {
 	protected void removeChannel(ChatChannel channel) {
 		channel.prepDelete();
 		channels.remove(channel);
-		this.remove(channel.getName());
-		this.saveFile("-BenCmd Channel List-");
-	}
-
-	public void loadFile() {
-		File file = new File(fileName);
-		if (file.exists()) {
-			try {
-				load(new FileInputStream(file));
-			} catch (IOException e) {
-				System.out.println("BenCmd had a problem:");
-				e.printStackTrace();
-			}
-		}
-	}
-
-	public void saveFile(String header) {
-		File file = new File(fileName);
-		if (file.exists()) {
-			try {
-				store(new FileOutputStream(file), header);
-			} catch (IOException e) {
-				System.out.println("BenCmd had a problem:");
-				e.printStackTrace();
-			}
-		}
+		getFile().remove(channel.getName());
+		saveFile();
 	}
 }

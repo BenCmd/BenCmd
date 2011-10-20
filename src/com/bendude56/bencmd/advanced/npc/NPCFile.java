@@ -1,77 +1,31 @@
 package com.bendude56.bencmd.advanced.npc;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Properties;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.FileUtil;
-
 import com.bendude56.bencmd.BenCmd;
+import com.bendude56.bencmd.BenCmdFile;
 import com.bendude56.bencmd.advanced.npc.BlacksmithNPC.*;
 
 
-public class NPCFile extends Properties {
-	private static final long serialVersionUID = 0L;
-
-	private String filename;
+public class NPCFile extends BenCmdFile {
 	private HashMap<Integer, NPC> npcs;
-	private BenCmd plugin;
 
-	public NPCFile(BenCmd instance, String file) {
-		plugin = instance;
-		filename = file;
+	public NPCFile() {
+		super("npc.db", "--BenCmd NPC File--", true);
 		npcs = new HashMap<Integer, NPC>();
-		if (new File("plugins/BenCmd/_npc.db").exists()) {
-			plugin.log.warning("NPC backup file found... Restoring...");
-			if (FileUtil.copy(new File("plugins/BenCmd/_npc.db"), new File(
-					file))) {
-				new File("plugins/BenCmd/_npc.db").delete();
-				plugin.log.info("Restoration suceeded!");
-			} else {
-				plugin.log.warning("Failed to restore from backup!");
-			}
-		}
-		Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
+		Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(BenCmd.getPlugin(), new Runnable() {
 			public void run() {
 				tickAll();
 			}
 		}, 1, 1);
 		loadFile();
-		loadNPCs();
-	}
-
-	public void loadFile() {
-		File file = new File(filename);
-		if (file.exists()) {
-			try {
-				load(new FileInputStream(file));
-			} catch (IOException e) {
-				System.out.println("BenCmd had a problem:");
-				e.printStackTrace();
-			}
-		}
-	}
-
-	public void saveFile() {
-		File file = new File(filename);
-		if (file.exists()) {
-			try {
-				store(new FileOutputStream(file), "-BenCmd NPC List-");
-			} catch (IOException e) {
-				System.out.println("BenCmd had a problem:");
-				e.printStackTrace();
-			}
-		}
+		loadAll();
 	}
 	
 	public void reloadNPCs() {
@@ -79,13 +33,14 @@ public class NPCFile extends Properties {
 			n.despawn();
 		}
 		npcs.clear();
-		loadNPCs();
+		loadAll();
 	}
 
-	public void loadNPCs() {
-		for (int i = 0; i < this.size(); i++) {
-			Integer key = Integer.parseInt((String) this.keySet().toArray()[i]);
-			String value = this.getProperty(key.toString());
+	public void loadAll() {
+		BenCmd plugin = BenCmd.getPlugin();
+		for (int i = 0; i < getFile().size(); i++) {
+			Integer key = Integer.parseInt((String) getFile().keySet().toArray()[i]);
+			String value = getFile().getProperty(key.toString());
 			Location l = null;
 			switch (value.split("\\|")[0].charAt(0)) {
 			case 'b':
@@ -151,10 +106,6 @@ public class NPCFile extends Properties {
 			{
 				list.add(n);
 			}
-			/*CraftChunk c2 = (CraftChunk) n.getLocation().getBlock().getChunk();
-			if (c2.getX() == c.getX() && c2.getZ() == c.getZ()) {
-				list.add(n);
-			}*/
 		}
 		return list;
 	}
@@ -165,7 +116,7 @@ public class NPCFile extends Properties {
 
 	private Location toLocation(String s) {
 		String[] splt = s.split(",");
-		World w = plugin.getServer().getWorld(splt[0]);
+		World w = Bukkit.getWorld(splt[0]);
 		Double x = Double.parseDouble(splt[1]);
 		Double y = Double.parseDouble(splt[2]);
 		Double z = Double.parseDouble(splt[3]);
@@ -202,7 +153,7 @@ public class NPCFile extends Properties {
 	public void remNPC(NPC npc) {
 		npc.despawn();
 		npcs.remove(npc.getID());
-		this.remove(String.valueOf(npc.getID()));
+		getFile().remove(String.valueOf(npc.getID()));
 		saveFile();
 	}
 	
@@ -211,21 +162,9 @@ public class NPCFile extends Properties {
 	}
 
 	public void saveNPC(NPC npc, boolean saveFile) {
-		this.put(String.valueOf(npc.getID()), npc.getValue());
+		getFile().put(String.valueOf(npc.getID()), npc.getValue());
 		if (saveFile) {
-			try {
-				new File("plugins/BenCmd/_npc.db").createNewFile();
-				if (!FileUtil.copy(new File(filename), new File(
-						"plugins/BenCmd/_npc.db"))) {
-					plugin.log.warning("Failed to back up NPC database!");
-				}
-			} catch (IOException e) {
-				plugin.log.warning("Failed to back up NPC database!");
-			}
 			saveFile();
-			try {
-				new File("plugins/BenCmd/_npc.db").delete();
-			} catch (Exception e) { }
 		}
 	}
 
@@ -233,19 +172,7 @@ public class NPCFile extends Properties {
 		for (NPC npc : npcs.values()) {
 			saveNPC(npc, false);
 		}
-		try {
-			new File("plugins/BenCmd/_npc.db").createNewFile();
-			if (!FileUtil.copy(new File(filename), new File(
-					"plugins/BenCmd/_npc.db"))) {
-				plugin.log.warning("Failed to back up NPC database!");
-			}
-		} catch (IOException e) {
-			plugin.log.warning("Failed to back up NPC database!");
-		}
 		saveFile();
-		try {
-			new File("plugins/BenCmd/_npc.db").delete();
-		} catch (Exception e) { }
 	}
 	
 	public void tickAll() {

@@ -3,7 +3,7 @@ package com.bendude56.bencmd.permissions;
 import org.bukkit.Location;
 
 import com.bendude56.bencmd.BenCmd;
-import com.bendude56.bencmd.warps.Jail;
+import com.bendude56.bencmd.PluginProperties;
 import com.bendude56.bencmd.warps.Warp;
 
 public class MainPermissions {
@@ -17,11 +17,17 @@ public class MainPermissions {
 	private Warp jail;
 
 	public MainPermissions() {
+		PluginProperties prop = BenCmd.getPlugin().mainProperties;
 		userFile = new UserFile();
 		groupFile = new GroupFile();
 		itemList = new ItemBW();
 		action = new ActionFile();
 		alog = new ActionLog(BenCmd.propDir + "action.log");
+		kick = new KickList();
+		mp = new MaxPlayers(prop.getInteger(
+				"maxPlayers", 10), prop.getInteger("maxReserve", 4),
+				prop.getBoolean("reserveActive", true),
+				prop.getBoolean("indefActive", true));
 		loadJail();
 	}
 	
@@ -81,5 +87,11 @@ public class MainPermissions {
 		plugin.mainProperties.setProperty("jailLocation", x + "," + y + "," + z
 				+ "," + yaw.toString() + "," + pitch.toString() + "," + world);
 		plugin.mainProperties.saveFile("-BenCmd Main Config-");
+	}
+	
+	public void saveAll() {
+		userFile.saveFile();
+		groupFile.saveFile();
+		action.saveFile();
 	}
 }

@@ -1,76 +1,31 @@
 package com.bendude56.bencmd.lots.sparea;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Properties;
-
+import java.util.Map;
 import org.bukkit.Bukkit;
-import org.bukkit.util.FileUtil;
-
 import com.bendude56.bencmd.BenCmd;
+import com.bendude56.bencmd.BenCmdFile;
 
 
-public class SPAreaFile extends Properties {
-	private static final long serialVersionUID = 0L;
-
-	private String proFile;
-	private BenCmd plugin;
-
+public class SPAreaFile extends BenCmdFile {
 	private HashMap<Integer, SPArea> areas = new HashMap<Integer, SPArea>();
 
-	public SPAreaFile(BenCmd instance, String file) {
-		plugin = instance;
-		proFile = file;
-		if (new File("plugins/BenCmd/_sparea.db").exists()) {
-			plugin.log.warning("SPArea backup file found... Restoring...");
-			if (FileUtil.copy(new File("plugins/BenCmd/_sparea.db"), new File(
-					file))) {
-				new File("plugins/BenCmd/_sparea.db").delete();
-				plugin.log.info("Restoration suceeded!");
-			} else {
-				plugin.log.warning("Failed to restore from backup!");
-			}
-		}
+	public SPAreaFile() {
+		super("sparea.db", "--BenCmd SPArea File--", true);
 		loadFile();
-		loadAreas();
+		loadAll();
 		Bukkit.getServer().getScheduler()
-				.scheduleAsyncRepeatingTask(plugin, new TimeCheck(), 20, 20);
+				.scheduleAsyncRepeatingTask(BenCmd.getPlugin(), new TimeCheck(), 20, 20);
 	}
 
-	public void loadFile() {
-		File file = new File(proFile);
-		if (file.exists()) {
-			try {
-				load(new FileInputStream(file));
-			} catch (IOException e) {
-				System.out.println("BenCmd had a problem:");
-				e.printStackTrace();
-			}
-		}
-	}
-
-	public void saveFile(String header) {
-		File file = new File(proFile);
-		if (file.exists()) {
-			try {
-				store(new FileOutputStream(file), header);
-			} catch (IOException e) {
-				System.out.println("BenCmd had a problem:");
-				e.printStackTrace();
-			}
-		}
-	}
-
-	public void loadAreas() {
+	public void loadAll() {
+		BenCmd plugin = BenCmd.getPlugin();
 		areas.clear();
-		for (int i = 0; i < this.size(); i++) {
-			String key = (String) this.keySet().toArray()[i];
-			String value = (String) this.values().toArray()[i];
+		for (int i = 0; i < getFile().size(); i++) {
+			String key = (String) getFile().keySet().toArray()[i];
+			String value = (String) getFile().values().toArray()[i];
 			int id;
 			try {
 				id = Integer.parseInt(key);
@@ -82,6 +37,7 @@ public class SPAreaFile extends Properties {
 			}
 			String type = value.split("/")[0];
 			try {
+				// TODO Remove need for plugin references for these constructors
 				if (type.equals("pvp")) {
 					areas.put(id, new PVPArea(plugin, key, value));
 				} else if (type.equals("msg")) {
@@ -113,21 +69,10 @@ public class SPAreaFile extends Properties {
 		return areas;
 	}
 
-	public void updateArea(SPArea area) throws UnsupportedOperationException {
-		this.put(area.getAreaID().toString(), area.getValue());
-		try {
-			new File("plugins/BenCmd/_sparea.db").createNewFile();
-			if (!FileUtil.copy(new File(proFile), new File(
-					"plugins/BenCmd/_sparea.db"))) {
-				plugin.log.warning("Failed to back up SPArea database!");
-			}
-		} catch (IOException e) {
-			plugin.log.warning("Failed to back up SPArea database!");
-		}
-		saveFile("--SPECIAL PURPOSE AREAS--");
-		try {
-			new File("plugins/BenCmd/_sparea.db").delete();
-		} catch (Exception e) { }
+	public void updateArea(SPArea area, boolean saveFile) throws UnsupportedOperationException {
+		getFile().put(area.getAreaID().toString(), area.getValue());
+		if (saveFile)
+			saveFile();
 	}
 
 	public int nextId() {
@@ -139,7 +84,7 @@ public class SPAreaFile extends Properties {
 	}
 
 	public void addArea(SPArea area) throws UnsupportedOperationException {
-		updateArea(area);
+		updateArea(area, true);
 		areas.put(area.getAreaID(), area);
 	}
 
@@ -153,21 +98,9 @@ public class SPAreaFile extends Properties {
 
 	public void removeArea(SPArea area) {
 		area.delete();
-		this.remove(area.getAreaID().toString());
+		getFile().remove(area.getAreaID().toString());
 		areas.remove(area.getAreaID());
-		try {
-			new File("plugins/BenCmd/_sparea.db").createNewFile();
-			if (!FileUtil.copy(new File(proFile), new File(
-					"plugins/BenCmd/_sparea.db"))) {
-				plugin.log.warning("Failed to back up SPArea database!");
-			}
-		} catch (IOException e) {
-			plugin.log.warning("Failed to back up SPArea database!");
-		}
-		saveFile("--SPECIAL PURPOSE AREAS--");
-		try {
-			new File("plugins/BenCmd/_sparea.db").delete();
-		} catch (Exception e) { }
+		saveFile();
 	}
 
 	public class TimeCheck implements Runnable {
@@ -179,5 +112,13 @@ public class SPAreaFile extends Properties {
 				}
 			}
 		}
+	}
+
+	@Override
+	public void saveAll() {
+		for (Map.Entry<Integer, SPArea> e : areas.entrySet()) {
+			updateArea(e.getValue(), false);
+		}
+		saveFile();
 	}
 }

@@ -1,51 +1,29 @@
 package com.bendude56.bencmd.money;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Properties;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.FileUtil;
-
 import com.bendude56.bencmd.BenCmd;
+import com.bendude56.bencmd.BenCmdFile;
 import com.bendude56.bencmd.invtools.BCItem;
 import com.bendude56.bencmd.invtools.InventoryBackend;
 
 
-public class PriceFile extends Properties {
-	private static final long serialVersionUID = 0L;
-
-	BenCmd plugin;
-	private String proFile;
+public class PriceFile extends BenCmdFile {
 	private HashMap<String, BuyableItem> items = new HashMap<String, BuyableItem>();
 	private long nextUpdate;
 	private int update;
 	private boolean timerenabled;
 
-	public PriceFile(BenCmd instance, String priceLocation) {
-		plugin = instance;
-		proFile = priceLocation;
-		if (new File("plugins/BenCmd/_prices.db").exists()) {
-			plugin.log.warning("Price backup file found... Restoring...");
-			if (FileUtil.copy(new File("plugins/BenCmd/_prices.db"), new File(
-					priceLocation))) {
-				new File("plugins/BenCmd/_prices.db").delete();
-				plugin.log.info("Restoration suceeded!");
-			} else {
-				plugin.log.warning("Failed to restore from backup!");
-			}
-		}
+	public PriceFile() {
+		super("prices.db", "--BenCmd Price File--", true);
 		loadFile();
-		loadPrices();
-		if (plugin.mainProperties.getInteger("updateTime", 1800000) == -1) {
+		loadAll();
+		if (BenCmd.getPlugin().mainProperties.getInteger("updateTime", 1800000) == -1) {
 			timerenabled = false;
 		} else {
 			timerenabled = false;
@@ -63,7 +41,7 @@ public class PriceFile extends Properties {
 		}
 		timerenabled = true;
 		update = Bukkit.getServer().getScheduler()
-				.scheduleAsyncRepeatingTask(plugin, new Runnable() {
+				.scheduleAsyncRepeatingTask(BenCmd.getPlugin(), new Runnable() {
 					public void run() {
 						pollUpdate();
 					}
@@ -78,102 +56,79 @@ public class PriceFile extends Properties {
 		Bukkit.getServer().getScheduler().cancelTask(update);
 	}
 
-	public void loadFile() {
-		File file = new File(proFile);
-		if (file.exists()) {
-			try {
-				load(new FileInputStream(file));
-			} catch (IOException e) {
-				System.out.println("BenCmd had a problem:");
-				e.printStackTrace();
-			}
-		}
-	}
-
-	public void saveFile() {
-		File file = new File(proFile);
-		if (file.exists()) {
-			try {
-				store(new FileOutputStream(file), "--BenCmd Price List--");
-			} catch (IOException e) {
-				System.out.println("BenCmd had a problem:");
-				e.printStackTrace();
-			}
-		}
-	}
-
-	public void loadPrices() {
+	public void loadAll() {
+		BenCmd plugin = BenCmd.getPlugin();
 		nextUpdate = 0;
 		items.clear();
-		for (int i = 0; i < this.values().size(); i++) {
+		for (int i = 0; i < getFile().values().size(); i++) {
 			int itemid;
 			int damage;
 			double price;
 			int supply;
 			int supplydemand;
 			boolean isCurrency;
-			if (((String) this.keySet().toArray()[i])
+			if (((String) getFile().keySet().toArray()[i])
 					.equalsIgnoreCase("nextUpdate")) {
 				try {
-					nextUpdate = Long.parseLong(this.getProperty("nextUpdate"));
+					nextUpdate = Long.parseLong(getFile().getProperty("nextUpdate"));
 				} catch (NumberFormatException e) {
 					plugin.log.severe("nextUpdate (value: "
-							+ this.getProperty("nextUpdate")
+							+ getFile().getProperty("nextUpdate")
 							+ ") couldn't be converted to a number!");
 					plugin.bLog.info("nextUpdate invalid!");
 				}
 				continue;
 			}
 			try {
-				itemid = Integer.parseInt(((String) this.keySet().toArray()[i])
+				itemid = Integer.parseInt(((String) getFile().keySet().toArray()[i])
 						.split(",")[0]);
 			} catch (NumberFormatException e) {
 				plugin.log
 						.severe("A value in the price file couldn't be loaded ("
-								+ this.keySet().toArray()[i] + "): ID is NaN");
-				plugin.bLog.info("BuyableItem " + this.keySet().toArray()[i]
+								+ getFile().keySet().toArray()[i] + "): ID is NaN");
+				plugin.bLog.info("BuyableItem " + getFile().keySet().toArray()[i]
 						+ " invalid!");
 				continue;
 			} catch (IndexOutOfBoundsException e) {
 				plugin.log
 						.severe("A value in the price file couldn't be loaded ("
-								+ this.keySet().toArray()[i]
+								+ getFile().keySet().toArray()[i]
 								+ "): ID is missing");
-				plugin.bLog.info("BuyableItem " + this.keySet().toArray()[i]
+				plugin.bLog.info("BuyableItem " + getFile().keySet().toArray()[i]
 						+ " invalid!");
 				continue;
 			}
 			try {
-				damage = Integer.parseInt(((String) this.keySet().toArray()[i])
+				damage = Integer.parseInt(((String) getFile().keySet().toArray()[i])
 						.split(",")[1]);
 			} catch (NumberFormatException e) {
 				plugin.log
 						.severe("A value in the price file couldn't be loaded ("
-								+ this.keySet().toArray()[i]
+								+ getFile().keySet().toArray()[i]
 								+ "): Damage is NaN");
-				plugin.bLog.info("BuyableItem " + this.keySet().toArray()[i]
+				plugin.bLog.info("BuyableItem " + getFile().keySet().toArray()[i]
 						+ " invalid!");
 				continue;
 			} catch (IndexOutOfBoundsException e) {
 				damage = 0;
 			}
-			String[] slashsplit = ((String) this.values().toArray()[i])
+			String[] slashsplit = ((String) getFile().values().toArray()[i])
 					.split("/");
 			try {
 				price = Double.parseDouble(slashsplit[0]);
 			} catch (NumberFormatException e) {
 				plugin.log
 						.severe("A value in the price file couldn't be loaded ("
-								+ this.keySet().toArray()[i] + "): Cost is NaN");
-				plugin.bLog.info("BuyableItem " + this.keySet().toArray()[i]
+								+ getFile().keySet().toArray()[i] + "): Cost is NaN");
+				plugin.bLog.info("BuyableItem " + getFile().keySet().toArray()[i]
 						+ " invalid!");
 				continue;
 			} catch (IndexOutOfBoundsException e) {
 				plugin.log
 						.severe("A value in the price file couldn't be loaded ("
-								+ this.keySet().toArray()[i]
+								+ getFile().keySet().toArray()[i]
 								+ "): Cost is missing");
-				plugin.bLog.info("BuyableItem " + this.keySet().toArray()[i]
+				plugin.bLog.info("BuyableItem " + getFile().keySet().toArray()[i]
 						+ " invalid!");
 				continue;
 			}
@@ -182,17 +137,17 @@ public class PriceFile extends Properties {
 			} catch (NumberFormatException e) {
 				plugin.log
 						.severe("A value in the price file couldn't be loaded ("
-								+ this.keySet().toArray()[i]
+								+ getFile().keySet().toArray()[i]
 								+ "): Supply is NaN");
-				plugin.bLog.info("BuyableItem " + this.keySet().toArray()[i]
+				plugin.bLog.info("BuyableItem " + getFile().keySet().toArray()[i]
 						+ " invalid!");
 				continue;
 			} catch (IndexOutOfBoundsException e) {
 				plugin.log
 						.severe("A value in the price file couldn't be loaded ("
-								+ this.keySet().toArray()[i]
+								+ getFile().keySet().toArray()[i]
 								+ "): Supply is missing");
-				plugin.bLog.info("BuyableItem " + this.keySet().toArray()[i]
+				plugin.bLog.info("BuyableItem " + getFile().keySet().toArray()[i]
 						+ " invalid!");
 				continue;
 			}
@@ -201,17 +156,17 @@ public class PriceFile extends Properties {
 			} catch (NumberFormatException e) {
 				plugin.log
 						.severe("A value in the price file couldn't be loaded ("
-								+ this.keySet().toArray()[i]
+								+ getFile().keySet().toArray()[i]
 								+ "): Supply/Demand is NaN");
-				plugin.bLog.info("BuyableItem " + this.keySet().toArray()[i]
+				plugin.bLog.info("BuyableItem " + getFile().keySet().toArray()[i]
 						+ " invalid!");
 				continue;
 			} catch (IndexOutOfBoundsException e) {
 				plugin.log
 						.severe("A value in the price file couldn't be loaded ("
-								+ this.keySet().toArray()[i]
+								+ getFile().keySet().toArray()[i]
 								+ "): Supply/Demand is missing");
-				plugin.bLog.info("BuyableItem " + this.keySet().toArray()[i]
+				plugin.bLog.info("BuyableItem " + getFile().keySet().toArray()[i]
 						+ " invalid!");
 				continue;
 			}
@@ -220,9 +175,9 @@ public class PriceFile extends Properties {
 			} catch (IndexOutOfBoundsException e) {
 				plugin.log
 						.severe("A value in the price file couldn't be loaded ("
-								+ this.keySet().toArray()[i]
+								+ getFile().keySet().toArray()[i]
 								+ "): isCurrency is missing");
-				plugin.bLog.info("BuyableItem " + this.keySet().toArray()[i]
+				plugin.bLog.info("BuyableItem " + getFile().keySet().toArray()[i]
 						+ " invalid!");
 				continue;
 			}
@@ -240,7 +195,7 @@ public class PriceFile extends Properties {
 		}
 	}
 
-	public void savePrice(BuyableItem item) {
+	public void savePrice(BuyableItem item, boolean saveFile) {
 		String key = item.getItemId() + "," + item.getDurability();
 		String value = item.getPrice().toString();
 		value += "/" + item.getSupply().toString();
@@ -250,44 +205,21 @@ public class PriceFile extends Properties {
 		} else {
 			value += "/false";
 		}
-		this.put(key, value);
+		getFile().put(key, value);
 		items.put(key, item);
-		try {
-			new File("plugins/BenCmd/_prices.db").createNewFile();
-			if (!FileUtil.copy(new File(proFile), new File(
-					"plugins/BenCmd/_prices.db"))) {
-				plugin.log.warning("Failed to back up price database!");
-			}
-		} catch (IOException e) {
-			plugin.log.warning("Failed to back up price database!");
-		}
-		saveFile();
-		try {
-			new File("plugins/BenCmd/_prices.db").delete();
-		} catch (Exception e) { }
+		if (saveFile)
+			saveFile();
 	}
 
 	public void remPrice(BuyableItem item) {
 		String key = item.getItemId() + "," + item.getDurability();
-		this.remove(key);
+		getFile().remove(key);
 		items.remove(key);
-		try {
-			new File("plugins/BenCmd/_prices.db").createNewFile();
-			if (!FileUtil.copy(new File(proFile), new File(
-					"plugins/BenCmd/_prices.db"))) {
-				plugin.log.warning("Failed to back up price database!");
-			}
-		} catch (IOException e) {
-			plugin.log.warning("Failed to back up price database!");
-		}
 		saveFile();
-		try {
-			new File("plugins/BenCmd/_prices.db").delete();
-		} catch (Exception e) { }
 	}
 
 	public void pollUpdate() {
-		if (plugin.mainProperties.getInteger("updateTime", 1800000) == -1) {
+		if (BenCmd.getPlugin().mainProperties.getInteger("updateTime", 1800000) == -1) {
 			return;
 		}
 		long nowTime = new Date().getTime();
@@ -306,10 +238,11 @@ public class PriceFile extends Properties {
 	}
 
 	public void ForceUpdate() {
+		BenCmd plugin = BenCmd.getPlugin();
 		nextUpdate = new Date().getTime()
 				+ plugin.mainProperties.getInteger("updateTime", 1800000);
 		saveUpdateTime();
-		plugin.getServer().broadcastMessage(
+		Bukkit.broadcastMessage(
 				ChatColor.RED + "ALERT: All prices are being updated...");
 		for (BuyableItem item : items.values()) {
 			if (item instanceof Currency) {
@@ -332,7 +265,7 @@ public class PriceFile extends Properties {
 				newPrice = Math.ceil(newPrice) / 100;
 				item.setPrice(newPrice);
 				item.resetSupplyDemand();
-				savePrice(item);
+				savePrice(item, false);
 			} else if (item.getSupplyDemand() < 0) {
 				Double oldPrice = item.getPrice();
 				Double newPrice = oldPrice;
@@ -352,26 +285,15 @@ public class PriceFile extends Properties {
 				}
 				item.setPrice(newPrice);
 				item.resetSupplyDemand();
-				savePrice(item);
+				savePrice(item, false);
 			}
 		}
+		saveFile();
 	}
 
 	public void saveUpdateTime() {
-		this.put("nextUpdate", String.valueOf(nextUpdate));
-		try {
-			new File("plugins/BenCmd/_prices.db").createNewFile();
-			if (!FileUtil.copy(new File(proFile), new File(
-					"plugins/BenCmd/_prices.db"))) {
-				plugin.log.warning("Failed to back up price database!");
-			}
-		} catch (IOException e) {
-			plugin.log.warning("Failed to back up price database!");
-		}
+		getFile().put("nextUpdate", String.valueOf(nextUpdate));
 		saveFile();
-		try {
-			new File("plugins/BenCmd/_prices.db").delete();
-		} catch (Exception e) { }
 	}
 
 	public BuyableItem getItem(BCItem item) {
@@ -391,5 +313,13 @@ public class PriceFile extends Properties {
 			}
 		}
 		return currencies;
+	}
+
+	@Override
+	public void saveAll() {
+		for (BuyableItem i : items.values()) {
+			savePrice(i, false);
+		}
+		saveFile();
 	}
 }

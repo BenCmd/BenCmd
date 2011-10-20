@@ -10,13 +10,11 @@ import com.bendude56.bencmd.BenCmd;
 
 public class KickList {
 	private HashMap<PermissionUser, Long> users;
-	private BenCmd plugin;
 
-	public KickList(BenCmd instance) {
+	public KickList() {
 		users = new HashMap<PermissionUser, Long>();
 		Bukkit.getServer().getScheduler()
-				.scheduleAsyncRepeatingTask(instance, new KickTimer(), 2, 2);
-		plugin = instance;
+				.scheduleAsyncRepeatingTask(BenCmd.getPlugin(), new KickTimer(), 2, 2);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -37,7 +35,7 @@ public class KickList {
 		users.put(
 				user,
 				new Date().getTime()
-						+ plugin.mainProperties.getInteger("kickDelay", 120000));
+						+ BenCmd.getPlugin().mainProperties.getInteger("kickDelay", 120000));
 	}
 
 	public long isBlocked(String name) {

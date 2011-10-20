@@ -1,72 +1,28 @@
 package com.bendude56.bencmd.advanced;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.HashMap;
-import java.util.Properties;
-
+import java.util.Map;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.util.FileUtil;
-
 import com.bendude56.bencmd.BenCmd;
+import com.bendude56.bencmd.BenCmdFile;
 
 
-public class ShelfFile extends Properties {
-
-	private static final long serialVersionUID = 0L;
-	private BenCmd plugin;
-	private String fileName;
+public class ShelfFile extends BenCmdFile {
 	private HashMap<Location, Shelf> shelves;
 
-	public ShelfFile(BenCmd instance, String file) {
-		plugin = instance;
-		fileName = file;
+	public ShelfFile() {
+		super("shelves.db", "--BenCmd Shelf File--", true);
 		shelves = new HashMap<Location, Shelf>();
-		if (new File("plugins/BenCmd/_shelves.db").exists()) {
-			plugin.log.warning("Shelf backup file found... Restoring...");
-			if (FileUtil.copy(new File("plugins/BenCmd/_shelves.db"), new File(
-					file))) {
-				new File("plugins/BenCmd/_shelves.db").delete();
-				plugin.log.info("Restoration suceeded!");
-			} else {
-				plugin.log.warning("Failed to restore from backup!");
-			}
-		}
 		loadFile();
-		loadList();
+		loadAll();
 	}
 
-	public void loadFile() {
-		File file = new File(fileName);
-		if (file.exists()) {
-			try {
-				load(new FileInputStream(file));
-			} catch (IOException e) {
-				System.out.println("BenCmd had a problem:");
-				e.printStackTrace();
-			}
-		}
-	}
-
-	public void saveFile() {
-		File file = new File(fileName);
-		if (file.exists()) {
-			try {
-				store(new FileOutputStream(file), "-BenCmd Shelf List-");
-			} catch (IOException e) {
-				System.out.println("BenCmd had a problem:");
-				e.printStackTrace();
-			}
-		}
-	}
-
-	public void loadList() {
+	public void loadAll() {
+		BenCmd plugin = BenCmd.getPlugin();
 		shelves.clear();
-		for (int i = 0; i < this.size(); i++) {
-			String key = (String) this.keySet().toArray()[i];
+		for (int i = 0; i < getFile().size(); i++) {
+			String key = (String) getFile().keySet().toArray()[i];
 			int x;
 			int y;
 			int z;
@@ -79,27 +35,39 @@ public class ShelfFile extends Properties {
 			} catch (NumberFormatException e) {
 				plugin.bLog
 						.warning("SHELF ERROR: A shelf location was discovered to be invalid...");
-				plugin.log.warning("Shelf (" + this.keySet().toArray()[i]
+				plugin.log.warning("Shelf (" + getFile().keySet().toArray()[i]
 						+ ")'s location is invalid!");
 				continue;
 			} catch (IndexOutOfBoundsException e) {
 				plugin.bLog
 						.warning("SHELF ERROR: A shelf location was discovered to be invalid...");
-				plugin.log.warning("Shelf (" + this.keySet().toArray()[i]
+				plugin.log.warning("Shelf (" + getFile().keySet().toArray()[i]
 						+ ")'s location is invalid!");
 				continue;
 			}
 			if ((world = plugin.getServer().getWorld(key.split(",")[0])) == null) {
 				plugin.bLog
 						.warning("SHELF ERROR: A shelf location was discovered to be invalid...");
-				plugin.log.warning("Shelf (" + this.keySet().toArray()[i]
+				plugin.log.warning("Shelf (" + getFile().keySet().toArray()[i]
 						+ ")'s location is invalid!");
 				continue;
 			}
 			location = new Location(world, x, y, z);
-			String text = this.getProperty(key);
+			String text = getFile().getProperty(key);
 			shelves.put(location, new Shelf(location, text));
 		}
+	}
+	
+	public void saveAll() {
+		for (Map.Entry<Location, Shelf> e : shelves.entrySet()) {
+			Location loc = e.getKey();
+			Shelf s = e.getValue();
+			getFile().put(
+					loc.getWorld().getName() + "," + loc.getBlockX() + ","
+							+ loc.getBlockY() + "," + loc.getBlockZ(),
+					s.getText());
+		}
+		saveFile();
 	}
 
 	public Shelf getShelf(Location loc) {
@@ -119,23 +87,11 @@ public class ShelfFile extends Properties {
 	public void addShelf(Shelf shelf) {
 		shelves.put(shelf.getLocation(), shelf);
 		Location loc = shelf.getLocation();
-		this.put(
+		getFile().put(
 				loc.getWorld().getName() + "," + loc.getBlockX() + ","
 						+ loc.getBlockY() + "," + loc.getBlockZ(),
 				shelf.getText());
-		try {
-			new File("plugins/BenCmd/_shelves.db").createNewFile();
-			if (!FileUtil.copy(new File(fileName), new File(
-					"plugins/BenCmd/_shelves.db"))) {
-				plugin.log.warning("Failed to back up shelf database!");
-			}
-		} catch (IOException e) {
-			plugin.log.warning("Failed to back up shelf database!");
-		}
 		saveFile();
-		try {
-			new File("plugins/BenCmd/_shelves.db").delete();
-		} catch (Exception e) { }
 	}
 
 	public void remShelf(Location loc) {
@@ -153,21 +109,9 @@ public class ShelfFile extends Properties {
 		}
 		if (shelf != null) {
 			shelves.remove(shelf.getLocation());
-			this.remove(loc.getWorld().getName() + "," + loc.getBlockX() + ","
+			getFile().remove(loc.getWorld().getName() + "," + loc.getBlockX() + ","
 					+ loc.getBlockY() + "," + loc.getBlockZ());
-			try {
-				new File("plugins/BenCmd/_shelves.db").createNewFile();
-				if (!FileUtil.copy(new File(fileName), new File(
-						"plugins/BenCmd/_shelves.db"))) {
-					plugin.log.warning("Failed to back up shelf database!");
-				}
-			} catch (IOException e) {
-				plugin.log.warning("Failed to back up shelf database!");
-			}
 			saveFile();
-			try {
-				new File("plugins/BenCmd/_shelves.db").delete();
-			} catch (Exception e) { }
 		}
 	}
 }

@@ -1,47 +1,24 @@
 package com.bendude56.bencmd.invtools.kits;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
-
 import com.bendude56.bencmd.*;
 
 
-public class KitList extends Properties {
-	private static final long serialVersionUID = 0L;
-	File file;
-	BenCmd plugin;
+public class KitList extends BenCmdFile {
 	public List<Kit> kits = new ArrayList<Kit>();
 
-	public KitList(BenCmd instance) {
-		plugin = instance;
-		this.reload();
+	public KitList() {
+		super("kits.db", "--BenCmd Kit File--", false);
+		loadFile();
+		loadAll();
 	}
 
-	public void reload() {
-		file = new File("plugins/BenCmd/kits.db");
-		if (!file.exists()) {
-			try {
-				file.createNewFile();
-			} catch (IOException ex) {
-				plugin.log.severe("BenCmd had a problem:");
-				ex.printStackTrace();
-				return;
-			}
-		}
-		try {
-			load(new FileInputStream(file));
-		} catch (IOException ex) {
-			plugin.log.severe("BenCmd had a problem:");
-			ex.printStackTrace();
-		}
+	public void loadAll() {
 		kits.clear();
-		for (int i = 0; i < this.size(); i++) {
-			kits.add(new Kit(plugin, i, (String) this.values().toArray()[i],
-					(String) this.keySet().toArray()[i]));
+		for (int i = 0; i < getFile().size(); i++) {
+			kits.add(new Kit(i, (String) getFile().values().toArray()[i],
+					(String) getFile().keySet().toArray()[i]));
 		}
 	}
 
@@ -98,5 +75,10 @@ public class KitList extends Properties {
 		} else {
 			return false;
 		}
+	}
+
+	@Override
+	public void saveAll() {
+		throw new UnsupportedOperationException("Kit list cannot be saved!");
 	}
 }

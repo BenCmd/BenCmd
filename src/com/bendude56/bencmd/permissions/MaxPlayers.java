@@ -3,13 +3,10 @@ package com.bendude56.bencmd.permissions;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.User;
 
 
 public class MaxPlayers {
-	@SuppressWarnings("unused")
-	private BenCmd plugin;
 	private int max;
 	private int reservemax;
 	private boolean reserveActive;
@@ -17,13 +14,12 @@ public class MaxPlayers {
 	private List<PermissionUser> normalList;
 	private List<PermissionUser> reservedList;
 
-	public MaxPlayers(BenCmd instance, int maxPlayers, int maxReserve,
+	public MaxPlayers(int maxPlayers, int maxReserve,
 			boolean allowReserve, boolean allowIndef) {
 		max = maxPlayers;
 		reserveActive = allowReserve;
 		indefActive = allowIndef;
 		reservemax = maxReserve;
-		plugin = instance;
 		normalList = new ArrayList<PermissionUser>();
 		reservedList = new ArrayList<PermissionUser>();
 	}
