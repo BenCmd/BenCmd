@@ -3,6 +3,7 @@ package com.bendude56.bencmd.listener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -92,21 +93,20 @@ public class BenCmdPlayerListener extends PlayerListener {
 	}
 	
 	private void sendSkins(Player p, Location l) {
-		BenCmd plugin = BenCmd.getPlugin();
-		if (plugin.spoutcraft) {
+		if (BenCmd.isSpoutConnected()) {
 			if(!sent.containsKey(p)) {
 				sent.put(p, new ArrayList<NPC>());
 			}
-			for (NPC n : BenCmd.getPlugin().npcs.allNPCs()) {
+			for (NPC n : BenCmd.getNPCFile().allNPCs()) {
 				if (n.isSpawned() && l.getWorld().equals(n.getCurrentLocation().getWorld()) && l.distance(n.getCurrentLocation()) < 50) {
 					if (!sent.get(p).contains(n)) {
 						sent.get(p).add(n);
-						plugin.spoutconnect.sendSkin(p, n.getEntityId(), n.getSkinURL());
+						BenCmd.getSpoutConnector().sendSkin(p, n.getEntityId(), n.getSkinURL());
 					}
 				} else {
 					if (sent.get(p).contains(n)) {
 						sent.get(p).remove(n);
-						plugin.spoutconnect.sendSkin(p, n.getEntityId(), "http://s3.amazonaws.com/MinecraftSkins/" + n.getName() + ".png");
+						BenCmd.getSpoutConnector().sendSkin(p, n.getEntityId(), "http://s3.amazonaws.com/MinecraftSkins/" + n.getName() + ".png");
 					}
 				}
 			}
@@ -148,20 +148,16 @@ public class BenCmdPlayerListener extends PlayerListener {
 	}
 
 	public void ToggleSlow(User user) {
-		BenCmd plugin = BenCmd.getPlugin();
 		SlowMode slow = SlowMode.getInstance();
 		if (slow.isEnabled()) {
 			slow.DisableSlow();
-			plugin.log.info(user.getDisplayName() + " has disabled slow mode.");
-			plugin.bLog
-					.info(user.getDisplayName() + " has disabled slow mode.");
-			plugin.getServer().broadcastMessage(
+			BenCmd.log(user.getDisplayName() + " has disabled slow mode.");
+			Bukkit.broadcastMessage(
 					ChatColor.GRAY + "Slow mode has been disabled.");
 		} else {
 			slow.EnableSlow();
-			plugin.log.info(user.getDisplayName() + " has enabled slow mode.");
-			plugin.bLog.info(user.getDisplayName() + " has enabled slow mode.");
-			plugin.getServer().broadcastMessage(
+			BenCmd.log(user.getDisplayName() + " has enabled slow mode.");
+			Bukkit.broadcastMessage(
 					ChatColor.GRAY
 							+ "Slow mode has been enabled. You must wait "
 							+ (slow.getDefTime() / 1000)
@@ -170,27 +166,25 @@ public class BenCmdPlayerListener extends PlayerListener {
 	}
 
 	private void chat(PlayerChatEvent event) {
-		BenCmd plugin = BenCmd.getPlugin();
-		
 		// If external chat is enabled, skip this event
-		if (plugin.mainProperties.getBoolean("externalChat", false)) {
+		if (BenCmd.getMainProperties().getBoolean("externalChat", false)) {
 			return;
 		}
 		SlowMode slow = SlowMode.getInstance();
 		String message = event.getMessage();
-		User user = User.getUser(plugin, event.getPlayer());
+		User user = User.getUser(event.getPlayer());
 		
 		// Check if player is muted
 		if (user.isMuted() != null) {
 			event.setCancelled(true);
 			user.sendMessage(ChatColor.GRAY
-					+ plugin.mainProperties.getString("muteMessage",
+					+ BenCmd.getMainProperties().getString("muteMessage",
 							"You are muted..."));
 			return;
 		}
 		
 		// Check for channels and use them if applicable
-		if (plugin.mainProperties.getBoolean("channelsEnabled", false)) {
+		if (BenCmd.getMainProperties().getBoolean("channelsEnabled", false)) {
 			if (user.inChannel()) {
 				user.getActiveChannel().sendChat(user, message);
 			} else {
@@ -202,11 +196,11 @@ public class BenCmdPlayerListener extends PlayerListener {
 		}
 		
 		// Check for blocked words
-		boolean blocked = ChatChecker.checkBlocked(message, plugin);
+		boolean blocked = ChatChecker.checkBlocked(message);
 		if (blocked) {
 			event.setCancelled(true);
 			user.sendMessage(ChatColor.GRAY
-					+ plugin.mainProperties.getString("blockMessage",
+					+ BenCmd.getMainProperties().getString("blockMessage",
 							"You used a blocked word..."));
 			return;
 		}
@@ -228,28 +222,26 @@ public class BenCmdPlayerListener extends PlayerListener {
 		
 		// Format + display message
 		String prefix;
-		plugin.log.info(user.getDisplayName() + ": " + message);
-		plugin.bLog.info(user.getDisplayName() + ": " + message);
+		BenCmd.log(user.getDisplayName() + ": " + message);
 		if (!(prefix = user.getPrefix()).isEmpty()) {
 			message = user.getColor() + "[" + prefix + "] "
 					+ user.getDisplayName() + ": " + ChatColor.WHITE + message;
-			plugin.getServer().broadcastMessage(message);
+			Bukkit.broadcastMessage(message);
 			event.setCancelled(true);
 		} else {
 			message = user.getColor() + user.getDisplayName() + ": "
 					+ ChatColor.WHITE + message;
-			plugin.getServer().broadcastMessage(message);
+			Bukkit.broadcastMessage(message);
 			event.setCancelled(true);
 		}
 	}
 
 	private void userInit(PlayerJoinEvent event) {
-		BenCmd plugin = BenCmd.getPlugin();
 		SlowMode slow = SlowMode.getInstance();
 		
 		// Prepare the user instance
 		ViewableInventory.replInv((CraftPlayer) event.getPlayer());
-		User user = User.getUser(plugin, event.getPlayer());
+		User user = User.getUser(event.getPlayer());
 		
 		// Disable cheats + flymod if applicable
 		String cheatstring = "";
@@ -282,7 +274,7 @@ public class BenCmdPlayerListener extends PlayerListener {
 		}
 		
 		// List players
-		Player[] playerList = plugin.getServer().getOnlinePlayers();
+		Player[] playerList = Bukkit.getOnlinePlayers();
 		if (user.hasPerm("bencmd.chat.list")) {
 			if (playerList.length == 1) {
 				user.sendMessage(ChatColor.GREEN
@@ -290,10 +282,10 @@ public class BenCmdPlayerListener extends PlayerListener {
 			} else {
 				String playerString = "";
 				for (Player player2 : playerList) {
-					if (User.getUser(plugin, player2).isOffline()) {
+					if (User.getUser(player2).isOffline()) {
 						continue;
 					}
-					playerString += User.getUser(plugin, player2).getColor()
+					playerString += User.getUser(player2).getColor()
 							+ player2.getDisplayName() + ChatColor.WHITE + ", ";
 				}
 				user.sendMessage("The following players are online: "
@@ -311,48 +303,47 @@ public class BenCmdPlayerListener extends PlayerListener {
 					+ (slow.getDefTime() / 1000)
 					+ " seconds between each chat message.");
 		}
-		if (user.hasPerm("bencmd.ticket.readall") && plugin.reports.unreadTickets()) {
+		if (user.hasPerm("bencmd.ticket.readall") && BenCmd.getReports().unreadTickets()) {
 			user.sendMessage(ChatColor.RED
 					+ "There are unread reports! Use /ticket list to see them!");
 		}
 		
 		// Join general channel
-		plugin.getServer().dispatchCommand(user.getHandle(),
+		Bukkit.dispatchCommand(user.getHandle(),
 				"channel join general");
 		event.setJoinMessage(user.getColor() + user.getDisplayName()
 				+ ChatColor.WHITE + " has joined the game...");
 		
 		// Check for jailing/unjailing
-		if (plugin.actions.isUnjailed(user) != null) {
-			user.Spawn();
-			plugin.actions.removeAction(plugin.actions.isUnjailed(user));
+		if (BenCmd.getPermissionManager().getActionFile().isUnjailed(user) != null) {
+			user.spawn();
+			BenCmd.getPermissionManager().getActionFile().removeAction(BenCmd.getPermissionManager().getActionFile().isUnjailed(user));
 		}
 		if (user.isJailed() != null) {
-			plugin.jail.SendToJail(event.getPlayer());
+			user.warpTo(BenCmd.getPermissionManager().getJailWarp());
 		}
 		
 		// Special effects for devs
 		if (user.isDev()) {
 			user.getHandle().getWorld().strikeLightningEffect(user.getHandle().getLocation());
-			plugin.getServer().broadcastMessage(ChatColor.DARK_GREEN + "A BenCmd developer has joined the game!");
+			Bukkit.broadcastMessage(ChatColor.DARK_GREEN + "A BenCmd developer has joined the game!");
 		}
 	}
 
 	private void quitFinalize(PlayerQuitEvent event) {
-		BenCmd plugin = BenCmd.getPlugin();
 		
 		// Remove any of their graves, if applicable
-		for (int i = 0; i < plugin.graves.size(); i++) {
-			Grave g = plugin.graves.get(i);
+		for (int i = 0; i < BenCmd.getPlugin().graves.size(); i++) {
+			Grave g = BenCmd.getPlugin().graves.get(i);
 			if (g.getPlayer().equals(event.getPlayer())) {
 				g.delete();
-				plugin.graves.remove(i);
+				BenCmd.getPlugin().graves.remove(i);
 			}
 		}
-		if (plugin.returns.containsKey(event.getPlayer())) {
-			plugin.returns.remove(event.getPlayer());
+		if (BenCmd.getPlugin().returns.containsKey(event.getPlayer())) {
+			BenCmd.getPlugin().returns.remove(event.getPlayer());
 		}
-		User user = User.getUser(plugin, event.getPlayer());
+		User user = User.getUser(event.getPlayer());
 		
 		// Format quit message
 		if (user.isOffline()) {
@@ -364,17 +355,17 @@ public class BenCmdPlayerListener extends PlayerListener {
 		}
 		
 		// Remove them from the maximum players lists
-		plugin.maxPlayers.leave(user);
+		BenCmd.getPermissionManager().getMaxPlayerHandler().leave(user);
 		
 		// Remove all special stauses from them, if applicable
 		if (user.isPoofed()) {
-			user.UnPoof();
+			user.unPoof();
 		}
 		if (user.isNoPoofed()) {
-			user.UnNoPoof();
+			user.unNoPoof();
 		}
 		if (user.isAllPoofed()) {
-			user.UnAllPoof();
+			user.unAllPoof();
 		}
 		if (user.inChannel()) {
 			user.leaveChannel();
@@ -389,20 +380,19 @@ public class BenCmdPlayerListener extends PlayerListener {
 	}
 
 	private void kickFinalize(PlayerKickEvent event) {
-		BenCmd plugin = BenCmd.getPlugin();
 		
 		// Remove any of their graves, if applicable
-		for (int i = 0; i < plugin.graves.size(); i++) {
-			Grave g = plugin.graves.get(i);
+		for (int i = 0; i < BenCmd.getPlugin().graves.size(); i++) {
+			Grave g = BenCmd.getPlugin().graves.get(i);
 			if (g.getPlayer().equals(event.getPlayer())) {
 				g.delete();
-				plugin.graves.remove(i);
+				BenCmd.getPlugin().graves.remove(i);
 			}
 		}
-		if (plugin.returns.containsKey(event.getPlayer())) {
-			plugin.returns.remove(event.getPlayer());
+		if (BenCmd.getPlugin().returns.containsKey(event.getPlayer())) {
+			BenCmd.getPlugin().returns.remove(event.getPlayer());
 		}
-		User user = User.getUser(plugin, event.getPlayer());
+		User user = User.getUser(event.getPlayer());
 		
 		// Format quit message
 		if (user.isOffline()) {
@@ -414,17 +404,17 @@ public class BenCmdPlayerListener extends PlayerListener {
 		}
 		
 		// Remove them from the maximum players lists
-		plugin.maxPlayers.leave(user);
+		BenCmd.getPermissionManager().getMaxPlayerHandler().leave(user);
 		
 		// Remove all special stauses from them, if applicable
 		if (user.isPoofed()) {
-			user.UnPoof();
+			user.unPoof();
 		}
 		if (user.isNoPoofed()) {
-			user.UnNoPoof();
+			user.unNoPoof();
 		}
 		if (user.isAllPoofed()) {
-			user.UnAllPoof();
+			user.unAllPoof();
 		}
 		if (user.inChannel()) {
 			user.leaveChannel();
@@ -438,15 +428,14 @@ public class BenCmdPlayerListener extends PlayerListener {
 		User.finalizeUser(user);
 		
 		// Announce kick to console (McMyAdmin compatibility)
-		plugin.log.info(user.getName() + " lost connection: User was kicked");
+		BenCmd.log(user.getName() + " lost connection: User was kicked");
 	}
 	
 	private void bookshelfInteract(PlayerInteractEvent event) {
-		BenCmd plugin = BenCmd.getPlugin();
 		if (event.getAction() == Action.RIGHT_CLICK_BLOCK
 				&& event.getClickedBlock().getType() == Material.BOOKSHELF) {
 			Shelf shelf;
-			if ((shelf = plugin.shelff.getShelf(event.getClickedBlock()
+			if ((shelf = BenCmd.getShelfFile().getShelf(event.getClickedBlock()
 					.getLocation())) != null) {
 				event.setCancelled(true);
 				event.getPlayer().sendMessage(
@@ -458,7 +447,6 @@ public class BenCmdPlayerListener extends PlayerListener {
 	}
 	
 	private void disposalChestInteract(PlayerInteractEvent event) {
-		BenCmd plugin = BenCmd.getPlugin();
 		InventoryBackend back = InventoryBackend.getInstance();
 		if (!(event.getAction() == Action.RIGHT_CLICK_BLOCK)) {
 			return;
@@ -469,7 +457,7 @@ public class BenCmdPlayerListener extends PlayerListener {
 			event.setCancelled(true);
 		}
 		if (block.getType() == Material.CHEST
-				&& plugin.chests.isDisposalChest(block.getLocation())) {
+				&& BenCmd.getDisposals().isDisposalChest(block.getLocation())) {
 			CraftChest chest = new CraftChest(block);
 			chest.getInventory().clear();
 			player.sendMessage(ChatColor.RED
@@ -478,27 +466,23 @@ public class BenCmdPlayerListener extends PlayerListener {
 	}
 	
 	private void strikeBind(PlayerInteractEvent event) {
-		BenCmd plugin = BenCmd.getPlugin();
 		if (event.getAction() != Action.RIGHT_CLICK_BLOCK
 				&& event.getAction() != Action.RIGHT_CLICK_AIR) {
 			return;
 		}
-		if (plugin.strikeBind.bindEquipped(event.getPlayer())) {
-			plugin.getServer().dispatchCommand(event.getPlayer(), "strike");
+		if (BenCmd.getStrikeBindings().bindEquipped(event.getPlayer())) {
+			Bukkit.dispatchCommand(event.getPlayer(), "strike");
 		}
 	}
 	
 	private void lockInteract(PlayerInteractEvent event) {
-		BenCmd plugin = BenCmd.getPlugin();
 		if (event.getAction() == Action.RIGHT_CLICK_BLOCK
 				&& event.getClickedBlock().getType() == Material.BED_BLOCK) {
 			if (event.getPlayer().getWorld().getEnvironment() == Environment.NETHER) {
 				event.getPlayer().sendMessage(
 						ChatColor.RED
 								+ "Did you really think that would work!?");
-				plugin.log.info(event.getPlayer().getDisplayName()
-						+ " attempted to use a bed in the Nether.");
-				plugin.bLog.info(event.getPlayer().getDisplayName()
+				BenCmd.log(event.getPlayer().getDisplayName()
 						+ " attempted to use a bed in the Nether.");
 				event.setCancelled(true);
 			}
@@ -511,10 +495,10 @@ public class BenCmdPlayerListener extends PlayerListener {
 		}
 		int id;
 		ProtectedBlock block;
-		if ((id = plugin.protectFile.getProtection(event.getClickedBlock()
+		if ((id = BenCmd.getProtections().getProtection(event.getClickedBlock()
 				.getLocation())) != -1) {
-			block = plugin.protectFile.getProtection(id);
-			User user = User.getUser(plugin, event.getPlayer());
+			block = BenCmd.getProtections().getProtection(id);
+			User user = User.getUser(event.getPlayer());
 			if (!block.canUse(user) && !user.hasPerm("bencmd.lock.peek")) {
 				event.setCancelled(true);
 				user.sendMessage(ChatColor.RED
@@ -522,10 +506,7 @@ public class BenCmdPlayerListener extends PlayerListener {
 			} else {
 				if (!user.getName()
 						.equalsIgnoreCase(block.getOwner().getName())) {
-					plugin.log.info(user.getDisplayName() + " has accessed "
-							+ block.getOwner().getName()
-							+ "'s protected block. (" + block.GetId() + ")");
-					plugin.bLog.info(user.getDisplayName() + " has accessed "
+					BenCmd.log(user.getDisplayName() + " has accessed "
 							+ block.getOwner().getName()
 							+ "'s protected block. (" + block.GetId() + ")");
 				}
@@ -534,10 +515,9 @@ public class BenCmdPlayerListener extends PlayerListener {
 	}
 	
 	private void lotSelectInteract(PlayerInteractEvent event) {
-		BenCmd plugin = BenCmd.getPlugin();
 		if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 			Player player = event.getPlayer();
-			if (User.getUser(plugin, player).hasPerm("bencmd.lot.select")
+			if (User.getUser(player).hasPerm("bencmd.lot.select")
 					&& player.getItemInHand().getType() == Material.WOOD_SPADE) {
 				checkPlayer(player.getName());
 				if (this.corner.get(player.getName()).corner2set) {
@@ -558,7 +538,7 @@ public class BenCmdPlayerListener extends PlayerListener {
 			return;
 		} else if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
 			Player player = event.getPlayer();
-			if (User.getUser(plugin, player).hasPerm("bencmd.lot.select")
+			if (User.getUser(player).hasPerm("bencmd.lot.select")
 					&& player.getItemInHand().getType() == Material.WOOD_SPADE) {
 				checkPlayer(player.getName());
 				if (this.corner.get(player.getName()).corner1set) {
@@ -581,11 +561,9 @@ public class BenCmdPlayerListener extends PlayerListener {
 	}
 	
 	private void lotBucketEmpty(PlayerBucketEmptyEvent event) {
-		BenCmd plugin = BenCmd.getPlugin();
-		
 		Player player = event.getPlayer();
 
-		if (!plugin.lots.canBuildHere(player, event.getBlockClicked()
+		if (!BenCmd.getLots().canBuildHere(player, event.getBlockClicked()
 				.getLocation())) {
 			event.setCancelled(true);
 			player.sendMessage("You cannot build here.");
@@ -593,11 +571,9 @@ public class BenCmdPlayerListener extends PlayerListener {
 	}
 
 	private void lotBucketFill(PlayerBucketFillEvent event) {
-		BenCmd plugin = BenCmd.getPlugin();
-		
 		Player player = event.getPlayer();
 
-		if (!plugin.lots.canBuildHere(player, event.getBlockClicked()
+		if (!BenCmd.getLots().canBuildHere(player, event.getBlockClicked()
 				.getLocation())) {
 			event.setCancelled(true);
 			player.sendMessage("You cannot build here.");
@@ -605,18 +581,15 @@ public class BenCmdPlayerListener extends PlayerListener {
 	}
 	
 	private void pvpRespawn(PlayerRespawnEvent event) {
-		BenCmd plugin = BenCmd.getPlugin();
-		if (plugin.returns.containsKey(event.getPlayer())) {
-			for (ItemStack i : plugin.returns.get(event.getPlayer())) {
+		if (BenCmd.getPlugin().returns.containsKey(event.getPlayer())) {
+			for (ItemStack i : BenCmd.getPlugin().returns.get(event.getPlayer())) {
 				event.getPlayer().getInventory().addItem(i);
 			}
-			plugin.returns.remove(event.getPlayer());
+			BenCmd.getPlugin().returns.remove(event.getPlayer());
 		}
 	}
 	
 	private void areaMoveCheck(PlayerMoveEvent event) {
-		BenCmd plugin = BenCmd.getPlugin();
-		
 		Player p = event.getPlayer();
 		if (ignore.contains(p)) {
 			event.setCancelled(true);
@@ -625,10 +598,10 @@ public class BenCmdPlayerListener extends PlayerListener {
 		if (!areas.containsKey(p)) {
 			areas.put(p, new ArrayList<SPArea>());
 		}
-		for (SPArea a : plugin.spafile.listAreas()) {
+		for (SPArea a : BenCmd.getAreas().listAreas()) {
 			if (a instanceof PVPArea && a.insideArea(p.getLocation())) {
 				int money = 0;
-				for (Currency c : plugin.prices.getCurrencies()) {
+				for (Currency c : BenCmd.getMarketController().getCurrencies()) {
 					for (ItemStack i : p.getInventory().all(c.getMaterial())
 							.values()) {
 						if (i.getDurability() == c.getDurability()) {
@@ -785,20 +758,19 @@ public class BenCmdPlayerListener extends PlayerListener {
 	}
 	
 	private void checkPortal(PlayerPortalEvent event) {
-		BenCmd plugin = BenCmd.getPlugin();
-		if (!plugin.mainProperties.getBoolean("BenCmdPortals", true)) {
+		if (!BenCmd.getMainProperties().getBoolean("BenCmdPortals", true)) {
 			return;
 		}
 		Portal portal;
 		Location loc = event.getPlayer().getLocation();
-		if ((portal = plugin.portals.getPortalAt(loc)) == null) {
+		if ((portal = BenCmd.getPortalFile().getPortalAt(loc)) == null) {
 			event.getPlayer().sendMessage(
 					ChatColor.RED + "That portal doesn't lead anywhere!");
 			event.setCancelled(true);
 			return;
 		}
 		if (portal.getGroup() != null
-				&& !User.getUser(plugin, event.getPlayer()).inGroup(
+				&& !User.getUser(event.getPlayer()).inGroup(
 						portal.getGroup())) {
 			event.getPlayer().sendMessage(
 					ChatColor.RED + "You're not allowed to use that portal!");
@@ -808,7 +780,7 @@ public class BenCmdPlayerListener extends PlayerListener {
 		event.useTravelAgent(false);
 		if (portal instanceof HomePortal) {
 			Warp warp;
-			if ((warp = ((HomePortal) portal).getWarp(User.getUser(plugin,
+			if ((warp = ((HomePortal) portal).getWarp(User.getUser(
 					event.getPlayer()))) != null) {
 				event.setTo(warp.loc);
 			} else {
@@ -821,16 +793,15 @@ public class BenCmdPlayerListener extends PlayerListener {
 		} else {
 			event.setTo(portal.getWarp().loc);
 		}
-		plugin.checkpoints.SetPreWarp(event.getPlayer());
+		BenCmd.getWarpCheckpoints().SetPreWarp(event.getPlayer());
 	}
 	
 	private void flyTeleport(PlayerTeleportEvent event) {
 		if (event.isCancelled()) {
 			return;
 		}
-		BenCmd plugin = BenCmd.getPlugin();
-		plugin.flyDetect.lastL.put(event.getPlayer(), event.getTo());
-		if (plugin.spoutcraft) { 
+		BenCmd.getFlymodDetector().lastL.put(event.getPlayer(), event.getTo());
+		if (BenCmd.isSpoutConnected()) { 
 			sendSkins(event.getPlayer(), event.getTo());
 		}
 	}
@@ -839,93 +810,85 @@ public class BenCmdPlayerListener extends PlayerListener {
 		if (event.isCancelled()) {
 			return;
 		}
-		BenCmd plugin = BenCmd.getPlugin();
-		plugin.flyDetect.lastL.put(event.getPlayer(), event.getTo());
-		if (plugin.spoutcraft) { 
+		BenCmd.getFlymodDetector().lastL.put(event.getPlayer(), event.getTo());
+		if (BenCmd.isSpoutConnected()) { 
 			sendSkins(event.getPlayer(), event.getTo());
 		}
 	}
 	
 	private void loginCheck(PlayerLoginEvent event) {
-		BenCmd plugin = BenCmd.getPlugin();
-		
 		PermissionUser user;
-		if (!plugin.perm.userFile.userExists(event.getPlayer().getName())) {
-			if (plugin.mainProperties.getBoolean("disallowNewUsers", false)) {
-				event.disallow(Result.KICK_WHITELIST, plugin.mainProperties.getString("newUserKick", "You aren't whitelisted on this server!"));
+		if (!BenCmd.getPermissionManager().getUserFile().userExists(event.getPlayer().getName())) {
+			if (BenCmd.getMainProperties().getBoolean("disallowNewUsers", false)) {
+				event.disallow(Result.KICK_WHITELIST, BenCmd.getMainProperties().getString("newUserKick", "You aren't whitelisted on this server!"));
 				return;
 			} else {
-				plugin.perm.userFile.addUser(user = PermissionUser.newUser(plugin,
+				BenCmd.getPermissionManager().getUserFile().addUser(user = PermissionUser.newUser(
 						event.getPlayer().getName(), new ArrayList<String>()));
 			}
 		} else {
 			user = PermissionUser
-					.matchUser(event.getPlayer().getName(), plugin);
+					.matchUser(event.getPlayer().getName());
 		}
-		if (plugin.perm.groupFile.getAllUserGroups(user).isEmpty()) {
-			plugin.perm.groupFile.getGroup(
-					plugin.mainProperties.getString("defaultGroup", "default"))
+		if (BenCmd.getPermissionManager().getGroupFile().getAllUserGroups(user).isEmpty()) {
+			BenCmd.getPermissionManager().getGroupFile().getGroup(
+					BenCmd.getMainProperties().getString("defaultGroup", "default"))
 					.addUser(user);
 		}
-		if ((User.getUser(plugin, event.getPlayer())).isBanned() != null) {
+		if ((User.getUser(event.getPlayer())).isBanned() != null) {
 			event.disallow(Result.KICK_BANNED,
 					"You are currently banned from this server!");
 			return;
 		}
 		long timeLeft;
-		if ((timeLeft = plugin.kicked.isBlocked(event.getPlayer().getName())) > 0) {
+		if ((timeLeft = BenCmd.getPermissionManager().getKickTracker().isBlocked(event.getPlayer().getName())) > 0) {
 			event.disallow(Result.KICK_OTHER, "You cannot connect for "
 					+ String.valueOf((int) Math.ceil(timeLeft / 60000.0))
 					+ " more minutes...");
 			return;
 		}
-		switch (plugin.maxPlayers.join(User.getUser(plugin, event.getPlayer()))) {
+		switch (BenCmd.getPermissionManager().getMaxPlayerHandler().join(User.getUser(event.getPlayer()))) {
 		case NO_SLOT_NORMAL:
-			event.disallow(Result.KICK_FULL, plugin.mainProperties.getString(
+			event.disallow(Result.KICK_FULL, BenCmd.getMainProperties().getString(
 					"noNormal",
 					"There are no normal slots currently available!"));
 			break;
 		case NO_SLOT_RESERVED:
 			event.disallow(
 					Result.KICK_FULL,
-					plugin.mainProperties
+					BenCmd.getMainProperties()
 							.getString("noReserved",
 									"There are no normal slots or reserved slots currently available!"));
 			break;
 		}
-		User.finalizeUser(User.getUser(plugin, event.getPlayer()));
+		User.finalizeUser(User.getUser(event.getPlayer()));
 	}
 
 	private void jailPickupCheck(PlayerPickupItemEvent event) {
-		BenCmd plugin = BenCmd.getPlugin();
-		User user = User.getUser(plugin, event.getPlayer());
+		User user = User.getUser(event.getPlayer());
 		if (user.isJailed() != null) {
 			event.setCancelled(true);
 		}
 	}
 
 	private void jailDropCheck(PlayerDropItemEvent event) {
-		BenCmd plugin = BenCmd.getPlugin();
-		User user = User.getUser(plugin, event.getPlayer());
+		User user = User.getUser(event.getPlayer());
 		if (user.isJailed() != null) {
 			event.setCancelled(true);
 		}
 	}
 	
 	private void npcInteractEntity(PlayerInteractEntityEvent event) {
-		BenCmd plugin = BenCmd.getPlugin();
 		if (event.getRightClicked() instanceof CraftPlayer) {
 			if (((CraftPlayer) event.getRightClicked()).getHandle() instanceof EntityNPC) {
-				NPC npc = plugin.npcs.getNPC((EntityNPC) ((CraftPlayer) event
+				NPC npc = BenCmd.getNPCFile().getNPC((EntityNPC) ((CraftPlayer) event
 						.getRightClicked()).getHandle());
 				if (npc == null) {
-					plugin.log
-							.warning("Ghost NPC detected... Try restarting the server...");
-					plugin.bLog.warning("NPC ERROR: A Ghost NPC was detected!");
+					BenCmd.log(Level.WARNING, "Ghost NPC detected... Try restarting the server...");
 					return;
 				}
 				if (event.getPlayer().getItemInHand().getType() == Material.STICK
-						&& User.getUser(plugin, event.getPlayer()).hasPerm(
+						&& User.getUser(event.getPlayer()).hasPerm(
 								"bencmd.npc.info")) {
 					npcInfo(event.getPlayer(), npc);
 					return;
@@ -938,9 +901,8 @@ public class BenCmdPlayerListener extends PlayerListener {
 	}
 
 	private void npcInfo(Player p, NPC n) {
-		BenCmd plugin = BenCmd.getPlugin();
-		if (plugin.spoutcraft && plugin.spoutconnect.enabled(p)) {
-			plugin.spoutconnect.showNPCScreen(p, n);
+		if (BenCmd.isSpoutConnected() && BenCmd.getSpoutConnector().enabled(p)) {
+			BenCmd.getSpoutConnector().showNPCScreen(p, n);
 		} else {
 			p.sendMessage(ChatColor.GRAY + "NPC ID: " + n.getID());
 			if (n instanceof BankerNPC) {

@@ -18,19 +18,14 @@ import com.bendude56.bencmd.reporting.Report.ReportStatus;
 
 
 public class PermissionCommands implements Commands {
-	BenCmd plugin;
-
-	public PermissionCommands(BenCmd instance) {
-		plugin = instance;
-	}
 
 	public boolean onCommand(CommandSender sender, Command command,
 			String commandLabel, String[] args) {
 		User user;
 		try {
-			user = User.getUser(plugin, (Player) sender);
+			user = User.getUser((Player) sender);
 		} catch (ClassCastException e) {
-			user = User.getUser(plugin);
+			user = User.getUser();
 		}
 		if (commandLabel.equalsIgnoreCase("user")
 				&& user.hasPerm("bencmd.editpermissions")) {
@@ -97,32 +92,28 @@ public class PermissionCommands implements Commands {
 					+ "   -Otherwise, type +<permission> or -<permission> to add/remove permissions.");
 			return;
 		}
-		PermissionUser user2 = plugin.perm.userFile.getUser(args[0]);
+		PermissionUser user2 = BenCmd.getPermissionManager().getUserFile().getUser(args[0]);
 		if (args[1].equalsIgnoreCase("remove")) {
 			if (user2 == null) {
 				user.sendMessage(ChatColor.RED + "That user doesn't exist!");
 			} else {
-				/*for (InternalGroup g : plugin.perm.groupFile.groups.values()) {
+				/*for (InternalGroup g : BenCmd.getPermissionManager().getGroupFile().groups.values()) {
 					
 				}*/
-				plugin.perm.userFile.removeUser(user2);
+				BenCmd.getPermissionManager().getUserFile().removeUser(user2);
 				user.sendMessage(ChatColor.GREEN + "User " + args[0]
 						+ " was successfully removed!");
-				plugin.log.info("User " + args[0] + " has been removed!");
-				plugin.bLog.info("User " + args[0]
-						+ " has been deleted from users.db!");
+				BenCmd.log("User " + args[0] + " has been removed!");
 			}
 		} else if (args[1].equalsIgnoreCase("add")) {
 			if (user2 != null) {
 				user.sendMessage(ChatColor.RED + "That user already exists!");
 			} else {
-				plugin.perm.userFile.addUser(new PermissionUser(plugin,
+				BenCmd.getPermissionManager().getUserFile().addUser(new PermissionUser(
 						args[0], new ArrayList<String>()));
 				user.sendMessage(ChatColor.GREEN + "User " + args[0]
 						+ " was successfully created!");
-				plugin.log.info("User " + args[0] + " has been created!");
-				plugin.bLog.info("User " + args[0]
-						+ " has been added to users.db!");
+				BenCmd.log("User " + args[0] + " has been created!");
 			}
 		} else if (args[1].equalsIgnoreCase("info")) {
 			if (user2 == null) {
@@ -154,9 +145,7 @@ public class PermissionCommands implements Commands {
 					user2.addPermission(args[1]);
 					user.sendMessage(ChatColor.GREEN
 							+ "That user now has the specified permission!");
-					plugin.log.info("User " + args[0] + " now has permission "
-							+ args[1]);
-					plugin.bLog.info("User " + args[0] + " now has permission "
+					BenCmd.log("User " + args[0] + " now has permission "
 							+ args[1]);
 				}
 			}
@@ -171,10 +160,8 @@ public class PermissionCommands implements Commands {
 					user2.removePermission(args[1]);
 					user.sendMessage(ChatColor.GREEN
 							+ "That user has now lost the specified permission!");
-					plugin.log.info("User " + args[0] + " has lost permission "
+					BenCmd.log("User " + args[0] + " has lost permission "
 							+ args[1]);
-					plugin.bLog.info("User " + args[0]
-							+ " has lost permission " + args[1]);
 				}
 			}
 		}
@@ -199,7 +186,7 @@ public class PermissionCommands implements Commands {
 			return;
 		}
 		if (args.length == 1 && args[0].equalsIgnoreCase("list")) {
-			List<String> groups = plugin.perm.groupFile.listGroups();
+			List<String> groups = BenCmd.getPermissionManager().getGroupFile().listGroups();
 			if (groups == null) {
 				user.sendMessage(ChatColor.RED + "There are no groups! Add some with /group <name> add");
 				return;
@@ -219,35 +206,31 @@ public class PermissionCommands implements Commands {
 					}
 					list += " ";
 				}
-				list += (plugin.perm.groupFile.getGroup(groups.get(i)).getColor()
-						+ plugin.perm.groupFile.getGroup(groups.get(i)).getName());
+				list += (BenCmd.getPermissionManager().getGroupFile().getGroup(groups.get(i)).getColor()
+						+ BenCmd.getPermissionManager().getGroupFile().getGroup(groups.get(i)).getName());
 			}
 		}
-		PermissionGroup group = plugin.perm.groupFile.getGroup(args[0]);
+		PermissionGroup group = BenCmd.getPermissionManager().getGroupFile().getGroup(args[0]);
 		if (args[1].equalsIgnoreCase("remove")) {
 			if (group == null) {
 				user.sendMessage(ChatColor.RED + "That group doesn't exist!");
 			} else {
-				plugin.perm.groupFile.removeGroup(group);
+				BenCmd.getPermissionManager().getGroupFile().removeGroup(group);
 				user.sendMessage(ChatColor.GREEN + "Group " + args[0]
 						+ " was successfully removed!");
-				plugin.log.info("Group " + args[0] + " has been removed!");
-				plugin.bLog.info("Group " + args[0]
-						+ " has been deleted from groups.db!");
+				BenCmd.log("Group " + args[0] + " has been removed!");
 			}
 		} else if (args[1].equalsIgnoreCase("add")) {
 			if (group != null) {
 				user.sendMessage(ChatColor.RED + "That group already exists!");
 			} else {
-				plugin.perm.groupFile.addGroup(new PermissionGroup(plugin,
+				BenCmd.getPermissionManager().getGroupFile().addGroup(new PermissionGroup(
 						args[0], new ArrayList<String>(),
 						new ArrayList<String>(), new ArrayList<String>(), "",
 						-1, 0));
 				user.sendMessage(ChatColor.GREEN + "Group " + args[0]
 						+ " was successfully created!");
-				plugin.log.info("Group " + args[0] + " has been created!");
-				plugin.bLog.info("Group " + args[0]
-						+ " has been added to groups.db!");
+				BenCmd.log("Group " + args[0] + " has been created!");
 			}
 		} else if (args[1].equalsIgnoreCase("info")) {
 			if (group == null) {
@@ -278,7 +261,7 @@ public class PermissionCommands implements Commands {
 							+ "That group doesn't exist!");
 				} else {
 					PermissionUser user2 = PermissionUser.matchUserIgnoreCase(
-							args[2], plugin);
+							args[2]);
 					if (user2 == null) {
 						user.sendMessage(ChatColor.RED
 								+ "That user doesn't exist!");
@@ -292,10 +275,7 @@ public class PermissionCommands implements Commands {
 							user.sendMessage(ChatColor.GREEN + user2.getName()
 									+ " is now a part of group "
 									+ group.getName());
-							plugin.log.info(user2.getName()
-									+ " is now a part of group "
-									+ group.getName());
-							plugin.bLog.info(user2.getName()
+							BenCmd.log(user2.getName()
 									+ " is now a part of group "
 									+ group.getName());
 						}
@@ -312,7 +292,7 @@ public class PermissionCommands implements Commands {
 							+ "That group doesn't exist!");
 				} else {
 					PermissionUser user2 = PermissionUser.matchUserIgnoreCase(
-							args[2], plugin);
+							args[2]);
 					if (user2 == null) {
 						user.sendMessage(ChatColor.RED
 								+ "That user doesn't exist!");
@@ -326,10 +306,7 @@ public class PermissionCommands implements Commands {
 							user.sendMessage(ChatColor.GREEN + user2.getName()
 									+ " is no longer a part of group "
 									+ group.getName());
-							plugin.log.info(user2.getName()
-									+ " is no longer a part of group "
-									+ group.getName());
-							plugin.bLog.info(user2.getName()
+							BenCmd.log(user2.getName()
 									+ " is no longer a part of group "
 									+ group.getName());
 						}
@@ -345,7 +322,7 @@ public class PermissionCommands implements Commands {
 					user.sendMessage(ChatColor.RED
 							+ "That group doesn't exist!");
 				} else {
-					PermissionGroup group2 = plugin.perm.groupFile
+					PermissionGroup group2 = BenCmd.getPermissionManager().getGroupFile()
 							.getGroup(args[2]);
 					if (group2 == null) {
 						user.sendMessage(ChatColor.RED
@@ -360,10 +337,7 @@ public class PermissionCommands implements Commands {
 							user.sendMessage(ChatColor.GREEN + group2.getName()
 									+ " is now a part of group "
 									+ group.getName());
-							plugin.log.info(group2.getName()
-									+ " is now a part of group "
-									+ group.getName());
-							plugin.bLog.info(group2.getName()
+							BenCmd.log(group2.getName()
 									+ " is now a part of group "
 									+ group.getName());
 						}
@@ -379,7 +353,7 @@ public class PermissionCommands implements Commands {
 					user.sendMessage(ChatColor.RED
 							+ "That group doesn't exist!");
 				} else {
-					PermissionGroup group2 = plugin.perm.groupFile
+					PermissionGroup group2 = BenCmd.getPermissionManager().getGroupFile()
 							.getGroup(args[2]);
 					if (group2 == null) {
 						user.sendMessage(ChatColor.RED
@@ -394,10 +368,7 @@ public class PermissionCommands implements Commands {
 							user.sendMessage(ChatColor.GREEN + group2.getName()
 									+ " is no longer a part of group "
 									+ group.getName());
-							plugin.log.info(group2.getName()
-									+ " is no longer a part of group "
-									+ group.getName());
-							plugin.bLog.info(group2.getName()
+							BenCmd.log(group2.getName()
 									+ " is no longer a part of group "
 									+ group.getName());
 						}
@@ -412,10 +383,7 @@ public class PermissionCommands implements Commands {
 						.replace("_", " "));
 				user.sendMessage(ChatColor.GREEN
 						+ "The prefix was successfully updated!");
-				plugin.log.info("The prefix of group " + args[0]
-						+ " was changed to "
-						+ args[1].replaceFirst("p:", "").replace("_", " "));
-				plugin.bLog.info("The prefix of group " + args[0]
+				BenCmd.log("The prefix of group " + args[0]
 						+ " was changed to "
 						+ args[1].replaceFirst("p:", "").replace("_", " "));
 			}
@@ -428,10 +396,7 @@ public class PermissionCommands implements Commands {
 							args[1].replaceFirst("c:", ""), 16));
 					user.sendMessage(ChatColor.GREEN
 							+ "The color was successfully updated!");
-					plugin.log.info("The color of group " + args[0]
-							+ " was changed to "
-							+ args[1].replaceFirst("c:", ""));
-					plugin.bLog.info("The color of group " + args[0]
+					BenCmd.log("The color of group " + args[0]
 							+ " was changed to "
 							+ args[1].replaceFirst("c:", ""));
 				} catch (NumberFormatException e) {
@@ -448,10 +413,7 @@ public class PermissionCommands implements Commands {
 							"")));
 					user.sendMessage(ChatColor.GREEN
 							+ "The level was successfully updated!");
-					plugin.log.info("The level of group " + args[0]
-							+ " was changed to "
-							+ args[1].replaceFirst("l:", ""));
-					plugin.bLog.info("The level of group " + args[0]
+					BenCmd.log("The level of group " + args[0]
 							+ " was changed to "
 							+ args[1].replaceFirst("l:", ""));
 				} catch (NumberFormatException e) {
@@ -471,10 +433,8 @@ public class PermissionCommands implements Commands {
 					group.addPermission(args[1]);
 					user.sendMessage(ChatColor.GREEN
 							+ "That group now has the specified permission!");
-					plugin.log.info("Group " + args[0] + " now has permission "
+					BenCmd.log("Group " + args[0] + " now has permission "
 							+ args[1]);
-					plugin.bLog.info("Group " + args[0]
-							+ " now has permission " + args[1]);
 				}
 			}
 		} else if (args[1].startsWith("-")) {
@@ -489,9 +449,7 @@ public class PermissionCommands implements Commands {
 					group.removePermission(args[1]);
 					user.sendMessage(ChatColor.GREEN
 							+ "That group has now lost the specified permission!");
-					plugin.log.info("Group " + args[0]
-							+ " has lost permission " + args[1]);
-					plugin.bLog.info("Group " + args[0]
+					BenCmd.log("Group " + args[0]
 							+ " has lost permission " + args[1]);
 				}
 			}
@@ -515,15 +473,15 @@ public class PermissionCommands implements Commands {
 		if (args.length == 1 && !user.hasPerm("bencmd.action.status.other")) {
 			user.sendMessage(ChatColor.RED
 					+ "You don't have enough permissions to check the status of others!");
-			plugin.logPermFail();
+			BenCmd.getPlugin().logPermFail();
 			return;
 		} else if (args.length == 1) {
-			if ((puser2 = PermissionUser.matchUserIgnoreCase(args[0], plugin)) == null) {
+			if ((puser2 = PermissionUser.matchUserIgnoreCase(args[0])) == null) {
 				user.sendMessage(ChatColor.RED
 						+ "That user isn't in the database!");
 				return;
 			}
-			user2 = User.matchUser(args[0], plugin);
+			user2 = User.matchUser(args[0]);
 		} else if (args.length == 0) {
 			puser2 = user;
 			user2 = user;
@@ -532,8 +490,8 @@ public class PermissionCommands implements Commands {
 					+ "Proper use is: /status [player]");
 			return;
 		}
-		if (plugin.spoutcraft && plugin.spoutconnect.enabled(user.getHandle())) {
-			plugin.spoutconnect.showStatusScreen(user, (user2 == null) ? puser2 : user2,
+		if (BenCmd.isSpoutConnected() && BenCmd.getSpoutConnector().enabled(user.getHandle())) {
+			BenCmd.getSpoutConnector().showStatusScreen(user, (user2 == null) ? puser2 : user2,
 					(user.hasPerm("bencmd.action.status.advanced") || user.getName().equals(user2.getName())));
 			return;
 		}
@@ -541,7 +499,7 @@ public class PermissionCommands implements Commands {
 		boolean jailed = puser2.isJailed() != null;
 		boolean muted = puser2.isMuted() != null;
 		boolean reported = false;
-		for (Report ticket : plugin.reports.getReports()) {
+		for (Report ticket : BenCmd.getReports().getReports()) {
 			if (ticket.getAccused().getName()
 					.equalsIgnoreCase(puser2.getName())
 					&& ticket.getStatus() != ReportStatus.CLOSED
@@ -620,7 +578,7 @@ public class PermissionCommands implements Commands {
 					+ "Proper use is: /kick <player> [--anon] [reason]");
 			return;
 		}
-		toKick = User.matchUser(args[0], plugin);
+		toKick = User.matchUser(args[0]);
 		if (toKick == null) {
 			user.sendMessage(ChatColor.RED + args[0] + " cannot be found!");
 			return;
@@ -644,18 +602,18 @@ public class PermissionCommands implements Commands {
 			user.sendMessage(ChatColor.RED + "That player is protected from being godded/ungodded by others!");
 			return;
 		}
-		plugin.alog.log(new ActionLogEntry(ActionLogType.KICK, toKick.getName(), user.getName(), (reason.isEmpty()) ? "Reason not provided" : reason));
+		BenCmd.getPermissionManager().getActionLog().log(new ActionLogEntry(ActionLogType.KICK, toKick.getName(), user.getName(), (reason.isEmpty()) ? "Reason not provided" : reason));
 		if (anon) {
 			if (reason.isEmpty()) {
-				toKick.Kick();
+				toKick.kick();
 			} else {
-				toKick.Kick(reason);
+				toKick.kick(reason);
 			}
 		} else {
 			if (reason.isEmpty()) {
-				toKick.Kick(user);
+				toKick.kick(user);
 			} else {
-				toKick.Kick(reason, user);
+				toKick.kick(reason, user);
 			}
 		}
 	}
@@ -667,7 +625,7 @@ public class PermissionCommands implements Commands {
 			return;
 		}
 		PermissionUser puser2;
-		if ((puser2 = PermissionUser.matchUser(args[0], plugin)) == null) {
+		if ((puser2 = PermissionUser.matchUser(args[0])) == null) {
 			user.sendMessage(ChatColor.RED + "That user could not be found!");
 			return;
 		}
@@ -703,17 +661,17 @@ public class PermissionCommands implements Commands {
 		}
 		if (duration == -1 && !user.hasPerm("bencmd.action.permamute")) {
 			user.sendMessage(ChatColor.RED + "You cannot permanently mute somebody! Specify a time limit!");
-			plugin.logPermFail();
+			BenCmd.getPlugin().logPermFail();
 			return;
 		}
 		if (duration == -1) {
-			plugin.alog.log(new ActionLogEntry(ActionLogType.MUTE_PERM, puser2.getName(), user.getName()));
+			BenCmd.getPermissionManager().getActionLog().log(new ActionLogEntry(ActionLogType.MUTE_PERM, puser2.getName(), user.getName()));
 		} else {
-			plugin.alog.log(new ActionLogEntry(ActionLogType.MUTE_TEMP, puser2.getName(), user.getName(), duration));
+			BenCmd.getPermissionManager().getActionLog().log(new ActionLogEntry(ActionLogType.MUTE_TEMP, puser2.getName(), user.getName(), duration));
 		}
-		plugin.actions.addAction(puser2, ActionType.ALLMUTE, duration);
+		BenCmd.getPermissionManager().getActionFile().addAction(puser2, ActionType.ALLMUTE, duration);
 		User user2;
-		if ((user2 = User.matchUser(args[0], plugin)) != null) {
+		if ((user2 = User.matchUser(args[0])) != null) {
 			user2.sendMessage(ChatColor.RED + "You've been muted!");
 		}
 		user.sendMessage(ChatColor.RED + "That user has been muted!");
@@ -726,7 +684,7 @@ public class PermissionCommands implements Commands {
 			return;
 		}
 		PermissionUser puser2;
-		if ((puser2 = PermissionUser.matchUser(args[0], plugin)) == null) {
+		if ((puser2 = PermissionUser.matchUser(args[0])) == null) {
 			user.sendMessage(ChatColor.RED + "That user could not be found!");
 			return;
 		}
@@ -734,10 +692,10 @@ public class PermissionCommands implements Commands {
 			user.sendMessage(ChatColor.RED + "That user isn't muted!");
 			return;
 		}
-		plugin.alog.log(new ActionLogEntry(ActionLogType.UNMUTE_MAN, puser2.getName(), user.getName()));
-		plugin.actions.removeAction(puser2.isMuted());
+		BenCmd.getPermissionManager().getActionLog().log(new ActionLogEntry(ActionLogType.UNMUTE_MAN, puser2.getName(), user.getName()));
+		BenCmd.getPermissionManager().getActionFile().removeAction(puser2.isMuted());
 		User user2;
-		if ((user2 = User.matchUser(args[0], plugin)) != null) {
+		if ((user2 = User.matchUser(args[0])) != null) {
 			user2.sendMessage(ChatColor.GREEN + "You've been unmuted!");
 		}
 		user.sendMessage(ChatColor.GREEN + "That user has been unmuted!");
@@ -750,7 +708,7 @@ public class PermissionCommands implements Commands {
 			return;
 		}
 		PermissionUser puser2;
-		if ((puser2 = PermissionUser.matchUser(args[0], plugin)) == null) {
+		if ((puser2 = PermissionUser.matchUser(args[0])) == null) {
 			user.sendMessage(ChatColor.RED + "That user could not be found!");
 			return;
 		}
@@ -786,18 +744,18 @@ public class PermissionCommands implements Commands {
 		}
 		if (duration == -1 && !user.hasPerm("bencmd.action.permajail")) {
 			user.sendMessage(ChatColor.RED + "You cannot permanently jail somebody! Specify a time limit!");
-			plugin.logPermFail();
+			BenCmd.getPlugin().logPermFail();
 			return;
 		}
 		if (duration == -1) {
-			plugin.alog.log(new ActionLogEntry(ActionLogType.JAIL_PERM, puser2.getName(), user.getName()));
+			BenCmd.getPermissionManager().getActionLog().log(new ActionLogEntry(ActionLogType.JAIL_PERM, puser2.getName(), user.getName()));
 		} else {
-			plugin.alog.log(new ActionLogEntry(ActionLogType.JAIL_TEMP, puser2.getName(), user.getName(), duration));
+			BenCmd.getPermissionManager().getActionLog().log(new ActionLogEntry(ActionLogType.JAIL_TEMP, puser2.getName(), user.getName(), duration));
 		}
-		plugin.actions.addAction(puser2, ActionType.JAIL, duration);
+		BenCmd.getPermissionManager().getActionFile().addAction(puser2, ActionType.JAIL, duration);
 		User user2;
-		if ((user2 = User.matchUser(args[0], plugin)) != null) {
-			plugin.jail.SendToJail(user2.getHandle());
+		if ((user2 = User.matchUser(args[0])) != null) {
+			user2.warpTo(BenCmd.getPermissionManager().getJailWarp());
 			user2.sendMessage(ChatColor.RED + "You've been jailed!");
 		}
 		user.sendMessage(ChatColor.RED + "That user has been jailed!");
@@ -810,7 +768,7 @@ public class PermissionCommands implements Commands {
 			return;
 		}
 		PermissionUser puser2;
-		if ((puser2 = PermissionUser.matchUser(args[0], plugin)) == null) {
+		if ((puser2 = PermissionUser.matchUser(args[0])) == null) {
 			user.sendMessage(ChatColor.RED + "That user could not be found!");
 			return;
 		}
@@ -818,14 +776,14 @@ public class PermissionCommands implements Commands {
 			user.sendMessage(ChatColor.RED + "That user isn't jailed!");
 			return;
 		}
-		plugin.alog.log(new ActionLogEntry(ActionLogType.UNJAIL_MAN, puser2.getName(), user.getName()));
-		plugin.actions.removeAction(puser2.isJailed());
+		BenCmd.getPermissionManager().getActionLog().log(new ActionLogEntry(ActionLogType.UNJAIL_MAN, puser2.getName(), user.getName()));
+		BenCmd.getPermissionManager().getActionFile().removeAction(puser2.isJailed());
 		User user2;
-		if ((user2 = User.matchUser(args[0], plugin)) != null) {
+		if ((user2 = User.matchUser(args[0])) != null) {
 			user2.sendMessage(ChatColor.GREEN + "You've been unjailed!");
-			user2.Spawn();
+			user2.spawn();
 		} else {
-			plugin.actions.addAction(puser2, ActionType.LEAVEJAIL, -1);
+			BenCmd.getPermissionManager().getActionFile().addAction(puser2, ActionType.LEAVEJAIL, -1);
 		}
 		user.sendMessage(ChatColor.GREEN + "That user has been unjailed!");
 	}
@@ -837,7 +795,7 @@ public class PermissionCommands implements Commands {
 			return;
 		}
 		PermissionUser puser2;
-		if ((puser2 = PermissionUser.matchUser(args[0], plugin)) == null) {
+		if ((puser2 = PermissionUser.matchUser(args[0])) == null) {
 			user.sendMessage(ChatColor.RED + "That user could not be found!");
 			return;
 		}
@@ -873,18 +831,18 @@ public class PermissionCommands implements Commands {
 		}
 		if (duration == -1 && !user.hasPerm("bencmd.action.permaban")) {
 			user.sendMessage(ChatColor.RED + "You cannot permanently ban somebody! Specify a time limit!");
-			plugin.logPermFail();
+			BenCmd.getPlugin().logPermFail();
 			return;
 		}
 		if (duration == -1) {
-			plugin.alog.log(new ActionLogEntry(ActionLogType.BAN_PERM, puser2.getName(), user.getName()));
+			BenCmd.getPermissionManager().getActionLog().log(new ActionLogEntry(ActionLogType.BAN_PERM, puser2.getName(), user.getName()));
 		} else {
-			plugin.alog.log(new ActionLogEntry(ActionLogType.BAN_TEMP, puser2.getName(), user.getName(), duration));
+			BenCmd.getPermissionManager().getActionLog().log(new ActionLogEntry(ActionLogType.BAN_TEMP, puser2.getName(), user.getName(), duration));
 		}
-		plugin.actions.addAction(puser2, ActionType.BAN, duration);
+		BenCmd.getPermissionManager().getActionFile().addAction(puser2, ActionType.BAN, duration);
 		User user2;
-		if ((user2 = User.matchUser(args[0], plugin)) != null) {
-			user2.Kick("You've been banned!");
+		if ((user2 = User.matchUser(args[0])) != null) {
+			user2.kick("You've been banned!");
 		}
 		user.sendMessage(ChatColor.RED + "That user has been banned!");
 	}
@@ -896,7 +854,7 @@ public class PermissionCommands implements Commands {
 			return;
 		}
 		PermissionUser puser2;
-		if ((puser2 = PermissionUser.matchUser(args[0], plugin)) == null) {
+		if ((puser2 = PermissionUser.matchUser(args[0])) == null) {
 			user.sendMessage(ChatColor.RED + "That user could not be found!");
 			return;
 		}
@@ -904,8 +862,8 @@ public class PermissionCommands implements Commands {
 			user.sendMessage(ChatColor.RED + "That user isn't banned!");
 			return;
 		}
-		plugin.alog.log(new ActionLogEntry(ActionLogType.UNBAN_MAN, puser2.getName(), user.getName()));
-		plugin.actions.removeAction(puser2.isBanned());
+		BenCmd.getPermissionManager().getActionLog().log(new ActionLogEntry(ActionLogType.UNBAN_MAN, puser2.getName(), user.getName()));
+		BenCmd.getPermissionManager().getActionFile().removeAction(puser2.isBanned());
 		user.sendMessage(ChatColor.GREEN + "That user has been unbanned!");
 	}
 	
@@ -915,7 +873,7 @@ public class PermissionCommands implements Commands {
 			return;
 		}
 		PermissionUser puser2;
-		if ((puser2 = PermissionUser.matchUser(args[0], plugin)) == null) {
+		if ((puser2 = PermissionUser.matchUser(args[0])) == null) {
 			user.sendMessage(ChatColor.RED + "That user could not be found!");
 			return;
 		}
@@ -927,7 +885,7 @@ public class PermissionCommands implements Commands {
 				m += " " + args[i];
 			}
 		}
-		plugin.alog.log(new ActionLogEntry(ActionLogType.NOTE, puser2.getName(), user.getName(), m));
+		BenCmd.getPermissionManager().getActionLog().log(new ActionLogEntry(ActionLogType.NOTE, puser2.getName(), user.getName(), m));
 		user.sendMessage(ChatColor.GREEN + "That note was successfully appended to " + puser2.getName() + "'s record");
 	}
 	
@@ -965,11 +923,11 @@ public class PermissionCommands implements Commands {
 			}
 		}
 		if (from) {
-			plugin.alog.searchEntriesFrom(user, u, p);
+			BenCmd.getPermissionManager().getActionLog().searchEntriesFrom(user, u, p);
 		} else if (u.equals("*")) {
-			plugin.alog.searchEntries(user, p);
+			BenCmd.getPermissionManager().getActionLog().searchEntries(user, p);
 		} else {
-			plugin.alog.searchEntries(user, u, p);
+			BenCmd.getPermissionManager().getActionLog().searchEntries(user, u, p);
 		}
 	}
 

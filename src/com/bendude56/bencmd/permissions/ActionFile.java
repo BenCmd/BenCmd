@@ -1,94 +1,54 @@
 package com.bendude56.bencmd.permissions;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Properties;
-import java.util.Timer;
+import java.util.Map;
+import java.util.logging.Level;
 
-import org.bukkit.util.FileUtil;
-
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import com.bendude56.bencmd.BenCmd;
+import com.bendude56.bencmd.BenCmdFile;
+import com.bendude56.bencmd.User;
 import com.bendude56.bencmd.permissions.Action.ActionType;
+import com.bendude56.bencmd.permissions.ActionLogEntry.ActionLogType;
 
 
-public class ActionFile extends Properties {
-
-	private static final long serialVersionUID = 0L;
+public class ActionFile extends BenCmdFile {
 	protected HashMap<Integer, Action> actions;
-	private Timer time = new Timer();
 
 	public ActionFile() {
-		BenCmd plugin = BenCmd.getPlugin();
-		if (new File("plugins/BenCmd/_action.db").exists()) {
-			plugin.log.warning("Action backup file found... Restoring...");
-			if (FileUtil.copy(new File("plugins/BenCmd/_action.db"), new File(
-					"plugins/BenCmd/action.db"))) {
-				new File("plugins/BenCmd/_action.db").delete();
-				plugin.log.info("Restoration suceeded!");
-			} else {
-				plugin.log.warning("Failed to restore from backup!");
-			}
-		}
+		super("action.db", "--BenCmd Action File--", true);
 		this.loadFile();
-		this.loadActions();
-		time.schedule(new ActionTask(this), 0, 1000);
+		this.loadAll();
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(BenCmd.getPlugin(),
+				new ActionTask(), 1, 1);
 	}
 
-	public void loadFile() {
-		BenCmd plugin = BenCmd.getPlugin();
-		File file = new File("plugins/BenCmd/action.db"); // Prepare the file
-		if (!file.exists()) {
-			try {
-				file.createNewFile(); // If the file doesn't exist, create it!
-			} catch (IOException ex) {
-				// If you can't, produce an error.
-				plugin.log.severe("BenCmd had a problem:");
-				ex.printStackTrace();
-				return;
-			}
-		}
-		try {
-			load(new FileInputStream(file)); // Load the values
-		} catch (IOException ex) {
-			// If you can't, produce an error.
-			plugin.log.severe("BenCmd had a problem:");
-			ex.printStackTrace();
-		}
-	}
-
-	public void loadActions() {
-		BenCmd plugin = BenCmd.getPlugin();
+	public void loadAll() {
 		actions = new HashMap<Integer, Action>();
-		for (int i = 0; i < this.size(); i++) {
-			String value[] = ((String) this.values().toArray()[i]).split("/");
-			String key = (String) this.keySet().toArray()[i];
+		for (int i = 0; i < getFile().size(); i++) {
+			String value[] = ((String) getFile().values().toArray()[i]).split("/");
+			String key = (String) getFile().keySet().toArray()[i];
 			int id;
 			try {
 				id = Integer.parseInt(key);
 			} catch (NumberFormatException e) {
-				plugin.log.warning("In the actions file, " + key
+				BenCmd.log(Level.WARNING, "In the actions file, " + key
 						+ " is not a valid integer!");
-				plugin.bLog.info("Action " + key + " is invalid!");
 				continue;
 			}
 			if (value.length != 3) {
-				plugin.log
-						.warning("In the actions file, an entry must contain exactly 2 slashes! (Entry: "
+				BenCmd.log(Level.WARNING, "In the actions file, an entry must contain exactly 2 slashes! (Entry: "
 								+ key + ")");
-				plugin.bLog.info("Action " + key + " is invalid!");
 				continue;
 			}
-			PermissionUser user = PermissionUser.matchUser(value[0], plugin);
+			PermissionUser user = PermissionUser.matchUser(value[0]);
 			if (user == null) {
-				plugin.log.warning("In the actions file, " + value[0]
+				BenCmd.log(Level.WARNING, "In the actions file, " + value[0]
 						+ " is not a valid user! (Entry: " + key + ")");
-				plugin.bLog.info("Action " + key + " is invalid!");
 				continue;
 			}
 			ActionType action;
@@ -101,23 +61,28 @@ public class ActionFile extends Properties {
 			} else if (value[1].equals("l")) {
 				action = ActionType.LEAVEJAIL;
 			} else {
-				plugin.log.warning("In the actions file, " + value[1]
+				BenCmd.log(Level.WARNING, "In the actions file, " + value[1]
 						+ " is not a valid action type! (Entry: " + key + ")");
-				plugin.bLog.info("Action " + key + " is invalid!");
 				continue;
 			}
 			long endTime;
 			try {
 				endTime = Long.parseLong(value[2]);
 			} catch (NumberFormatException e) {
-				plugin.log.warning("In the actions file, " + value[2]
+				BenCmd.log(Level.WARNING, "In the actions file, " + value[2]
 						+ " cannot be converted into an integer! (Entry: "
 						+ key + ")");
-				plugin.bLog.info("Action " + key + " is invalid!");
 				continue;
 			}
 			actions.put(id, new Action(id, user, action, endTime));
 		}
+	}
+	
+	public void saveAll() {
+		for (Map.Entry<Integer, Action> e : actions.entrySet()) {
+			updateAction(e.getValue(), false);
+		}
+		saveFile();
 	}
 
 	public Action isJailed(PermissionUser user) {
@@ -168,83 +133,69 @@ public class ActionFile extends Properties {
 
 	public void addAction(PermissionUser user, ActionType action, long duration) {
 		if (duration == -1) {
-			this.updateAction(new Action(this.nextId(), user, action, -1));
+			this.updateAction(new Action(this.nextId(), user, action, -1), true);
 		} else {
 			this.updateAction(new Action(this.nextId(), user, action,
-					new Date().getTime() + duration));
+					new Date().getTime() + duration), true);
 		}
 	}
 
 	private int nextId() {
 		int i;
-		for (i = 0; this.containsKey(String.valueOf(i)); i++) {
-		}
+		for (i = 0; getFile().containsKey(String.valueOf(i)); i++) { }
 		return i;
 	}
 
-	public void updateAction(Action action) {
-		BenCmd plugin = BenCmd.getPlugin();
-		this.put(String.valueOf(action.getId()),
+	public void updateAction(Action action, boolean saveFile) {
+		getFile().put(String.valueOf(action.getId()),
 				action.getUser().getName() + "/" + action.getActionLetter()
 						+ "/" + String.valueOf(action.getExpiry()));
 		actions.put(action.getId(), action);
-		try {
-			new File("plugins/BenCmd/_action.db").createNewFile();
-			if (!FileUtil.copy(new File("plugins/BenCmd/action.db"), new File(
-					"plugins/BenCmd/_action.db"))) {
-				plugin.log.warning("Failed to back up action database!");
-			}
-		} catch (IOException e) {
-			plugin.log.warning("Failed to back up action database!");
-		}
-		saveFile();
-		try {
-			new File("plugins/BenCmd/_action.db").delete();
-		} catch (Exception e) { }
+		if (saveFile)
+			saveFile();
 	}
 
 	public void removeAction(Action action) {
-		BenCmd plugin = BenCmd.getPlugin();
-		if (!this.containsKey(String.valueOf(action.getId()))) {
+		if (!getFile().containsKey(String.valueOf(action.getId()))) {
 			return;
 		}
-		this.remove(String.valueOf(action.getId()));
+		getFile().remove(String.valueOf(action.getId()));
 		actions.remove(action.getId());
-		try {
-			new File("plugins/BenCmd/_action.db").createNewFile();
-			if (!FileUtil.copy(new File("plugins/BenCmd/action.db"), new File(
-					"plugins/BenCmd/_action.db"))) {
-				plugin.log.warning("Failed to back up action database!");
-			}
-		} catch (IOException e) {
-			plugin.log.warning("Failed to back up action database!");
-		}
 		saveFile();
-		try {
-			new File("plugins/BenCmd/_action.db").delete();
-		} catch (Exception e) { }
 	}
+	
+	public class ActionTask implements Runnable {
 
-	public void saveFile() {
-		BenCmd plugin = BenCmd.getPlugin();
-		File file = new File("plugins/BenCmd/action.db"); // Prepare the file
-		if (!file.exists()) {
-			try {
-				file.createNewFile(); // If the file doesn't exist, create it!
-			} catch (IOException ex) {
-				// If you can't, produce an error.
-				plugin.log.severe("BenCmd had a problem:");
-				ex.printStackTrace();
-				return;
+		public void run() {
+			List<Action> ac = new ArrayList<Action>(actions.values());
+			for (Action action : ac) {
+				if (action.isExpired()) {
+					if (action.getActionType() == ActionType.JAIL) {
+						BenCmd.getPermissionManager().getActionLog().log(new ActionLogEntry(ActionLogType.UNJAIL_AUTO, action.getUser().getName(), "N/A"));
+						User user2;
+						if ((user2 = User.matchUser(action.getUser().getName())) == null) {
+							addAction(action.getUser(),
+									ActionType.LEAVEJAIL, -1);
+						} else {
+							user2.spawn();
+							user2.sendMessage(ChatColor.GREEN
+									+ "You've been unjailed!");
+						}
+					} else if (action.getActionType() == ActionType.ALLMUTE) {
+						BenCmd.getPermissionManager().getActionLog().log(new ActionLogEntry(ActionLogType.UNMUTE_AUTO, action.getUser().getName(), "N/A"));
+						User user2;
+						if ((user2 = User.matchUser(action.getUser().getName())) != null) {
+							user2.sendMessage(ChatColor.GREEN
+									+ "You've been unmuted!");
+						}
+					} else if (action.getActionType() == ActionType.BAN){
+						BenCmd.getPermissionManager().getActionLog().log(new ActionLogEntry(ActionLogType.UNBAN_AUTO, action.getUser().getName(), "N/A"));
+					}
+					removeAction(action);
+				}
 			}
+			ac = null;
 		}
-		try {
-			// Save the values
-			store(new FileOutputStream(file), "BenCmd User Actions File");
-		} catch (IOException ex) {
-			// If you can't, produce an error.
-			plugin.log.severe("BenCmd had a problem:");
-			ex.printStackTrace();
-		}
+
 	}
 }

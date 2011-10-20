@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,54 +19,21 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.FileUtil;
 
 import com.bendude56.bencmd.BenCmd;
+import com.bendude56.bencmd.BenCmdFile;
 import com.bendude56.bencmd.User;
 
 
 @SuppressWarnings("unused")
-public class UserFile extends Properties {
-	private static final long serialVersionUID = 0L;
+public class UserFile extends BenCmdFile {
 	HashMap<String, InternalUser> users = new HashMap<String, InternalUser>();
 
 	public UserFile() {
-		BenCmd plugin = BenCmd.getPlugin();
-		if (new File("plugins/BenCmd/_users.db").exists()) {
-			plugin.log.warning("User backup file found... Restoring...");
-			if (FileUtil.copy(new File("plugins/BenCmd/_users.db"), new File(
-					"plugins/BenCmd/users.db"))) {
-				new File("plugins/BenCmd/_users.db").delete();
-				plugin.log.info("Restoration suceeded!");
-			} else {
-				plugin.log.warning("Failed to restore from backup!");
-			}
-		}
+		super("users.db", "--BenCmd User File--", true);
 		loadFile();
-		loadUsers();
+		loadAll();
 	}
 
-	public void loadFile() {
-		BenCmd plugin = BenCmd.getPlugin();
-		File file = new File("plugins/BenCmd/users.db"); // Prepare the file
-		if (!file.exists()) {
-			try {
-				file.createNewFile(); // If the file doesn't exist, create it!
-			} catch (IOException ex) {
-				// If you can't, produce an error.
-				plugin.log.severe("BenCmd had a problem:");
-				ex.printStackTrace();
-				return;
-			}
-		}
-		try {
-			load(new FileInputStream(file)); // Load the values
-		} catch (IOException ex) {
-			// If you can't, produce an error.
-			plugin.log.severe("BenCmd had a problem:");
-			ex.printStackTrace();
-		}
-	}
-
-	public void updateUser(InternalUser user) {
-		BenCmd plugin = BenCmd.getPlugin();
+	public void updateUser(InternalUser user, boolean saveFile) {
 		String value = "";
 		for (String perm : user.getPermissions(false)) {
 			if (value.isEmpty()) {
@@ -74,80 +42,39 @@ public class UserFile extends Properties {
 				value += "," + perm;
 			}
 		}
-		this.put(user.getName(), value);
+		getFile().put(user.getName(), value);
 		users.put(user.getName(), user);
-		try {
-			new File("plugins/BenCmd/_users.db").createNewFile();
-			if (!FileUtil.copy(new File("plugins/BenCmd/users.db"), new File(
-					"plugins/BenCmd/_users.db"))) {
-				plugin.log.warning("Failed to back up user database!");
-			}
-		} catch (IOException e) {
-			plugin.log.warning("Failed to back up user database!");
-		}
-		saveFile();
-		try {
-			new File("plugins/BenCmd/_users.db").delete();
-		} catch (Exception e) { }
+		if (saveFile)
+			saveFile();
 	}
 
 	public void removeUser(PermissionUser user) {
-		BenCmd plugin = BenCmd.getPlugin();
-		this.remove(user.getName());
+		getFile().remove(user.getName());
 		users.remove(user.getName());
-		try {
-			new File("plugins/BenCmd/_users.db").createNewFile();
-			if (!FileUtil.copy(new File("plugins/BenCmd/users.db"), new File(
-					"plugins/BenCmd/_users.db"))) {
-				plugin.log.warning("Failed to back up user database!");
-			}
-		} catch (IOException e) {
-			plugin.log.warning("Failed to back up user database!");
-		}
 		saveFile();
-		try {
-			new File("plugins/BenCmd/_users.db").delete();
-		} catch (Exception e) { }
 	}
 
-	public void loadUsers() {
-		BenCmd plugin = BenCmd.getPlugin();
+	public void loadAll() {
 		users.clear();
-		for (int i = 0; i < this.size(); i++) {
-			String name = (String) this.keySet().toArray()[i];
+		for (int i = 0; i < getFile().size(); i++) {
+			String name = (String) getFile().keySet().toArray()[i];
 			List<String> permissions = new ArrayList<String>();
 			permissions
-					.addAll(Arrays.asList(this.getProperty(name).split(",")));
+					.addAll(Arrays.asList(getFile().getProperty(name).split(",")));
 			users.put(name,
-					new InternalUser(plugin, name, permissions));
+					new InternalUser(name, permissions));
 		}
+	}
+	
+	public void saveAll() {
+		for (Map.Entry<String, InternalUser> e : users.entrySet()) {
+			updateUser(e.getValue(), false);
+		}
+		
 	}
 
 	public HashMap<String, InternalUser> listUsers() {
 		return users;
-	}
-
-	public void saveFile() {
-		BenCmd plugin = BenCmd.getPlugin();
-		File file = new File("plugins/BenCmd/users.db"); // Prepare the file
-		if (!file.exists()) {
-			try {
-				file.createNewFile(); // If the file doesn't exist, create it!
-			} catch (IOException ex) {
-				// If you can't, produce an error.
-				plugin.log.severe("BenCmd had a problem:");
-				ex.printStackTrace();
-				return;
-			}
-		}
-		try {
-			// Save the values
-			store(new FileOutputStream(file), "BenCmd User Permissions File");
-		} catch (IOException ex) {
-			// If you can't, produce an error.
-			plugin.log.severe("BenCmd had a problem:");
-			ex.printStackTrace();
-		}
 	}
 
 	protected InternalUser getInternal(String userName) {
@@ -173,7 +100,7 @@ public class UserFile extends Properties {
 	}
 
 	public void addUser(PermissionUser user) {
-		updateUser(user.getInternal());
+		updateUser(user.getInternal(), true);
 	}
 
 	public List<User> allWithPerm(String perm) {

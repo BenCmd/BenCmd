@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
 
@@ -32,8 +33,8 @@ public class ActionLog {
 			try {
 				new File(l).createNewFile();
 			} catch (Exception e) {
-				BenCmd.getPlugin().log.severe("Failed to load BenCmd action log:");
-				e.printStackTrace();
+				BenCmd.log(Level.SEVERE, "Failed to load BenCmd action log:");
+				BenCmd.log(e);
 				return;
 			}
 		}
@@ -46,16 +47,16 @@ public class ActionLog {
 						sl.add(new ActionLogEntry(s));
 					}
 				} catch (Exception e) {
-					BenCmd.getPlugin().log.severe("Failed to load an action log entry:");
-					e.printStackTrace();
+					BenCmd.log(Level.SEVERE, "Failed to load an action log entry:");
+					BenCmd.log(e);
 				}
 			}
 			br.close();
 		} catch (FileNotFoundException e) {
 			throw new AssertionError("File somehow exists and doesn't exist at the same time... Fileception!");
 		} catch (IOException e) {
-			BenCmd.getPlugin().log.severe("Failed to load BenCmd action log:");
-			e.printStackTrace();
+			BenCmd.log(Level.SEVERE, "Failed to load BenCmd action log:");
+			BenCmd.log(e);
 			return;
 		}
 		Collections.sort(sl);
@@ -67,8 +68,8 @@ public class ActionLog {
 			try {
 				new File(l).createNewFile();
 			} catch (Exception e) {
-				BenCmd.getPlugin().log.severe("Failed to save BenCmd action log:");
-				e.printStackTrace();
+				BenCmd.log(Level.SEVERE, "Failed to save BenCmd action log:");
+				BenCmd.log(e);
 				return;
 			}
 		}
@@ -79,8 +80,8 @@ public class ActionLog {
 		} catch (FileNotFoundException e) {
 			throw new AssertionError("File somehow exists and doesn't exist at the same time... Fileception!");
 		} catch (IOException e) {
-			BenCmd.getPlugin().log.severe("Failed to save BenCmd action log:");
-			e.printStackTrace();
+			BenCmd.log(Level.SEVERE, "Failed to save BenCmd action log:");
+			BenCmd.log(e);
 			return;
 		}
 	}

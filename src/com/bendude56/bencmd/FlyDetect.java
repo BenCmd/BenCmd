@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -15,26 +16,25 @@ import com.bendude56.bencmd.permissions.Action.ActionType;
 
 
 public class FlyDetect {
-	public BenCmd plugin;
 	public long lastUpdate;
 	private HashMap<Player, Long> timed;
 	private HashMap<Player, Double> rise;
 	private HashMap<String, Integer> offenders;
 	private List<FlyResponse> responses;
 	private FlyResponse jailResponse;
+	private Integer task;
 	public HashMap<Player, Location> lastL;
 
-	public FlyDetect(BenCmd instance) {
-		plugin = instance;
-		Bukkit.getServer().getScheduler()
-				.scheduleAsyncRepeatingTask(plugin, new FlyTimer(), 2, 2);
+	public FlyDetect() {
+		task = Bukkit.getServer().getScheduler()
+				.scheduleAsyncRepeatingTask(BenCmd.getPlugin(), new FlyTimer(), 2, 2);
 		lastUpdate = new Date().getTime();
 		timed = new HashMap<Player, Long>();
 		rise = new HashMap<Player, Double>();
 		offenders = new HashMap<String, Integer>();
 		responses = new ArrayList<FlyResponse>();
 		lastL = new HashMap<Player, Location>();
-		for (String s : plugin.mainProperties.getString("flyResponses", "p")
+		for (String s : BenCmd.getMainProperties().getString("flyResponses", "p")
 				.split(",")) {
 			if (s.equalsIgnoreCase("p")) {
 				responses.add(FlyResponse.PULLDOWN);
@@ -50,7 +50,7 @@ public class FlyDetect {
 				responses.add(FlyResponse.WARN);
 			}
 		}
-		String s = plugin.mainProperties.getString("jailFlyResponse", "p");
+		String s = BenCmd.getMainProperties().getString("jailFlyResponse", "p");
 		if (s.equalsIgnoreCase("p")) {
 			jailResponse = FlyResponse.PULLDOWN;
 		} else if (s.equalsIgnoreCase("r")) {
@@ -65,16 +65,14 @@ public class FlyDetect {
 			jailResponse = FlyResponse.WARN;
 		}
 		if (jailResponse == FlyResponse.RESPAWN) {
-			plugin.log
-					.warning("A jailFlyResponse of 'r' may allow people to escape jail by flying and being respawned!");
-			plugin.bLog
-					.warning("jailFlyResponse == 'r'! Allows jailed people to be sent to spawn!");
+			BenCmd.log(Level.WARNING, "A jailFlyResponse of 'r' may allow people to escape jail by flying and being respawned!");
 		} else if (jailResponse == FlyResponse.JAIL) {
-			plugin.log
-					.warning("A jailFlyResponse of 'j' will not produce any action when a person in jail flies, as you cannot double-jail someone!");
-			plugin.bLog
-					.warning("jailFlyResponse == 'j'! Produces no response!");
+			BenCmd.log(Level.WARNING, "A jailFlyResponse of 'j' will not produce any action when a person in jail flies, as you cannot double-jail someone!");
 		}
+	}
+	
+	public void forceStopTimer() {
+		Bukkit.getScheduler().cancelTask(task);
 	}
 
 	public boolean isTimeDetected(Player player) {
@@ -110,64 +108,53 @@ public class FlyDetect {
 			}
 			l.setY(l.getY() + 1);
 			player.teleport(l);
-			plugin.log.info(player.getName()
-					+ " was sent to ground level for flying!");
-			plugin.bLog.info(player.getName()
+			BenCmd.log(player.getName()
 					+ " was sent to ground level for flying!");
 			break;
 		case RESPAWN:
-			User.getUser(plugin, player).Spawn();
-			plugin.checkpoints.RemovePreWarp(player);
+			User.getUser(player).spawn();
+			BenCmd.getWarpCheckpoints().RemovePreWarp(player);
 			player.sendMessage(ChatColor.RED
 					+ "You have been respawned for flying!");
-			plugin.log
-					.info(player.getName() + " was sent to spawn for flying!");
-			plugin.bLog.info(player.getName()
-					+ " was sent to spawn for flying!");
+			BenCmd.log(player.getName() + " was sent to spawn for flying!");
 			lastL.put(player, player.getLocation());
 			break;
 		case KICK:
-			User.getUser(plugin, player).Kick(
+			User.getUser(player).kick(
 					"You have been kicked for flying!");
-			plugin.log.info(player.getName() + " was kicked for flying!");
-			plugin.bLog.info(player.getName() + " was kicked for flying!");
+			BenCmd.log(player.getName() + " was kicked for flying!");
 			break;
 		case JAIL:
-			User user = User.getUser(plugin, player);
+			User user = User.getUser(player);
 			if (user.isJailed() != null) {
-				plugin.log.warning("Cannot jail " + user.getName()
+				BenCmd.log(Level.WARNING, "Cannot jail " + user.getName()
 						+ " for flying, because they're already jailed!");
 			} else {
-				plugin.actions.addAction(user, ActionType.JAIL, 3600000L);
-				plugin.jail.SendToJail(player);
+				BenCmd.getPermissionManager().getActionFile().addAction(user, ActionType.JAIL, 3600000L);
+				User.getUser(player).warpTo(BenCmd.getPermissionManager().getJailWarp());
 				player.sendMessage(ChatColor.RED
 						+ "You have been jailed for 1 hour for flying!");
 				lastL.put(player, player.getLocation());
-				plugin.log.info(player.getName()
-						+ " was jailed (1hr) for flying!");
-				plugin.bLog.info(player.getName()
+				BenCmd.log(player.getName()
 						+ " was jailed (1hr) for flying!");
 			}
 			break;
 		case BAN:
-			User u = User.getUser(plugin, player);
-			plugin.actions.addAction(u, ActionType.BAN, 3600000L);
-			u.Kick("You have been banned for 1 hour for flying!");
-			plugin.log.info(player.getName() + " was banned (1hr) for flying!");
-			plugin.bLog
-					.info(player.getName() + " was banned (1hr) for flying!");
+			User u = User.getUser(player);
+			BenCmd.getPermissionManager().getActionFile().addAction(u, ActionType.BAN, 3600000L);
+			u.kick("You have been banned for 1 hour for flying!");
+			BenCmd.log(player.getName() + " was banned (1hr) for flying!");
 			break;
 		case WARN:
 			player.sendMessage(ChatColor.RED
-					+ "WARNING: You have been detected flying! Action may be taken...");
-			plugin.log.info(player.getName() + " has been warned for flying!");
-			plugin.bLog.info(player.getName() + " was warned for flying!");
+					+ "WARNING: You have been detected flying! Action may be taken if you continue...");
+			BenCmd.log(player.getName() + " has been warned for flying!");
 			break;
 		}
 	}
 
 	public void action(Player player) {
-		if (User.getUser(plugin, player).isJailed() != null) {
+		if (User.getUser(player).isJailed() != null) {
 			actionOnce(player, jailResponse);
 		} else {
 			if (!offenders.containsKey(player)) {
@@ -280,12 +267,12 @@ public class FlyDetect {
 	public class FlyTimer implements Runnable {
 		@Override
 		public void run() {
-			if (plugin.mainProperties.getBoolean("allowFlight", false)) {
+			if (BenCmd.getMainProperties().getBoolean("allowFlight", false)) {
 				return;
 			}
 			try {
-				for (Player player : plugin.getServer().getOnlinePlayers()) {
-					if (User.getUser(plugin, player).hasPerm("bencmd.allowfly")) {
+				for (Player player : Bukkit.getOnlinePlayers()) {
+					if (User.getUser(player).hasPerm("bencmd.allowfly")) {
 						return;
 					}
 					Location loc = player.getLocation();

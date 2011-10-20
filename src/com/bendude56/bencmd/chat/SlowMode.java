@@ -15,7 +15,7 @@ public class SlowMode {
 	
 	public static SlowMode getInstance() {
 		if (instance == null) {
-			return instance = new SlowMode(BenCmd.getPlugin().mainProperties.getInteger(
+			return instance = new SlowMode(BenCmd.getMainProperties().getInteger(
 				"slowTime", 1000));
 		} else {
 			return instance;
@@ -23,7 +23,7 @@ public class SlowMode {
 	}
 	
 	public static SlowMode newUnhandledInstance() {
-		return new SlowMode(BenCmd.getPlugin().mainProperties.getInteger(
+		return new SlowMode(BenCmd.getMainProperties().getInteger(
 				"slowTime", 1000));
 	}
 	
@@ -51,13 +51,12 @@ public class SlowMode {
 	}
 
 	public void EnableSlow(int millis) {
-		BenCmd plugin = BenCmd.getPlugin();
 		enabled = true;
 		defTime = millis;
-		if (plugin.mainProperties.getBoolean("channelsEnabled", false)) {
+		if (BenCmd.getMainProperties().getBoolean("channelsEnabled", false)) {
 			return;
 		}
-		plugin.getServer().broadcastMessage(
+		Bukkit.broadcastMessage(
 				ChatColor.GRAY + "Slow mode has been enabled. You must wait "
 						+ (defTime / 1000)
 						+ " seconds between each chat message.");
@@ -68,13 +67,11 @@ public class SlowMode {
 	}
 
 	private SlowMode(Integer defaultTime) {
-		BenCmd plugin = BenCmd.getPlugin();
 		defTime = defaultTime;
 		origDefTime = defaultTime;
 		enabled = false;
-		Bukkit.getServer()
-				.getScheduler()
-				.scheduleAsyncRepeatingTask(plugin, new SlowModeTimer(this), 2,
+		Bukkit.getScheduler()
+				.scheduleAsyncRepeatingTask(BenCmd.getPlugin(), new SlowModeTimer(), 2,
 						2);
 	}
 
@@ -103,14 +100,9 @@ public class SlowMode {
 	}
 
 	public class SlowModeTimer implements Runnable {
-		SlowMode parent;
-
-		public SlowModeTimer(SlowMode instance) {
-			parent = instance;
-		}
 
 		public void run() {
-			if (parent.isEnabled()) {
+			if (isEnabled()) {
 				runCheck();
 			}
 		}

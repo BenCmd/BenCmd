@@ -1,6 +1,8 @@
 package com.bendude56.bencmd.advanced.bank;
 
 import java.util.HashMap;
+
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.BenCmdFile;
@@ -11,11 +13,10 @@ public class BankFile extends BenCmdFile {
 
 	public BankFile() {
 		super("bank.db", "--BenCmd Bank File--", true);
-		BenCmd plugin = BenCmd.getPlugin();
 		banks = new HashMap<String, BankInventory>();
 		loadFile();
 		loadAll();
-		plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(BenCmd.getPlugin(), new Runnable() {
 
 			@Override
 			public void run() {
@@ -42,7 +43,6 @@ public class BankFile extends BenCmdFile {
 	}
 
 	public void loadAll() {
-		BenCmd plugin = BenCmd.getPlugin();
 		for (int i = 0; i < getFile().size(); i++) {
 			String key = (String) getFile().keySet().toArray()[i], value = getFile()
 					.getProperty(key);
@@ -54,9 +54,9 @@ public class BankFile extends BenCmdFile {
 			}
 			BankInventory bank;
 			if (comma < 27) {
-				bank = new BankInventory(key, plugin);
+				bank = new BankInventory(key);
 			} else {
-				bank = new LargeBankInventory(key, plugin);
+				bank = new LargeBankInventory(key);
 			}
 			bank.fromValue(value);
 			banks.put(key, bank);
@@ -100,11 +100,10 @@ public class BankFile extends BenCmdFile {
 	}
 
 	public void saveAll() {
-		BenCmd plugin = BenCmd.getPlugin();
 		for (BankInventory bank : banks.values()) {
 			saveBank(bank);
 		}
-		for (Player p : plugin.getServer().getOnlinePlayers()) {
+		for (Player p : Bukkit.getOnlinePlayers()) {
 			p.saveData();
 		}
 		saveFile();

@@ -10,15 +10,16 @@ import com.bendude56.bencmd.permissions.PermissionUser;
 
 
 public class ChatChannelController extends BenCmdFile {
-	private List<ChatChannel> channels;
+	private List<ChatChannel> channels = new ArrayList<ChatChannel>();
 
-	public ChatChannelController(String fileName) {
+	public ChatChannelController() {
 		super("channels.db", "--BenCmd Channel File--", true);
 		loadFile();
 		loadAll();
 	}
 
 	public void loadAll() {
+		channels.clear();
 		for (int i = 0; i < getFile().size(); i++) {
 			ChatChannel channel = ChatChannel
 					.getChannel(this, (String) getFile().keySet().toArray()[i],

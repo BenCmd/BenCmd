@@ -19,10 +19,10 @@ public class PVPArea extends MsgArea {
 	private DropMode dmc;
 	private DropTable t;
 
-	public PVPArea(BenCmd instance, String key, String value)
+	public PVPArea(String key, String value)
 			throws NumberFormatException, NullPointerException,
 			IndexOutOfBoundsException {
-		super(instance, key, value);
+		super(key, value);
 		mm = Integer.parseInt(value.split("/")[5]);
 		String dms = value.split("/")[6];
 		switch (dms.charAt(0)) {
@@ -52,26 +52,25 @@ public class PVPArea extends MsgArea {
 			throw new NoSuchElementException("Drop mode (normal) invalid!");
 		}
 		try {
-			t = new DropTable(instance, value.split("/")[7]);
+			t = new DropTable(value.split("/")[7]);
 		} catch (IndexOutOfBoundsException e) {
-			t = new DropTable(instance, "");
+			t = new DropTable("");
 		}
 	}
 
-	public PVPArea(BenCmd instance, Integer id, Location corner1,
+	public PVPArea(Integer id, Location corner1,
 			Location corner2, String enter, String leave, int minMoney) {
-		super(instance, id, corner1, corner2, ChatColor.RED + enter,
+		super(id, corner1, corner2, ChatColor.RED + enter,
 				ChatColor.RED + leave);
 		mm = minMoney;
 		dmn = DropMode.DROP;
 		dmc = DropMode.DROP;
-		t = new DropTable(instance, "");
+		t = new DropTable("");
 	}
 
-	public PVPArea(BenCmd instance, Integer id, Location corner1,
+	public PVPArea(Integer id, Location corner1,
 			Location corner2, int minMoney) {
 		super(
-				instance,
 				id,
 				corner1,
 				corner2,
@@ -82,7 +81,7 @@ public class PVPArea extends MsgArea {
 		mm = minMoney;
 		dmn = DropMode.DROP;
 		dmc = DropMode.DROP;
-		t = new DropTable(instance, "");
+		t = new DropTable("");
 	}
 
 	public DropTable getDropTable() {
@@ -92,7 +91,7 @@ public class PVPArea extends MsgArea {
 	public HashMap<ItemStack, DropMode> getDrops(List<ItemStack> inv) {
 		HashMap<ItemStack, DropMode> re = new HashMap<ItemStack, DropMode>();
 		for (ItemStack i : inv) {
-			if (plugin.prices.isCurrency(i)) {
+			if (BenCmd.getMarketController().isCurrency(i)) {
 				re.put(i, dmc);
 			} else {
 				re.put(i, dmn);
@@ -106,12 +105,12 @@ public class PVPArea extends MsgArea {
 
 	public void addDrop(BCItem item, DropInfo info) {
 		t.addItem(item, info);
-		super.plugin.spafile.updateArea(this);
+		BenCmd.getAreas().updateArea(this, true);
 	}
 
 	public void remDrop(BCItem item) {
 		t.removeItem(item);
-		super.plugin.spafile.updateArea(this);
+		BenCmd.getAreas().updateArea(this, true);
 	}
 
 	public DropInfo getDrop(BCItem item) {
@@ -160,12 +159,12 @@ public class PVPArea extends MsgArea {
 
 	public void setCDrop(DropMode value) {
 		dmc = value;
-		super.plugin.spafile.updateArea(this);
+		BenCmd.getAreas().updateArea(this, true);
 	}
 
 	public void setNDrop(DropMode value) {
 		dmn = value;
-		super.plugin.spafile.updateArea(this);
+		BenCmd.getAreas().updateArea(this, true);
 	}
 
 	public void setEnterMessage(String value) {

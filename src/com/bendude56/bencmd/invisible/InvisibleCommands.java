@@ -5,25 +5,19 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.Commands;
 import com.bendude56.bencmd.User;
 
 
 public class InvisibleCommands implements Commands {
-	BenCmd plugin;
-
-	public InvisibleCommands(BenCmd instance) {
-		plugin = instance;
-	}
 
 	public boolean onCommand(CommandSender sender, Command command,
 			String commandLabel, String[] args) {
 		User user;
 		try {
-			user = User.getUser(plugin, (Player) sender);
+			user = User.getUser((Player) sender);
 		} catch (ClassCastException e) {
-			user = User.getUser(plugin);
+			user = User.getUser();
 		}
 		if (commandLabel.equalsIgnoreCase("poof") && user.hasPerm("bencmd.poof.poof")) {
 			Poof(user);
@@ -50,7 +44,7 @@ public class InvisibleCommands implements Commands {
 
 	public void Poof(User user) {
 		if (!user.isPoofed()) {
-			user.Poof();
+			user.poof();
 			user.sendMessage(ChatColor.GREEN + "POOF!");
 		} else {
 			if (user.isOffline()) {
@@ -58,11 +52,11 @@ public class InvisibleCommands implements Commands {
 						+ "You cannot unpoof while offline!");
 				return;
 			} else if (user.isAllPoofed()) {
-				user.UnAllPoof();
-				user.UnPoof();
+				user.unAllPoof();
+				user.unPoof();
 				user.sendMessage(ChatColor.GREEN + "REVERSE POOF!");
 			} else {
-				user.UnPoof();
+				user.unPoof();
 				user.sendMessage(ChatColor.GREEN + "REVERSE POOF!");
 			}
 		}
@@ -70,14 +64,14 @@ public class InvisibleCommands implements Commands {
 
 	public void AllPoof(User user) {
 		if (!user.isPoofed()) {
-			user.Poof();
-			user.AllPoof();
+			user.poof();
+			user.allPoof();
 			user.sendMessage(ChatColor.GREEN + "ALLPOOF!");
 		} else if (!user.isAllPoofed()) {
-			user.AllPoof();
+			user.allPoof();
 			user.sendMessage(ChatColor.GREEN + "ALLPOOF!");
 		} else {
-			user.UnAllPoof();
+			user.unAllPoof();
 			user.sendMessage(ChatColor.GREEN
 					+ "REVERSE ALLPOOF! (STILL POOFED!)");
 		}
@@ -85,10 +79,10 @@ public class InvisibleCommands implements Commands {
 
 	public void NoPoof(User user) {
 		if (!user.isNoPoofed()) {
-			user.NoPoof();
+			user.noPoof();
 			user.sendMessage(ChatColor.GREEN + "NOPOOF!");
 		} else {
-			user.UnNoPoof();
+			user.unNoPoof();
 			user.sendMessage(ChatColor.GREEN + "REVERSE NOPOOF!");
 		}
 	}

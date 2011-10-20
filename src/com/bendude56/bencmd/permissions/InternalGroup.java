@@ -10,7 +10,6 @@ import com.bendude56.bencmd.InvalidPermissionError;
 
 
 class InternalGroup {
-	protected BenCmd plugin;
 	private String groupName;
 	private List<String> permissions;
 	private List<String> users;
@@ -40,10 +39,9 @@ class InternalGroup {
 		return new PermissionGroup(highest);
 	}
 
-	protected InternalGroup(BenCmd instance, String groupName,
+	protected InternalGroup(String groupName,
 			List<String> permissions, List<String> users, List<String> groups,
 			String prefix, Integer color, Integer level) {
-		this.plugin = instance;
 		this.groupName = groupName;
 		this.permissions = permissions;
 		this.users = users;
@@ -84,7 +82,7 @@ class InternalGroup {
 		List<String> perms = new ArrayList<String>();
 		perms.addAll(permissions);
 		if (testGroup) {
-			for (InternalGroup group : plugin.perm.groupFile
+			for (InternalGroup group : BenCmd.getPermissionManager().getGroupFile()
 					.getGroupGroups(this)) {
 				perms.addAll(group.getPermissions(true));
 			}
@@ -165,7 +163,7 @@ class InternalGroup {
 	public String getPrefix() {
 		if (prefix.isEmpty()) {
 			List<InternalGroup> possibleGroups = new ArrayList<InternalGroup>();
-			for (InternalGroup group : plugin.perm.groupFile
+			for (InternalGroup group : BenCmd.getPermissionManager().getGroupFile()
 					.getGroupGroups(this)) {
 				if (!group.getPrefix().isEmpty()) {
 					possibleGroups.add(group);
@@ -188,7 +186,7 @@ class InternalGroup {
 	public ChatColor getColor() {
 		if (color == -1) {
 			List<InternalGroup> possibleGroups = new ArrayList<InternalGroup>();
-			for (InternalGroup group : plugin.perm.groupFile
+			for (InternalGroup group : BenCmd.getPermissionManager().getGroupFile()
 					.getGroupGroups(this)) {
 				if (group.getColor() != ChatColor.YELLOW) {
 					possibleGroups.add(group);
@@ -210,46 +208,46 @@ class InternalGroup {
 
 	public void setPrefix(String value) {
 		prefix = value;
-		plugin.perm.groupFile.updateGroup(this);
+		BenCmd.getPermissionManager().getGroupFile().updateGroup(this, true);
 	}
 
 	public void setColor(Integer value) {
 		color = value;
-		plugin.perm.groupFile.updateGroup(this);
+		BenCmd.getPermissionManager().getGroupFile().updateGroup(this, true);
 	}
 
 	public void setLevel(Integer value) {
 		level = value;
-		plugin.perm.groupFile.updateGroup(this);
+		BenCmd.getPermissionManager().getGroupFile().updateGroup(this, true);
 	}
 
 	public void addUser(String user) {
 		users.add(user);
-		plugin.perm.groupFile.updateGroup(this);
+		BenCmd.getPermissionManager().getGroupFile().updateGroup(this, true);
 	}
 
 	public void remUser(String user) {
 		users.remove(user);
-		plugin.perm.groupFile.updateGroup(this);
+		BenCmd.getPermissionManager().getGroupFile().updateGroup(this, true);
 	}
 
 	public void addGroup(String group) {
 		groups.add(group);
-		plugin.perm.groupFile.updateGroup(this);
+		BenCmd.getPermissionManager().getGroupFile().updateGroup(this, true);
 	}
 
 	public void remGroup(String group) {
 		groups.remove(group);
-		plugin.perm.groupFile.updateGroup(this);
+		BenCmd.getPermissionManager().getGroupFile().updateGroup(this, true);
 	}
 
 	public void addPerm(String perm) {
 		permissions.add(perm);
-		plugin.perm.groupFile.updateGroup(this);
+		BenCmd.getPermissionManager().getGroupFile().updateGroup(this, true);
 	}
 
 	public void remPerm(String perm) {
 		permissions.remove(perm);
-		plugin.perm.groupFile.updateGroup(this);
+		BenCmd.getPermissionManager().getGroupFile().updateGroup(this, true);
 	}
 }

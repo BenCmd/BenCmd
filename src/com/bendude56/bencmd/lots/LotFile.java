@@ -2,6 +2,8 @@ package com.bendude56.bencmd.lots;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
+
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import com.bendude56.bencmd.BenCmd;
@@ -17,7 +19,8 @@ public class LotFile extends BenCmdFile {
 
 	public LotFile() {
 		super("lots.db", "--BenCmd Lot File--", true);
-		this.loadAll(); // Load the values into memory.
+		loadFile();
+		loadAll(); // Load the values into memory.
 	}
 
 	public void loadAll() {
@@ -274,9 +277,7 @@ public class LotFile extends BenCmdFile {
 			try {
 				sub = Integer.parseInt(l.FullID.split(",")[1]);
 			} catch (NumberFormatException e) {
-				BenCmd plugin = BenCmd.getPlugin();
-				plugin.log.severe("A lot's sub-id is formatted wrong!");
-				plugin.bLog.severe("A lot's sub-id is formatted wrong!");
+				BenCmd.log(Level.SEVERE, "A lot's sub-id is formatted wrong!");
 				return;
 			}
 			if (sub > max)
@@ -314,9 +315,9 @@ public class LotFile extends BenCmdFile {
 			return false;
 		} else {
 
-			User user = User.getUser(BenCmd.getPlugin(), player);
+			User user = User.getUser(player);
 
-			if (BenCmd.getPlugin().mainProperties.getBoolean("useGlobalLot", false)
+			if (BenCmd.getMainProperties().getBoolean("useGlobalLot", false)
 					&& !user.hasPerm("bencmd.lot.globalguest")) {
 				return false;
 			} else {
@@ -332,7 +333,7 @@ public class LotFile extends BenCmdFile {
 			if (getLot(LotID).withinLot(location)) {
 				inLot = true;
 				PermissionUser user = PermissionUser.matchUser(
-						player.getName(), BenCmd.getPlugin());
+						player.getName());
 				if (user == null) {
 					return "noUser";
 				}

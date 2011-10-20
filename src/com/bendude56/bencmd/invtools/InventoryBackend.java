@@ -79,7 +79,6 @@ public class InventoryBackend {
 	}
 
 	public BCItem checkAlias(String arg) {
-		BenCmd plugin = BenCmd.getPlugin();
 		int ItemID = -1;
 		int Damage = 0;
 		try {
@@ -91,19 +90,19 @@ public class InventoryBackend {
 			}
 		} catch (NumberFormatException e) {
 			try {
-				if (plugin.itemAliases.containsKey(arg.split(":")[0])
+				if (BenCmd.getItemAliases().containsKey(arg.split(":")[0])
 						&& arg.split(":").length == 2) {
-					ItemID = Integer.parseInt(plugin.itemAliases.getString(
+					ItemID = Integer.parseInt(BenCmd.getItemAliases().getString(
 							arg.split(":")[0], ""));
 					Damage = Integer.parseInt(arg.split(":")[1]);
-				} else if (plugin.itemAliases.containsKey(arg)) {
-					if (plugin.itemAliases.getString(arg, "").split(":").length == 1) {
-						ItemID = Integer.parseInt(plugin.itemAliases.getString(
+				} else if (BenCmd.getItemAliases().containsKey(arg)) {
+					if (BenCmd.getItemAliases().getString(arg, "").split(":").length == 1) {
+						ItemID = Integer.parseInt(BenCmd.getItemAliases().getString(
 								arg, ""));
 					} else {
-						ItemID = Integer.parseInt(plugin.itemAliases.getString(
+						ItemID = Integer.parseInt(BenCmd.getItemAliases().getString(
 								arg, "").split(":")[0]);
-						Damage = Integer.parseInt(plugin.itemAliases.getString(
+						Damage = Integer.parseInt(BenCmd.getItemAliases().getString(
 								arg, "").split(":")[1]);
 					}
 				}
@@ -120,10 +119,9 @@ public class InventoryBackend {
 	}
 
 	public boolean TryDispense(Block block) {
-		BenCmd plugin = BenCmd.getPlugin();
-		if (plugin.dispensers.isUnlimitedDispenser(block.getLocation())
+		if (BenCmd.getDispensers().isUnlimitedDispenser(block.getLocation())
 				&& block.getType() == Material.DISPENSER) {
-			BCItem mat = plugin.dispensers
+			BCItem mat = BenCmd.getDispensers()
 					.getDispensedItem(block.getLocation());
 			int amt = this.getStackNumber(mat.getMaterial().getId());
 			CraftDispenser disp = new CraftDispenser(block);

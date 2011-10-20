@@ -11,8 +11,8 @@ import com.bendude56.bencmd.advanced.bank.BankInventory;
 
 public class BankerNPC extends NPC implements Clickable {
 
-	public BankerNPC(BenCmd instance, int id, Location l) {
-		super(instance, "Banker", id, l, new ItemStack(Material.PAPER));
+	public BankerNPC(int id, Location l) {
+		super("Banker", id, l, new ItemStack(Material.PAPER));
 	}
 	
 	@Override
@@ -22,10 +22,11 @@ public class BankerNPC extends NPC implements Clickable {
 
 	@Override
 	public void onRightClick(Player p) {
-		if (!plugin.banks.hasBank(p.getName())) {
-			plugin.banks.addBank(new BankInventory(p.getName(), plugin));
+		if (!BenCmd.getBankController().hasBank(p.getName())) {
+			BenCmd.getBankController().addBank(new BankInventory(p.getName()));
 		}
-		plugin.banks.openInventory(p);
+		BenCmd.log(p.getName() + " has opened their bank!");
+		BenCmd.getBankController().openInventory(p);
 	}
 
 	@Override

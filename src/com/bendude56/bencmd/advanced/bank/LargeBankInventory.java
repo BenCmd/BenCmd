@@ -5,16 +5,14 @@ import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import com.bendude56.bencmd.BenCmd;
-
 import net.minecraft.server.InventoryLargeChest;
 
 public class LargeBankInventory extends BankInventory {
 	protected TileEntityBankChest inv2;
 	protected InventoryLargeChest lc;
 
-	public LargeBankInventory(String player, BenCmd instance) {
-		super(player, instance);
+	public LargeBankInventory(String player) {
+		super(player);
 		inv2 = new TileEntityBankChest();
 		inv2.setName("Bank");
 		lc = new InventoryLargeChest("Bank", chest, inv2);

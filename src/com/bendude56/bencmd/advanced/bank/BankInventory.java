@@ -5,16 +5,12 @@ import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import com.bendude56.bencmd.BenCmd;
-
 
 public class BankInventory {
 	protected TileEntityBankChest chest;
 	protected String p;
-	protected BenCmd plugin;
 
-	public BankInventory(String player, BenCmd instance) {
-		plugin = instance;
+	public BankInventory(String player) {
 		p = player;
 		chest = new TileEntityBankChest();
 		chest.setName("Bank");
@@ -23,7 +19,6 @@ public class BankInventory {
 	public BankInventory(BankInventory i) {
 		chest = i.chest;
 		p = i.p;
-		plugin = i.plugin;
 	}
 
 	public void open(Player p) {

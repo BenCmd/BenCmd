@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
@@ -23,7 +25,7 @@ public class PriceFile extends BenCmdFile {
 		super("prices.db", "--BenCmd Price File--", true);
 		loadFile();
 		loadAll();
-		if (BenCmd.getPlugin().mainProperties.getInteger("updateTime", 1800000) == -1) {
+		if (BenCmd.getMainProperties().getInteger("updateTime", 1800000) == -1) {
 			timerenabled = false;
 		} else {
 			timerenabled = false;
@@ -57,7 +59,6 @@ public class PriceFile extends BenCmdFile {
 	}
 
 	public void loadAll() {
-		BenCmd plugin = BenCmd.getPlugin();
 		nextUpdate = 0;
 		items.clear();
 		for (int i = 0; i < getFile().values().size(); i++) {
@@ -72,10 +73,9 @@ public class PriceFile extends BenCmdFile {
 				try {
 					nextUpdate = Long.parseLong(getFile().getProperty("nextUpdate"));
 				} catch (NumberFormatException e) {
-					plugin.log.severe("nextUpdate (value: "
+					BenCmd.log(Level.SEVERE, "nextUpdate (value: "
 							+ getFile().getProperty("nextUpdate")
 							+ ") couldn't be converted to a number!");
-					plugin.bLog.info("nextUpdate invalid!");
 				}
 				continue;
 			}
@@ -83,31 +83,22 @@ public class PriceFile extends BenCmdFile {
 				itemid = Integer.parseInt(((String) getFile().keySet().toArray()[i])
 						.split(",")[0]);
 			} catch (NumberFormatException e) {
-				plugin.log
-						.severe("A value in the price file couldn't be loaded ("
+				BenCmd.log(Level.SEVERE, "A value in the price file couldn't be loaded ("
 								+ getFile().keySet().toArray()[i] + "): ID is NaN");
-				plugin.bLog.info("BuyableItem " + getFile().keySet().toArray()[i]
-						+ " invalid!");
 				continue;
 			} catch (IndexOutOfBoundsException e) {
-				plugin.log
-						.severe("A value in the price file couldn't be loaded ("
+				BenCmd.log(Level.SEVERE, "A value in the price file couldn't be loaded ("
 								+ getFile().keySet().toArray()[i]
 								+ "): ID is missing");
-				plugin.bLog.info("BuyableItem " + getFile().keySet().toArray()[i]
-						+ " invalid!");
 				continue;
 			}
 			try {
 				damage = Integer.parseInt(((String) getFile().keySet().toArray()[i])
 						.split(",")[1]);
 			} catch (NumberFormatException e) {
-				plugin.log
-						.severe("A value in the price file couldn't be loaded ("
+				BenCmd.log(Level.SEVERE, "A value in the price file couldn't be loaded ("
 								+ getFile().keySet().toArray()[i]
 								+ "): Damage is NaN");
-				plugin.bLog.info("BuyableItem " + getFile().keySet().toArray()[i]
-						+ " invalid!");
 				continue;
 			} catch (IndexOutOfBoundsException e) {
 				damage = 0;
@@ -117,68 +108,47 @@ public class PriceFile extends BenCmdFile {
 			try {
 				price = Double.parseDouble(slashsplit[0]);
 			} catch (NumberFormatException e) {
-				plugin.log
-						.severe("A value in the price file couldn't be loaded ("
+				BenCmd.log(Level.SEVERE, "A value in the price file couldn't be loaded ("
 								+ getFile().keySet().toArray()[i] + "): Cost is NaN");
-				plugin.bLog.info("BuyableItem " + getFile().keySet().toArray()[i]
-						+ " invalid!");
 				continue;
 			} catch (IndexOutOfBoundsException e) {
-				plugin.log
-						.severe("A value in the price file couldn't be loaded ("
+				BenCmd.log(Level.SEVERE, "A value in the price file couldn't be loaded ("
 								+ getFile().keySet().toArray()[i]
 								+ "): Cost is missing");
-				plugin.bLog.info("BuyableItem " + getFile().keySet().toArray()[i]
-						+ " invalid!");
 				continue;
 			}
 			try {
 				supply = Integer.parseInt(slashsplit[1]);
 			} catch (NumberFormatException e) {
-				plugin.log
-						.severe("A value in the price file couldn't be loaded ("
+				BenCmd.log(Level.SEVERE, "A value in the price file couldn't be loaded ("
 								+ getFile().keySet().toArray()[i]
 								+ "): Supply is NaN");
-				plugin.bLog.info("BuyableItem " + getFile().keySet().toArray()[i]
-						+ " invalid!");
 				continue;
 			} catch (IndexOutOfBoundsException e) {
-				plugin.log
-						.severe("A value in the price file couldn't be loaded ("
+				BenCmd.log(Level.SEVERE, "A value in the price file couldn't be loaded ("
 								+ getFile().keySet().toArray()[i]
 								+ "): Supply is missing");
-				plugin.bLog.info("BuyableItem " + getFile().keySet().toArray()[i]
-						+ " invalid!");
 				continue;
 			}
 			try {
 				supplydemand = Integer.parseInt(slashsplit[2]);
 			} catch (NumberFormatException e) {
-				plugin.log
-						.severe("A value in the price file couldn't be loaded ("
+				BenCmd.log(Level.SEVERE, "A value in the price file couldn't be loaded ("
 								+ getFile().keySet().toArray()[i]
 								+ "): Supply/Demand is NaN");
-				plugin.bLog.info("BuyableItem " + getFile().keySet().toArray()[i]
-						+ " invalid!");
 				continue;
 			} catch (IndexOutOfBoundsException e) {
-				plugin.log
-						.severe("A value in the price file couldn't be loaded ("
+				BenCmd.log(Level.SEVERE, "A value in the price file couldn't be loaded ("
 								+ getFile().keySet().toArray()[i]
 								+ "): Supply/Demand is missing");
-				plugin.bLog.info("BuyableItem " + getFile().keySet().toArray()[i]
-						+ " invalid!");
 				continue;
 			}
 			try {
 				isCurrency = (slashsplit[3].equalsIgnoreCase("true"));
 			} catch (IndexOutOfBoundsException e) {
-				plugin.log
-						.severe("A value in the price file couldn't be loaded ("
+				BenCmd.log(Level.SEVERE, "A value in the price file couldn't be loaded ("
 								+ getFile().keySet().toArray()[i]
 								+ "): isCurrency is missing");
-				plugin.bLog.info("BuyableItem " + getFile().keySet().toArray()[i]
-						+ " invalid!");
 				continue;
 			}
 			if (isCurrency) {
@@ -191,7 +161,7 @@ public class PriceFile extends BenCmdFile {
 		}
 		if (nextUpdate == 0) {
 			nextUpdate = new Date().getTime()
-					+ plugin.mainProperties.getInteger("updateTime", 1800000);
+					+ BenCmd.getMainProperties().getInteger("updateTime", 1800000);
 		}
 	}
 
@@ -219,7 +189,7 @@ public class PriceFile extends BenCmdFile {
 	}
 
 	public void pollUpdate() {
-		if (BenCmd.getPlugin().mainProperties.getInteger("updateTime", 1800000) == -1) {
+		if (BenCmd.getMainProperties().getInteger("updateTime", 1800000) == -1) {
 			return;
 		}
 		long nowTime = new Date().getTime();
@@ -238,9 +208,8 @@ public class PriceFile extends BenCmdFile {
 	}
 
 	public void ForceUpdate() {
-		BenCmd plugin = BenCmd.getPlugin();
 		nextUpdate = new Date().getTime()
-				+ plugin.mainProperties.getInteger("updateTime", 1800000);
+				+ BenCmd.getMainProperties().getInteger("updateTime", 1800000);
 		saveUpdateTime();
 		Bukkit.broadcastMessage(
 				ChatColor.RED + "ALERT: All prices are being updated...");
@@ -253,12 +222,12 @@ public class PriceFile extends BenCmdFile {
 				Double newPrice = oldPrice;
 				newPrice += item.getSupplyDemand()
 						/ ((double) InventoryBackend.getInstance().getStackNumber(item.getItemId()))
-						* plugin.mainProperties.getDouble("marketMultiple",
+						* BenCmd.getMainProperties().getDouble("marketMultiple",
 								0.25);
-				if (newPrice - oldPrice > plugin.mainProperties.getDouble(
+				if (newPrice - oldPrice > BenCmd.getMainProperties().getDouble(
 						"marketMaxChange", 2)) {
 					newPrice = oldPrice
-							+ plugin.mainProperties.getDouble(
+							+ BenCmd.getMainProperties().getDouble(
 									"marketMaxChange", 2);
 				}
 				newPrice *= 100;
@@ -271,16 +240,16 @@ public class PriceFile extends BenCmdFile {
 				Double newPrice = oldPrice;
 				newPrice -= -item.getSupplyDemand()
 						/ ((double) InventoryBackend.getInstance().getStackNumber(item.getItemId()))
-						* plugin.mainProperties.getDouble("marketMultiple",
+						* BenCmd.getMainProperties().getDouble("marketMultiple",
 								0.25);
-				if (newPrice < plugin.mainProperties.getDouble("marketMin",
+				if (newPrice < BenCmd.getMainProperties().getDouble("marketMin",
 						0.05)) {
 					newPrice = 0.05;
 				}
-				if (oldPrice - newPrice > plugin.mainProperties.getDouble(
+				if (oldPrice - newPrice > BenCmd.getMainProperties().getDouble(
 						"marketMaxChange", 2)) {
 					newPrice = oldPrice
-							- plugin.mainProperties.getDouble(
+							- BenCmd.getMainProperties().getDouble(
 									"marketMaxChange", 2);
 				}
 				item.setPrice(newPrice);

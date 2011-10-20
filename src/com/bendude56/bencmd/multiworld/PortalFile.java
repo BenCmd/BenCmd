@@ -1,73 +1,31 @@
 package com.bendude56.bencmd.multiworld;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.HashMap;
-import java.util.Properties;
+import java.util.Map.Entry;
+import java.util.logging.Level;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.util.FileUtil;
-
 import com.bendude56.bencmd.BenCmd;
+import com.bendude56.bencmd.BenCmdFile;
 import com.bendude56.bencmd.permissions.PermissionGroup;
 import com.bendude56.bencmd.warps.Warp;
 
 
-public class PortalFile extends Properties {
-	private static final long serialVersionUID = 0L;
-	private BenCmd plugin;
+public class PortalFile extends BenCmdFile {
 	private HashMap<Location, Portal> portals;
-	private String fileName;
 
-	public PortalFile(BenCmd instance, String fileName) {
-		plugin = instance;
-		this.fileName = fileName;
+	public PortalFile() {
+		super("portals.db", "--BenCmd Portal File--", true);
 		portals = new HashMap<Location, Portal>();
-		if (new File("plugins/BenCmd/_portals.db").exists()) {
-			plugin.log.warning("Portal backup file found... Restoring...");
-			if (FileUtil.copy(new File("plugins/BenCmd/_portals.db"), new File(
-					fileName))) {
-				new File("plugins/BenCmd/_portals.db").delete();
-				plugin.log.info("Restoration suceeded!");
-			} else {
-				plugin.log.warning("Failed to restore from backup!");
-			}
-		}
 		loadFile();
-		loadPortals();
+		loadAll();
 	}
 
-	public void loadFile() {
-		File file = new File(fileName);
-		if (file.exists()) {
-			try {
-				load(new FileInputStream(file));
-			} catch (IOException e) {
-				System.out.println("BenCmd had a problem:");
-				e.printStackTrace();
-			}
-		}
-	}
-
-	public void saveFile() {
-		File file = new File(fileName);
-		if (file.exists()) {
-			try {
-				store(new FileOutputStream(file), "-BenCmd Portal List-");
-			} catch (IOException e) {
-				System.out.println("BenCmd had a problem:");
-				e.printStackTrace();
-			}
-		}
-	}
-
-	public void loadPortals() {
+	public void loadAll() {
 		portals.clear();
-		for (int i = 0; i < this.size(); i++) {
-			String key = (String) this.keySet().toArray()[i];
+		for (Entry<Object, Object> e : getFile().entrySet()) {
 			int x;
 			int y;
 			int z;
@@ -77,69 +35,64 @@ public class PortalFile extends Properties {
 			PermissionGroup group;
 			Integer homeNum = null;
 			try {
-				x = Integer.parseInt(key.split(",")[1]);
-				y = Integer.parseInt(key.split(",")[2]);
-				z = Integer.parseInt(key.split(",")[3]);
-			} catch (NumberFormatException e) {
-				plugin.log.warning("Portal (" + this.keySet().toArray()[i]
+				x = Integer.parseInt(((String)e.getKey()).split(",")[1]);
+				y = Integer.parseInt(((String)e.getKey()).split(",")[2]);
+				z = Integer.parseInt(((String)e.getKey()).split(",")[3]);
+			} catch (NumberFormatException ex) {
+				BenCmd.log(Level.WARNING, "Portal (" + ((String)e.getKey())
 						+ ")'s location is invalid!");
-				plugin.bLog
-						.warning("A portal location was discovered to be invalid...");
 				continue;
-			} catch (IndexOutOfBoundsException e) {
-				plugin.log.warning("Portal (" + this.keySet().toArray()[i]
+			} catch (IndexOutOfBoundsException ex) {
+				BenCmd.log(Level.WARNING, "Portal (" + ((String)e.getKey())
 						+ ")'s location is invalid!");
-				plugin.bLog
-						.warning("A portal location was discovered to be invalid...");
 				continue;
 			}
-			if ((world = plugin.getServer().getWorld(key.split(",")[0])) == null) {
-				plugin.log.warning("Portal (" + this.keySet().toArray()[i]
+			if ((world = Bukkit.getWorld(((String)e.getKey()).split(",")[0])) == null) {
+				BenCmd.log(Level.WARNING, "Portal (" + ((String)e.getKey())
 						+ ")'s location is invalid!");
-				plugin.bLog
-						.warning("A portal location was discovered to be invalid...");
 				continue;
 			}
 			location = new Location(world, x, y, z);
 			try {
-				if (this.getProperty(key).split("/")[1].startsWith("home")) {
+				if (((String)e.getValue()).split("/")[1].startsWith("home")) {
 					homeNum = Integer
-							.parseInt(this.getProperty(key).split("/")[1]
+							.parseInt(((String)e.getValue()).split("/")[1]
 									.replaceFirst("home", ""));
-				} else if ((warp = plugin.warps.getWarp(this.getProperty(key)
+				} else if ((warp = BenCmd.getWarps().getWarp(((String)e.getValue())
 						.split("/")[1])) == null) {
-					plugin.log.warning("Portal (" + this.keySet().toArray()[i]
+					BenCmd.log(Level.WARNING, "Portal (" + ((String)e.getKey())
 							+ ")'s warp name is invalid or has been removed!");
-					plugin.bLog
-							.warning("A portal warp was discovered to be invalid...");
 					continue;
 				}
-			} catch (IndexOutOfBoundsException e) {
-				plugin.log.warning("Portal (" + this.keySet().toArray()[i]
+			} catch (IndexOutOfBoundsException ex) {
+				BenCmd.log(Level.WARNING, "Portal (" + ((String)e.getKey())
 						+ ")'s warp name is invalid or has been removed!");
-				plugin.bLog
-						.warning("A portal warp was discovered to be invalid...");
 				continue;
-			} catch (NumberFormatException e) {
-				plugin.log.warning("Portal (" + this.keySet().toArray()[i]
+			} catch (NumberFormatException ex) {
+				BenCmd.log(Level.WARNING, "Portal (" + ((String)e.getKey())
 						+ ")'s warp name is invalid or has been removed!");
-				plugin.bLog
-						.warning("A portal warp was discovered to be invalid...");
 				continue;
 			}
 			try {
-				group = plugin.perm.groupFile.getGroup(this.getProperty(key)
+				group = BenCmd.getPermissionManager().getGroupFile().getGroup(((String)e.getValue())
 						.split("/")[0]);
-			} catch (NullPointerException e) {
+			} catch (NullPointerException ex) {
 				group = null;
 			}
 			if (homeNum == null) {
 				portals.put(location, new Portal(location, group, warp));
 			} else {
-				portals.put(location, new HomePortal(plugin, location, group,
+				portals.put(location, new HomePortal(location, group,
 						homeNum));
 			}
 		}
+	}
+	
+	public void saveAll() {
+		for (Entry<Location, Portal> e : portals.entrySet()) {
+			updatePortal(e.getValue(), false);
+		}
+		saveFile();
 	}
 
 	public Portal getPortalAt(Location loc) {
@@ -157,7 +110,7 @@ public class PortalFile extends Properties {
 		return null;
 	}
 
-	public void updatePortal(Portal portal) {
+	public void updatePortal(Portal portal, boolean saveFile) {
 		Location loc = portal.getLocation();
 		String groupname;
 		if (portal.getGroup() == null) {
@@ -166,50 +119,27 @@ public class PortalFile extends Properties {
 			groupname = portal.getGroup().getName();
 		}
 		if (portal instanceof HomePortal) {
-			this.put(loc.getWorld().getName() + "," + loc.getBlockX() + ","
+			getFile().put(loc.getWorld().getName() + "," + loc.getBlockX() + ","
 					+ loc.getBlockY() + "," + loc.getBlockZ(), groupname
 					+ "/home" + ((HomePortal) portal).getHomeNumber());
 		} else {
-			this.put(loc.getWorld().getName() + "," + loc.getBlockX() + ","
+			getFile().put(loc.getWorld().getName() + "," + loc.getBlockX() + ","
 					+ loc.getBlockY() + "," + loc.getBlockZ(), groupname + "/"
 					+ portal.getWarp().warpName);
 		}
-		try {
-			new File("plugins/BenCmd/_portals.db").createNewFile();
-			if (!FileUtil.copy(new File(fileName), new File(
-					"plugins/BenCmd/_portals.db"))) {
-				plugin.log.warning("Failed to back up portal database!");
-			}
-		} catch (IOException e) {
-			plugin.log.warning("Failed to back up portal database!");
-		}
-		saveFile();
-		try {
-			new File("plugins/BenCmd/_portals.db").delete();
-		} catch (Exception e) { }
+		if (saveFile)
+			saveFile();
 	}
 
 	public void addPortal(Portal portal) {
 		portals.put(portal.getLocation(), portal);
-		updatePortal(portal);
+		updatePortal(portal, true);
 	}
 	
 	public void remPortal(Location loc) {
 		portals.remove(loc);
-		this.remove(loc.getWorld().getName() + "," + loc.getBlockX() + ","
+		getFile().remove(loc.getWorld().getName() + "," + loc.getBlockX() + ","
 					+ loc.getBlockY() + "," + loc.getBlockZ());
-		try {
-			new File("plugins/BenCmd/_portals.db").createNewFile();
-			if (!FileUtil.copy(new File(fileName), new File(
-					"plugins/BenCmd/_portals.db"))) {
-				plugin.log.warning("Failed to back up portal database!");
-			}
-		} catch (IOException e) {
-			plugin.log.warning("Failed to back up portal database!");
-		}
 		saveFile();
-		try {
-			new File("plugins/BenCmd/_portals.db").delete();
-		} catch (Exception e) { }
 	}
 }

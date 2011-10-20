@@ -232,10 +232,10 @@ public class BlacksmithNPC extends NPC implements Clickable {
 		return s;
 	}
 
-	public BlacksmithNPC(BenCmd instance, int id, Location l,
+	public BlacksmithNPC(int id, Location l,
 			HashMap<ToolMaterial, HashMap<ToolType, Double>> tools,
 			HashMap<ArmorMaterial, HashMap<ArmorType, Double>> armor) {
-		super(instance, "Blacksmith", id, l, new ItemStack(Material.IRON_AXE));
+		super("Blacksmith", id, l, new ItemStack(Material.IRON_AXE));
 		if (tools == null) {
 			toolPrices = new HashMap<ToolMaterial, HashMap<ToolType, Double>>();
 		} else {
@@ -311,12 +311,12 @@ public class BlacksmithNPC extends NPC implements Clickable {
 				if (toolPrices.get(tm).containsKey(t)) {
 					if (c == -1.0) {
 						toolPrices.get(tm).remove(t);
-						plugin.npcs.saveNPC(this);
+						BenCmd.getNPCFile().saveNPC(this);
 						p.sendMessage(ChatColor.GREEN
 								+ "That tool can no longer be repaired!");
 					} else {
 						toolPrices.get(tm).put(t, c);
-						plugin.npcs.saveNPC(this);
+						BenCmd.getNPCFile().saveNPC(this);
 						p.sendMessage(ChatColor.GREEN
 								+ "That tool's price has been updated!");
 					}
@@ -326,7 +326,7 @@ public class BlacksmithNPC extends NPC implements Clickable {
 								+ "That tool is not set as repairable...");
 					} else {
 						toolPrices.get(tm).put(t, c);
-						plugin.npcs.saveNPC(this);
+						BenCmd.getNPCFile().saveNPC(this);
 						p.sendMessage(ChatColor.GREEN
 								+ "That tool can now be repaired!");
 					}
@@ -339,7 +339,7 @@ public class BlacksmithNPC extends NPC implements Clickable {
 					HashMap<ToolType, Double> toPut = new HashMap<ToolType, Double>();
 					toPut.put(t, c);
 					toolPrices.put(tm, toPut);
-					plugin.npcs.saveNPC(this);
+					BenCmd.getNPCFile().saveNPC(this);
 					p.sendMessage(ChatColor.GREEN
 							+ "That tool can now be repaired!");
 				}
@@ -354,12 +354,12 @@ public class BlacksmithNPC extends NPC implements Clickable {
 				if (armorPrices.get(am).containsKey(t)) {
 					if (c == -1.0) {
 						armorPrices.get(am).remove(t);
-						plugin.npcs.saveNPC(this);
+						BenCmd.getNPCFile().saveNPC(this);
 						p.sendMessage(ChatColor.GREEN
 								+ "That armor can no longer be repaired!");
 					} else {
 						armorPrices.get(am).put(t, c);
-						plugin.npcs.saveNPC(this);
+						BenCmd.getNPCFile().saveNPC(this);
 						p.sendMessage(ChatColor.GREEN
 								+ "That armor's price has been updated!");
 					}
@@ -369,7 +369,7 @@ public class BlacksmithNPC extends NPC implements Clickable {
 								+ "That armor is not set as repairable...");
 					} else {
 						armorPrices.get(am).put(t, c);
-						plugin.npcs.saveNPC(this);
+						BenCmd.getNPCFile().saveNPC(this);
 						p.sendMessage(ChatColor.GREEN
 								+ "That armor can now be repaired!");
 					}
@@ -382,7 +382,7 @@ public class BlacksmithNPC extends NPC implements Clickable {
 					HashMap<ArmorType, Double> toPut = new HashMap<ArmorType, Double>();
 					toPut.put(t, c);
 					armorPrices.put(am, toPut);
-					plugin.npcs.saveNPC(this);
+					BenCmd.getNPCFile().saveNPC(this);
 					p.sendMessage(ChatColor.GREEN
 							+ "That armor can now be repaired!");
 				}
@@ -413,10 +413,10 @@ public class BlacksmithNPC extends NPC implements Clickable {
 			} else if (p.getItemInHand().getDurability() == 0) {
 				p.sendMessage(ChatColor.RED
 						+ "That item cannot be repaired further!");
-			} else if (BuyableItem.hasMoney(User.getUser(plugin, p),
-					getRepairPrice(id), plugin)) {
-				BuyableItem.remMoney(User.getUser(plugin, p),
-						getRepairPrice(id), plugin);
+			} else if (BuyableItem.hasMoney(User.getUser(p),
+					getRepairPrice(id))) {
+				BuyableItem.remMoney(User.getUser(p),
+						getRepairPrice(id));
 				p.getItemInHand().setDurability((short) 0);
 				p.sendMessage(ChatColor.GREEN + "That item has been repaired!");
 			} else {

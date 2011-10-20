@@ -1,5 +1,6 @@
 package com.bendude56.bencmd.money;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -15,20 +16,14 @@ import com.bendude56.bencmd.money.BuyableItem.BuyResult;
 
 public class MoneyCommands implements Commands {
 
-	BenCmd plugin;
-
-	public MoneyCommands(BenCmd instance) {
-		plugin = instance;
-	}
-
 	@Override
 	public boolean onCommand(CommandSender sender, Command command,
 			String commandLabel, String[] args) {
 		User user;
 		try {
-			user = User.getUser(plugin, (Player) sender);
+			user = User.getUser((Player) sender);
 		} catch (ClassCastException e) {
-			user = User.getUser(plugin);
+			user = User.getUser();
 		}
 		if (commandLabel.equalsIgnoreCase("buy")) {
 			Buy(args, user);
@@ -48,7 +43,7 @@ public class MoneyCommands implements Commands {
 	}
 
 	public void Buy(String[] args, User user) {
-		if (!plugin.mainProperties.getBoolean("marketOpen", true)) {
+		if (!BenCmd.getMainProperties().getBoolean("marketOpen", true)) {
 			user.sendMessage(ChatColor.RED + "The market is currently closed!");
 			return;
 		}
@@ -71,7 +66,7 @@ public class MoneyCommands implements Commands {
 				return;
 			}
 		}
-		BuyableItem bitem = plugin.prices.getItem(item);
+		BuyableItem bitem = BenCmd.getMarketController().getItem(item);
 		if (bitem == null) {
 			user.sendMessage(ChatColor.RED + "That item isn't tradeable!");
 			return;
@@ -91,19 +86,15 @@ public class MoneyCommands implements Commands {
 		case SUCCESS:
 			user.sendMessage(ChatColor.GREEN + "Enjoy, "
 					+ user.getDisplayName() + "!");
-			plugin.log.info(user.getDisplayName() + " bought an item. (id: "
+			BenCmd.log(user.getDisplayName() + " bought an item. (id: "
 					+ item.getMaterial().getId() + ", amount: " + Amount
-					+ ", damage: " + item.getDamage() + ")");
-			plugin.bLog.warning("ITEM BOUGHT: (User: " + user.getDisplayName()
-					+ ", ID: " + bitem.getMaterial().getId() + ", Damage: "
-					+ bitem.getDurability() + ", Amount: " + Amount
-					+ ") at price: " + bitem.getPrice());
+					+ ", damage: " + item.getDamage() + ", price: " + bitem.getPrice() + ")");
 			break;
 		}
 	}
 
 	public void Sell(String[] args, User user) {
-		if (!plugin.mainProperties.getBoolean("marketOpen", true)) {
+		if (!BenCmd.getMainProperties().getBoolean("marketOpen", true)) {
 			user.sendMessage(ChatColor.RED + "The market is currently closed!");
 			return;
 		}
@@ -126,7 +117,7 @@ public class MoneyCommands implements Commands {
 				return;
 			}
 		}
-		BuyableItem bitem = plugin.prices.getItem(item);
+		BuyableItem bitem = BenCmd.getMarketController().getItem(item);
 		if (bitem == null) {
 			user.sendMessage(ChatColor.RED + "That item isn't tradeable!");
 			return;
@@ -134,12 +125,8 @@ public class MoneyCommands implements Commands {
 		if (bitem.sellItem(user, Amount)) {
 			user.sendMessage(ChatColor.GREEN + "Enjoy, "
 					+ user.getDisplayName() + "!");
-			plugin.log.info(user.getDisplayName() + " has sold " + Amount
-					+ " of item. (ID: " + bitem.getMaterial().getId() + ")");
-			plugin.bLog.warning("ITEM SOLD: (User: " + user.getDisplayName()
-					+ ", ID: " + bitem.getMaterial().getId() + ", Damage: "
-					+ bitem.getDurability() + ", Amount: " + Amount
-					+ ") at price: " + bitem.getPrice());
+			BenCmd.log(user.getDisplayName() + " has sold " + Amount
+					+ " of item. (ID: " + bitem.getMaterial().getId() + ", price: " + bitem.getPrice() + ")");
 		} else {
 			user.sendMessage(ChatColor.RED
 					+ "Stop trying to sell stuff you don't have.");
@@ -156,7 +143,7 @@ public class MoneyCommands implements Commands {
 			if (!user.hasPerm("bencmd.market.price")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
-				plugin.logPermFail();
+				BenCmd.getPlugin().logPermFail();
 				return;
 			}
 			MarketCurrency(args, user);
@@ -164,7 +151,7 @@ public class MoneyCommands implements Commands {
 			if (!user.hasPerm("bencmd.market.price")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
-				plugin.logPermFail();
+				BenCmd.getPlugin().logPermFail();
 				return;
 			}
 			MarketItem(args, user);
@@ -172,7 +159,7 @@ public class MoneyCommands implements Commands {
 			if (!user.hasPerm("bencmd.market.supply")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
-				plugin.logPermFail();
+				BenCmd.getPlugin().logPermFail();
 				return;
 			}
 			MarketSupply(args, user);
@@ -180,7 +167,7 @@ public class MoneyCommands implements Commands {
 			if (!user.hasPerm("bencmd.market.update")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
-				plugin.logPermFail();
+				BenCmd.getPlugin().logPermFail();
 				return;
 			}
 			MarketUpdate(args, user);
@@ -188,54 +175,54 @@ public class MoneyCommands implements Commands {
 			if (!user.hasPerm("bencmd.market.update")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
-				plugin.logPermFail();
+				BenCmd.getPlugin().logPermFail();
 				return;
 			}
-			if (!plugin.prices.isTimerEnabled()) {
+			if (!BenCmd.getMarketController().isTimerEnabled()) {
 				user.sendMessage(ChatColor.RED
 						+ "Updating is already disabled!");
 				return;
 			}
-			plugin.mainProperties.setProperty("updateTime", "-1");
-			plugin.mainProperties.saveFile("-BenCmd Main Config-");
+			BenCmd.getMainProperties().setProperty("updateTime", "-1");
+			BenCmd.getMainProperties().saveFile("-BenCmd Main Config-");
 			user.sendMessage(ChatColor.GREEN + "Updating disabled!");
-			plugin.prices.unloadTimer();
+			BenCmd.getMarketController().unloadTimer();
 		} else if (args[0].equalsIgnoreCase("close")) {
 			if (!user.hasPerm("bencmd.market.close")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
-				plugin.logPermFail();
+				BenCmd.getPlugin().logPermFail();
 				return;
 			}
-			if (!plugin.mainProperties.getBoolean("marketOpen", true)) {
+			if (!BenCmd.getMainProperties().getBoolean("marketOpen", true)) {
 				user.sendMessage(ChatColor.RED
 						+ "The market is already closed!");
 				return;
 			}
-			plugin.mainProperties.setProperty("marketOpen", "false");
-			plugin.mainProperties.saveFile("-BenCmd Main Config-");
-			plugin.getServer().broadcastMessage(
+			BenCmd.getMainProperties().setProperty("marketOpen", "false");
+			BenCmd.getMainProperties().saveFile("-BenCmd Main Config-");
+			Bukkit.broadcastMessage(
 					ChatColor.RED + "The market is now closed!");
 		} else if (args[0].equalsIgnoreCase("open")) {
 			if (!user.hasPerm("bencmd.market.open")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
-				plugin.logPermFail();
+				BenCmd.getPlugin().logPermFail();
 				return;
 			}
-			if (plugin.mainProperties.getBoolean("marketOpen", true)) {
+			if (BenCmd.getMainProperties().getBoolean("marketOpen", true)) {
 				user.sendMessage(ChatColor.RED + "The market is already open!");
 				return;
 			}
-			plugin.mainProperties.setProperty("marketOpen", "true");
-			plugin.mainProperties.saveFile("-BenCmd Main Config-");
-			plugin.getServer().broadcastMessage(
+			BenCmd.getMainProperties().setProperty("marketOpen", "true");
+			BenCmd.getMainProperties().saveFile("-BenCmd Main Config-");
+			Bukkit.broadcastMessage(
 					ChatColor.GREEN + "The market is now open!");
 		} else if (args[0].equalsIgnoreCase("multiple")) {
 			if (!user.hasPerm("bencmd.market.properties")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
-				plugin.logPermFail();
+				BenCmd.getPlugin().logPermFail();
 				return;
 			}
 			if (args.length != 2) {
@@ -251,14 +238,14 @@ public class MoneyCommands implements Commands {
 						+ "Proper use is /market multiple <multiple>");
 				return;
 			}
-			plugin.mainProperties.setProperty("marketMultiple",
+			BenCmd.getMainProperties().setProperty("marketMultiple",
 					multiple.toString());
-			plugin.mainProperties.saveFile("-BenCmd Main Config-");
+			BenCmd.getMainProperties().saveFile("-BenCmd Main Config-");
 		} else if (args[0].equalsIgnoreCase("max")) {
 			if (!user.hasPerm("bencmd.market.properties")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
-				plugin.logPermFail();
+				BenCmd.getPlugin().logPermFail();
 				return;
 			}
 			if (args.length != 2) {
@@ -274,14 +261,14 @@ public class MoneyCommands implements Commands {
 						+ "Proper use is /market max <max>");
 				return;
 			}
-			plugin.mainProperties
+			BenCmd.getMainProperties()
 					.setProperty("marketMaxChange", max.toString());
-			plugin.mainProperties.saveFile("-BenCmd Main Config-");
+			BenCmd.getMainProperties().saveFile("-BenCmd Main Config-");
 		} else if (args[0].equalsIgnoreCase("min")) {
 			if (!user.hasPerm("bencmd.market.properties")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
-				plugin.logPermFail();
+				BenCmd.getPlugin().logPermFail();
 				return;
 			}
 			if (args.length != 2) {
@@ -297,14 +284,14 @@ public class MoneyCommands implements Commands {
 						+ "Proper use is /market min <min>");
 				return;
 			}
-			plugin.mainProperties.setProperty("marketMin", min.toString());
-			plugin.mainProperties.saveFile("-BenCmd Main Config-");
+			BenCmd.getMainProperties().setProperty("marketMin", min.toString());
+			BenCmd.getMainProperties().saveFile("-BenCmd Main Config-");
 		}
 	}
 
 	public void MarketUpdate(String[] args, User user) {
 		if (args.length == 1) {
-			plugin.prices.ForceUpdate();
+			BenCmd.getMarketController().ForceUpdate();
 			user.sendMessage(ChatColor.GREEN
 					+ "All prices have been recalculated.");
 		} else if (args.length == 2) {
@@ -316,12 +303,12 @@ public class MoneyCommands implements Commands {
 						+ "Proper use is /market update [delay]");
 				return;
 			}
-			plugin.mainProperties.setProperty("updateTime",
+			BenCmd.getMainProperties().setProperty("updateTime",
 					updateTime.toString());
-			plugin.mainProperties.saveFile("-BenCmd Main Config-");
-			plugin.prices.ForceUpdate();
-			if (!plugin.prices.isTimerEnabled()) {
-				plugin.prices.loadTimer();
+			BenCmd.getMainProperties().saveFile("-BenCmd Main Config-");
+			BenCmd.getMarketController().ForceUpdate();
+			if (!BenCmd.getMarketController().isTimerEnabled()) {
+				BenCmd.getMarketController().loadTimer();
 				user.sendMessage(ChatColor.GREEN + "Updating enabled!");
 			} else {
 				user.sendMessage(ChatColor.GREEN + "Updating rate changed!");
@@ -351,29 +338,23 @@ public class MoneyCommands implements Commands {
 			user.sendMessage(ChatColor.RED + "Invalid price");
 			return;
 		}
-		if ((bitem = plugin.prices.getItem(item)) != null) {
+		if ((bitem = BenCmd.getMarketController().getItem(item)) != null) {
 			if (bitem instanceof Currency) {
 				if (price == 0) {
-					plugin.prices.remPrice(bitem);
-					plugin.log.info(user.getDisplayName()
+					BenCmd.getMarketController().remPrice(bitem);
+					BenCmd.log(user.getDisplayName()
 							+ " has deleted a currency. (ID: "
 							+ bitem.getItemId() + "," + bitem.getDurability()
 							+ ")");
-					plugin.bLog.info("CURRENCY DELETED: " + bitem.getItemId()
-							+ ":" + bitem.getDurability() + " by user "
-							+ user.getDisplayName());
 					user.sendMessage(ChatColor.GREEN
 							+ "That currency was successfully removed!");
 				} else {
 					bitem.setPrice(price);
-					plugin.prices.savePrice(bitem);
-					plugin.log.info(user.getDisplayName()
+					BenCmd.getMarketController().savePrice(bitem, true);
+					BenCmd.log(user.getDisplayName()
 							+ " has updated the price of a currency (ID: "
 							+ bitem.getItemId() + "," + bitem.getDurability()
 							+ ") to " + price);
-					plugin.bLog.info("CURRENCY CHANGED: " + bitem.getItemId()
-							+ ":" + bitem.getDurability() + " by user "
-							+ user.getDisplayName() + " to price " + price);
 					user.sendMessage(ChatColor.GREEN
 							+ "That currency was successfully updated!");
 				}
@@ -383,31 +364,25 @@ public class MoneyCommands implements Commands {
 							+ "That currency doesn't exist!");
 				} else {
 					Currency currency = new Currency(bitem.getItemId(),
-							bitem.getDurability(), price, -1, 0, plugin.prices);
-					plugin.prices.remPrice(bitem);
-					plugin.prices.savePrice(currency);
-					plugin.log.info(user.getDisplayName()
+							bitem.getDurability(), price, -1, 0, BenCmd.getMarketController());
+					BenCmd.getMarketController().remPrice(bitem);
+					BenCmd.getMarketController().savePrice(currency, true);
+					BenCmd.log(user.getDisplayName()
 							+ " has converted an item into a currency (ID: "
 							+ bitem.getItemId() + "," + bitem.getDurability()
 							+ ") with a price of " + price);
-					plugin.bLog.info("ITEM TO CURRENCY: " + bitem.getItemId()
-							+ ":" + bitem.getDurability() + " by user "
-							+ user.getDisplayName() + " to price " + price);
 					user.sendMessage(ChatColor.GREEN
 							+ "That item is now a currency!");
 				}
 			}
 		} else {
 			Currency currency = new Currency(item.getMaterial().getId(),
-					item.getDamage(), price, -1, 0, plugin.prices);
-			plugin.prices.savePrice(currency);
-			plugin.log.info(user.getDisplayName()
+					item.getDamage(), price, -1, 0, BenCmd.getMarketController());
+			BenCmd.getMarketController().savePrice(currency, true);
+			BenCmd.log(user.getDisplayName()
 					+ " has created a currency (ID: " + currency.getItemId()
 					+ "," + currency.getDurability() + ") with a price of "
 					+ price);
-			plugin.bLog.info("CURRENCY CREATED: " + currency.getItemId() + ":"
-					+ currency.getDurability() + " by user "
-					+ user.getDisplayName() + ", with price " + price);
 			user.sendMessage(ChatColor.GREEN
 					+ "That currency was successfully created!");
 		}
@@ -432,61 +407,49 @@ public class MoneyCommands implements Commands {
 			user.sendMessage(ChatColor.RED + "Invalid price");
 			return;
 		}
-		if ((bitem = plugin.prices.getItem(item)) != null) {
+		if ((bitem = BenCmd.getMarketController().getItem(item)) != null) {
 			if (bitem instanceof Currency) {
 				if (price == 0) {
 					user.sendMessage(ChatColor.RED + "That item doesn't exist!");
 				} else {
 					BuyableItem newitem = new BuyableItem(bitem.getItemId(),
-							bitem.getDurability(), price, 0, 0, plugin.prices);
-					plugin.prices.remPrice(bitem);
-					plugin.prices.savePrice(newitem);
-					plugin.log.info(user.getDisplayName()
+							bitem.getDurability(), price, -1, 0, BenCmd.getMarketController());
+					BenCmd.getMarketController().remPrice(bitem);
+					BenCmd.getMarketController().savePrice(newitem, true);
+					BenCmd.log(user.getDisplayName()
 							+ " has converted an currency into an item (ID: "
 							+ bitem.getItemId() + "," + bitem.getDurability()
 							+ ") with a price of " + price);
-					plugin.bLog.info("CURRENCY TO ITEM: " + bitem.getItemId()
-							+ ":" + bitem.getDurability() + " by user "
-							+ user.getDisplayName() + " to price " + price);
 					user.sendMessage(ChatColor.GREEN
 							+ "That currency is now an item!");
 				}
 			} else {
 				if (price == 0) {
-					plugin.prices.remPrice(bitem);
-					plugin.log.info(user.getDisplayName()
+					BenCmd.getMarketController().remPrice(bitem);
+					BenCmd.log(user.getDisplayName()
 							+ " has deleted an item. (ID: " + bitem.getItemId()
 							+ "," + bitem.getDurability() + ")");
-					plugin.bLog.info("ITEM DELETED: " + bitem.getItemId() + ":"
-							+ bitem.getDurability() + " by user "
-							+ user.getDisplayName());
 					user.sendMessage(ChatColor.GREEN
 							+ "That item was successfully removed!");
 				} else {
 					bitem.setPrice(price);
-					plugin.prices.savePrice(bitem);
-					plugin.log.info(user.getDisplayName()
+					BenCmd.getMarketController().savePrice(bitem, true);
+					BenCmd.log(user.getDisplayName()
 							+ " has updated the price of an item (ID: "
 							+ bitem.getItemId() + "," + bitem.getDurability()
 							+ ") to " + price);
-					plugin.bLog.info("ITEM CHANGED: " + bitem.getItemId() + ":"
-							+ bitem.getDurability() + " by user "
-							+ user.getDisplayName() + " to price " + price);
 					user.sendMessage(ChatColor.GREEN
 							+ "That item was successfully updated!");
 				}
 			}
 		} else {
 			BuyableItem newItem = new BuyableItem(item.getMaterial().getId(),
-					item.getDamage(), price, 0, 0, plugin.prices);
-			plugin.prices.savePrice(newItem);
-			plugin.log.info(user.getDisplayName()
+					item.getDamage(), price, 0, 0, BenCmd.getMarketController());
+			BenCmd.getMarketController().savePrice(newItem, true);
+			BenCmd.log(user.getDisplayName()
 					+ " has created a currency (ID: " + newItem.getItemId()
 					+ "," + newItem.getDurability() + ") with a price of "
 					+ price);
-			plugin.bLog.info("ITEM CREATED: " + item.getMaterial().getId()
-					+ ":" + item.getDamage() + " by user "
-					+ user.getDisplayName() + ", with price " + price);
 			user.sendMessage(ChatColor.GREEN
 					+ "That item was successfully created!");
 		}
@@ -511,20 +474,17 @@ public class MoneyCommands implements Commands {
 			user.sendMessage(ChatColor.RED + "Invalid price");
 			return;
 		}
-		if ((bitem = plugin.prices.getItem(item)) != null) {
+		if ((bitem = BenCmd.getMarketController().getItem(item)) != null) {
 			if (bitem instanceof Currency) {
 				user.sendMessage(ChatColor.RED
 						+ "Currencies have unlimited supply!");
 			} else {
 				bitem.setSupply(supply);
-				plugin.prices.savePrice(bitem);
-				plugin.log.info(user.getDisplayName()
+				BenCmd.getMarketController().savePrice(bitem, true);
+				BenCmd.log(user.getDisplayName()
 						+ " has changed the supply of an item (ID: "
 						+ bitem.getItemId() + "," + bitem.getDurability()
 						+ ") with a supply of " + supply);
-				plugin.bLog.info("ITEM SUPPLY: " + bitem.getItemId() + ":"
-						+ bitem.getDurability() + " by user "
-						+ user.getDisplayName() + " to supply " + supply);
 				user.sendMessage(ChatColor.GREEN
 						+ "That supply count has been updated!");
 			}
@@ -545,7 +505,7 @@ public class MoneyCommands implements Commands {
 			user.sendMessage(ChatColor.RED + "Invalid item ID or damage!");
 			return;
 		}
-		BuyableItem bitem = plugin.prices.getItem(item);
+		BuyableItem bitem = BenCmd.getMarketController().getItem(item);
 		if (bitem == null) {
 			user.sendMessage(ChatColor.RED + "That item isn't tradeable!");
 			return;

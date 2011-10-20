@@ -35,7 +35,7 @@ public class KickList {
 		users.put(
 				user,
 				new Date().getTime()
-						+ BenCmd.getPlugin().mainProperties.getInteger("kickDelay", 120000));
+						+ BenCmd.getMainProperties().getInteger("kickDelay", 120000));
 	}
 
 	public long isBlocked(String name) {

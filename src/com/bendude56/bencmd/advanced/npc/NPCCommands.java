@@ -14,20 +14,14 @@ import com.bendude56.bencmd.User;
 
 public class NPCCommands implements Commands {
 
-	private BenCmd plugin;
-
-	public NPCCommands(BenCmd instance) {
-		plugin = instance;
-	}
-
 	@Override
 	public boolean onCommand(CommandSender sender, Command command,
 			String commandLabel, String[] args) {
 		User user;
 		try {
-			user = User.getUser(plugin, (Player) sender);
+			user = User.getUser((Player) sender);
 		} catch (ClassCastException e) {
-			user = User.getUser(plugin);
+			user = User.getUser();
 		}
 		if (commandLabel.equalsIgnoreCase("npc") && user.hasPerm("bencmd.npc.create")) {
 			Npc(args, user);
@@ -37,6 +31,7 @@ public class NPCCommands implements Commands {
 	}
 
 	public void Npc(String[] args, User user) {
+		// TODO Log messages when using /npc
 		if (args.length == 0) {
 			user.sendMessage(ChatColor.YELLOW
 					+ "Proper usage: /npc {bank|bupgrade|blacksmith|static [name] [skin]|remove [id]|despawnall}");
@@ -45,23 +40,23 @@ public class NPCCommands implements Commands {
 			return;
 		}
 		if (args[0].equalsIgnoreCase("bank")) {
-			plugin.npcs.addNPC(new BankerNPC(plugin, plugin.npcs.nextId(), user
+			BenCmd.getNPCFile().addNPC(new BankerNPC(BenCmd.getNPCFile().nextId(), user
 					.getHandle().getLocation()));
 		} else if (args[0].equalsIgnoreCase("bupgrade")) {
-			plugin.npcs.addNPC(new BankManagerNPC(plugin, plugin.npcs.nextId(),
+			BenCmd.getNPCFile().addNPC(new BankManagerNPC(BenCmd.getNPCFile().nextId(),
 					user.getHandle().getLocation()));
 		} else if (args[0].equalsIgnoreCase("blacksmith")) {
-			plugin.npcs.addNPC(new BlacksmithNPC(plugin, plugin.npcs.nextId(),
+			BenCmd.getNPCFile().addNPC(new BlacksmithNPC(BenCmd.getNPCFile().nextId(),
 					user.getHandle().getLocation(), null, null));
 		} else if (args[0].equalsIgnoreCase("static")) {
 			if (args.length == 1) {
-				plugin.npcs.addNPC(new StaticNPC(plugin, "Unnamed NPC", "", plugin.npcs.nextId(),
+				BenCmd.getNPCFile().addNPC(new StaticNPC("Unnamed NPC", "", BenCmd.getNPCFile().nextId(),
 						user.getHandle().getLocation(), new ItemStack(Material.AIR), true));
 			} else if (args.length == 2) {
-				plugin.npcs.addNPC(new StaticNPC(plugin, args[1].replace('-', ' '), args[1].replace('-', ' '), plugin.npcs.nextId(),
+				BenCmd.getNPCFile().addNPC(new StaticNPC(args[1].replace('-', ' '), args[1].replace('-', ' '), BenCmd.getNPCFile().nextId(),
 						user.getHandle().getLocation(), new ItemStack(Material.AIR), true));
 			} else if (args.length == 3) {
-				plugin.npcs.addNPC(new StaticNPC(plugin, args[1].replace('-', ' '), args[2], plugin.npcs.nextId(),
+				BenCmd.getNPCFile().addNPC(new StaticNPC(args[1].replace('-', ' '), args[2], BenCmd.getNPCFile().nextId(),
 						user.getHandle().getLocation(), new ItemStack(Material.AIR), true));
 			} else {
 				user.sendMessage(ChatColor.YELLOW
@@ -69,7 +64,7 @@ public class NPCCommands implements Commands {
 			}
 		} else if (args[0].equalsIgnoreCase("skin")) {
 			if (args.length == 3) {
-				NPC npc = plugin.npcs.getNPC(Integer.parseInt(args[1]));
+				NPC npc = BenCmd.getNPCFile().getNPC(Integer.parseInt(args[1]));
 				if (npc == null) {
 					user.sendMessage(ChatColor.RED + "No NPC with that ID exists!");
 					return;
@@ -79,7 +74,7 @@ public class NPCCommands implements Commands {
 				}
 				((StaticNPC)npc).setSkin(args[2]);
 				user.sendMessage(ChatColor.GREEN + "That NPCs skin was changed successfully!");
-				if (!plugin.spoutcraft || !plugin.spoutconnect.enabled(user.getHandle())) {
+				if (!BenCmd.isSpoutConnected() || !BenCmd.getSpoutConnector().enabled(user.getHandle())) {
 					user.sendMessage(ChatColor.YELLOW + "Please note: To see this change, you must first install SpoutCraft!");
 				}
 			} else {
@@ -87,7 +82,7 @@ public class NPCCommands implements Commands {
 						+ "Proper usage: /npc skin <id> <skin>");
 			}
 		} else if (args[0].equalsIgnoreCase("item")) {
-			NPC npc = plugin.npcs.getNPC(Integer.parseInt(args[1]));
+			NPC npc = BenCmd.getNPCFile().getNPC(Integer.parseInt(args[1]));
 			if (npc == null) {
 				user.sendMessage(ChatColor.RED + "No NPC with that ID exists!");
 				return;
@@ -103,7 +98,7 @@ public class NPCCommands implements Commands {
 			user.sendMessage(ChatColor.GREEN + "That NPCs item was changed successfully!");
 		} else if (args[0].equalsIgnoreCase("name")) {
 			if (args.length == 3) {
-				NPC npc = plugin.npcs.getNPC(Integer.parseInt(args[1]));
+				NPC npc = BenCmd.getNPCFile().getNPC(Integer.parseInt(args[1]));
 				if (npc == null) {
 					user.sendMessage(ChatColor.RED + "No NPC with that ID exists!");
 					return;
@@ -123,7 +118,7 @@ public class NPCCommands implements Commands {
 						+ "Proper usage: /npc rep [id] [cost]");
 				return;
 			}
-			NPC npc = plugin.npcs.getNPC(Integer.parseInt(args[1]));
+			NPC npc = BenCmd.getNPCFile().getNPC(Integer.parseInt(args[1]));
 			if (npc == null) {
 				user.sendMessage(ChatColor.RED + "No NPC with that ID exists!");
 				return;
@@ -144,7 +139,7 @@ public class NPCCommands implements Commands {
 			if (!user.hasPerm("bencmd.npc.remove")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
-				plugin.logPermFail();
+				BenCmd.getPlugin().logPermFail();
 				return;
 			}
 			if (args.length == 1) {
@@ -152,15 +147,15 @@ public class NPCCommands implements Commands {
 						+ "Proper usage: /npc remove [id]");
 				return;
 			}
-			plugin.npcs.remNPC(plugin.npcs.getNPC(Integer.parseInt(args[1])));
+			BenCmd.getNPCFile().remNPC(BenCmd.getNPCFile().getNPC(Integer.parseInt(args[1])));
 		} else if (args[0].equalsIgnoreCase("despawnall")) {
 			if (!user.hasPerm("bencmd.npc.despawnall")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
-				plugin.logPermFail();
+				BenCmd.getPlugin().logPermFail();
 				return;
 			}
-			for (NPC npc : plugin.npcs.allNPCs()) {
+			for (NPC npc : BenCmd.getNPCFile().allNPCs()) {
 				npc.despawn();
 			}
 		}

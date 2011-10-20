@@ -17,20 +17,19 @@ public class Grave {
 	private Block g;
 	private Player p;
 	private List<ItemStack> i;
-	private BenCmd plugin;
 	private int t;
 	private int d;
 
-	public Grave(BenCmd instance, Block grave, Player player,
+	public Grave(Block grave, Player player,
 			List<ItemStack> items, int secondsToPickUp) {
-		plugin = instance;
 		g = grave;
 		p = player;
 		i = new ArrayList<ItemStack>();
 		i.addAll(items);
 		t = secondsToPickUp;
+		// TODO Have all graves tick on the same task
 		d = Bukkit.getServer().getScheduler()
-				.scheduleAsyncRepeatingTask(plugin, new Runnable() {
+				.scheduleAsyncRepeatingTask(BenCmd.getPlugin(), new Runnable() {
 					public void run() {
 						tick();
 					}
@@ -51,7 +50,7 @@ public class Grave {
 			delete();
 			p.sendMessage(ChatColor.RED
 					+ "Your grave has crumbled into dust, taking your items along with it...");
-			plugin.graves.remove(this);
+			BenCmd.getPlugin().graves.remove(this);
 		} else if (t % 60 == 0) {
 			if (t == 60) {
 				p.sendMessage(ChatColor.RED
@@ -76,22 +75,22 @@ public class Grave {
 	public boolean destroyBy(Player player) {
 		if (p.equals(player)) {
 			for (ItemStack i : this.i) {
-				if (plugin.mainProperties.getBoolean("destroyCurrencyOnDeath",
-						false) && plugin.prices.isCurrency(i)) {
+				if (BenCmd.getMainProperties().getBoolean("destroyCurrencyOnDeath",
+						false) && BenCmd.getMarketController().isCurrency(i)) {
 					continue;
 				}
 				p.getInventory().addItem(i);
 			}
 			delete();
-			plugin.graves.remove(this);
+			BenCmd.getPlugin().graves.remove(this);
 			p.sendMessage(ChatColor.GREEN
 					+ "You've reached your grave in time and your items are safe!");
 			return true;
 		} else {
-			User user = User.getUser(plugin, player);
+			User user = User.getUser(player);
 			if (user.hasPerm("bencmd.grave.destroy")) {
 				delete();
-				plugin.graves.remove(this);
+				BenCmd.getPlugin().graves.remove(this);
 				p.sendMessage(ChatColor.RED
 						+ "Your grave has been crushed by an admin, taking your items along with it...");
 				return true;

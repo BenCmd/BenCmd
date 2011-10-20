@@ -5,16 +5,13 @@ import java.util.HashMap;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
-import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.invtools.InventoryBackend;
 
 
 public class WeatherBinding {
 	private HashMap<Player, Material> bindings = new HashMap<Player, Material>();
-	BenCmd plugin;
 
-	public WeatherBinding(BenCmd instance) {
-		plugin = instance;
+	public WeatherBinding() {
 	}
 
 	public void clearBinding(Player player) {

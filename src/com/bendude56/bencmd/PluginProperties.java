@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Properties;
+import java.util.logging.Level;
 
 public class PluginProperties extends Properties {
 	private static final long serialVersionUID = 0L;
@@ -13,6 +14,7 @@ public class PluginProperties extends Properties {
 
 	public PluginProperties(String propertiesFile) {
 		proFile = propertiesFile;
+		loadFile();
 	}
 
 	public void loadFile() {
@@ -21,8 +23,8 @@ public class PluginProperties extends Properties {
 			try {
 				load(new FileInputStream(file));
 			} catch (IOException e) {
-				System.out.println("BenCmd had a problem:");
-				e.printStackTrace();
+				BenCmd.log(Level.SEVERE, "Problem loading " + proFile + ":");
+				BenCmd.log(e);
 			}
 		}
 	}
@@ -33,8 +35,8 @@ public class PluginProperties extends Properties {
 			try {
 				store(new FileOutputStream(file), header);
 			} catch (IOException e) {
-				System.out.println("BenCmd had a problem:");
-				e.printStackTrace();
+				BenCmd.log(Level.SEVERE, "Problem saving " + proFile + ":");
+				BenCmd.log(e);
 			}
 		}
 	}

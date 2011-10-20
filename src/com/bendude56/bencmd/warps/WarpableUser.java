@@ -3,6 +3,7 @@ package com.bendude56.bencmd.warps;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -13,131 +14,125 @@ import com.bendude56.bencmd.permissions.PermissionUser;
 
 public class WarpableUser extends PermissionUser {
 	private Player player;
-	private BenCmd plugin;
 	private boolean isConsole;
 
-	public WarpableUser(BenCmd instance, Player entity)
+	public WarpableUser(Player entity)
 			throws NullPointerException {
-		super(instance, entity.getName(), new ArrayList<String>());
-		plugin = instance;
+		super(entity.getName(), new ArrayList<String>());
 		player = entity;
 		isConsole = false;
 	}
 
-	public WarpableUser(BenCmd instance) {
-		super(instance, "*", new ArrayList<String>());
-		plugin = instance;
+	public WarpableUser() {
+		super("*", new ArrayList<String>());
 		isConsole = true;
 	}
 
-	public boolean CanWarpTo(String warpName) {
+	public boolean canWarpTo(String warpName) {
 		if (isConsole) {
-			return false;
+			throw new UnsupportedOperationException();
 		}
-		return plugin.warps.getWarp(warpName).canWarpHere(this);
+		return BenCmd.getWarps().getWarp(warpName).canWarpHere(this);
 	}
 
-	public void WarpTo(String warpName) {
+	public void warpTo(String warpName) {
 		if (isConsole) {
-			return;
+			throw new UnsupportedOperationException();
 		}
-		plugin.warps.getWarp(warpName).WarpHere(this);
+		BenCmd.getWarps().getWarp(warpName).WarpHere(this);
 	}
 
-	public void WarpTo(String warpName, User sender) {
+	public void warpTo(String warpName, User sender) {
 		if (isConsole) {
-			return;
+			throw new UnsupportedOperationException();
 		}
-		plugin.warps.getWarp(warpName).WarpHere(this, sender.getWarpableUser());
+		BenCmd.getWarps().getWarp(warpName).WarpHere(this, sender.getWarpableUser());
 	}
 
-	public List<Warp> ListWarps() {
+	public List<Warp> listWarps() {
 		if (this.isConsole) {
-			return plugin.warps.listAllWarps();
+			return BenCmd.getWarps().listAllWarps();
 		} else {
-			return plugin.warps.listWarps(player);
+			return BenCmd.getWarps().listWarps(player);
 		}
 	}
 
-	public void WarpTo(Warp warp) {
+	public void warpTo(Warp warp) {
 		if (isConsole) {
-			return;
+			throw new UnsupportedOperationException();
 		}
 		warp.WarpHere(this);
 	}
 
-	public void WarpTo(Warp warp, User sender) {
+	public void warpTo(Warp warp, User sender) {
 		if (isConsole) {
-			return;
+			throw new UnsupportedOperationException();
 		}
 		warp.WarpHere(this, sender.getWarpableUser());
 	}
 
-	public void HomeWarp(Integer homeNumber) {
+	public void homeWarp(Integer homeNumber) {
 		if (isConsole) {
-			return;
+			throw new UnsupportedOperationException();
 		}
-		plugin.homes.WarpOwnHome(player, homeNumber);
+		BenCmd.getHomes().WarpOwnHome(player, homeNumber);
 	}
 
-	public void HomeWarp(Integer homeNumber, PermissionUser homeOf) {
+	public void homeWarp(Integer homeNumber, PermissionUser homeOf) {
 		if (isConsole || homeOf.getName().equalsIgnoreCase("*")) {
-			return;
+			throw new UnsupportedOperationException();
 		}
-		plugin.homes.WarpOtherHome(player, homeOf.getName(), homeNumber);
+		BenCmd.getHomes().WarpOtherHome(player, homeOf.getName(), homeNumber);
 	}
 
-	public boolean LastCheck() {
+	public boolean lastCheck() {
 		if (isConsole) {
-			return false;
+			throw new UnsupportedOperationException();
 		}
-		return plugin.checkpoints.returnPreWarp(player);
+		return BenCmd.getWarpCheckpoints().returnPreWarp(player);
 	}
 
-	public void SetHome(Integer homeNumber) {
+	public void setHome(Integer homeNumber) {
 		if (isConsole) {
-			return;
+			throw new UnsupportedOperationException();
 		}
-		plugin.homes.SetOwnHome(player, homeNumber);
+		BenCmd.getHomes().SetOwnHome(player, homeNumber);
 	}
 
-	public void SetHome(Integer homeNumber, PermissionUser homeOf) {
+	public void setHome(Integer homeNumber, PermissionUser homeOf) {
 		if (isConsole || homeOf.getName().equalsIgnoreCase("*")) {
-			return;
+			throw new UnsupportedOperationException();
 		}
-		plugin.homes.SetOtherHome(player, homeOf.getName(), homeNumber);
+		BenCmd.getHomes().SetOtherHome(player, homeOf.getName(), homeNumber);
 	}
 
-	public void Spawn() {
+	public void spawn() {
 		if (isConsole) {
-			return;
+			throw new UnsupportedOperationException();
 		}
-		if (!plugin.mainProperties.getBoolean("perWorldSpawn", false)) {
-			Spawn(plugin.mainProperties.getString("defaultWorld", "world"));
+		if (!BenCmd.getMainProperties().getBoolean("perWorldSpawn", false)) {
+			spawn(BenCmd.getMainProperties().getString("defaultWorld", "world"));
 		} else {
-			Spawn(player.getWorld().getName());
+			spawn(player.getWorld().getName());
 		}
-		// *ABOVE* Get the spawn location
 	}
 
-	public void Spawn(String world) {
+	public void spawn(String world) {
 		if (isConsole) {
-			return;
+			throw new UnsupportedOperationException();
 		}
-
 		Location spawn;
-
 		try {
-			spawn = plugin.getServer().getWorld(world).getSpawnLocation();
+			spawn = Bukkit.getWorld(world).getSpawnLocation();
 		} catch (NullPointerException e) {
-			Spawn();
+			spawn();
 			return;
 		}
 		// Get the spawn location
 
 		new Warp(spawn.getX(), spawn.getY(), spawn.getZ(), spawn.getYaw(),
 				spawn.getPitch(), spawn.getWorld().getName(), spawn.getWorld()
-						.getName() + "-spawn", "", plugin).WarpHere(this);
+						.getName() + "-spawn", "").WarpHere(this);
 	}
 
 	public WarpableUser getWarpableUser() {
@@ -147,7 +142,7 @@ public class WarpableUser extends PermissionUser {
 	public void sendMessage(String message) {
 		if (isConsole) {
 			message = message.replaceAll("§.", "");
-			plugin.log.info(message);
+			BenCmd.log(message);
 		} else {
 			player.sendMessage(message);
 		}

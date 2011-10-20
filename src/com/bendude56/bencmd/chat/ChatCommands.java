@@ -2,6 +2,7 @@ package com.bendude56.bencmd.chat;
 
 import net.minecraft.server.EntityHuman;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -15,23 +16,18 @@ import com.bendude56.bencmd.listener.BenCmdPlayerListener;
 
 
 public class ChatCommands implements Commands {
-	BenCmd plugin;
-
-	public ChatCommands(BenCmd instance) {
-		plugin = instance;
-	}
 
 	public boolean channelsEnabled() {
-		return plugin.mainProperties.getBoolean("channelsEnabled", false);
+		return BenCmd.getMainProperties().getBoolean("channelsEnabled", false);
 	}
 
 	public boolean onCommand(CommandSender sender, Command command,
 			String commandLabel, String[] args) {
 		User user;
 		try {
-			user = User.getUser(plugin, (Player) sender);
+			user = User.getUser((Player) sender);
 		} catch (ClassCastException e) {
-			user = User.getUser(plugin);
+			user = User.getUser();
 		}
 		if (commandLabel.equalsIgnoreCase("tell")) {
 			tell(args, user);
@@ -42,7 +38,7 @@ public class ChatCommands implements Commands {
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("display")
 				&& user.hasPerm("bencmd.chat.imitate")) {
-			User user2 = User.matchUser(args[0], plugin);
+			User user2 = User.matchUser(args[0]);
 			String message = "";
 			for (int i = 1; i < args.length; i++) {
 				String word = args[i];
@@ -53,10 +49,8 @@ public class ChatCommands implements Commands {
 				}
 			}
 			user2.getHandle().setDisplayName(message);
-			plugin.log.info(user2.getName() + " is now imitating " + message
+			BenCmd.log(user2.getName() + " is now imitating " + message
 					+ "!");
-			plugin.bLog.info("NAME IMITATE: " + user2.getName() + " => "
-					+ message);
 			((EntityHuman) ((CraftPlayer) user2.getHandle()).getHandle()).name = message;
 			return true;
 		}
@@ -90,7 +84,7 @@ public class ChatCommands implements Commands {
 	}
 
 	public void list(String[] args, User user) {
-		Player[] playerList = plugin.getServer().getOnlinePlayers();
+		Player[] playerList = Bukkit.getOnlinePlayers();
 		if (playerList.length == 1 && !user.isServer()) {
 			user.sendMessage(ChatColor.GREEN
 					+ "You are the only one online. :(");
@@ -99,7 +93,7 @@ public class ChatCommands implements Commands {
 		} else {
 			String playerString = "";
 			for (Player player2 : playerList) {
-				User user2 = User.getUser(plugin, player2);
+				User user2 = User.getUser(player2);
 				if (user2.isOffline() && !user.isServer()) {
 					continue;
 				}
@@ -118,7 +112,7 @@ public class ChatCommands implements Commands {
 		}
 		if (user.isMuted() != null) {
 			user.sendMessage(ChatColor.GRAY
-					+ plugin.mainProperties.getString("muteMessage",
+					+ BenCmd.getMainProperties().getString("muteMessage",
 							"You are muted..."));
 			return;
 		}
@@ -130,10 +124,10 @@ public class ChatCommands implements Commands {
 				message += " " + word;
 			}
 		}
-		boolean blocked = ChatChecker.checkBlocked(message, plugin);
+		boolean blocked = ChatChecker.checkBlocked(message);
 		if (blocked) {
 			user.sendMessage(ChatColor.GRAY
-					+ plugin.mainProperties.getString("blockMessage",
+					+ BenCmd.getMainProperties().getString("blockMessage",
 							"You used a blocked word..."));
 			return;
 		}
@@ -153,8 +147,8 @@ public class ChatCommands implements Commands {
 		}
 		message = ChatColor.WHITE + "*" + user.getColor()
 				+ user.getName() + " " + ChatColor.WHITE + message;
-		plugin.getServer().broadcastMessage(message);
-		User.getUser(plugin).sendMessage(message);
+		Bukkit.broadcastMessage(message);
+		User.getUser().sendMessage(message);
 	}
 
 	public void tell(String[] args, User user) {
@@ -165,12 +159,12 @@ public class ChatCommands implements Commands {
 		}
 		if (user.isMuted() != null) {
 			user.sendMessage(ChatColor.GRAY
-					+ plugin.mainProperties.getString("muteMessage",
+					+ BenCmd.getMainProperties().getString("muteMessage",
 							"You are muted..."));
 			return;
 		}
 		User user2;
-		if ((user2 = User.matchUser(args[0], plugin)) == null) {
+		if ((user2 = User.matchUser(args[0])) == null) {
 			user.sendMessage(ChatColor.RED + "That user doesn't exist!");
 			return;
 		}
@@ -191,10 +185,10 @@ public class ChatCommands implements Commands {
 				message += " " + word;
 			}
 		}
-		boolean blocked = ChatChecker.checkBlocked(message, plugin);
+		boolean blocked = ChatChecker.checkBlocked(message);
 		if (blocked) {
 			user.sendMessage(ChatColor.GRAY
-					+ plugin.mainProperties.getString("blockMessage",
+					+ BenCmd.getMainProperties().getString("blockMessage",
 							"You used a blocked word..."));
 			return;
 		}
@@ -217,7 +211,7 @@ public class ChatCommands implements Commands {
 				+ message);
 		user.sendMessage(ChatColor.GRAY + "(You => "+ ((user2.isDev()) ? ChatColor.DARK_GREEN + "*" : "") + user2.getColor()
 				+ user2.getDisplayName() + ChatColor.GRAY + ") " + message);
-		for (User spy : plugin.perm.userFile.allWithPerm("bencmd.chat.tellspy")) {
+		for (User spy : BenCmd.getPermissionManager().getUserFile().allWithPerm("bencmd.chat.tellspy")) {
 			if (spy.getName().equals(user.getName())
 					|| spy.getName().equals(user2.getName())) {
 				continue;
@@ -227,9 +221,7 @@ public class ChatCommands implements Commands {
 					+ user2.getColor() + user2.getDisplayName()
 					+ ChatColor.GRAY + ") " + message);
 		}
-		plugin.log.info("(" + user.getDisplayName() + " => "
-				+ user2.getDisplayName() + ") " + message);
-		plugin.bLog.info("(" + user.getDisplayName() + " => "
+		BenCmd.log("(" + user.getDisplayName() + " => "
 				+ user2.getDisplayName() + ") " + message);
 	}
 }

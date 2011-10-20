@@ -2,6 +2,7 @@ package com.bendude56.bencmd.reporting;
 
 import java.util.ArrayList;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -15,19 +16,14 @@ import com.bendude56.bencmd.permissions.PermissionUser;
 
 
 public class ReportCommands implements Commands {
-	BenCmd plugin;
-
-	public ReportCommands(BenCmd instance) {
-		plugin = instance;
-	}
 
 	public boolean onCommand(CommandSender sender, Command command,
 			String commandLabel, String[] args) {
 		User user;
 		try {
-			user = User.getUser(plugin, (Player) sender);
+			user = User.getUser((Player) sender);
 		} catch (ClassCastException e) {
-			user = User.getUser(plugin);
+			user = User.getUser();
 		}
 		if (commandLabel.equalsIgnoreCase("report")
 				&& user.hasPerm("bencmd.ticket.send")) {
@@ -50,8 +46,7 @@ public class ReportCommands implements Commands {
 					+ "Proper use is /report <player> <reason>");
 			return;
 		}
-		PermissionUser reported = PermissionUser.matchUserIgnoreCase(args[0],
-				plugin);
+		PermissionUser reported = PermissionUser.matchUserIgnoreCase(args[0]);
 		if (reported == null) {
 			user.sendMessage(ChatColor.RED + "That user doesn't exist!");
 			return;
@@ -64,13 +59,11 @@ public class ReportCommands implements Commands {
 				reason += " " + args[i];
 			}
 		}
-		Integer id = plugin.reports.nextId();
-		plugin.reports.addTicket(new Report(plugin, id, user, reported,
+		Integer id = BenCmd.getReports().nextId();
+		BenCmd.getReports().addTicket(new Report(id, user, reported,
 				Report.ReportStatus.UNREAD, reason, "", 0,
 				new ArrayList<String>()));
-		plugin.log.info(user.getDisplayName() + " opened ticket #"
-				+ id.toString() + "!");
-		plugin.bLog.info(user.getDisplayName() + " opened ticket #"
+		BenCmd.log(user.getDisplayName() + " opened ticket #"
 				+ id.toString() + "!");
 		user.sendMessage(ChatColor.GREEN + "Thank you for your report");
 		user.sendMessage(ChatColor.GREEN
@@ -78,12 +71,12 @@ public class ReportCommands implements Commands {
 				+ ".");
 		user.sendMessage(ChatColor.GREEN
 				+ "You can also list your currently open tickets using /ticket list.");
-		for (Player onlinePlayer : plugin.getServer().getOnlinePlayers()) {
+		for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
 			User onlineUser;
-			if ((onlineUser = User.getUser(plugin, onlinePlayer))
+			if ((onlineUser = User.getUser(onlinePlayer))
 					.hasPerm("bencmd.ticket.readall")) {
-				if (plugin.spoutcraft && plugin.spoutconnect.enabled(onlinePlayer)) {
-					plugin.spoutconnect.sendNotification(onlinePlayer, "New report filed!", "Ticket ID: " + id, Material.PAPER);
+				if (BenCmd.isSpoutConnected() && BenCmd.getSpoutConnector().enabled(onlinePlayer)) {
+					BenCmd.getSpoutConnector().sendNotification(onlinePlayer, "New report filed!", "Ticket ID: " + id, Material.PAPER);
 				} else {
 					onlineUser.sendMessage(ChatColor.RED
 							+ "A new report has been filed! Use /ticket " + id
@@ -110,7 +103,7 @@ public class ReportCommands implements Commands {
 					return;
 				}
 			}
-			plugin.reports.listTickets(user, page);
+			BenCmd.getReports().listTickets(user, page);
 		} else if (args[0].equalsIgnoreCase("alist")) {
 			int page = 1;
 			if (args.length > 1) {
@@ -122,14 +115,14 @@ public class ReportCommands implements Commands {
 					return;
 				}
 			}
-			plugin.reports.listAllTickets(user, page);
+			BenCmd.getReports().listAllTickets(user, page);
 		} else if (args[0].equalsIgnoreCase("purge")) {
 			if (!user.hasPerm("bencmd.ticket.purge")) {
 				user.sendMessage(ChatColor.RED
 						+ "You must be an admin to do that!");
 				return;
 			}
-			plugin.reports.PurgeOpen(user);
+			BenCmd.getReports().PurgeOpen(user);
 		} else if (args[0].equalsIgnoreCase("purgefrom")) {
 			if (!user.hasPerm("bencmd.ticket.purge")) {
 				user.sendMessage(ChatColor.RED
@@ -141,7 +134,7 @@ public class ReportCommands implements Commands {
 						+ "Proper use is /ticket purgefrom [name]");
 				return;
 			}
-			plugin.reports.PurgeFrom(user, args[1]);
+			BenCmd.getReports().PurgeFrom(user, args[1]);
 		} else if (args[0].equalsIgnoreCase("purgeto")) {
 			if (!user.hasPerm("bencmd.ticket.purge")) {
 				user.sendMessage(ChatColor.RED
@@ -153,7 +146,7 @@ public class ReportCommands implements Commands {
 						+ "Proper use is /ticket purgeto [name]");
 				return;
 			}
-			plugin.reports.PurgeTo(user, args[1]);
+			BenCmd.getReports().PurgeTo(user, args[1]);
 		} else if (args[0].equalsIgnoreCase("search")) {
 			if (!user.hasPerm("bencmd.ticket.search")) {
 				user.sendMessage(ChatColor.RED
@@ -175,7 +168,7 @@ public class ReportCommands implements Commands {
 					return;
 				}
 			}
-			plugin.reports.searchTickets(user, args[1], page);
+			BenCmd.getReports().searchTickets(user, args[1], page);
 		} else if (args[0].equalsIgnoreCase("asearch")) {
 			if (!user.hasPerm("bencmd.ticket.asearch")) {
 				user.sendMessage(ChatColor.RED
@@ -197,7 +190,7 @@ public class ReportCommands implements Commands {
 					return;
 				}
 			}
-			plugin.reports.searchAllTickets(user, args[1], page);
+			BenCmd.getReports().searchAllTickets(user, args[1], page);
 		} else {
 			Integer id;
 			try {
@@ -206,7 +199,7 @@ public class ReportCommands implements Commands {
 				user.sendMessage(ChatColor.RED + args[0] + " is not a number!");
 				return;
 			}
-			Report report = plugin.reports.getTicketById(id);
+			Report report = BenCmd.getReports().getTicketById(id);
 			if (report == null) {
 				user.sendMessage(ChatColor.RED + "Ticket #" + args[0]
 						+ " doesn't exist!");
@@ -235,9 +228,7 @@ public class ReportCommands implements Commands {
 					}
 					if (args.length == 2) {
 						report.closeTicket("Ticket closed by admin");
-						plugin.log.info(user.getDisplayName()
-								+ " closed ticket #" + id.toString() + "!");
-						plugin.bLog.info(user.getDisplayName()
+						BenCmd.log(user.getDisplayName()
 								+ " closed ticket #" + id.toString() + "!");
 						user.sendMessage(ChatColor.GREEN + "Ticket (ID: "
 								+ report.getId()
@@ -252,10 +243,7 @@ public class ReportCommands implements Commands {
 							}
 						}
 						report.closeTicket(reason);
-						plugin.log.info(user.getDisplayName()
-								+ " closed ticket #" + id.toString()
-								+ "! Reason: " + reason);
-						plugin.bLog.info(user.getDisplayName()
+						BenCmd.log(user.getDisplayName()
 								+ " closed ticket #" + id.toString()
 								+ "! Reason: " + reason);
 						user.sendMessage(ChatColor.GREEN + "Ticket (ID: "
@@ -278,9 +266,7 @@ public class ReportCommands implements Commands {
 						user.sendMessage(ChatColor.GREEN + "Ticket (ID: "
 								+ report.getId()
 								+ ") has been successfully closed!");
-						plugin.log.info(user.getDisplayName()
-								+ " closed ticket #" + id.toString() + "!");
-						plugin.bLog.info(user.getDisplayName()
+						BenCmd.log(user.getDisplayName()
 								+ " closed ticket #" + id.toString() + "!");
 					} else {
 						user.sendMessage(ChatColor.RED
@@ -300,9 +286,7 @@ public class ReportCommands implements Commands {
 						return;
 					}
 					report.reopenTicket(true);
-					plugin.log.info(user.getDisplayName()
-							+ " re-opened ticket #" + id.toString() + "!");
-					plugin.bLog.info(user.getDisplayName()
+					BenCmd.log(user.getDisplayName()
 							+ " re-opened ticket #" + id.toString() + "!");
 					user.sendMessage(ChatColor.GREEN
 							+ "That ticket has been re-opened!");
@@ -318,9 +302,7 @@ public class ReportCommands implements Commands {
 						return;
 					}
 					if (report.reopenTicket(false)) {
-						plugin.log.info(user.getDisplayName()
-								+ " re-opened ticket #" + id.toString() + "!");
-						plugin.bLog.info(user.getDisplayName()
+						BenCmd.log(user.getDisplayName()
 								+ " re-opened ticket #" + id.toString() + "!");
 						user.sendMessage(ChatColor.GREEN
 								+ "That ticket has been re-opened!");
@@ -358,9 +340,7 @@ public class ReportCommands implements Commands {
 					}
 					user.sendMessage(ChatColor.GREEN
 							+ "That ticket has been locked!");
-					plugin.log.info(user.getDisplayName() + " locked ticket #"
-							+ id.toString() + "!");
-					plugin.bLog.info(user.getDisplayName() + " locked ticket #"
+					BenCmd.log(user.getDisplayName() + " locked ticket #"
 							+ id.toString() + "!");
 				} else {
 					user.sendMessage(ChatColor.RED
@@ -376,9 +356,7 @@ public class ReportCommands implements Commands {
 					report.InvestigateTicket();
 					user.sendMessage(ChatColor.GREEN
 							+ "That ticket has been marked as under investigation!");
-					plugin.log.info(user.getDisplayName()
-							+ " is investigating #" + id.toString() + "!");
-					plugin.bLog.info(user.getDisplayName()
+					BenCmd.log(user.getDisplayName()
 							+ " is investigating #" + id.toString() + "!");
 				} else {
 					user.sendMessage(ChatColor.RED
@@ -394,10 +372,7 @@ public class ReportCommands implements Commands {
 					report.UninvestigateTicket();
 					user.sendMessage(ChatColor.GREEN
 							+ "That ticket has been marked as read!");
-					plugin.log.info(user.getDisplayName()
-							+ " is no longer investigating #" + id.toString()
-							+ "!");
-					plugin.bLog.info(user.getDisplayName()
+					BenCmd.log(user.getDisplayName()
 							+ " is no longer investigating #" + id.toString()
 							+ "!");
 				} else {
@@ -444,22 +419,19 @@ public class ReportCommands implements Commands {
 					}
 					user.sendMessage(ChatColor.GREEN
 							+ "The info has been added successfully!");
-					plugin.log.info(user.getDisplayName()
-							+ " has added information to ticket #"
-							+ id.toString() + "!");
-					plugin.bLog.info(user.getDisplayName()
+					BenCmd.log(user.getDisplayName()
 							+ " has added information to ticket #"
 							+ id.toString() + "!");
 					if (user.hasPerm("bencmd.ticket.editall")) {
 						return;
 					}
-					for (Player onlinePlayer : plugin.getServer()
+					for (Player onlinePlayer : Bukkit
 							.getOnlinePlayers()) {
 						User onlineUser;
-						if ((onlineUser = User.getUser(plugin, onlinePlayer))
+						if ((onlineUser = User.getUser(onlinePlayer))
 								.hasPerm("bencmd.ticket.readall")) {
-							if (plugin.spoutcraft && plugin.spoutconnect.enabled(onlinePlayer)) {
-								plugin.spoutconnect.sendNotification(onlinePlayer, "Report info added!", "Ticket ID: " + id, Material.PAPER);
+							if (BenCmd.isSpoutConnected() && BenCmd.getSpoutConnector().enabled(onlinePlayer)) {
+								BenCmd.getSpoutConnector().sendNotification(onlinePlayer, "Report info added!", "Ticket ID: " + id, Material.PAPER);
 							} else {
 								onlineUser
 								.sendMessage(ChatColor.RED

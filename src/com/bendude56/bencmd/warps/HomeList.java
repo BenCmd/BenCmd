@@ -19,20 +19,18 @@ import com.bendude56.bencmd.BenCmd;
 
 
 public class HomeList {
-	BenCmd plugin;
 	HashMap<String, Warp> warps = new HashMap<String, Warp>();
 	List<String> warpString = new ArrayList<String>();
 
-	public HomeList(BenCmd instance) {
-		plugin = instance;
+	public HomeList() {
 		if (new File("plugins/BenCmd/_homes.db").exists()) {
-			plugin.log.warning("Home backup file found... Restoring...");
+			BenCmd.log(Level.WARNING, "Home backup file found... Restoring...");
 			if (FileUtil.copy(new File("plugins/BenCmd/_homes.db"), new File(
 					"plugins/BenCmd/homes.db"))) {
 				new File("plugins/BenCmd/_homes.db").delete();
-				plugin.log.info("Restoration suceeded!");
+				BenCmd.log("Restoration suceeded!");
 			} else {
-				plugin.log.warning("Failed to restore from backup!");
+				BenCmd.log(Level.SEVERE, "Failed to restore from backup!");
 			}
 		}
 		LoadHomes();
@@ -60,10 +58,10 @@ public class HomeList {
 			new File("plugins/BenCmd/_homes.db").createNewFile();
 			if (!FileUtil.copy(new File("plugins/BenCmd/homes.db"), new File(
 					"plugins/BenCmd/_homes.db"))) {
-				plugin.log.warning("Failed to back up home database!");
+				BenCmd.log(Level.WARNING, "Failed to back up home database!");
 			}
 		} catch (IOException e) {
-			plugin.log.warning("Failed to back up home database!");
+			BenCmd.log(Level.WARNING, "Failed to back up home database!");
 		}
 		SaveFile();
 		try {
@@ -82,10 +80,10 @@ public class HomeList {
 			new File("plugins/BenCmd/_homes.db").createNewFile();
 			if (!FileUtil.copy(new File("plugins/BenCmd/homes.db"), new File(
 					"plugins/BenCmd/_homes.db"))) {
-				plugin.log.warning("Failed to back up home database!");
+				BenCmd.log(Level.WARNING, "Failed to back up home database!");
 			}
 		} catch (IOException e) {
-			plugin.log.warning("Failed to back up home database!");
+			BenCmd.log(Level.WARNING, "Failed to back up home database!");
 		}
 		SaveFile();
 		try {
@@ -118,23 +116,21 @@ public class HomeList {
 		warpString.clear();
 		warps.clear();
 		File warpFile;
-		warpFile = new File(plugin.propDir + "homes.db");
+		warpFile = new File(BenCmd.propDir + "homes.db");
 		String str = "";
 		BufferedReader br;
 		try {
 			br = new BufferedReader(new InputStreamReader(new FileInputStream(
 					warpFile)));
 		} catch (FileNotFoundException e) {
-			plugin.log.warning("homes.db not found. Attempting to create...");
-			plugin.bLog.warning("homes.db not found. Attempting to create...");
+			BenCmd.log(Level.WARNING, "homes.db not found. Attempting to create...");
 			try {
 				warpFile.createNewFile();
 				br = new BufferedReader(new InputStreamReader(
 						new FileInputStream(warpFile)));
 			} catch (IOException ex) {
-				plugin.bLog.log(Level.SEVERE, "Couldn't create homes.db:", e);
-				plugin.log.severe("Couldn't create homes.db:");
-				ex.printStackTrace();
+				BenCmd.log(Level.SEVERE, "Couldn't create homes.db:");
+				BenCmd.log(ex);
 				return false;
 			}
 		}
@@ -166,22 +162,19 @@ public class HomeList {
 						group = str.split(":")[3];
 					}
 					warps.put(name, new Warp(x, y, z, yaw, pitch, world, name,
-							group, plugin));
+							group));
 				} catch (IndexOutOfBoundsException e) {
-					plugin.log.warning("Couldn't load one of the homes!");
-					plugin.bLog.warning("Couldn't load one of the homes!");
-					e.printStackTrace();
+					BenCmd.log(Level.WARNING, "Couldn't load one of the homes!");
+					BenCmd.log(e);
 				} catch (NumberFormatException e) {
-					plugin.log.warning("Couldn't load one of the homes!");
-					plugin.bLog.warning("Couldn't load one of the homes!");
-					e.printStackTrace();
+					BenCmd.log(Level.WARNING, "Couldn't load one of the homes!");
+					BenCmd.log(e);
 				}
 			}
 			br.close();
 		} catch (IOException e) {
-			plugin.bLog.log(Level.SEVERE, "Couldn't read homes.db:", e);
-			plugin.log.severe("Couldn't read homes.db:");
-			e.printStackTrace();
+			BenCmd.log(Level.SEVERE, "Couldn't read homes.db:");
+			BenCmd.log(e);
 			return false;
 		}
 		return true;
@@ -189,13 +182,13 @@ public class HomeList {
 
 	public boolean SaveFile() {
 		File warpFile;
-		warpFile = new File(plugin.propDir + "homes.db");
+		warpFile = new File(BenCmd.propDir + "homes.db");
 		BufferedWriter bw;
 		try {
 			bw = new BufferedWriter(new FileWriter(warpFile));
 		} catch (IOException e) {
-			plugin.log.severe("Unable to open homes.db for writing:");
-			e.printStackTrace();
+			BenCmd.log(Level.SEVERE, "Unable to open homes.db for writing:");
+			BenCmd.log(e);
 			return false;
 		}
 		for (String value : warpString) {
@@ -205,19 +198,16 @@ public class HomeList {
 					bw.newLine();
 				}
 			} catch (IOException e) {
-				plugin.bLog.log(Level.SEVERE, "BenCmd failed to save home "
-						+ value.split(":")[0] + ":", e);
-				plugin.log.severe("BenCmd failed to save home "
+				BenCmd.log(Level.SEVERE, "BenCmd failed to save home "
 						+ value.split(":")[0] + ":");
-				e.printStackTrace();
+				BenCmd.log(e);
 			}
 		}
 		try {
 			bw.close();
 		} catch (IOException e) {
-			plugin.bLog.log(Level.SEVERE, "Failed to save homes:", e);
-			plugin.log.severe("Failed to save homes:");
-			e.printStackTrace();
+			BenCmd.log(Level.SEVERE, "Failed to save homes:");
+			BenCmd.log(e);
 			return false;
 		}
 		return true;
@@ -234,12 +224,11 @@ public class HomeList {
 			double pitch, String world, String name, String group) {
 		Warp warp;
 		try {
-			warp = new Warp(x, y, z, yaw, pitch, world, name, group, plugin);
+			warp = new Warp(x, y, z, yaw, pitch, world, name, group);
 			warps.put(name, warp);
 		} catch (Exception e) {
-			plugin.bLog.log(Level.SEVERE, "Couldn't add new home:", e);
-			plugin.log.severe("Couldn't add new home:");
-			e.printStackTrace();
+			BenCmd.log(Level.SEVERE, "Couldn't add new home:");
+			BenCmd.log(e);
 			return false;
 		}
 		return updateHome(warp);

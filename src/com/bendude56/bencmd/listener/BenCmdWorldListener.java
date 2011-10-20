@@ -44,15 +44,15 @@ public class BenCmdWorldListener extends WorldListener {
 	}
 	
 	public void onWorldLoad(WorldLoadEvent event) {
-		BenCmd.getPlugin().npcs.reloadNPCs();
+		BenCmd.getNPCFile().reloadNPCs();
 	}
 	
 	public void onWorldUnload(WorldUnloadEvent event) {
-		BenCmd.getPlugin().npcs.reloadNPCs();
+		BenCmd.getNPCFile().reloadNPCs();
 	}
 
 	public void onChunkLoad(ChunkLoadEvent event) {
-		for (NPC npc : BenCmd.getPlugin().npcs.inChunk(event.getChunk())) {
+		for (NPC npc : BenCmd.getNPCFile().inChunk(event.getChunk())) {
 			npc.spawn();
 		}
 	}
@@ -61,7 +61,7 @@ public class BenCmdWorldListener extends WorldListener {
 		if (event.isCancelled()) {
 			return;
 		}
-		for (NPC npc : BenCmd.getPlugin().npcs.inChunk(event.getChunk())) {
+		for (NPC npc : BenCmd.getNPCFile().inChunk(event.getChunk())) {
 			npc.despawn();
 		}
 	}

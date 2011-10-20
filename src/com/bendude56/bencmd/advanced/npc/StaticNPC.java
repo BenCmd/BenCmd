@@ -10,8 +10,8 @@ public class StaticNPC extends NPC implements Skinnable {
 
 	private String skin = "";
 	
-	public StaticNPC(BenCmd instance, String name, String skin, int id, Location l, ItemStack heldItem, boolean facePlayer) {
-		super(instance, name, id, l, heldItem, facePlayer);
+	public StaticNPC(String name, String skin, int id, Location l, ItemStack heldItem, boolean facePlayer) {
+		super(name, id, l, heldItem, facePlayer);
 		this.skin = skin;
 		despawn();
 		spawn();
@@ -21,7 +21,7 @@ public class StaticNPC extends NPC implements Skinnable {
 		this.skin = skin;
 		despawn();
 		spawn();
-		plugin.npcs.saveNPC(this);
+		BenCmd.getNPCFile().saveNPC(this);
 	}
 	
 	public String getSkin() {

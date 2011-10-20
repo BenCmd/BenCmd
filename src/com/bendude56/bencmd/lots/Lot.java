@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import com.bendude56.bencmd.BenCmd;
-import com.bendude56.bencmd.BenCmdManager;
 import com.bendude56.bencmd.User;
 
 
@@ -27,16 +27,15 @@ public class Lot {
 
 	public Lot(String key, String value)
 			throws NumberFormatException {
-		BenCmd plugin = BenCmd.getPlugin();
 		LotID = key.split(",")[0];
 		SubID = key.split(",")[1];
 		FullID = key;
 		corner1 = new Location(
-				plugin.getServer().getWorld(value.split(",")[3]),
+				Bukkit.getWorld(value.split(",")[3]),
 				Integer.parseInt(value.split(",")[0]), Integer.parseInt(value
 						.split(",")[1]), Integer.parseInt(value.split(",")[2]));
 		corner2 = new Location(
-				plugin.getServer().getWorld(value.split(",")[7]),
+				Bukkit.getWorld(value.split(",")[7]),
 				Integer.parseInt(value.split(",")[4]), Integer.parseInt(value
 						.split(",")[5]), Integer.parseInt(value.split(",")[6]));
 		World = corner1.getWorld();
@@ -70,7 +69,7 @@ public class Lot {
 		if (getSubID().equalsIgnoreCase("0")) {
 			return owner;
 		} else {
-			return BenCmd.getPlugin().lots.getLot(LotID).getOwner();
+			return BenCmd.getLots().getLot(LotID).getOwner();
 		}
 	}
 
@@ -90,12 +89,12 @@ public class Lot {
 		if (getSubID().equalsIgnoreCase("0"))
 			return group;
 		else
-			return BenCmd.getPlugin().lots.getLot(LotID).getLotGroup();
+			return BenCmd.getLots().getLot(LotID).getLotGroup();
 	}
 
 	public List<Lot> getSubs() {
 		List<Lot> subs = new ArrayList<Lot>();
-		for (Map.Entry<String, Lot> e : BenCmd.getPlugin().lots.lots.entrySet()) {
+		for (Map.Entry<String, Lot> e : BenCmd.getLots().lots.entrySet()) {
 			if (e.getKey().split(",")[0].equalsIgnoreCase(LotID)) {
 				subs.add(e.getValue());
 			}
@@ -104,15 +103,14 @@ public class Lot {
 	}
 
 	public boolean withinLot(Location loc) {
-		BenCmd plugin = BenCmd.getPlugin();
 		if (this.getWorld() != loc.getWorld()) {
 			return false;
 		}
-		if (plugin.lots.isBetween(corner1.getBlockX(), loc.getBlockX(),
+		if (BenCmd.getLots().isBetween(corner1.getBlockX(), loc.getBlockX(),
 				corner2.getBlockX())
-				&& plugin.lots.isBetween(corner1.getBlockZ(), loc.getBlockZ(),
+				&& BenCmd.getLots().isBetween(corner1.getBlockZ(), loc.getBlockZ(),
 						corner2.getBlockZ())
-				&& plugin.lots.isBetween(corner1.getBlockY(), loc.getBlockY(),
+				&& BenCmd.getLots().isBetween(corner1.getBlockY(), loc.getBlockY(),
 						corner2.getBlockY())) {
 			return true;
 		} else
@@ -127,7 +125,7 @@ public class Lot {
 				return false;
 			}
 		} else {
-			return BenCmd.getPlugin().lots.getLot(LotID).isOwner(player);
+			return BenCmd.getLots().getLot(LotID).isOwner(player);
 		}
 	}
 
@@ -139,80 +137,74 @@ public class Lot {
 				return false;
 			}
 		} else {
-			return BenCmd.getPlugin().lots.getLot(LotID).isGuest(guest);
+			return BenCmd.getLots().getLot(LotID).isGuest(guest);
 		}
 	}
 
 	public boolean canBuild(Player player) {
-		BenCmd plugin = BenCmd.getPlugin();
-		User user = User.getUser(plugin, player);
+		User user = User.getUser(player);
 		String group;
 		if (!SubID.equalsIgnoreCase("0")) {
-			group = plugin.lots.getLot(LotID).getGroup();
+			group = BenCmd.getLots().getLot(LotID).getGroup();
 		} else {
 			group = getGroup();
 		}
 		if (isOwner(player) || isGuest(player.getName())
 				|| user.hasPerm("bencmd.lot.buildall")
-				|| user.inGroup(BenCmdManager.getPermissionManager().getGroupFile().getGroup(group))) {
+				|| user.inGroup(BenCmd.getPermissionManager().getGroupFile().getGroup(group))) {
 			return true;
 		} else
 			return false;
 	}
 
 	public void addGuest(String guest) {
-		BenCmd plugin = BenCmd.getPlugin();
 		if (SubID.equalsIgnoreCase("0")) {
 			if (!isGuest(guest)) {
 				guests.add(guest);
-				plugin.lots.saveLot(this, true);
+				BenCmd.getLots().saveLot(this, true);
 			}
 		} else
-			plugin.lots.getLot(LotID).addGuest(guest);
+			BenCmd.getLots().getLot(LotID).addGuest(guest);
 	}
 
 	public List<String> getGuests() {
 		if (SubID.equalsIgnoreCase("0"))
 			return guests;
 		else
-			return BenCmd.getPlugin().lots.getLot(LotID).getGuests();
+			return BenCmd.getLots().getLot(LotID).getGuests();
 	}
 
 	public void deleteGuest(String guest) {
-		BenCmd plugin = BenCmd.getPlugin();
 		if (SubID.equalsIgnoreCase("0")) {
 			if (isGuest(guest)) {
 				guests.remove(guest);
-				plugin.lots.saveLot(this, true);
+				BenCmd.getLots().saveLot(this, true);
 			}
 		} else
-			plugin.lots.getLot(LotID).deleteGuest(guest);
+			BenCmd.getLots().getLot(LotID).deleteGuest(guest);
 	}
 
 	public void setGroup(String newGroup) {
-		BenCmd plugin = BenCmd.getPlugin();
 		if (SubID.equalsIgnoreCase("0")) {
 			group = newGroup;
-			plugin.lots.saveLot(this, true);
+			BenCmd.getLots().saveLot(this, true);
 		} else
-			plugin.lots.getLot(LotID).setGroup(newGroup);
+			BenCmd.getLots().getLot(LotID).setGroup(newGroup);
 	}
 
 	public String getGroup() {
-		BenCmd plugin = BenCmd.getPlugin();
 		if (SubID.equalsIgnoreCase("0"))
 			return group;
 		else
-			return plugin.lots.getLot(LotID).getGroup();
+			return BenCmd.getLots().getLot(LotID).getGroup();
 	}
 
 	public void setOwner(String newOwner) {
-		BenCmd plugin = BenCmd.getPlugin();
 		if (SubID.equalsIgnoreCase("0")) {
 			owner = newOwner;
-			plugin.lots.saveLot(this, true);
+			BenCmd.getLots().saveLot(this, true);
 		} else
-			plugin.lots.getLot(LotID).setOwner(newOwner);
+			BenCmd.getLots().getLot(LotID).setOwner(newOwner);
 	}
 
 	public void listGuests(User user) {
@@ -244,13 +236,13 @@ public class Lot {
 				user.sendMessage(list);
 			}
 		} else {
-			BenCmd.getPlugin().lots.getLot(LotID).listGuests(user);
+			BenCmd.getLots().getLot(LotID).listGuests(user);
 		}
 	}
 
 	public boolean clearGuests() {
 		guests.clear();
-		BenCmd.getPlugin().lots.saveLot(this, true);
+		BenCmd.getLots().saveLot(this, true);
 		return true;
 	}
 

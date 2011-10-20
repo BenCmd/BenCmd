@@ -7,7 +7,7 @@ import com.bendude56.bencmd.BenCmd;
 
 
 public class ChatChecker {
-	public static boolean checkBlocked(String message, BenCmd plugin) {
+	public static boolean checkBlocked(String message) {
 		List<String> splitChars = new ArrayList<String>();
 		splitChars.add(" ");
 		splitChars.add(".");
@@ -16,9 +16,9 @@ public class ChatChecker {
 		splitChars.add(",");
 		splitChars.add("\\(");
 		splitChars.add("\\)");
-		List<String> splitString = splitBy(splitChars, message, plugin);
+		List<String> splitString = splitBy(splitChars, message);
 		for (String messagePart : splitString) {
-			for (String blockedWord : plugin.mainProperties.getString(
+			for (String blockedWord : BenCmd.getMainProperties().getString(
 					"blockedWords", "").split(",")) {
 				if (messagePart.equalsIgnoreCase(blockedWord)) {
 					return true;
@@ -29,7 +29,7 @@ public class ChatChecker {
 	}
 
 	public static List<String> splitBy(List<String> remainingChars,
-			String originalMessage, BenCmd plugin) {
+			String originalMessage) {
 		List<String> splitMessage = new ArrayList<String>();
 		for (String split : originalMessage.split(remainingChars.get(0))) {
 			splitMessage.add(split);
@@ -40,7 +40,7 @@ public class ChatChecker {
 			remainingChars.remove(0);
 			for (String toSplit : splitMessage) {
 				newSplitMessage
-						.addAll(splitBy(remainingChars, toSplit, plugin));
+						.addAll(splitBy(remainingChars, toSplit));
 			}
 		}
 		return newSplitMessage;

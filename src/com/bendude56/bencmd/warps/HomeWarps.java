@@ -7,12 +7,10 @@ import com.bendude56.bencmd.*;
 
 
 public class HomeWarps {
-	private BenCmd plugin;
 	public HomeList homes;
 
-	public HomeWarps(BenCmd instance) {
-		plugin = instance;
-		homes = new HomeList(plugin);
+	public HomeWarps() {
+		homes = new HomeList();
 	}
 
 	public void ReloadHomes() {
@@ -20,7 +18,7 @@ public class HomeWarps {
 	}
 
 	public void SetOwnHome(Player player, Integer HomeNumber) {
-		int maxHomes = plugin.mainProperties.getInteger("maxHomes", 3);
+		int maxHomes = BenCmd.getMainProperties().getInteger("maxHomes", 3);
 		if (HomeNumber <= maxHomes && HomeNumber > 0) {
 			double x = player.getLocation().getX();
 			double y = player.getLocation().getY();
@@ -42,11 +40,11 @@ public class HomeWarps {
 	}
 
 	public void WarpOwnHome(Player player, Integer HomeNumber) {
-		int maxHomes = plugin.mainProperties.getInteger("maxHomes", 3);
+		int maxHomes = BenCmd.getMainProperties().getInteger("maxHomes", 3);
 		if (HomeNumber <= maxHomes && HomeNumber > 0) {
 			String name = player.getName() + HomeNumber.toString();
 			if (homes.warps.containsKey(name)) {
-				homes.getHome(name).WarpHere(new WarpableUser(plugin, player));
+				homes.getHome(name).WarpHere(new WarpableUser(player));
 			} else {
 				player.sendMessage(ChatColor.RED
 						+ "You must set that home first!");
@@ -59,11 +57,11 @@ public class HomeWarps {
 
 	public void WarpOtherHome(Player player, String otherPlayer,
 			Integer HomeNumber) {
-		int maxHomes = plugin.mainProperties.getInteger("maxHomes", 3);
+		int maxHomes = BenCmd.getMainProperties().getInteger("maxHomes", 3);
 		if (HomeNumber <= maxHomes && HomeNumber > 0) {
 			String name = otherPlayer + HomeNumber.toString();
 			if (homes.warps.containsKey(name)) {
-				homes.getHome(name).WarpHere(new WarpableUser(plugin, player));
+				homes.getHome(name).WarpHere(new WarpableUser(player));
 			} else {
 				player.sendMessage(ChatColor.RED + otherPlayer
 						+ " doesn't have a home #" + HomeNumber.toString()
@@ -77,7 +75,7 @@ public class HomeWarps {
 
 	public void SetOtherHome(Player player, String otherPlayer,
 			Integer HomeNumber) {
-		int maxHomes = plugin.mainProperties.getInteger("maxHomes", 3);
+		int maxHomes = BenCmd.getMainProperties().getInteger("maxHomes", 3);
 		if (HomeNumber <= maxHomes && HomeNumber > 0) {
 			double x = player.getLocation().getX();
 			double y = player.getLocation().getY();

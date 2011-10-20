@@ -2,6 +2,7 @@ package com.bendude56.bencmd;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -16,58 +17,51 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
 
-import com.bendude56.bencmd.warps.Jail;
-
 
 public class BasicCommands implements Commands {
-	BenCmd plugin;
-
-	public BasicCommands(BenCmd instance) {
-		plugin = instance;
-	}
 
 	public boolean onCommand(CommandSender sender, Command command,
 			String commandLabel, String[] args) {
 		User user;
 		try {
-			user = User.getUser(plugin, (Player) sender);
+			user = User.getUser((Player) sender);
 		} catch (ClassCastException e) {
-			user = User.getUser(plugin);
+			user = User.getUser();
 		}
 		if (commandLabel.equalsIgnoreCase("time")
 				&& (user.hasPerm("bencmd.time.set") || user.hasPerm("bencmd.time.lock"))) {
 			Time(args, user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("day")) {
-			plugin.getServer().dispatchCommand(sender, "time day");
+			Bukkit.dispatchCommand(sender, "time day");
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("dawn")) {
-			plugin.getServer().dispatchCommand(sender, "time dawn");
+			Bukkit.dispatchCommand(sender, "time dawn");
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("noon")) {
-			plugin.getServer().dispatchCommand(sender, "time noon");
+			Bukkit.dispatchCommand(sender, "time noon");
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("dusk")) {
-			plugin.getServer().dispatchCommand(sender, "time dusk");
+			Bukkit.dispatchCommand(sender, "time dusk");
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("sunrise")) {
-			plugin.getServer().dispatchCommand(sender, "time sunrise");
+			Bukkit.dispatchCommand(sender, "time sunrise");
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("sunset")) {
-			plugin.getServer().dispatchCommand(sender, "time sunset");
+			Bukkit.dispatchCommand(sender, "time sunset");
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("night")) {
-			plugin.getServer().dispatchCommand(sender, "time night");
+			Bukkit.dispatchCommand(sender, "time night");
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("midnight")) {
-			plugin.getServer().dispatchCommand(sender, "time midnight");
+			Bukkit.dispatchCommand(sender, "time midnight");
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("ping")) {
 			if (user.isServer()) {
 				if (args.length == 0) {
-					plugin.log.info("pong");
+					BenCmd.log("pong");
 				} else {
-					plugin.log.info(args[0]);
+					BenCmd.log(args[0]);
 				}
 			} else {
 				user.sendMessage(ChatColor.RED + "No, you cannot spam the server console, smart one!");
@@ -130,11 +124,11 @@ public class BasicCommands implements Commands {
 					.getLocation();
 			user.sendMessage(ChatColor.GREEN
 					+ "Fire next to that block can now spread...");
-			plugin.canSpread.add(loc);
+			BenCmd.getPlugin().canSpread.add(loc);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("nofire")
 				&& user.hasPerm("bencmd.fire.spread")) {
-			plugin.canSpread.clear();
+			BenCmd.getPlugin().canSpread.clear();
 			user.sendMessage(ChatColor.GREEN
 					+ "All area-specific fire-spread is now disabled.");
 			return true;
@@ -143,9 +137,9 @@ public class BasicCommands implements Commands {
 			if (args.length == 0) {
 				user.sendMessage(ChatColor.YELLOW + "Proper use is: /mainprop <property> [value]");
 			} else if (args.length == 1) {
-				if (plugin.mainProperties.containsKey(args[0])) {
+				if (BenCmd.getMainProperties().containsKey(args[0])) {
 					user.sendMessage(ChatColor.YELLOW + "That property is currently set to:");
-					user.sendMessage(BenCmd.getPlugin().mainProperties.getProperty(args[0]));
+					user.sendMessage(BenCmd.getMainProperties().getProperty(args[0]));
 				} else {
 					user.sendMessage(ChatColor.RED + "That property doesn't exist!");
 				}
@@ -158,8 +152,8 @@ public class BasicCommands implements Commands {
 						val += " " + args[i];
 					}
 				}
-				BenCmd.getPlugin().mainProperties.setProperty(args[0], val);
-				BenCmd.getPlugin().mainProperties.saveFile("");
+				BenCmd.getMainProperties().setProperty(args[0], val);
+				BenCmd.getMainProperties().saveFile("");
 				user.sendMessage(ChatColor.GREEN + "Success!");
 			}
 			return true;
@@ -170,7 +164,7 @@ public class BasicCommands implements Commands {
 		} else if (commandLabel.equalsIgnoreCase("debug")) {
 			if (!user.isDev() && !user.isServer()) {
 				user.sendMessage(ChatColor.RED + "That command is reserved for BenCmd developers only!");
-				plugin.logPermFail();
+				BenCmd.getPlugin().logPermFail();
 				return true;
 			}
 			if (args.length == 0 || args[0].equalsIgnoreCase("ver")) {
@@ -184,13 +178,13 @@ public class BasicCommands implements Commands {
 				}
 				user.sendMessage(ChatColor.GRAY + "Running CraftBukkit version: " + ((cb == -1) ? "UNKNOWN" : cb));
 			} else if (args[0].equalsIgnoreCase("pfail")) {
-				user.sendMessage(ChatColor.GRAY + "Permission failures: " + BenCmd.getPlugin().usageStats.getInteger("permFail", 0));
+				user.sendMessage(ChatColor.GRAY + "Permission failures: " + BenCmd.getUsageFile().getInteger("permFail", 0));
 			} else if (args[0].equalsIgnoreCase("chkconfig")) {
-				user.sendMessage(ChatColor.GRAY + "Anonymous usage logging: " + ((BenCmd.getPlugin().mainProperties.getBoolean("anonUsageStats", true)) ? (ChatColor.GREEN + "ON") : (ChatColor.YELLOW + "OFF")));
-				user.sendMessage(ChatColor.GRAY + "Update mode: " + ((BenCmd.getPlugin().mainProperties.getBoolean("downloadDevUpdates", true)) ? (ChatColor.YELLOW + "ALL") : (ChatColor.GREEN + "STABLE ONLY")));
-				String dGroup = BenCmd.getPlugin().mainProperties.getString("defaultGroup", "default");
-				user.sendMessage(ChatColor.GRAY + "Default group: " + ((BenCmd.getPlugin().perm.groupFile.groupExists(dGroup)) ? ChatColor.GREEN : ChatColor.RED) + dGroup);
-				user.sendMessage(ChatColor.GRAY + "Spout connected: " + ((BenCmd.getPlugin().spoutcraft) ? (ChatColor.GREEN + "YES") : (ChatColor.YELLOW + "NO")));
+				user.sendMessage(ChatColor.GRAY + "Anonymous usage logging: " + ((BenCmd.getMainProperties().getBoolean("anonUsageStats", true)) ? (ChatColor.GREEN + "ON") : (ChatColor.YELLOW + "OFF")));
+				user.sendMessage(ChatColor.GRAY + "Update mode: " + ((BenCmd.getMainProperties().getBoolean("downloadDevUpdates", true)) ? (ChatColor.YELLOW + "ALL") : (ChatColor.GREEN + "STABLE ONLY")));
+				String dGroup = BenCmd.getMainProperties().getString("defaultGroup", "default");
+				user.sendMessage(ChatColor.GRAY + "Default group: " + ((BenCmd.getPermissionManager().getGroupFile().groupExists(dGroup)) ? ChatColor.GREEN : ChatColor.RED) + dGroup);
+				user.sendMessage(ChatColor.GRAY + "Spout connected: " + ((BenCmd.isSpoutConnected()) ? (ChatColor.GREEN + "YES") : (ChatColor.YELLOW + "NO")));
 			} else {
 				user.sendMessage(ChatColor.GRAY + "Invalid debug command");
 			}
@@ -201,7 +195,7 @@ public class BasicCommands implements Commands {
 
 	public void Kill(String[] args, User user) {
 		if (args.length == 0) {
-			if (!user.Kill()) {
+			if (!user.kill()) {
 				user.sendMessage(ChatColor.RED
 						+ "You can't kill yourself while you're godded!");
 			}
@@ -209,16 +203,16 @@ public class BasicCommands implements Commands {
 			if (!user.hasPerm("bencmd.kill.other")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
-				plugin.logPermFail();
+				BenCmd.getPlugin().logPermFail();
 				return;
 			}
 			User user2;
-			if ((user2 = User.matchUser(args[0], plugin)) != null) {
+			if ((user2 = User.matchUser(args[0])) != null) {
 				if (user2.hasPerm("bencmd.kill.protect") && !user.hasPerm("bencmd.kill.all")) {
 					user.sendMessage(ChatColor.RED + "That player is protected from being killed!");
 					return;
 				}
-				if (!user2.Kill()) {
+				if (!user2.kill()) {
 					user.sendMessage(ChatColor.RED
 							+ "You can't kill someone while they're godded!");
 				}
@@ -237,39 +231,39 @@ public class BasicCommands implements Commands {
 				if (!user.hasPerm("bencmd.time.set")) {
 					user.sendMessage(ChatColor.RED
 							+ "You don't have permission to do that!");
-					plugin.logPermFail();
+					BenCmd.getPlugin().logPermFail();
 					return;
 				}
 				if (user.isServer()) {
-					for (World world : plugin.getServer().getWorlds()) {
+					for (World world : Bukkit.getWorlds()) {
 						world.setTime(0);
-						plugin.lastTime = world.getFullTime();
+						BenCmd.getPlugin().lastTime = world.getFullTime();
 					}
 				} else {
 					user.getHandle().getWorld().setTime(0);
-					plugin.lastTime = user.getHandle().getWorld().getFullTime();
+					BenCmd.getPlugin().lastTime = user.getHandle().getWorld().getFullTime();
 				}
 			} else if (args[0].equalsIgnoreCase("night")) {
 				if (!user.hasPerm("bencmd.time.set")) {
 					user.sendMessage(ChatColor.RED
 							+ "You don't have permission to do that!");
-					plugin.logPermFail();
+					BenCmd.getPlugin().logPermFail();
 					return;
 				}
 				if (user.isServer()) {
-					for (World world : plugin.getServer().getWorlds()) {
+					for (World world : Bukkit.getWorlds()) {
 						world.setTime(15000);
-						plugin.lastTime = world.getFullTime();
+						BenCmd.getPlugin().lastTime = world.getFullTime();
 					}
 				} else {
 					user.getHandle().getWorld().setTime(15000);
-					plugin.lastTime = user.getHandle().getWorld().getFullTime();
+					BenCmd.getPlugin().lastTime = user.getHandle().getWorld().getFullTime();
 				}
 			} else if (args[0].equalsIgnoreCase("set")) {
 				if (!user.hasPerm("bencmd.time.set")) {
 					user.sendMessage(ChatColor.RED
 							+ "You don't have permission to do that!");
-					plugin.logPermFail();
+					BenCmd.getPlugin().logPermFail();
 					return;
 				}
 				int time;
@@ -279,145 +273,139 @@ public class BasicCommands implements Commands {
 					user.sendMessage(ChatColor.RED + "Invaled time.");
 					return;
 				}
-				plugin.log.info("BenCmd: " + user.getDisplayName()
-						+ " has set time to " + time);
-				plugin.bLog.info("BenCmd: " + user.getDisplayName()
+				BenCmd.log("BenCmd: " + user.getDisplayName()
 						+ " has set time to " + time);
 				if (user.isServer()) {
-					for (World world : plugin.getServer().getWorlds()) {
+					for (World world : Bukkit.getWorlds()) {
 						world.setTime(time);
-						plugin.lastTime = world.getFullTime();
+						BenCmd.getPlugin().lastTime = world.getFullTime();
 					}
 				} else {
 					user.getHandle().getWorld().setTime(time);
-					plugin.lastTime = user.getHandle().getWorld().getFullTime();
+					BenCmd.getPlugin().lastTime = user.getHandle().getWorld().getFullTime();
 				}
 			} else if (args[0].equalsIgnoreCase("dawn")) {
 				if (!user.hasPerm("bencmd.time.set")) {
 					user.sendMessage(ChatColor.RED
 							+ "You don't have permission to do that!");
-					plugin.logPermFail();
+					BenCmd.getPlugin().logPermFail();
 					return;
 				}
 				if (user.isServer()) {
-					for (World world : plugin.getServer().getWorlds()) {
+					for (World world : Bukkit.getWorlds()) {
 						world.setTime(23000);
-						plugin.lastTime = world.getFullTime();
+						BenCmd.getPlugin().lastTime = world.getFullTime();
 					}
 				} else {
 					user.getHandle().getWorld().setTime(23000);
-					plugin.lastTime = user.getHandle().getWorld().getFullTime();
+					BenCmd.getPlugin().lastTime = user.getHandle().getWorld().getFullTime();
 				}
 			} else if (args[0].equalsIgnoreCase("sunrise")) {
 				if (!user.hasPerm("bencmd.time.set")) {
 					user.sendMessage(ChatColor.RED
 							+ "You don't have permission to do that!");
-					plugin.logPermFail();
+					BenCmd.getPlugin().logPermFail();
 					return;
 				}
 				if (user.isServer()) {
-					for (World world : plugin.getServer().getWorlds()) {
+					for (World world : Bukkit.getWorlds()) {
 						world.setTime(22500);
-						plugin.lastTime = world.getFullTime();
+						BenCmd.getPlugin().lastTime = world.getFullTime();
 					}
 				} else {
 					user.getHandle().getWorld().setTime(22500);
-					plugin.lastTime = user.getHandle().getWorld().getFullTime();
+					BenCmd.getPlugin().lastTime = user.getHandle().getWorld().getFullTime();
 				}
 			} else if (args[0].equalsIgnoreCase("noon")) {
 				if (!user.hasPerm("bencmd.time.set")) {
 					user.sendMessage(ChatColor.RED
 							+ "You don't have permission to do that!");
-					plugin.logPermFail();
+					BenCmd.getPlugin().logPermFail();
 					return;
 				}
 				if (user.isServer()) {
-					for (World world : plugin.getServer().getWorlds()) {
+					for (World world : Bukkit.getWorlds()) {
 						world.setTime(6000);
-						plugin.lastTime = world.getFullTime();
+						BenCmd.getPlugin().lastTime = world.getFullTime();
 					}
 				} else {
 					user.getHandle().getWorld().setTime(6000);
-					plugin.lastTime = user.getHandle().getWorld().getFullTime();
+					BenCmd.getPlugin().lastTime = user.getHandle().getWorld().getFullTime();
 				}
 			} else if (args[0].equalsIgnoreCase("dusk")) {
 				if (!user.hasPerm("bencmd.time.set")) {
 					user.sendMessage(ChatColor.RED
 							+ "You don't have permission to do that!");
-					plugin.logPermFail();
+					BenCmd.getPlugin().logPermFail();
 					return;
 				}
 				if (user.isServer()) {
-					for (World world : plugin.getServer().getWorlds()) {
+					for (World world : Bukkit.getWorlds()) {
 						world.setTime(13000);
-						plugin.lastTime = world.getFullTime();
+						BenCmd.getPlugin().lastTime = world.getFullTime();
 					}
 				} else {
 					user.getHandle().getWorld().setTime(13000);
-					plugin.lastTime = user.getHandle().getWorld().getFullTime();
+					BenCmd.getPlugin().lastTime = user.getHandle().getWorld().getFullTime();
 				}
 			} else if (args[0].equalsIgnoreCase("sunset")) {
 				if (!user.hasPerm("bencmd.time.set")) {
 					user.sendMessage(ChatColor.RED
 							+ "You don't have permission to do that!");
-					plugin.logPermFail();
+					BenCmd.getPlugin().logPermFail();
 					return;
 				}
 				if (user.isServer()) {
-					for (World world : plugin.getServer().getWorlds()) {
+					for (World world : Bukkit.getWorlds()) {
 						world.setTime(12000);
-						plugin.lastTime = world.getFullTime();
+						BenCmd.getPlugin().lastTime = world.getFullTime();
 					}
 				} else {
 					user.getHandle().getWorld().setTime(12000);
-					plugin.lastTime = user.getHandle().getWorld().getFullTime();
+					BenCmd.getPlugin().lastTime = user.getHandle().getWorld().getFullTime();
 				}
 			} else if (args[0].equalsIgnoreCase("midnight")) {
 				if (!user.hasPerm("bencmd.time.set")) {
 					user.sendMessage(ChatColor.RED
 							+ "You don't have permission to do that!");
-					plugin.logPermFail();
+					BenCmd.getPlugin().logPermFail();
 					return;
 				}
 				if (user.isServer()) {
-					for (World world : plugin.getServer().getWorlds()) {
+					for (World world : Bukkit.getWorlds()) {
 						world.setTime(18000);
-						plugin.lastTime = world.getFullTime();
+						BenCmd.getPlugin().lastTime = world.getFullTime();
 					}
 				} else {
 					user.getHandle().getWorld().setTime(18000);
-					plugin.lastTime = user.getHandle().getWorld().getFullTime();
+					BenCmd.getPlugin().lastTime = user.getHandle().getWorld().getFullTime();
 				}
 			} else if (args[0].equalsIgnoreCase("lock")) {
 				if (!user.hasPerm("bencmd.time.lock")) {
 					user.sendMessage(ChatColor.RED
 							+ "You don't have permission to do that!");
-					plugin.logPermFail();
+					BenCmd.getPlugin().logPermFail();
 					return;
 				}
-				if (plugin.timeRunning) {
-					plugin.log.info("BenCmd: " + user.getDisplayName()
-							+ " has frozen time!");
-					plugin.bLog.info("BenCmd: " + user.getDisplayName()
+				if (BenCmd.getPlugin().timeRunning) {
+					BenCmd.log("BenCmd: " + user.getDisplayName()
 							+ " has frozen time!");
 					if (user.isServer()) {
-						plugin.timeFrozenAt = plugin.getServer().getWorlds()
+						BenCmd.getPlugin().timeFrozenAt = Bukkit.getWorlds()
 								.get(0).getTime();
 					} else {
-						plugin.timeFrozenAt = user.getHandle().getWorld()
+						BenCmd.getPlugin().timeFrozenAt = user.getHandle().getWorld()
 								.getTime();
 					}
-					plugin.timeRunning = false;
-					plugin.getServer().broadcastMessage(
+					BenCmd.getPlugin().timeRunning = false;
+					Bukkit.broadcastMessage(
 							ChatColor.DARK_BLUE + user.getDisplayName()
 									+ " has stopped the clock!");
 				} else {
-					plugin.log.info("BenCmd: " + user.getDisplayName()
+					BenCmd.log("BenCmd: " + user.getDisplayName()
 							+ " has unfrozen time!");
-					plugin.bLog.info("BenCmd: " + user.getDisplayName()
-							+ " has unfrozen time!");
-					plugin.timeRunning = true;
-					plugin.getServer().broadcastMessage(
+					BenCmd.getPlugin().timeRunning = true;
+					Bukkit.broadcastMessage(
 							ChatColor.DARK_BLUE + user.getDisplayName()
 									+ " has restarted time!");
 				}
@@ -433,9 +421,9 @@ public class BasicCommands implements Commands {
 		String spawnworld;
 		if (args.length >= 1 && user.hasPerm("bencmd.spawn.all")) {
 			spawnworld = args[0];
-			user.Spawn(spawnworld);
+			user.spawn(spawnworld);
 		} else {
-			user.Spawn();
+			user.spawn();
 		}
 	}
 
@@ -450,19 +438,13 @@ public class BasicCommands implements Commands {
 				user.makeNonGod(); // Delete them from the list
 				user.sendMessage(ChatColor.GOLD
 						+ "You are no longer in god mode!");
-				plugin.log.info("BenCmd: " + user.getDisplayName()
-						+ " has been made a non-god by "
-						+ user.getDisplayName() + "!");
-				plugin.bLog.info("BenCmd: " + user.getDisplayName()
+				BenCmd.log("BenCmd: " + user.getDisplayName()
 						+ " has been made a non-god by "
 						+ user.getDisplayName() + "!");
 			} else { // If they're not a god
 				user.makeGod(); // Add them to the list
 				user.sendMessage(ChatColor.GOLD + "You are now in god mode!");
-				plugin.log.info("BenCmd: " + user.getDisplayName()
-						+ " has been made a god by " + user.getDisplayName()
-						+ "!");
-				plugin.bLog.info("BenCmd: " + user.getDisplayName()
+				BenCmd.log("BenCmd: " + user.getDisplayName()
 						+ " has been made a god by " + user.getDisplayName()
 						+ "!");
 			}
@@ -470,11 +452,11 @@ public class BasicCommands implements Commands {
 			if (!user.hasPerm("bencmd.god.other")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
-				plugin.logPermFail();
+				BenCmd.getPlugin().logPermFail();
 				return;
 			}
 			User user2;
-			if ((user2 = User.matchUser(args[0], plugin)) != null) { // If
+			if ((user2 = User.matchUser(args[0])) != null) { // If
 																		// they
 																		// exist
 				if (user2.hasPerm("bencmd.god.protect") && !user.hasPerm("bencmd.god.all")) {
@@ -488,10 +470,7 @@ public class BasicCommands implements Commands {
 							+ "You are no longer in god mode!");
 					user.sendMessage(ChatColor.GOLD + "You have un-godded "
 							+ user2.getColor() + user2.getDisplayName());
-					plugin.log.info("BenCmd: " + user2.getDisplayName()
-							+ " has been made a non-god by "
-							+ user.getDisplayName() + "!");
-					plugin.bLog.info("BenCmd: " + user2.getDisplayName()
+					BenCmd.log("BenCmd: " + user2.getDisplayName()
 							+ " has been made a non-god by "
 							+ user.getDisplayName() + "!");
 				} else { // If they're not a god
@@ -500,10 +479,7 @@ public class BasicCommands implements Commands {
 							+ "You are now in god mode!");
 					user.sendMessage(ChatColor.GOLD + "You have godded "
 							+ user2.getColor() + user2.getDisplayName());
-					plugin.log.info("BenCmd: " + user2.getDisplayName()
-							+ " has been made a god by "
-							+ user.getDisplayName() + "!");
-					plugin.bLog.info("BenCmd: " + user2.getDisplayName()
+					BenCmd.log("BenCmd: " + user2.getDisplayName()
 							+ " has been made a god by "
 							+ user.getDisplayName() + "!");
 				}
@@ -521,32 +497,28 @@ public class BasicCommands implements Commands {
 				return;
 			}
 			// Heal the player
-			user.Heal();
+			user.heal();
 			user.sendMessage(ChatColor.GREEN + "You have been healed.");
-			plugin.log.info("BenCmd: " + user.getDisplayName() + " has been healed by "
+			BenCmd.log("BenCmd: " + user.getDisplayName() + " has been healed by "
 					+ user.getDisplayName());
-			plugin.bLog.info("BenCmd: " + user.getDisplayName()
-					+ " has healed " + user.getDisplayName());
 		} else {
 			if (!user.hasPerm("bencmd.heal.other")
 					&& !(args[0].equalsIgnoreCase(user.getDisplayName())
 							&& user.hasPerm("bencmd.heal.self"))) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
-				plugin.logPermFail();
+				BenCmd.getPlugin().logPermFail();
 				return;
 			}
 			// Heal the other player
 			User user2;
-			if ((user2 = User.matchUser(args[0], plugin)) != null) {
-				user2 = User.matchUser(args[0], plugin);
-				user2.Heal();
+			if ((user2 = User.matchUser(args[0])) != null) {
+				user2 = User.matchUser(args[0]);
+				user2.heal();
 				user2.sendMessage(ChatColor.GREEN + "You have been healed.");
 				user.sendMessage(ChatColor.GREEN + "You have healed "
 						+ user2.getColor() + user2.getDisplayName());
-				plugin.log.info("BenCmd: " + user2.getDisplayName()
-						+ " has been healed by " + user.getDisplayName());
-				plugin.bLog.info("BenCmd: " + user2.getDisplayName()
+				BenCmd.log("BenCmd: " + user2.getDisplayName()
 						+ " has been healed by " + user.getDisplayName());
 			} else {
 				user.sendMessage(ChatColor.RED + args[0]
@@ -563,32 +535,28 @@ public class BasicCommands implements Commands {
 				return;
 			}
 			// Feed the player
-			user.Feed();
+			user.feed();
 			user.sendMessage(ChatColor.GREEN + "You have been fed.");
-			plugin.log.info("BenCmd: " + user.getDisplayName() + " has been fed by "
+			BenCmd.log("BenCmd: " + user.getDisplayName() + " has been fed by "
 					+ user.getDisplayName());
-			plugin.bLog.info("BenCmd: " + user.getDisplayName()
-					+ " has been fed by " + user.getDisplayName());
 		} else {
 			if (!user.hasPerm("bencmd.feed.other")
 					&& !(args[0].equalsIgnoreCase(user.getDisplayName())
 							&& user.hasPerm("bencmd.feed.self"))) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
-				plugin.logPermFail();
+				BenCmd.getPlugin().logPermFail();
 				return;
 			}
 			// Feed the other player
 			User user2;
-			if ((user2 = User.matchUser(args[0], plugin)) != null) {
-				user2 = User.matchUserIgnoreCase(args[0], plugin);
-				user2.Feed();
+			if ((user2 = User.matchUser(args[0])) != null) {
+				user2 = User.matchUserIgnoreCase(args[0]);
+				user2.feed();
 				user2.sendMessage(ChatColor.GREEN + "You have been fed.");
 				user.sendMessage(ChatColor.GREEN + "You have fed"
 						+ user2.getColor() + user2.getDisplayName());
-				plugin.log.info("BenCmd: " + user2.getDisplayName()
-						+ " has been healed by " + user.getDisplayName());
-				plugin.bLog.info("BenCmd: " + user2.getDisplayName()
+				BenCmd.log("BenCmd: " + user2.getDisplayName()
 						+ " has been healed by " + user.getDisplayName());
 			} else {
 				user.sendMessage(ChatColor.RED + args[0]
@@ -599,7 +567,7 @@ public class BasicCommands implements Commands {
 
 	public void BenCmd(String[] args, User user) {
 		if (args.length == 0 || args[0].equalsIgnoreCase("version")) {
-			PluginDescriptionFile pdfFile = plugin.getDescription();
+			PluginDescriptionFile pdfFile = BenCmd.getPlugin().getDescription();
 			user.sendMessage(ChatColor.YELLOW + "This server is running "
 					+ pdfFile.getName() + " version " + pdfFile.getVersion()
 					+ ".");
@@ -607,47 +575,33 @@ public class BasicCommands implements Commands {
 		}
 		if ((args[0].equalsIgnoreCase("reload") || args[0]
 				.equalsIgnoreCase("rel")) && user.hasPerm("bencmd.reload")) {
-			plugin.perm.userFile.loadFile();
-			plugin.perm.userFile.loadUsers();
-			plugin.perm.groupFile.loadFile();
-			plugin.perm.groupFile.loadGroups();
-			plugin.itemAliases.loadFile();
-			plugin.mainProperties.loadFile();
-			plugin.checkpoints.ClearWarps();
-			plugin.chests.loadFile();
-			plugin.dispensers.loadFile();
-			plugin.homes.ReloadHomes();
-			plugin.warps.LoadWarps();
-			plugin.jail = new Jail(plugin);
-			plugin.lots.reload();
-			plugin.heroActive = false;
-			plugin.timeRunning = true;
+			BenCmd.unloadAll(true);
+			BenCmd.loadAll();
+			BenCmd.getPlugin().timeRunning = true;
 			user.sendMessage(ChatColor.GREEN
 					+ "BenCmd Config Successfully reloaded!");
-			plugin.log.warning(user.getDisplayName()
-					+ " has reloaded the BenCmd configuration.");
-			plugin.bLog.warning(user.getDisplayName()
+			BenCmd.log(Level.WARNING, user.getDisplayName()
 					+ " has reloaded the BenCmd configuration.");
 		} else if (args[0].equalsIgnoreCase("update")
 				&& user.hasPerm("bencmd.update")) {
-			if (!plugin.update(false)) {
+			if (!BenCmd.getPlugin().update(false)) {
 				user.sendMessage(ChatColor.RED
 						+ "BenCmd is up to date... Use /bencmd fupdate to force an update...");
 			}
 		} else if (args[0].equalsIgnoreCase("fupdate")
 				&& user.hasPerm("bencmd.update")) {
-			plugin.update(true);
+			BenCmd.getPlugin().update(true);
 		} else if (args[0].equalsIgnoreCase("disable")
 				&& user.hasPerm("bencmd.disable")) {
-			plugin.getServer()
+			Bukkit
 					.broadcastMessage(
 							ChatColor.RED
 									+ "BenCmd is being temporarily disabled for maintenance...");
-			plugin.getServer()
+			Bukkit
 					.broadcastMessage(
 							ChatColor.RED
 									+ "Some commands may cease to function until it is restarted...");
-			plugin.getServer().getPluginManager().disablePlugin(plugin);
+			Bukkit.getPluginManager().disablePlugin(BenCmd.getPlugin());
 		}
 	}
 
@@ -658,11 +612,7 @@ public class BasicCommands implements Commands {
 		}
 		Location newSpawn = user.getHandle().getLocation();
 		user.sendMessage(ChatColor.GREEN + "The spawn location has been set!");
-		plugin.log.info(user.getDisplayName()
-				+ " has set the spawn location to (" + newSpawn.getBlockX()
-				+ ", " + newSpawn.getBlockY() + ", " + newSpawn.getBlockZ()
-				+ ")");
-		plugin.bLog.info(user.getDisplayName()
+		BenCmd.log(user.getDisplayName()
 				+ " has set the spawn location to (" + newSpawn.getBlockX()
 				+ ", " + newSpawn.getBlockY() + ", " + newSpawn.getBlockZ()
 				+ ")");
@@ -1079,19 +1029,19 @@ public class BasicCommands implements Commands {
 			if (user.getHandle().getGameMode() == GameMode.CREATIVE) {
 				user.getHandle().setGameMode(GameMode.SURVIVAL);
 				user.sendMessage(ChatColor.GREEN + "You are now in survival mode!");
-				plugin.log.info(user.getName() + " has left creative mode");
+				BenCmd.log(user.getName() + " has left creative mode");
 			} else {
 				user.getHandle().setGameMode(GameMode.CREATIVE);
 				user.sendMessage(ChatColor.GREEN + "You are now in creative mode!");
-				plugin.log.info(user.getName() + " has entered creative mode!");
+				BenCmd.log(user.getName() + " has entered creative mode!");
 			}
 		} else if (args.length == 1) {
 			if (!user.hasPerm("bencmd.creative.other")) {
 				user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
-				plugin.logPermFail();
+				BenCmd.getPlugin().logPermFail();
 				return;
 			}
-			User u = User.matchUser(args[0], plugin);
+			User u = User.matchUser(args[0]);
 			if (u == null) {
 				user.sendMessage(ChatColor.RED + args[0] + " isn't online right now!");
 				return;
@@ -1100,12 +1050,12 @@ public class BasicCommands implements Commands {
 				u.getHandle().setGameMode(GameMode.SURVIVAL);
 				u.sendMessage(ChatColor.GREEN + "You are now in survival mode!");
 				user.sendMessage(ChatColor.GREEN + "That user is now in survival mode!");
-				plugin.log.info(u.getName() + " has left creative mode (" + user.getName() + ")");
+				BenCmd.log(u.getName() + " has left creative mode (" + user.getName() + ")");
 			} else {
 				u.getHandle().setGameMode(GameMode.CREATIVE);
 				u.sendMessage(ChatColor.GREEN + "You are now in creative mode!");
 				user.sendMessage(ChatColor.GREEN + "That user is now in creative mode!");
-				plugin.log.info(u.getName() + " has entered creative mode (" + user.getName() + ")");
+				BenCmd.log(u.getName() + " has entered creative mode (" + user.getName() + ")");
 			}
 		} else {
 			user.sendMessage(ChatColor.YELLOW + "Proper use: /cr [player]");

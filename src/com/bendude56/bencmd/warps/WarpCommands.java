@@ -2,6 +2,7 @@ package com.bendude56.bencmd.warps;
 
 import java.util.logging.Level;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -13,19 +14,14 @@ import com.bendude56.bencmd.User;
 import com.bendude56.bencmd.permissions.PermissionUser;
 
 public class WarpCommands implements Commands {
-	BenCmd plugin;
-
-	public WarpCommands(BenCmd instance) {
-		plugin = instance;
-	}
 
 	public boolean onCommand(CommandSender sender, Command command,
 			String commandLabel, String[] args) {
 		User user;
 		try {
-			user = User.getUser(plugin, (Player) sender);
+			user = User.getUser((Player) sender);
 		} catch (ClassCastException e) {
-			user = User.getUser(plugin);
+			user = User.getUser();
 		}
 		if (commandLabel.equalsIgnoreCase("warp") && user.hasPerm("bencmd.warp.self")) {
 			Warp(args, user);
@@ -69,7 +65,7 @@ public class WarpCommands implements Commands {
 			} else if (user.isServer()) {
 				user.sendMessage(ChatColor.RED + "The server cannot do that!");
 			} else {
-				plugin.getServer().dispatchCommand(user.getHandle(),
+				Bukkit.dispatchCommand(user.getHandle(),
 						"tp " + args[0] + " " + user.getName());
 			}
 			return true;
@@ -80,7 +76,7 @@ public class WarpCommands implements Commands {
 	public void Warp(String[] args, User user) {
 		if (args.length == 0 || args[0].equalsIgnoreCase("list")) {
 			String str = "";
-			for (Warp warp : user.ListWarps()) {
+			for (Warp warp : user.listWarps()) {
 				str += warp.warpName + ", ";
 			}
 			if (str.length() != 0) {
@@ -97,24 +93,24 @@ public class WarpCommands implements Commands {
 				user.sendMessage(ChatColor.RED + "The server cannot do that!");
 				return;
 			}
-			Warp warp = plugin.warps.getWarp(args[0]);
+			Warp warp = BenCmd.getWarps().getWarp(args[0]);
 			if (warp == null) {
 				user.sendMessage(ChatColor.RED + "That warp doesn't exist!");
 				return;
 			}
-			user.WarpTo(warp);
+			user.warpTo(warp);
 			return;
 		}
 		if (args.length == 2 && user.hasPerm("bencmd.warp.other")) {
-			Warp warp = plugin.warps.getWarp(args[0]);
+			Warp warp = BenCmd.getWarps().getWarp(args[0]);
 			if (warp == null) {
 				user.sendMessage(ChatColor.RED + "That warp doesn't exist!");
 				return;
 			}
 			User warper;
 			try {
-				warper = User.getUser(plugin,
-						plugin.getServer().matchPlayer(args[1]).get(0));
+				warper = User.getUser(
+						Bukkit.matchPlayer(args[1]).get(0));
 			} catch (NullPointerException e) {
 				user.sendMessage(ChatColor.RED + "That player doesn't exist!");
 				return;
@@ -122,7 +118,7 @@ public class WarpCommands implements Commands {
 				user.sendMessage(ChatColor.RED + "That player doesn't exist!");
 				return;
 			}
-			warper.WarpTo(warp, user);
+			warper.warpTo(warp, user);
 			return;
 		}
 		if (user.hasPerm("bencmd.warp.other")) {
@@ -141,7 +137,7 @@ public class WarpCommands implements Commands {
 					+ "Proper use is: /setwarp <name> [group]");
 			return;
 		}
-		if (plugin.warps.getWarp(args[0]) != null) {
+		if (BenCmd.getWarps().getWarp(args[0]) != null) {
 			user.sendMessage(ChatColor.RED + "That warp already exists!");
 			return;
 		}
@@ -156,12 +152,12 @@ public class WarpCommands implements Commands {
 			String group = "";
 			if (args.length == 2) {
 				group = args[1];
-				if (!plugin.perm.groupFile.groupExists(group)) {
+				if (!BenCmd.getPermissionManager().getGroupFile().groupExists(group)) {
 					player.sendMessage(ChatColor.RED
 							+ "That group doesn't exist!");
 				}
 			}
-			if (!plugin.warps.addWarp(x, y, z, yaw, pitch, world, args[0],
+			if (!BenCmd.getWarps().addWarp(x, y, z, yaw, pitch, world, args[0],
 					group)) {
 				user.sendMessage(ChatColor.RED
 						+ "There was a problem creating the warp!");
@@ -170,9 +166,8 @@ public class WarpCommands implements Commands {
 		} catch (Exception e) {
 			user.sendMessage(ChatColor.RED
 					+ "There was a problem creating the warp!");
-			plugin.bLog.log(Level.SEVERE, "Couldn't create new warp:", e);
-			plugin.log.severe("Couldn't create new warp:");
-			e.printStackTrace();
+			BenCmd.log(Level.SEVERE, "Couldn't create new warp:");
+			BenCmd.log(e);
 			return;
 		}
 		user.sendMessage(ChatColor.GREEN + "Warp successfully created!");
@@ -184,7 +179,7 @@ public class WarpCommands implements Commands {
 					+ "Proper use is: /delwarp <name>");
 			return;
 		}
-		if (!plugin.warps.removeWarp(args[0])) {
+		if (!BenCmd.getWarps().removeWarp(args[0])) {
 			user.sendMessage(ChatColor.RED
 					+ "There was a problem deleting the warp!");
 		} else {
@@ -197,7 +192,7 @@ public class WarpCommands implements Commands {
 			user.sendMessage(ChatColor.RED + "The server cannot do that!");
 			return;
 		}
-		if (!user.LastCheck()) {
+		if (!user.lastCheck()) {
 			user.sendMessage(ChatColor.RED
 					+ "There are no known pre-warp checkpoints for you!");
 		}
@@ -219,11 +214,11 @@ public class WarpCommands implements Commands {
 		} else if (args.length <= 1) {
 			int homenum;
 			if (args.length == 0) {
-				user.HomeWarp(1);
+				user.homeWarp(1);
 			} else {
 				try {
 					homenum = Integer.parseInt(args[0]);
-					user.HomeWarp(homenum);
+					user.homeWarp(homenum);
 				} catch (NumberFormatException e) {
 					user.sendMessage(ChatColor.RED + "Invalid home number!");
 					return;
@@ -234,8 +229,8 @@ public class WarpCommands implements Commands {
 				int homenum;
 				try {
 					homenum = Integer.parseInt(args[0]);
-					user.HomeWarp(homenum,
-							PermissionUser.matchUserIgnoreCase(args[1], plugin));
+					user.homeWarp(homenum,
+							PermissionUser.matchUserIgnoreCase(args[1]));
 				} catch (NumberFormatException e) {
 					user.sendMessage(ChatColor.RED + "Invalid home number!");
 				}
@@ -262,11 +257,11 @@ public class WarpCommands implements Commands {
 		} else if (args.length <= 1) {
 			int homenum;
 			if (args.length == 0) {
-				user.SetHome(1);
+				user.setHome(1);
 			} else {
 				try {
 					homenum = Integer.parseInt(args[0]);
-					user.SetHome(homenum);
+					user.setHome(homenum);
 				} catch (NumberFormatException e) {
 					user.sendMessage(ChatColor.RED + "Invalid home number!");
 				}
@@ -276,8 +271,8 @@ public class WarpCommands implements Commands {
 				int homenum;
 				try {
 					homenum = Integer.parseInt(args[0]);
-					user.SetHome(homenum,
-							PermissionUser.matchUserIgnoreCase(args[1], plugin));
+					user.setHome(homenum,
+							PermissionUser.matchUserIgnoreCase(args[1]));
 				} catch (NumberFormatException e) {
 					user.sendMessage(ChatColor.RED + "Invalid home number!");
 				}
@@ -304,7 +299,7 @@ public class WarpCommands implements Commands {
 			}
 			int homenum;
 			if (args.length == 0) {
-				if (plugin.homes.DeleteHome(user.getName(), 1)) {
+				if (BenCmd.getHomes().DeleteHome(user.getName(), 1)) {
 					user.sendMessage(ChatColor.GREEN + "Your home #"
 							+ ((Integer) 1).toString()
 							+ " has been successfully deleted!");
@@ -315,7 +310,7 @@ public class WarpCommands implements Commands {
 			} else {
 				try {
 					homenum = Integer.parseInt(args[0]);
-					if (plugin.homes.DeleteHome(user.getName(), homenum)) {
+					if (BenCmd.getHomes().DeleteHome(user.getName(), homenum)) {
 						user.sendMessage(ChatColor.GREEN + "Your home #"
 								+ ((Integer) homenum).toString()
 								+ " has been successfully deleted!");
@@ -334,7 +329,7 @@ public class WarpCommands implements Commands {
 				int homenum;
 				try {
 					homenum = Integer.parseInt(args[0]);
-					if (plugin.homes.DeleteHome(args[1], homenum)) {
+					if (BenCmd.getHomes().DeleteHome(args[1], homenum)) {
 						user.sendMessage(ChatColor.GREEN + args[1]
 								+ "'s home #" + ((Integer) homenum).toString()
 								+ " has been successfully deleted!");
@@ -358,7 +353,7 @@ public class WarpCommands implements Commands {
 			user.sendMessage(ChatColor.RED + "The server cannot do that!");
 			return;
 		}
-		plugin.jail.setJail(user.getHandle().getLocation());
+		BenCmd.getPermissionManager().setJailWarp(user.getHandle().getLocation());
 	}
 
 	public void Tp(String[] args, User user) {
@@ -366,10 +361,10 @@ public class WarpCommands implements Commands {
 			if (!user.hasPerm("bencmd.tp.self")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
-				plugin.logPermFail();
+				BenCmd.getPlugin().logPermFail();
 				return;
 			}
-			User user2 = User.matchUser(args[0], plugin);
+			User user2 = User.matchUser(args[0]);
 			if (user2 == null) {
 				user.sendMessage(ChatColor.RED + args[0] + " isn't online!");
 				return;
@@ -379,27 +374,25 @@ public class WarpCommands implements Commands {
 						+ " cannot be teleported to!");
 				return;
 			}
-			plugin.checkpoints.SetPreWarp(user.getHandle());
+			BenCmd.getWarpCheckpoints().SetPreWarp(user.getHandle());
 			user.getHandle().teleport(user2.getHandle());
-			plugin.log.info(user.getName() + " has teleported to "
-					+ user2.getName());
-			plugin.bLog.info(user.getName() + " has teleported to "
+			BenCmd.log(user.getName() + " has teleported to "
 					+ user2.getName());
 			user.sendMessage(ChatColor.YELLOW + "Woosh!");
 		} else if (args.length == 2) {
 			if (args[0].equalsIgnoreCase(user.getName())) {
-				plugin.getServer().dispatchCommand(user.getHandle(),
+				Bukkit.dispatchCommand(user.getHandle(),
 						"tp " + args[1]);
 				return;
 			}
 			if (!user.hasPerm("bencmd.tp.other")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
-				plugin.logPermFail();
+				BenCmd.getPlugin().logPermFail();
 				return;
 			}
-			User user1 = User.matchUser(args[0], plugin);
-			User user2 = User.matchUser(args[1], plugin);
+			User user1 = User.matchUser(args[0]);
+			User user2 = User.matchUser(args[1]);
 			if (user1 == null) {
 				user.sendMessage(ChatColor.RED + args[0] + " isn't online!");
 				return;
@@ -418,11 +411,9 @@ public class WarpCommands implements Commands {
 						+ " cannot be teleported to!");
 				return;
 			}
-			plugin.checkpoints.SetPreWarp(user1.getHandle());
+			BenCmd.getWarpCheckpoints().SetPreWarp(user1.getHandle());
 			user1.getHandle().teleport(user2.getHandle());
-			plugin.log.info(user1.getName() + " has been teleported to "
-					+ user2.getName() + " by " + user.getName());
-			plugin.bLog.info(user1.getName() + " has been teleported to "
+			BenCmd.log(user1.getName() + " has been teleported to "
 					+ user2.getName() + " by " + user.getName());
 			user1.sendMessage(ChatColor.YELLOW + "Woosh!");
 		} else {
@@ -432,7 +423,7 @@ public class WarpCommands implements Commands {
 			} else {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
-				plugin.logPermFail();
+				BenCmd.getPlugin().logPermFail();
 			}
 		}
 	}

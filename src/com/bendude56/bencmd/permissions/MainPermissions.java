@@ -17,7 +17,7 @@ public class MainPermissions {
 	private Warp jail;
 
 	public MainPermissions() {
-		PluginProperties prop = BenCmd.getPlugin().mainProperties;
+		PluginProperties prop = BenCmd.getMainProperties();
 		userFile = new UserFile();
 		groupFile = new GroupFile();
 		itemList = new ItemBW();
@@ -32,7 +32,7 @@ public class MainPermissions {
 	}
 	
 	private void loadJail() {
-		String str = BenCmd.getPlugin().mainProperties.getString("jailLocation",
+		String str = BenCmd.getMainProperties().getString("jailLocation",
 		"0,0,0,0.0,0.0,world");
 		double x = Integer.parseInt(str.split(",")[0]);
 		double y = Integer.parseInt(str.split(",")[1]);
@@ -76,7 +76,6 @@ public class MainPermissions {
 	}
 	
 	public void setJailWarp(Location l) {
-		BenCmd plugin = BenCmd.getPlugin();
 		jail = new Warp(l, "jail", "");
 		int x = (int) l.getX();
 		int y = (int) l.getY();
@@ -84,14 +83,15 @@ public class MainPermissions {
 		Double yaw = (double) l.getYaw();
 		Double pitch = (double) l.getPitch();
 		String world = l.getWorld().getName();
-		plugin.mainProperties.setProperty("jailLocation", x + "," + y + "," + z
+		BenCmd.getMainProperties().setProperty("jailLocation", x + "," + y + "," + z
 				+ "," + yaw.toString() + "," + pitch.toString() + "," + world);
-		plugin.mainProperties.saveFile("-BenCmd Main Config-");
+		BenCmd.getMainProperties().saveFile("-BenCmd Main Config-");
 	}
 	
 	public void saveAll() {
-		userFile.saveFile();
-		groupFile.saveFile();
-		action.saveFile();
+		userFile.saveAll();
+		groupFile.saveAll();
+		action.saveAll();
+		setJailWarp(jail.loc);
 	}
 }

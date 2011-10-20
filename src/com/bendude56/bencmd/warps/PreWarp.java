@@ -3,6 +3,7 @@ package com.bendude56.bencmd.warps;
 import java.util.HashMap;
 import java.util.logging.Level;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -11,22 +12,17 @@ import com.bendude56.bencmd.*;
 
 public class PreWarp {
 	HashMap<String, Warp> prewarps = new HashMap<String, Warp>();
-	BenCmd plugin;
-
-	public PreWarp(BenCmd instance) {
-		plugin = instance;
-	}
 
 	public void ClearWarps() {
 		prewarps.clear();
-		plugin.getServer().broadcastMessage(
+		Bukkit.broadcastMessage(
 				ChatColor.GRAY + "All pre-warp checkpoints have been cleared.");
 	}
 
 	public boolean returnPreWarp(Player player) {
 		String name = player.getName() + "_check";
 		if (prewarps.containsKey(name)) {
-			prewarps.get(name).WarpHere(new WarpableUser(plugin, player));
+			prewarps.get(name).WarpHere(new WarpableUser(player));
 			return true;
 		} else {
 			return false;
@@ -49,14 +45,12 @@ public class PreWarp {
 			double pitch = player.getLocation().getPitch();
 			String world = player.getWorld().getName();
 			String name = player.getName() + "_check";
-			prewarps.put(name, new Warp(x, y, z, yaw, pitch, world, name, "",
-					plugin));
+			prewarps.put(name, new Warp(x, y, z, yaw, pitch, world, name, ""));
 		} catch (Exception e) {
 			player.sendMessage(ChatColor.RED
 					+ "There was a problem creating the checkpoint!");
-			plugin.bLog.log(Level.SEVERE, "Couldn't create new checkpoint:", e);
-			plugin.log.severe("Couldn't create new checkpoint:");
-			e.printStackTrace();
+			BenCmd.log(Level.WARNING, "Couldn't create new checkpoint:");
+			BenCmd.log(e);
 			return;
 		}
 	}

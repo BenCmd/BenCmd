@@ -13,8 +13,8 @@ import com.bendude56.bencmd.money.BuyableItem;
 
 public class BankManagerNPC extends NPC implements Clickable {
 
-	public BankManagerNPC(BenCmd instance, int id, Location l) {
-		super(instance, "Bank Manager", id, l, new ItemStack(Material.BOOK));
+	public BankManagerNPC(int id, Location l) {
+		super("Bank Manager", id, l, new ItemStack(Material.BOOK));
 	}
 	
 	@Override
@@ -24,30 +24,30 @@ public class BankManagerNPC extends NPC implements Clickable {
 
 	@Override
 	public void onRightClick(Player p) {
-		if (User.getUser(super.plugin, p).hasPerm("bencmd.bank.admin")) {
+		if (User.getUser(p).hasPerm("bencmd.bank.admin")) {
 			p.sendMessage(ChatColor.RED
 					+ "Admins cannot use this NPC to upgrade banks, use /bank upgrade instead!");
 			return;
 		}
-		if (!plugin.banks.hasBank(p.getName())) {
-			plugin.banks.addBank(new BankInventory(p.getName(), plugin));
+		if (!BenCmd.getBankController().hasBank(p.getName())) {
+			BenCmd.getBankController().addBank(new BankInventory(p.getName()));
 		}
-		if (plugin.banks.getBank(p.getName()).isUpgraded()) {
+		if (BenCmd.getBankController().getBank(p.getName()).isUpgraded()) {
 			p.sendMessage(ChatColor.RED
 					+ "Your bank has already been upgraded!");
 		} else {
-			if (BuyableItem.hasMoney(User.getUser(plugin, p),
-					plugin.mainProperties.getDouble("bankUpgradeCost", 4096),
-					plugin)) {
-				BuyableItem.remMoney(User.getUser(plugin, p),
-						plugin.mainProperties
-								.getDouble("bankUpgradeCost", 4096), plugin);
-				plugin.banks.upgradeBank(p.getName());
+			if (BuyableItem.hasMoney(User.getUser(p),
+					BenCmd.getMainProperties().getDouble("bankUpgradeCost", 4096))) {
+				BuyableItem.remMoney(User.getUser(p),
+						BenCmd.getMainProperties()
+								.getDouble("bankUpgradeCost", 4096));
+				BenCmd.getBankController().upgradeBank(p.getName());
+				BenCmd.log(p.getName() + " has upgraded their bank!");
 				p.sendMessage(ChatColor.GREEN + "Enjoy the extra bank space!");
 			} else {
 				p.sendMessage(ChatColor.RED
 						+ "You need at least "
-						+ plugin.mainProperties.getDouble("bankUpgradeCost",
+						+ BenCmd.getMainProperties().getDouble("bankUpgradeCost",
 								4096)
 						+ " worth of currency to upgrade your bank!");
 			}

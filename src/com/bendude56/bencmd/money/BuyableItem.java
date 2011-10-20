@@ -66,11 +66,10 @@ public class BuyableItem implements Comparable<BuyableItem> {
 		return supply;
 	}
 
-	public static boolean hasMoney(User user, Double amountNeeded,
-			BenCmd instance) {
+	public static boolean hasMoney(User user, Double amountNeeded) {
 		Double amountHas = 0.0;
 		HashMap<Double, Currency> sortedCurrencies = new HashMap<Double, Currency>();
-		for (Currency currencyType : instance.prices.getCurrencies()) {
+		for (Currency currencyType : BenCmd.getMarketController().getCurrencies()) {
 			sortedCurrencies.put(currencyType.getPrice(), currencyType);
 			HashMap<Integer, ? extends ItemStack> matches = user.getHandle()
 					.getInventory().all(currencyType.getMaterial());
@@ -81,10 +80,10 @@ public class BuyableItem implements Comparable<BuyableItem> {
 		return amountHas >= amountNeeded;
 	}
 
-	public static void remMoney(User user, Double amountNeeded, BenCmd instance) {
+	public static void remMoney(User user, Double amountNeeded) {
 		Double amountTaken = 0.0;
 		HashMap<Double, Currency> sortedCurrencies = new HashMap<Double, Currency>();
-		for (Currency currencyType : instance.prices.getCurrencies()) {
+		for (Currency currencyType : BenCmd.getMarketController().getCurrencies()) {
 			sortedCurrencies.put(currencyType.getPrice(), currencyType);
 		}
 		Object[] reversedCurrencies = sortedCurrencies.values().toArray();

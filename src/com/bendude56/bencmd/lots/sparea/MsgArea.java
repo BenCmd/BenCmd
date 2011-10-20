@@ -10,10 +10,10 @@ public class MsgArea extends SPArea {
 	private String emsg;
 	private String lmsg;
 
-	public MsgArea(BenCmd instance, String key, String value)
+	public MsgArea(String key, String value)
 			throws NumberFormatException, NullPointerException,
 			IndexOutOfBoundsException {
-		super(instance, key, value);
+		super(key, value);
 		emsg = value.split("/")[3].replace('`', '/');
 		if (emsg.equals("/")) {
 			emsg = "";
@@ -24,9 +24,9 @@ public class MsgArea extends SPArea {
 		}
 	}
 
-	public MsgArea(BenCmd instance, Integer id, Location corner1,
+	public MsgArea(Integer id, Location corner1,
 			Location corner2, String enter, String leave) {
-		super(instance, id, corner1, corner2);
+		super(id, corner1, corner2);
 		emsg = enter;
 		if (!emsg.startsWith("§")) {
 			emsg = ChatColor.YELLOW + emsg;
@@ -50,7 +50,7 @@ public class MsgArea extends SPArea {
 			value = ChatColor.YELLOW + value;
 		}
 		emsg = value;
-		super.plugin.spafile.updateArea(this);
+		BenCmd.getAreas().updateArea(this, true);
 	}
 
 	public void setLeaveMessage(String value) {
@@ -58,7 +58,7 @@ public class MsgArea extends SPArea {
 			value = ChatColor.YELLOW + value;
 		}
 		lmsg = value;
-		super.plugin.spafile.updateArea(this);
+		BenCmd.getAreas().updateArea(this, true);
 	}
 
 	public String getValue() {

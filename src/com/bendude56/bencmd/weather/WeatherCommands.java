@@ -1,5 +1,6 @@
 package com.bendude56.bencmd.weather;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -15,20 +16,14 @@ import com.bendude56.bencmd.User;
 
 public class WeatherCommands implements Commands {
 
-	BenCmd plugin;
-
-	public WeatherCommands(BenCmd instance) {
-		plugin = instance;
-	}
-
 	@Override
 	public boolean onCommand(CommandSender sender, Command command,
 			String commandLabel, String[] args) {
 		User user;
 		try {
-			user = User.getUser(plugin, (Player) sender);
+			user = User.getUser((Player) sender);
 		} catch (ClassCastException e) {
-			user = User.getUser(plugin);
+			user = User.getUser();
 		}
 		if (commandLabel.equalsIgnoreCase("storm")
 				&& user.hasPerm("bencmd.storm.control")) {
@@ -50,14 +45,14 @@ public class WeatherCommands implements Commands {
 		}
 		World world;
 		if (args.length == 2) {
-			if ((world = plugin.getServer().getWorld(args[1])) == null) {
+			if ((world = Bukkit.getWorld(args[1])) == null) {
 				user.sendMessage(ChatColor.RED + "World " + args[1]
 						+ " wasn't found!");
 				return;
 			}
 		} else {
 			if (user.isServer()) {
-				world = plugin.getServer().getWorlds().get(0);
+				world = Bukkit.getWorlds().get(0);
 			} else {
 				world = user.getHandle().getWorld();
 			}
@@ -92,7 +87,7 @@ public class WeatherCommands implements Commands {
 				if (!user.hasPerm("bencmd.storm.strike.bind")) {
 					user.sendMessage(ChatColor.RED
 							+ "You don't have permission to do that!");
-					plugin.logPermFail();
+					BenCmd.getPlugin().logPermFail();
 					return;
 				}
 				if (user.isServer()) {
@@ -100,7 +95,7 @@ public class WeatherCommands implements Commands {
 							+ "The server cannot do that!");
 					return;
 				}
-				if (plugin.strikeBind.tryBind(user.getHandle())) {
+				if (BenCmd.getStrikeBindings().tryBind(user.getHandle())) {
 					user.sendMessage(ChatColor.GREEN
 							+ "That item has now been bound to strike lightning!");
 				} else {
@@ -112,7 +107,7 @@ public class WeatherCommands implements Commands {
 				if (!user.hasPerm("bencmd.storm.strike.bind")) {
 					user.sendMessage(ChatColor.RED
 							+ "You don't have permission to do that!");
-					plugin.logPermFail();
+					BenCmd.getPlugin().logPermFail();
 					return;
 				}
 				if (user.isServer()) {
@@ -120,8 +115,8 @@ public class WeatherCommands implements Commands {
 							+ "The server cannot do that!");
 					return;
 				}
-				if (plugin.strikeBind.hasBoundItem(user.getHandle())) {
-					plugin.strikeBind.clearBinding(user.getHandle());
+				if (BenCmd.getStrikeBindings().hasBoundItem(user.getHandle())) {
+					BenCmd.getStrikeBindings().clearBinding(user.getHandle());
 					user.sendMessage(ChatColor.GREEN
 							+ "You no longer have an item bound to strike lightning.");
 				} else {
@@ -133,11 +128,11 @@ public class WeatherCommands implements Commands {
 				if (!user.hasPerm("bencmd.storm.strike.player")) {
 					user.sendMessage(ChatColor.RED
 							+ "You don't have permission to do that!");
-					plugin.logPermFail();
+					BenCmd.getPlugin().logPermFail();
 					return;
 				}
 				User user2;
-				if ((user2 = User.matchUser(args[0], plugin)) == null) {
+				if ((user2 = User.matchUser(args[0])) == null) {
 					user.sendMessage(ChatColor.RED
 							+ "That user couldn't be found!");
 					return;

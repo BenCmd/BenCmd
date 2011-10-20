@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+
 import org.bukkit.Bukkit;
 import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.BenCmdFile;
@@ -11,17 +13,21 @@ import com.bendude56.bencmd.BenCmdFile;
 
 public class SPAreaFile extends BenCmdFile {
 	private HashMap<Integer, SPArea> areas = new HashMap<Integer, SPArea>();
+	private Integer task;
 
 	public SPAreaFile() {
 		super("sparea.db", "--BenCmd SPArea File--", true);
 		loadFile();
 		loadAll();
-		Bukkit.getServer().getScheduler()
+		task = Bukkit.getServer().getScheduler()
 				.scheduleAsyncRepeatingTask(BenCmd.getPlugin(), new TimeCheck(), 20, 20);
+	}
+	
+	public void forceStopTimer() {
+		Bukkit.getScheduler().cancelTask(task);
 	}
 
 	public void loadAll() {
-		BenCmd plugin = BenCmd.getPlugin();
 		areas.clear();
 		for (int i = 0; i < getFile().size(); i++) {
 			String key = (String) getFile().keySet().toArray()[i];
@@ -30,34 +36,31 @@ public class SPAreaFile extends BenCmdFile {
 			try {
 				id = Integer.parseInt(key);
 			} catch (NumberFormatException e) {
-				plugin.log.warning("SPArea " + key
+				BenCmd.log(Level.WARNING, "SPArea " + key
 						+ " is invalid and was ignored.");
-				plugin.bLog.warning("SPArea " + key + " failed to load!");
 				continue;
 			}
 			String type = value.split("/")[0];
 			try {
 				// TODO Remove need for plugin references for these constructors
 				if (type.equals("pvp")) {
-					areas.put(id, new PVPArea(plugin, key, value));
+					areas.put(id, new PVPArea(key, value));
 				} else if (type.equals("msg")) {
-					areas.put(id, new MsgArea(plugin, key, value));
+					areas.put(id, new MsgArea(key, value));
 				} else if (type.equals("heal")) {
-					areas.put(id, new HealArea(plugin, key, value));
+					areas.put(id, new HealArea(key, value));
 				} else if (type.equals("dmg")) {
-					areas.put(id, new DamageArea(plugin, key, value));
+					areas.put(id, new DamageArea(key, value));
 				} else if (type.equals("tr")) {
-					areas.put(id, new TRArea(plugin, key, value));
+					areas.put(id, new TRArea(key, value));
 				} else {
-					plugin.log.warning("SPArea " + key
+					BenCmd.log(Level.WARNING, "SPArea " + key
 							+ " is invalid and was ignored.");
-					plugin.bLog.warning("SPArea " + key + " failed to load!");
 					continue;
 				}
 			} catch (Exception e) {
-				plugin.log.warning("SPArea " + key
+				BenCmd.log(Level.WARNING, "SPArea " + key
 						+ " is invalid and was ignored.");
-				plugin.bLog.warning("SPArea " + key + " failed to load!");
 				continue;
 			}
 		}

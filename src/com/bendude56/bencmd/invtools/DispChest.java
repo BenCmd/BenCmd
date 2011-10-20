@@ -1,80 +1,60 @@
 package com.bendude56.bencmd.invtools;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Properties;
-
 import org.bukkit.Location;
 
-public class DispChest extends Properties {
-	private static final long serialVersionUID = 0L;
-	private String proFile;
+import com.bendude56.bencmd.BenCmdFile;
 
-	public DispChest(String propertiesFile) {
-		proFile = propertiesFile;
+public class DispChest extends BenCmdFile {
+
+	public DispChest() {
+		super("chest.db", "--BenCmd Disposal Chest File--", false);
 		loadFile();
-	}
-
-	public void loadFile() {
-		File file = new File(proFile);
-		if (file.exists()) {
-			try {
-				load(new FileInputStream(file));
-			} catch (IOException e) {
-				System.out.println("BenCmd had a problem:");
-				e.printStackTrace();
-			}
-		}
-	}
-
-	public void saveFile(String header) {
-		File file = new File(proFile);
-		if (file.exists()) {
-			try {
-				store(new FileOutputStream(file), header);
-			} catch (IOException e) {
-				System.out.println("BenCmd had a problem:");
-				e.printStackTrace();
-			}
-		}
 	}
 
 	public boolean isDisposalChest(Location loc) {
 		String property = loc.getBlockX() + "," + loc.getBlockY() + ","
 				+ loc.getBlockZ() + "," + loc.getWorld().getName();
-		return this.containsKey(property);
+		return getFile().containsKey(property);
 	}
 
 	public boolean isDisposalChest(int x, int y, int z, String world) {
 		String property = x + "," + y + "," + z + "," + world;
-		return this.containsKey(property);
+		return getFile().containsKey(property);
 	}
 
 	public void addChest(Location loc) {
 		String property = loc.getBlockX() + "," + loc.getBlockY() + ","
 				+ loc.getBlockZ() + "," + loc.getWorld().getName();
-		this.put(property, "");
-		saveFile("BenCmd disposal chest list");
+		getFile().put(property, "");
+		saveFile();
 	}
 
 	public void addChest(int x, int y, int z, String world) {
 		String property = x + "," + y + "," + z + "," + world;
-		this.put(property, "");
-		saveFile("BenCmd disposal chest list");
+		getFile().put(property, "");
+		saveFile();
 	}
 
 	public void removeDispenser(Location loc) {
 		String property = loc.getBlockX() + "," + loc.getBlockY() + ","
 				+ loc.getBlockZ() + "," + loc.getWorld().getName();
-		this.remove(property);
-		saveFile("BenCmd disposal chest list");
+		getFile().remove(property);
+		saveFile();
 	}
 
 	public void removeDispenser(int x, int y, int z, String world) {
 		String property = x + "," + y + "," + z + "," + world;
-		this.remove(property);
-		saveFile("BenCmd disposal chest list");
+		getFile().remove(property);
+		saveFile();
+	}
+
+	@Override
+	public void saveAll() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void loadAll() {
+		throw new UnsupportedOperationException();
 	}
 }

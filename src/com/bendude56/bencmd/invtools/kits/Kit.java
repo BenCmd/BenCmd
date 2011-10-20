@@ -2,11 +2,11 @@ package com.bendude56.bencmd.invtools.kits;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.bukkit.inventory.ItemStack;
 
 import com.bendude56.bencmd.BenCmd;
-import com.bendude56.bencmd.BenCmdManager;
 import com.bendude56.bencmd.User;
 import com.bendude56.bencmd.invtools.InventoryBackend;
 
@@ -18,7 +18,6 @@ public class Kit {
 	private int kitId;
 
 	public Kit(int ID, String value, String name) {
-		BenCmd plugin = BenCmd.getPlugin();
 		kitName = name;
 		kitId = ID;
 		if (value.split("/").length >= 2) {
@@ -37,10 +36,7 @@ public class Kit {
 								.checkAlias(itemKey.split(" ")[0])
 								.getMaterial().getId();
 					} catch (NumberFormatException e) {
-						plugin.log.severe("Error in kit (id: "
-								+ String.valueOf(ID) + "). "
-								+ itemKey.split(" ")[0] + " is NaN!");
-						plugin.bLog.severe("Error in kit (id: "
+						BenCmd.log(Level.SEVERE, "Error in kit (id: "
 								+ String.valueOf(ID) + "). "
 								+ itemKey.split(" ")[0] + " is NaN!");
 						continue;
@@ -49,11 +45,7 @@ public class Kit {
 						itemDamage = Short.parseShort(itemKey.split(" ")[0]
 								.split(":")[1]);
 					} catch (NumberFormatException e) {
-						plugin.log.severe("Error in kit (id: "
-								+ String.valueOf(ID) + "). "
-								+ itemKey.split(" ")[0].split(":")[1]
-								+ " is NaN!");
-						plugin.bLog.severe("Error in kit (id: "
+						BenCmd.log(Level.SEVERE, "Error in kit (id: "
 								+ String.valueOf(ID) + "). "
 								+ itemKey.split(" ")[0].split(":")[1]
 								+ " is NaN!");
@@ -66,11 +58,7 @@ public class Kit {
 								.checkAlias(itemKey.split(" ")[0])
 								.getMaterial().getId();
 					} catch (NumberFormatException e) {
-						plugin.log.severe("Error in kit (id: "
-								+ String.valueOf(ID) + "). "
-								+ itemKey.split(" ")[0].split(":")[0]
-								+ " is NaN!");
-						plugin.bLog.severe("Error in kit (id: "
+						BenCmd.log(Level.SEVERE, "Error in kit (id: "
 								+ String.valueOf(ID) + "). "
 								+ itemKey.split(" ")[0].split(":")[0]
 								+ " is NaN!");
@@ -86,10 +74,7 @@ public class Kit {
 								.checkAlias(itemKey.split(" ")[0])
 								.getMaterial().getId();
 					} catch (NumberFormatException e) {
-						plugin.log.severe("Error in kit (id: "
-								+ String.valueOf(ID) + "). "
-								+ itemKey.split(" ")[0] + " is NaN!");
-						plugin.bLog.severe("Error in kit (id: "
+						BenCmd.log(Level.SEVERE, "Error in kit (id: "
 								+ String.valueOf(ID) + "). "
 								+ itemKey.split(" ")[0] + " is NaN!");
 						continue;
@@ -98,11 +83,7 @@ public class Kit {
 						itemDamage = Short.parseShort(itemKey.split(" ")[0]
 								.split(":")[1]);
 					} catch (NumberFormatException e) {
-						plugin.log.severe("Error in kit (id: "
-								+ String.valueOf(ID) + "). "
-								+ itemKey.split(" ")[0].split(":")[1]
-								+ " is NaN!");
-						plugin.bLog.severe("Error in kit (id: "
+						BenCmd.log(Level.SEVERE, "Error in kit (id: "
 								+ String.valueOf(ID) + "). "
 								+ itemKey.split(" ")[0].split(":")[1]
 								+ " is NaN!");
@@ -114,11 +95,7 @@ public class Kit {
 								.checkAlias(itemKey.split(" ")[0])
 								.getMaterial().getId();
 					} catch (NumberFormatException e) {
-						plugin.log.severe("Error in kit (id: "
-								+ String.valueOf(ID) + "). "
-								+ itemKey.split(" ")[0].split(":")[0]
-								+ " is NaN!");
-						plugin.bLog.severe("Error in kit (id: "
+						BenCmd.log(Level.SEVERE, "Error in kit (id: "
 								+ String.valueOf(ID) + "). "
 								+ itemKey.split(" ")[0].split(":")[0]
 								+ " is NaN!");
@@ -129,18 +106,13 @@ public class Kit {
 				try {
 					itemAmount = Integer.parseInt(itemKey.split(" ")[1]);
 				} catch (NumberFormatException e) {
-					plugin.log.severe("Error in kit (id: " + String.valueOf(ID)
+					BenCmd.log(Level.SEVERE, "Error in kit (id: " + String.valueOf(ID)
 							+ "). " + itemKey.split(" ")[0].split(":")[0]
 							+ " is NaN!");
-					plugin.bLog.severe("Error in kit (id: "
-							+ String.valueOf(ID) + "). "
-							+ itemKey.split(" ")[0].split(":")[0] + " is NaN!");
 					continue;
 				}
 			} else {
-				plugin.log.severe("Error in kit (id: " + String.valueOf(ID)
-						+ "). Too many/not enough spaces.");
-				plugin.bLog.severe("Error in kit (id: " + String.valueOf(ID)
+				BenCmd.log(Level.SEVERE, "Error in kit (id: " + String.valueOf(ID)
 						+ "). Too many/not enough spaces.");
 				continue;
 			}
@@ -152,7 +124,7 @@ public class Kit {
 		if (user.hasPerm("bencmd.inv.kit.all")) {
 			return true;
 		}
-		return (user.inGroup(BenCmdManager.getPermissionManager().getGroupFile().getGroup(group)));
+		return (user.inGroup(BenCmd.getPermissionManager().getGroupFile().getGroup(group)));
 	}
 
 	public boolean giveKit(User user) {

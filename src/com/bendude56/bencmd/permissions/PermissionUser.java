@@ -2,8 +2,6 @@ package com.bendude56.bencmd.permissions;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
 import com.bendude56.bencmd.BenCmd;
@@ -11,11 +9,9 @@ import com.bendude56.bencmd.BenCmd;
 
 public class PermissionUser {
 	private InternalUser user;
-	private BenCmd plugin;
 
-	public static PermissionUser matchUserIgnoreCase(String name,
-			BenCmd instance) {
-		for (Object oUser : instance.perm.userFile.listUsers().values()) {
+	public static PermissionUser matchUserIgnoreCase(String name) {
+		for (Object oUser : BenCmd.getPermissionManager().getUserFile().listUsers().values()) {
 			if (((InternalUser) oUser).getName().equalsIgnoreCase(name)) {
 				return new PermissionUser((InternalUser) oUser);
 			}
@@ -23,8 +19,8 @@ public class PermissionUser {
 		return null;
 	}
 
-	public static PermissionUser matchUser(String name, BenCmd instance) {
-		for (Object oUser : instance.perm.userFile.listUsers().values()) {
+	public static PermissionUser matchUser(String name) {
+		for (Object oUser : BenCmd.getPermissionManager().getUserFile().listUsers().values()) {
 			if (((InternalUser) oUser).getName().equals(name)) {
 				return new PermissionUser((InternalUser) oUser);
 			}
@@ -32,25 +28,22 @@ public class PermissionUser {
 		return null;
 	}
 	
-	public static PermissionUser newUser(BenCmd instance, String name,
+	public static PermissionUser newUser(String name,
 			List<String> permissions) {
-		return new PermissionUser(instance, name, permissions);
+		return new PermissionUser(name, permissions);
 	}
 
-	public PermissionUser(BenCmd instance) {
-		plugin = instance;
-		user = new InternalUser(instance, "*", new ArrayList<String>());
+	public PermissionUser() {
+		user = new InternalUser("*", new ArrayList<String>());
 	}
 
 	public PermissionUser(InternalUser internal) {
-		plugin = internal.plugin;
 		user = internal;
 	}
 
-	protected PermissionUser(BenCmd instance, String name,
+	protected PermissionUser(String name,
 			List<String> permissions) {
-		plugin = instance;
-		user = new InternalUser(instance, name, permissions);
+		user = new InternalUser(name, permissions);
 	}
 
 	private void updateInternal() {
@@ -58,22 +51,16 @@ public class PermissionUser {
 			return;
 		}
 		InternalUser ouser = user;
-		user = plugin.perm.userFile.getInternal(user.getName());
+		user = BenCmd.getPermissionManager().getUserFile().getInternal(user.getName());
 		if (user == null && ouser == null) {
-			plugin.log.severe("Missing an internal user...");
-			plugin.getServer().broadcastMessage(
-					ChatColor.RED + "Fatal error: InternalUser missing!");
-			plugin.getServer().broadcastMessage(
-					ChatColor.RED + "Server shutting down...");
-			plugin.getServer().dispatchCommand(
-					Bukkit.getConsoleSender(), "stop");
+			throw new NullPointerException();
 		} else if (user == null) {
 			user = ouser;
 		}
 	}
 
 	public PermissionGroup highestLevelGroup() {
-		return InternalGroup.highestLevelP(user.plugin.perm.groupFile
+		return InternalGroup.highestLevelP(BenCmd.getPermissionManager().getGroupFile()
 				.getAllUserGroups(this));
 	}
 
@@ -129,7 +116,7 @@ public class PermissionUser {
 
 	public String getPrefix() {
 		List<InternalGroup> hasPrefix = new ArrayList<InternalGroup>();
-		for (PermissionGroup group : user.plugin.perm.groupFile
+		for (PermissionGroup group : BenCmd.getPermissionManager().getGroupFile()
 				.getUserGroups(user)) {
 			if (!group.getPrefix().isEmpty()) {
 				hasPrefix.add(group.getInternal());
@@ -147,7 +134,7 @@ public class PermissionUser {
 			return ChatColor.BLUE;
 		}
 		List<InternalGroup> hasColor = new ArrayList<InternalGroup>();
-		for (PermissionGroup group : user.plugin.perm.groupFile
+		for (PermissionGroup group : BenCmd.getPermissionManager().getGroupFile()
 				.getUserGroups(user)) {
 			if (group.getColor() != ChatColor.YELLOW) {
 				hasColor.add(group.getInternal());
@@ -202,10 +189,10 @@ public class PermissionUser {
 
 	public String listGroups() {
 		String groups = "";
-		for (PermissionGroup group : user.plugin.perm.groupFile
+		for (PermissionGroup group : BenCmd.getPermissionManager().getGroupFile()
 				.getAllUserGroups(this)) {
 			boolean direct = false;
-			for (PermissionGroup group2 : user.plugin.perm.groupFile
+			for (PermissionGroup group2 : BenCmd.getPermissionManager().getGroupFile()
 					.getUserGroups(this)) {
 				if (group.getName().equals(group2.getName())) {
 					direct = true;

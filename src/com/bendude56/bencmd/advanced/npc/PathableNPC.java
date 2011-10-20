@@ -18,6 +18,7 @@ import org.bukkit.inventory.ItemStack;
 import com.bendude56.bencmd.BenCmd;
 
 public class PathableNPC extends NPC {
+	// TODO Complete this class
 
 	private PathEntity path = null;
 	private int respawnTime = -2;
@@ -25,14 +26,14 @@ public class PathableNPC extends NPC {
 	private List<Location> patrol;
 	private int cPatrol;
 	
-	public PathableNPC(BenCmd instance, String name, int id, Location l,
+	public PathableNPC(String name, int id, Location l,
 			ItemStack itemHeld, boolean facePlayer, int maxRespawnTime) {
-		this(instance, name, id, l, itemHeld, facePlayer, maxRespawnTime, null);
+		this(name, id, l, itemHeld, facePlayer, maxRespawnTime, null);
 	}
 
-	public PathableNPC(BenCmd instance, String name, int id, Location l,
+	public PathableNPC(String name, int id, Location l,
 			ItemStack itemHeld, boolean facePlayer, int maxRespawnTime, List<Location> patrol) {
-		super(instance, name, id, l, itemHeld, facePlayer);
+		super(name, id, l, itemHeld, facePlayer);
 		this.maxRespawnTime = maxRespawnTime;
 		this.patrol = patrol;
 		patrol.add(0, getLocation());
@@ -89,7 +90,7 @@ public class PathableNPC extends NPC {
 				despawn();
 			}
 			if (maxRespawnTime == -1) {
-				plugin.npcs.remNPC(this);
+				BenCmd.getNPCFile().remNPC(this);
 				return true;
 			}
 			if (respawnTime == -2) {

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -14,17 +15,17 @@ public class TimedArea extends SPArea {
 	private HashMap<Player, Integer> timing;
 	private int minTime;
 
-	public TimedArea(BenCmd instance, String key, String value)
+	public TimedArea(String key, String value)
 			throws NumberFormatException, NullPointerException,
 			IndexOutOfBoundsException {
-		super(instance, key, value);
+		super(key, value);
 		timing = new HashMap<Player, Integer>();
 		minTime = Integer.parseInt(value.split("/")[3]);
 	}
 
-	protected TimedArea(BenCmd instance, Integer id, Location corner1,
+	protected TimedArea(Integer id, Location corner1,
 			Location corner2, Integer minimumTime) {
-		super(instance, id, corner1, corner2);
+		super(id, corner1, corner2);
 		timing = new HashMap<Player, Integer>();
 		minTime = minimumTime;
 	}
@@ -35,12 +36,12 @@ public class TimedArea extends SPArea {
 
 	public void setMinTime(int value) {
 		minTime = value;
-		super.plugin.spafile.updateArea(this);
+		BenCmd.getAreas().updateArea(this, true);
 	}
 
 	protected void preTick() {
 		List<Player> inside = new ArrayList<Player>();
-		for (Player p : super.plugin.getServer().getOnlinePlayers()) {
+		for (Player p : Bukkit.getOnlinePlayers()) {
 			if (super.insideArea(p.getLocation())) {
 				if (minTime == 0 || minTime == 1) {
 					inside.add(p);

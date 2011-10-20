@@ -17,19 +17,13 @@ import com.bendude56.bencmd.warps.Warp;
 
 public class PortalCommands implements Commands {
 
-	BenCmd plugin;
-
-	public PortalCommands(BenCmd instance) {
-		plugin = instance;
-	}
-
 	public boolean onCommand(CommandSender sender, Command command,
 			String commandLabel, String[] args) {
 		User user;
 		try {
-			user = User.getUser(plugin, (Player) sender);
+			user = User.getUser((Player) sender);
 		} catch (ClassCastException e) {
-			user = User.getUser(plugin);
+			user = User.getUser();
 		}
 		if (commandLabel.equalsIgnoreCase("setportal")
 				&& user.hasPerm("bencmd.portal.set")) {
@@ -50,7 +44,7 @@ public class PortalCommands implements Commands {
 					+ "You're not pointing at a portal!");
 		}
 		Location handle = Portal.getHandleBlock(pointedAt.getLocation());
-		plugin.portals.remPortal(handle);
+		BenCmd.getPortalFile().remPortal(handle);
 		user.sendMessage(ChatColor.GREEN + "That portal was successfully removed!");
 	}
 
@@ -77,14 +71,14 @@ public class PortalCommands implements Commands {
 							+ " cannot be converted into a number!");
 					return;
 				}
-			} else if ((warp = plugin.warps.getWarp(args[0])) == null) {
+			} else if ((warp = BenCmd.getWarps().getWarp(args[0])) == null) {
 				user.sendMessage(ChatColor.RED + "That warp doesn't exist!");
 				return;
 			}
 			PermissionGroup group = null;
 			if (args.length == 2) {
 				try {
-					group = plugin.perm.groupFile.getGroup(args[1]);
+					group = BenCmd.getPermissionManager().getGroupFile().getGroup(args[1]);
 				} catch (NullPointerException e) {
 					user.sendMessage(ChatColor.RED
 							+ "That group doesn't exist!");
@@ -92,12 +86,12 @@ public class PortalCommands implements Commands {
 				}
 			}
 			if (homeNumber == null) {
-				plugin.portals.addPortal(new Portal(handle, group, warp));
+				BenCmd.getPortalFile().addPortal(new Portal(handle, group, warp));
 				user.sendMessage(ChatColor.GREEN
 						+ "That portal has been set to warp " + warp.warpName
 						+ "!");
 			} else {
-				plugin.portals.addPortal(new HomePortal(plugin, handle, group,
+				BenCmd.getPortalFile().addPortal(new HomePortal(handle, group,
 						homeNumber));
 				user.sendMessage(ChatColor.GREEN
 						+ "That portal has been set to home #" + homeNumber

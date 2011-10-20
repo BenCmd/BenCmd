@@ -14,15 +14,15 @@ public class PermissionGroup {
 		group = internal;
 	}
 
-	public PermissionGroup(BenCmd instance, String groupName,
+	public PermissionGroup(String groupName,
 			List<String> permissions, List<String> users, List<String> groups,
 			String prefix, Integer color, Integer level) {
-		group = new InternalGroup(instance, groupName, permissions, users,
+		group = new InternalGroup(groupName, permissions, users,
 				groups, prefix, color, level);
 	}
 
 	private void updateInternal() {
-		group = group.plugin.perm.groupFile.getInternal(group.getName());
+		group = BenCmd.getPermissionManager().getGroupFile().getInternal(group.getName());
 	}
 
 	public boolean userInGroup(PermissionUser user) {

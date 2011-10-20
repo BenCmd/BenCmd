@@ -7,6 +7,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.Vec3D;
 import net.minecraft.server.WorldServer;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.craftbukkit.CraftWorld;
@@ -20,17 +21,15 @@ public class NPC {
 	protected EntityNPC enpc;
 	private int id;
 	private Location l;
-	protected BenCmd plugin;
 	private String n;
 	private ItemStack itemHeld;
 	protected boolean faceNearestPlayer;
 	
-	public NPC(BenCmd instance, String name, int id, Location l, ItemStack itemHeld) {
-		this(instance, name, id, l, itemHeld, true);
+	public NPC(String name, int id, Location l, ItemStack itemHeld) {
+		this(name, id, l, itemHeld, true);
 	}
 
-	public NPC(BenCmd instance, String name, int id, Location l, ItemStack itemHeld, boolean facePlayer) {
-		plugin = instance;
+	public NPC(String name, int id, Location l, ItemStack itemHeld, boolean facePlayer) {
 		this.id = id;
 		this.l = l;
 		this.n = name;
@@ -66,9 +65,9 @@ public class NPC {
 			}
 			ws.addEntity(enpc);
 			ws.players.remove(enpc);
-			if (plugin.spoutcraft) {
-				for (Player p : plugin.getServer().getOnlinePlayers()) {
-					plugin.spoutconnect.sendSkin(p, enpc.id, getSkinURL());
+			if (BenCmd.isSpoutConnected()) {
+				for (Player p : Bukkit.getOnlinePlayers()) {
+					BenCmd.getSpoutConnector().sendSkin(p, enpc.id, getSkinURL());
 				}
 			}
 		}
@@ -76,9 +75,9 @@ public class NPC {
 
 	public void despawn() {
 		if (enpc != null) {
-			if (plugin.spoutcraft) {
-				for (Player p : plugin.getServer().getOnlinePlayers()) {
-					plugin.spoutconnect.sendSkin(p, enpc.id, "http://s3.amazonaws.com/MinecraftSkins/" + enpc.name + ".png");
+			if (BenCmd.isSpoutConnected()) {
+				for (Player p : Bukkit.getOnlinePlayers()) {
+					BenCmd.getSpoutConnector().sendSkin(p, enpc.id, "http://s3.amazonaws.com/MinecraftSkins/" + enpc.name + ".png");
 				}
 			}
 			WorldServer ws = ((CraftWorld) l.getWorld()).getHandle();
@@ -135,14 +134,14 @@ public class NPC {
 		despawn();
 		itemHeld = item;
 		spawn();
-		plugin.npcs.saveNPC(this);
+		BenCmd.getNPCFile().saveNPC(this);
 	}
 	
 	public void setName(String name) {
 		despawn();
 		n = name;
 		spawn();
-		plugin.npcs.saveNPC(this);
+		BenCmd.getNPCFile().saveNPC(this);
 	}
 
 	public Location getCurrentLocation() {

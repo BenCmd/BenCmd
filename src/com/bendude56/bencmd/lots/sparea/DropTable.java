@@ -7,7 +7,6 @@ import java.util.Random;
 
 import org.bukkit.inventory.ItemStack;
 
-import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.invtools.BCItem;
 import com.bendude56.bencmd.invtools.InventoryBackend;
 
@@ -15,7 +14,7 @@ import com.bendude56.bencmd.invtools.InventoryBackend;
 public class DropTable {
 	private HashMap<BCItem, DropInfo> drops;
 
-	public DropTable(BenCmd instance, String value) {
+	public DropTable(String value) {
 		drops = new HashMap<BCItem, DropInfo>();
 		String[] splt = value.split(",");
 		for (String s : splt) {

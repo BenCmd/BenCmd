@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
+import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
 
@@ -39,45 +40,32 @@ public class ChatChannel {
 	// Constructors
 	protected static ChatChannel getChannel(ChatChannelController control,
 			String key, String value) {
-		BenCmd plugin = BenCmd.getPlugin();
 		if (value.split("/").length != 8) {
-			plugin.log
-					.severe("ChatChannel "
+			BenCmd.log(Level.SEVERE, "ChatChannel "
 							+ key
 							+ " encountered a fatal error while loading and has been disabled:");
-			plugin.log.severe("Invalid number of entries.");
-			plugin.bLog.warning("CHAT CHANNEL ERROR: ChatChannel "
-					+ key + " failed to load!");
+			BenCmd.log(Level.SEVERE, "Invalid number of entries.");
 			return null;
 		}
-		PermissionUser owner = PermissionUser.matchUser(value.split("/")[0],
-				plugin);
+		PermissionUser owner = PermissionUser.matchUser(value.split("/")[0]);
 		if (owner == null) {
-			plugin.log
-					.severe("ChatChannel "
+			BenCmd.log(Level.SEVERE, "ChatChannel "
 							+ key
 							+ " encountered a fatal error while loading and has been disabled:");
-			plugin.log.severe("Owner \"" + value.split("/")[0]
+			BenCmd.log(Level.SEVERE, "Owner \"" + value.split("/")[0]
 					+ "\" doesn't exist in users.db.");
-			plugin.bLog.warning("CHAT CHANNEL ERROR: ChatChannel "
-					+ key + " failed to load!");
 			return null;
 		}
 		List<PermissionUser> mods = new ArrayList<PermissionUser>();
 		if (!value.split("/")[1].isEmpty()) {
 			for (String player : value.split("/")[1].split(",")) {
-				PermissionUser mod = PermissionUser.matchUser(player,
-						plugin);
+				PermissionUser mod = PermissionUser.matchUser(player);
 				if (mod == null) {
-					plugin.log
-							.severe("ChatChannel "
+					BenCmd.log(Level.SEVERE, "ChatChannel "
 									+ key
 									+ " encountered a fatal error while loading and has been disabled:");
-					plugin.log.severe("Mod \"" + player
+					BenCmd.log(Level.SEVERE, "Mod \"" + player
 							+ "\" doesn't exist in users.db.");
-					plugin.bLog
-							.warning("CHAT CHANNEL ERROR: ChatChannel " + key
-									+ " failed to load!");
 					return null;
 				}
 				mods.add(mod);
@@ -86,18 +74,13 @@ public class ChatChannel {
 		List<PermissionUser> guests = new ArrayList<PermissionUser>();
 		if (!value.split("/")[2].isEmpty()) {
 			for (String player : value.split("/")[2].split(",")) {
-				PermissionUser guest = PermissionUser.matchUser(player,
-						plugin);
+				PermissionUser guest = PermissionUser.matchUser(player);
 				if (guest == null) {
-					plugin.log
-							.severe("ChatChannel "
+					BenCmd.log(Level.SEVERE, "ChatChannel "
 									+ key
 									+ " encountered a fatal error while loading and has been disabled:");
-					plugin.log.severe("Guest \"" + player
+					BenCmd.log(Level.SEVERE, "Guest \"" + player
 							+ "\" doesn't exist in users.db.");
-					plugin.bLog
-							.warning("CHAT CHANNEL ERROR: ChatChannel " + key
-									+ " failed to load!");
 					return null;
 				}
 				guests.add(guest);
@@ -106,18 +89,13 @@ public class ChatChannel {
 		List<PermissionUser> banned = new ArrayList<PermissionUser>();
 		if (!value.split("/")[3].isEmpty()) {
 			for (String player : value.split("/")[3].split(",")) {
-				PermissionUser ban = PermissionUser.matchUser(player,
-						plugin);
+				PermissionUser ban = PermissionUser.matchUser(player);
 				if (ban == null) {
-					plugin.log
-							.severe("ChatChannel "
+					BenCmd.log(Level.SEVERE, "ChatChannel "
 									+ key
 									+ " encountered a fatal error while loading and has been disabled:");
-					plugin.log.severe("Banned player \"" + player
+					BenCmd.log(Level.SEVERE, "Banned player \"" + player
 							+ "\" doesn't exist in users.db.");
-					plugin.bLog
-							.warning("CHAT CHANNEL ERROR: ChatChannel " + key
-									+ " failed to load!");
 					return null;
 				}
 				banned.add(ban);
@@ -126,18 +104,13 @@ public class ChatChannel {
 		List<PermissionUser> muted = new ArrayList<PermissionUser>();
 		if (!value.split("/")[4].isEmpty()) {
 			for (String player : value.split("/")[4].split(",")) {
-				PermissionUser mute = PermissionUser.matchUser(player,
-						plugin);
+				PermissionUser mute = PermissionUser.matchUser(player);
 				if (mute == null) {
-					plugin.log
-							.severe("ChatChannel "
+					BenCmd.log(Level.SEVERE, "ChatChannel "
 									+ key
 									+ " encountered a fatal error while loading and has been disabled:");
-					plugin.log.severe("Muted player \"" + player
+					BenCmd.log(Level.SEVERE, "Muted player \"" + player
 							+ "\" doesn't exist in users.db.");
-					plugin.bLog
-							.warning("CHAT CHANNEL ERROR: ChatChannel " + key
-									+ " failed to load!");
 					return null;
 				}
 				muted.add(mute);
@@ -153,16 +126,11 @@ public class ChatChannel {
 		} else if (value.split("/")[7].equalsIgnoreCase("d")) {
 			joinType = ChatLevel.DEFAULT;
 		} else {
-			plugin.log.warning("ChatChannel " + key
+			BenCmd.log(Level.WARNING, "ChatChannel " + key
 					+ " encountered a minor error while loading:");
-			plugin.log
-					.warning("\""
+			BenCmd.log(Level.WARNING, "\""
 							+ value.split("/")[7]
 							+ "\" is not a valid value for Default Join Type. Assumed \"d\".");
-			plugin.bLog
-					.warning("CHAT CHANNEL ERROR: ChatChannel "
-							+ key
-							+ " encountered a minor error while loading, but recovered.");
 			joinType = ChatLevel.DEFAULT;
 		}
 		return new ChatChannel(control, key, owner, mods, guests, banned,
@@ -559,7 +527,6 @@ public class ChatChannel {
 
 	// Messaging methods
 	public void sendChat(User user, String message) {
-		BenCmd plugin = BenCmd.getPlugin();
 		if (!isOwner(user) && !isMod(user) && paused) {
 			user.sendMessage(ChatColor.GRAY
 					+ "You can't talk while pause mode is enabled.");
@@ -567,20 +534,20 @@ public class ChatChannel {
 		}
 		if (user.isMuted() != null) {
 			user.sendMessage(ChatColor.GRAY
-					+ plugin.mainProperties.getString("muteMessage",
+					+ BenCmd.getMainProperties().getString("muteMessage",
 							"You are muted..."));
 			return;
 		}
 		if (isMuted(user)) {
 			user.sendMessage(ChatColor.GRAY
-					+ plugin.mainProperties.getString("muteMessage",
+					+ BenCmd.getMainProperties().getString("muteMessage",
 							"You are muted..."));
 			return;
 		}
-		boolean blocked = ChatChecker.checkBlocked(message, plugin);
+		boolean blocked = ChatChecker.checkBlocked(message);
 		if (blocked) {
 			user.sendMessage(ChatColor.GRAY
-					+ plugin.mainProperties.getString("blockMessage",
+					+ BenCmd.getMainProperties().getString("blockMessage",
 							"You used a blocked word..."));
 			return;
 		}
@@ -667,7 +634,6 @@ public class ChatChannel {
 	}
 
 	public void Me(User user, String message) {
-		BenCmd plugin = BenCmd.getPlugin();
 		if (!isOwner(user) && !isMod(user) && paused) {
 			user.sendMessage(ChatColor.GRAY
 					+ "You can't talk while pause mode is enabled.");
@@ -675,20 +641,20 @@ public class ChatChannel {
 		}
 		if (user.isMuted() != null) {
 			user.sendMessage(ChatColor.GRAY
-					+ plugin.mainProperties.getString("muteMessage",
+					+ BenCmd.getMainProperties().getString("muteMessage",
 							"You are muted..."));
 			return;
 		}
 		if (isMuted(user)) {
 			user.sendMessage(ChatColor.GRAY
-					+ plugin.mainProperties.getString("muteMessage",
+					+ BenCmd.getMainProperties().getString("muteMessage",
 							"You are muted..."));
 			return;
 		}
-		boolean blocked = ChatChecker.checkBlocked(message, plugin);
+		boolean blocked = ChatChecker.checkBlocked(message);
 		if (blocked) {
 			user.sendMessage(ChatColor.GRAY
-					+ plugin.mainProperties.getString("blockMessage",
+					+ BenCmd.getMainProperties().getString("blockMessage",
 							"You used a blocked word..."));
 			return;
 		}
@@ -775,10 +741,7 @@ public class ChatChannel {
 	}
 
 	protected void broadcastMessage(String message) {
-		BenCmd plugin = BenCmd.getPlugin();
-		plugin.log.info("(" + displayName + ") "
-				+ ChatColor.stripColor(message));
-		plugin.bLog.info("(" + displayName + ") "
+		BenCmd.log("(" + displayName + ") "
 				+ ChatColor.stripColor(message));
 		for (User user : inChannel) {
 			user.sendMessage(ChatColor.WHITE + message);

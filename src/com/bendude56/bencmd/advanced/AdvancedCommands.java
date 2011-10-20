@@ -14,19 +14,13 @@ import com.bendude56.bencmd.User;
 
 public class AdvancedCommands implements Commands {
 
-	private BenCmd plugin;
-
-	public AdvancedCommands(BenCmd instance) {
-		plugin = instance;
-	}
-
 	public boolean onCommand(CommandSender sender, Command command,
 			String commandLabel, String[] args) {
 		User user;
 		try {
-			user = User.getUser(plugin, (Player) sender);
+			user = User.getUser((Player) sender);
 		} catch (ClassCastException e) {
-			user = User.getUser(plugin);
+			user = User.getUser();
 		}
 		if (commandLabel.equalsIgnoreCase("write")) {
 			Write(args, user);
@@ -40,12 +34,13 @@ public class AdvancedCommands implements Commands {
 	}
 
 	public void Write(String[] args, User user) {
+		// TODO Log writing on bookcases as if they were signs
 		if (user.getHandle().getTargetBlock(null, 4).getType() != Material.BOOKSHELF) {
 			user.sendMessage(ChatColor.RED
 					+ "You're not pointing at a bookshelf!");
 			return;
 		}
-		if (!plugin.lots.canBuildHere(user.getHandle(), user.getHandle()
+		if (!BenCmd.getLots().canBuildHere(user.getHandle(), user.getHandle()
 				.getTargetBlock(null, 4).getLocation())) {
 			user.sendMessage(ChatColor.RED
 					+ "You're not allowed to do that here!");
@@ -60,7 +55,7 @@ public class AdvancedCommands implements Commands {
 				message += " " + word;
 			}
 		}
-		plugin.shelff.addShelf(new Shelf(user.getHandle()
+		BenCmd.getShelfFile().addShelf(new Shelf(user.getHandle()
 				.getTargetBlock(null, 4).getLocation(), message));
 		user.sendMessage(ChatColor.GREEN
 				+ "Magically, writing appears on that shelf.");
@@ -72,7 +67,7 @@ public class AdvancedCommands implements Commands {
 			return;
 		}
 		User target;
-		if ((target = User.matchUserIgnoreCase(args[0], plugin)) == null) {
+		if ((target = User.matchUserIgnoreCase(args[0])) == null) {
 			user.sendMessage(ChatColor.RED + "That player isn't online!");
 			return;
 		}
@@ -83,6 +78,7 @@ public class AdvancedCommands implements Commands {
 		if (!(((CraftPlayer) target.getHandle()).getHandle().inventory instanceof ViewableInventory)) {
 			ViewableInventory.replInv((CraftPlayer) target.getHandle());
 		}
+		BenCmd.log(user.getName() + " has opened " + args[0] + "'s inventory!");
 		((CraftPlayer) user.getHandle()).getHandle().a(
 				((CraftPlayer) target.getHandle()).getHandle().inventory);
 	}

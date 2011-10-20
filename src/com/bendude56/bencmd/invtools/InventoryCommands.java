@@ -16,19 +16,13 @@ import com.bendude56.bencmd.invtools.kits.*;
 
 
 public class InventoryCommands implements Commands {
-	BenCmd plugin;
-
-	public InventoryCommands(BenCmd instance) {
-		plugin = instance;
-	}
-
 	public boolean onCommand(CommandSender sender, Command command,
 			String commandLabel, String[] args) {
 		User user;
 		try {
-			user = User.getUser(plugin, (Player) sender);
+			user = User.getUser((Player) sender);
 		} catch (ClassCastException e) {
-			user = User.getUser(plugin);
+			user = User.getUser();
 		}
 		if ((commandLabel.equalsIgnoreCase("item") || commandLabel
 				.equalsIgnoreCase("i")) && user.hasPerm("bencmd.inv.spawn")) {
@@ -77,13 +71,13 @@ public class InventoryCommands implements Commands {
 			user.sendMessage(ChatColor.RED + "Invalid item ID or damage!");
 			return;
 		}
-		if (!plugin.perm.itemList.canSpawn(Item.getMaterial(), user
+		if (!BenCmd.getPermissionManager().getItemLists().canSpawn(Item.getMaterial(), user
 				.highestLevelGroup().getName())) {
 			user.sendMessage(ChatColor.RED
 					+ "You're not allowed to spawn that item!");
 			return;
 		}
-		plugin.dispensers.addDispenser(
+		BenCmd.getDispensers().addDispenser(
 				blockToAdd.getLocation(),
 				String.valueOf(Item.getMaterial().getId()) + ":"
 						+ String.valueOf(Item.getDamage()));
@@ -106,7 +100,7 @@ public class InventoryCommands implements Commands {
 					+ "You must be pointing at a chest to do that!");
 			return;
 		}
-		plugin.chests.addChest(blockToAdd.getLocation());
+		BenCmd.getDisposals().addChest(blockToAdd.getLocation());
 		user.sendMessage(ChatColor.GREEN
 				+ "Disposal chest successfully activated!");
 	}
@@ -144,7 +138,7 @@ public class InventoryCommands implements Commands {
 			}
 		}
 		Material mat = Item.getMaterial();
-		if (!plugin.perm.itemList.canSpawn(mat, user.highestLevelGroup()
+		if (!BenCmd.getPermissionManager().getItemLists().canSpawn(mat, user.highestLevelGroup()
 				.getName())) {
 			user.sendMessage(ChatColor.RED
 					+ "You're not allowed to spawn that item!");
@@ -153,7 +147,7 @@ public class InventoryCommands implements Commands {
 		int ItemDamage = Item.getDamage();
 		if (args.length == 3) {
 			User user2;
-			if ((user2 = User.matchUser(args[2], plugin)) == null) {
+			if ((user2 = User.matchUser(args[2])) == null) {
 				user.sendMessage(ChatColor.RED + "Cannot find the player '"
 						+ args[2] + "'");
 				return;
@@ -177,12 +171,7 @@ public class InventoryCommands implements Commands {
 			user2.sendMessage(ChatColor.GREEN + user.getDisplayName()
 					+ " has sent you a gift.");
 			user.sendMessage(ChatColor.GREEN + "Your gift has been sent!");
-			plugin.log.info("BenCmd: " + user.getDisplayName() + " gave "
-					+ user2.getDisplayName() + " an item. (id: "
-					+ String.valueOf(mat.getId()) + ", amount: "
-					+ String.valueOf(fullAmount) + ", damage: "
-					+ String.valueOf(ItemDamage) + ")");
-			plugin.bLog.info("BenCmd: " + user.getDisplayName() + " gave "
+			BenCmd.log("BenCmd: " + user.getDisplayName() + " gave "
 					+ user2.getDisplayName() + " an item. (id: "
 					+ String.valueOf(mat.getId()) + ", amount: "
 					+ String.valueOf(fullAmount) + ", damage: "
@@ -210,12 +199,7 @@ public class InventoryCommands implements Commands {
 			}
 			user.sendMessage(ChatColor.GREEN + "Enjoy, "
 					+ user.getDisplayName() + "!");
-			plugin.log.info("BenCmd: " + user.getDisplayName() + " gave "
-					+ user.getDisplayName() + " an item. (id: "
-					+ String.valueOf(mat.getId()) + ", amount: "
-					+ String.valueOf(fullAmount) + ", damage: "
-					+ String.valueOf(ItemDamage) + ")");
-			plugin.bLog.info("BenCmd: " + user.getDisplayName() + " gave "
+			BenCmd.log("BenCmd: " + user.getDisplayName() + " gave "
 					+ user.getDisplayName() + " an item. (id: "
 					+ String.valueOf(mat.getId()) + ", amount: "
 					+ String.valueOf(fullAmount) + ", damage: "
@@ -231,28 +215,24 @@ public class InventoryCommands implements Commands {
 			}
 			user.getHandle().getInventory().clear(); // Clear the player's
 														// inventory
-			plugin.log.info(user.getDisplayName()
-					+ " has cleared their own inventory.");
-			plugin.bLog.info(user.getDisplayName()
+			BenCmd.log(user.getDisplayName()
 					+ " has cleared their own inventory.");
 		} else if (args.length == 1) {
 			if (!user.hasPerm("bencmd.inv.clr.other")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
-				plugin.logPermFail();
+				BenCmd.getPlugin().logPermFail();
 				return;
 			}
 			// Clear the other player's inventory
 			User user2;
-			if ((user2 = User.matchUser(args[0], plugin)) != null) {
+			if ((user2 = User.matchUser(args[0])) != null) {
 				if (user2.hasPerm("bencmd.inv.clr.protect") && !user.hasPerm("bencmd.inv.clr.all")) {
 					user.sendMessage(ChatColor.RED + "That player is protected from being godded/ungodded by others!");
 					return;
 				}
 				user2.getHandle().getInventory().clear();
-				plugin.log.info(user.getDisplayName() + " has cleared "
-						+ args[0] + "'s inventory.");
-				plugin.bLog.info(user.getDisplayName() + " has cleared "
+				BenCmd.log(user.getDisplayName() + " has cleared "
 						+ args[0] + "'s inventory.");
 			} else {
 				user.sendMessage(ChatColor.RED + args[0]
@@ -268,7 +248,7 @@ public class InventoryCommands implements Commands {
 		switch (args.length) {
 		case 0:
 			String kits = "";
-			for (Kit kit : plugin.kits.kits) {
+			for (Kit kit : BenCmd.getKitList().kits) {
 				if (kit.canUseKit(user)) {
 					kits += " " + kit.getName();
 				}
@@ -286,14 +266,12 @@ public class InventoryCommands implements Commands {
 				user.sendMessage(ChatColor.RED + "The server cannot do that!");
 				return;
 			}
-			if (plugin.kits.kitExists(args[0])) {
-				if (plugin.kits.canUseKit(user, args[0])) {
-					plugin.kits.giveKit(user, args[0]);
+			if (BenCmd.getKitList().kitExists(args[0])) {
+				if (BenCmd.getKitList().canUseKit(user, args[0])) {
+					BenCmd.getKitList().giveKit(user, args[0]);
 					user.sendMessage(ChatColor.GREEN + "Enjoy, "
 							+ user.getDisplayName() + "!");
-					plugin.log.info("User " + user.getDisplayName()
-							+ " has spawned kit " + args[0] + "!");
-					plugin.bLog.info("User " + user.getDisplayName()
+					BenCmd.log("User " + user.getDisplayName()
 							+ " has spawned kit " + args[0] + "!");
 				} else {
 					user.sendMessage(ChatColor.RED
@@ -305,23 +283,20 @@ public class InventoryCommands implements Commands {
 			}
 			break;
 		case 2:
-			if (plugin.kits.kitExists(args[0])) {
-				if (plugin.kits.canUseKit(user, args[0])) {
+			if (BenCmd.getKitList().kitExists(args[0])) {
+				if (BenCmd.getKitList().canUseKit(user, args[0])) {
 					User user2;
-					if ((user2 = User.matchUser(args[1], plugin)) == null) {
+					if ((user2 = User.matchUser(args[1])) == null) {
 						user.sendMessage(ChatColor.RED + args[1]
 								+ " doesn't exist or is not online.");
 						return;
 					}
-					plugin.kits.giveKit(user, args[1]);
+					BenCmd.getKitList().giveKit(user, args[1]);
 					user2.sendMessage(ChatColor.GREEN + user.getDisplayName()
 							+ " has sent you a gift.");
 					user.sendMessage(ChatColor.GREEN
 							+ "Your gift has been sent!");
-					plugin.log.info("User " + user.getDisplayName()
-							+ " has spawned kit " + args[1] + " for user "
-							+ user2.getDisplayName() + "!");
-					plugin.bLog.info("User " + user.getDisplayName()
+					BenCmd.log("User " + user.getDisplayName()
 							+ " has spawned kit " + args[1] + " for user "
 							+ user2.getDisplayName() + "!");
 				} else {

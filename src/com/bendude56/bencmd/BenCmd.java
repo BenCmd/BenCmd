@@ -47,18 +47,13 @@ import com.bendude56.bencmd.listener.BenCmdWorldListener;
 import com.bendude56.bencmd.listener.BenCmdInventoryListener;
 import com.bendude56.bencmd.lots.LotCommands;
 import com.bendude56.bencmd.lots.LotFile;
-import com.bendude56.bencmd.lots.sparea.SPArea;
 import com.bendude56.bencmd.lots.sparea.SPAreaFile;
 import com.bendude56.bencmd.maps.MapCommands;
 import com.bendude56.bencmd.money.MoneyCommands;
 import com.bendude56.bencmd.money.PriceFile;
 import com.bendude56.bencmd.multiworld.PortalCommands;
 import com.bendude56.bencmd.multiworld.PortalFile;
-import com.bendude56.bencmd.permissions.ActionFile;
-import com.bendude56.bencmd.permissions.ActionLog;
-import com.bendude56.bencmd.permissions.KickList;
 import com.bendude56.bencmd.permissions.MainPermissions;
-import com.bendude56.bencmd.permissions.MaxPlayers;
 import com.bendude56.bencmd.permissions.PermissionCommands;
 import com.bendude56.bencmd.permissions.PermissionUser;
 import com.bendude56.bencmd.permissions.MaxPlayers.JoinType;
@@ -95,71 +90,288 @@ import org.bukkit.plugin.java.JavaPlugin;
  * 
  */
 public class BenCmd extends JavaPlugin implements PermissionsProvider {
+	
+	// START STATIC FILE METHODS
+	private static MainPermissions pManager;
+	private static BankFile bc;
+	private static WarpList warps;
+	private static HomeWarps homes;
+	private static NPCFile npcs;
+	private static PortalFile portals;
+	private static RedstoneFile rf;
+	private static ShelfFile sf;
+	private static ChatChannelController ccc;
+	private static Invisibility ic;
+	private static KitList kits;
+	private static DispChest disp;
+	private static UnlimitedDisp unl;
+	private static LotFile lots;
+	private static SPAreaFile areas;
+	private static PriceFile prices;
+	private static ProtectFile pro;
+	private static ReportFile reports;
+	private static PreWarp check;
+	private static WeatherBinding wb;
+	private static FlyDetect fd;
+	private static SpoutConnector spout;
+	private static PluginProperties main;
+	private static PluginProperties itemAlias;
+	private static PluginProperties usage;
+
+	public static MainPermissions getPermissionManager() {
+		return pManager;
+	}
+	
+	public static BankFile getBankController() {
+		return bc;
+	}
+	
+	public static WarpList getWarps() {
+		return warps;
+	}
+	
+	public static HomeWarps getHomes() {
+		return homes;
+	}
+	
+	public static NPCFile getNPCFile() {
+		return npcs;
+	}
+	
+	public static PortalFile getPortalFile() {
+		return portals;
+	}
+	
+	public static RedstoneFile getRedstoneFile() {
+		return rf;
+	}
+	
+	public static ShelfFile getShelfFile() {
+		return sf;
+	}
+	
+	public static ChatChannelController getChatChannels() {
+		return ccc;
+	}
+	
+	public static Invisibility getPoofController() {
+		return ic;
+	}
+	
+	public static KitList getKitList() {
+		return kits;
+	}
+	
+	public static DispChest getDisposals() {
+		return disp;
+	}
+	
+	public static UnlimitedDisp getDispensers() {
+		return unl;
+	}
+	
+	public static LotFile getLots() {
+		return lots;
+	}
+	
+	public static SPAreaFile getAreas() {
+		return areas;
+	}
+	
+	public static PriceFile getMarketController() {
+		return prices;
+	}
+	
+	public static ProtectFile getProtections() {
+		return pro;
+	}
+	
+	public static ReportFile getReports() {
+		return reports;
+	}
+	
+	public static PreWarp getWarpCheckpoints() {
+		return check;
+	}
+	
+	public static WeatherBinding getStrikeBindings() {
+		return wb;
+	}
+	
+	public static FlyDetect getFlymodDetector() {
+		return fd;
+	}
+	
+	public static boolean isSpoutConnected() {
+		if (spout != null) {
+			return true;
+		} else if (Bukkit.getPluginManager().isPluginEnabled("Spout")) {
+			spout = new SpoutConnector();
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public static SpoutConnector getSpoutConnector() {
+		if (isSpoutConnected()) {
+			return spout;
+		} else {
+			return null;
+		}
+	}
+	
+	public static PluginProperties getMainProperties() {
+		return main;
+	}
+	
+	public static PluginProperties getItemAliases() {
+		return itemAlias;
+	}
+	
+	public static PluginProperties getUsageFile() {
+		return usage;
+	}
+	
+	public static void log(Exception e) {
+		Logger.getLogger("Minecraft").log(Level.SEVERE, e.getMessage(), e);
+		Logger.getLogger("Minecraft.BenCmd").log(Level.SEVERE, e.getMessage(), e);
+	}
+	
+	public static void log(Level l, String message) {
+		Logger.getLogger("Minecraft").log(l, "[BenCmd] " + message);
+		Logger.getLogger("Minecraft.BenCmd").log(l, message);
+	}
+	
+	public static void log(String message) {
+		log(Level.INFO, message);
+	}
+	
+	@Deprecated
+	public static Logger getMCLogger() {
+		return Logger.getLogger("Minecraft");
+	}
+	
+	@Deprecated
+	public static Logger getBCLogger() {
+		return Logger.getLogger("Minecraft.BenCmd");
+	}
+	
+	protected static void loadAll() {
+		main = new PluginProperties(propDir + "main.properties");
+		pManager = new MainPermissions();
+		bc = new BankFile();
+		warps = new WarpList();
+		homes = new HomeWarps();
+		npcs = new NPCFile();
+		portals = new PortalFile();
+		rf = new RedstoneFile();
+		sf = new ShelfFile();
+		ccc = new ChatChannelController();
+		ic = new Invisibility();
+		kits = new KitList();
+		disp = new DispChest();
+		unl = new UnlimitedDisp();
+		lots = new LotFile();
+		areas = new SPAreaFile();
+		prices = new PriceFile();
+		pro = new ProtectFile();
+		reports = new ReportFile();
+		check = new PreWarp();
+		wb = new WeatherBinding();
+		fd = new FlyDetect();
+		if (Bukkit.getPluginManager().isPluginEnabled("Spout")) {
+			spout = new SpoutConnector();
+		}
+		itemAlias = new PluginProperties(propDir + "items.txt");
+		usage = new PluginProperties(propDir + "usage.db");
+	}
+	
+	protected static void unloadAll(boolean save) {
+		if (save) {
+			pManager.saveAll();
+			bc.saveAll();
+			warps.SaveFile();
+			homes.homes.SaveFile();
+			npcs.saveAll();
+			portals.saveAll();
+			rf.saveAll();
+			sf.saveAll();
+			ccc.saveAll();
+			lots.saveAll();
+			areas.saveAll();
+			prices.saveAll();
+			pro.saveAll();
+			reports.saveAll();
+		}
+		pManager = null;
+		bc = null;
+		warps = null;
+		homes = null;
+		npcs = null;
+		portals = null;
+		rf = null;
+		ccc = null;
+		ic = null;
+		kits = null;
+		disp = null;
+		unl = null;
+		lots = null;
+		areas.forceStopTimer();
+		areas = null;
+		if (prices.isTimerEnabled()) {
+			prices.unloadTimer();
+		}
+		prices = null;
+		pro = null;
+		reports = null;
+		check = null;
+		wb = null;
+		fd.forceStopTimer();
+		fd = null;
+		spout = null;
+		main = null;
+		itemAlias = null;
+		usage = null;
+	}
+	// END STATIC FILE METHODS
+	
 	public final static boolean debug = false;
-	public final static int buildId = 31;
+	public final static int buildId = 32;
 	public final static int cbbuild = 1317;
 	public final static String verLoc = "http://cloud.github.com/downloads/BenCmd/BenCmd/version.txt";
 	public static String devLoc = "";
 	public static String stableLoc = "";
 	public static boolean updateAvailable = false;
 	public static String[] devs;
-	// public final HashMap<Player, Boolean> godmode = new HashMap<Player, Boolean>();
-	public final List<Player> invisible = new ArrayList<Player>();
-	public final List<Player> noinvisible = new ArrayList<Player>();
-	public final List<Player> allinvisible = new ArrayList<Player>();
-	public final List<ActionableUser> offline = new ArrayList<ActionableUser>();
 	public final static String propDir = "plugins/BenCmd/";
 	public final String[] files = { "action.db", "bank.db", "channels.db", "chest.db",
 			"usage.db", "disp.db", "groups.db", "homes.db", "itembw.db", "items.txt",
 			"kits.db", "lever.db", "lots.db", "main.properties", "npc.db", "portals.db",
 			"prices.db", "protection.db", "shelves.db", "sparea.db", "tickets.db", "users.db",
 			"warps.db" };
-	public PluginProperties mainProperties;
-	public PluginProperties itemAliases;
-	public PluginProperties usageStats;
-	public LotFile lots;
+	
+	// TODO Move into own classes
 	public boolean timeRunning = true;
 	public long lastTime = 0;
 	public long timeFrozenAt = 0;
-	public boolean heroActive = false;
-	public WarpList warps;
-	public HomeWarps homes;
-	public PreWarp checkpoints;
-	public UnlimitedDisp dispensers;
-	public DispChest chests;
-	public KitList kits;
-	public Invisibility inv;
-	public ProtectFile protectFile;
-	public ChatChannelController channels;
-	public ReportFile reports;
-	public FlyDetect flyDetect;
-	public WeatherBinding strikeBind;
-	public PriceFile prices;
-	public PortalFile portals;
-	public ShelfFile shelff;
-	public SPAreaFile spafile;
-	public NPCFile npcs;
-	public RedstoneFile levers;
 	public List<Location> canSpread = new ArrayList<Location>();
 	public List<Grave> graves = new ArrayList<Grave>();
 	public HashMap<Player, List<ItemStack>> returns = new HashMap<Player, List<ItemStack>>();
-	public Logger bLog = Logger.getLogger("Minecraft.BenCmd");
+	private Logger bLog = Logger.getLogger("Minecraft.BenCmd");
 	public FileHandler fh;
-	public Logger log = Logger.getLogger("Minecraft");
 	public Calendar clog;
-	public boolean spoutcraft;
-	public SpoutConnector spoutconnect;
 	
 	public void logPermFail() {
 		incStat("permFail");
 	}
 	
 	public void incStat(String statName) {
-		if (!mainProperties.getBoolean("anonUsageStats", true)) {
+		if (!BenCmd.getMainProperties().getBoolean("anonUsageStats", true)) {
 			return;
 		}
-		usageStats.setProperty(statName, String.valueOf(usageStats.getInteger(statName, 0) + 1));
-		usageStats.saveFile("--Anonymous usage stats--");
+		BenCmd.getUsageFile().setProperty(statName, String.valueOf(BenCmd.getUsageFile().getInteger(statName, 0) + 1));
+		BenCmd.getUsageFile().saveFile("--Anonymous usage stats--");
 	}
 
 	public boolean checkID(int id) {
@@ -198,10 +410,7 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 			g.delete();
 		}
 		graves.clear();
-		for (SPArea a : spafile.listAreas()) {
-			a.delete();
-		}
-		// banks.saveAll();
+		BenCmd.unloadAll(true);
 		for (NPC npc : npcs.allNPCs()) {
 			npc.despawn();
 		}
@@ -214,13 +423,12 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 		BenCmdInventoryListener.destroyInstance();
 		InventoryBackend.destroyInstance();
 		PluginDescriptionFile pdfFile = this.getDescription();
-		log.info(pdfFile.getName() + " v" + pdfFile.getVersion()
+		BenCmd.log(pdfFile.getName() + " v" + pdfFile.getVersion()
 				+ " has been disabled!");
 	}
 
 	public void rotateLogFile() {
-		bLog.info("Beginning BenCmd log file rotation...");
-		log.info("BenCmd log file is rotating...");
+		BenCmd.log("BenCmd log file rotating...");
 		try {
 			String logName = "";
 			Calendar c = Calendar.getInstance();
@@ -235,7 +443,8 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 			bLog.addHandler(fh);
 			bLog.info("BenCmd log file rotated...");
 		} catch (IOException e) {
-			log.severe("Unable to create/load log files. Some logging functions may not work properly!");
+			BenCmd.log(Level.SEVERE, "Unable to create/load log files. Some logging functions may not work properly!");
+			BenCmd.log(e);
 		}
 	}
 
@@ -258,20 +467,17 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 			fh.setFormatter(new LogFormatter());
 			bLog.addHandler(fh);
 		} catch (IOException e) {
-			log.severe("Unable to create/load log files. Some logging functions may not work properly!");
+			BenCmd.log(Level.SEVERE, "Unable to create/load log files. Some logging functions may not work properly!");
+			BenCmd.log(e);
 		}
-		bLog.info("BenCmd log ready! Running BenCmd v"
+		BenCmd.log("BenCmd log ready! Running BenCmd v"
 				+ getDescription().getVersion());
 		// Check for Spout
-		bLog.info("Checking for Spout plugin...");
+		BenCmd.log("Checking for Spout plugin...");
 		if (getServer().getPluginManager().isPluginEnabled("Spout")) {
-			spoutcraft = true;
-			spoutconnect = new SpoutConnector();
-			bLog.info("Spout found!");
+			BenCmd.log("Spout found!");
 		} else {
-			spoutcraft = false;
-			bLog.warning("Spout not found!");
-			log.warning("Your server doesn't have Spout! Some functions may not work properly!");
+			BenCmd.log(Level.WARNING, "Your server doesn't have Spout! Some functions may not work properly!");
 		}
 		// Check for missing files and add them if necessary
 		bLog.info("Checking for missing database files...");
@@ -283,49 +489,30 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 				try {
 					file.createNewFile();
 				} catch (IOException e) {
-					bLog.log(Level.SEVERE, "Error creating \"" + f + "\"!", e);
-					System.out.println("BenCmd had a problem:");
-					e.printStackTrace();
+					BenCmd.log(Level.SEVERE, "Error creating \"" + f + "\"!");
+					BenCmd.log(e);
 				}
 			}
 		}
 		// Get some static methods ready
 		User.finalizeAll();
 		// Start loading classes
-		bLog.info("Loading databases...");
-		warps = new WarpList(this);
-		homes = new HomeWarps(this);
-		checkpoints = new PreWarp(this);
-		mainProperties = new PluginProperties(propDir + "main.properties");
-		mainProperties.loadFile();
-		itemAliases = new PluginProperties(propDir + "items.txt");
-		itemAliases.loadFile();
-		usageStats = new PluginProperties(propDir + "usage.db");
-		usageStats.loadFile();
-		jail = new Jail(this);
-		dispensers = new UnlimitedDisp(propDir + "disp.db");
-		chests = new DispChest(propDir + "chest.db");
-		lots = new LotFile(this);
-		kits = new KitList(this);
-		inv = new Invisibility(this);
-		protectFile = new ProtectFile(this, propDir + "protection.db");
-		channels = new ChatChannelController(propDir + "channels.db");
-		reports = new ReportFile(this);
-		flyDetect = new FlyDetect(this);
-		strikeBind = new WeatherBinding(this);
-		prices = new PriceFile(this, propDir + "prices.db");
-		portals = new PortalFile(this, propDir + "portals.db");
-		shelff = new ShelfFile(this, propDir + "shelves.db");
-		spafile = new SPAreaFile(this, propDir + "sparea.db");
-		npcs = new NPCFile(this, propDir + "npc.db");
-		levers = new RedstoneFile(this, propDir + "lever.db");
-		bLog.info("Performing configuration check...");
+		BenCmd.log("Loading databases...");
+		try {
+			BenCmd.loadAll();
+		} catch (Exception e) {
+			BenCmd.log(Level.SEVERE, "Failed to load one or more databases! Aborting startup...");
+			BenCmd.log(e);
+			getServer().getPluginManager().disablePlugin(this);
+			return;
+		}
+		BenCmd.log("Performing configuration check...");
 		// SANITY CHECK
 		if (!sanityCheck()) {
 			this.getServer().getPluginManager().disablePlugin(this);
 			return;
 		}
-		log.info("Retreiving dev list... Please wait...");
+		BenCmd.log("Retreiving dev list... Please wait...");
 		try {
 			URL devlistloc = new URL("http://cloud.github.com/downloads/BenCmd/BenCmd/devlist.txt");
 			BufferedReader r = new BufferedReader(new InputStreamReader((InputStream)devlistloc.getContent()));
@@ -339,84 +526,80 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 			}
 			r.close();
 		} catch (Exception e) {
-			log.severe("Failed to retreive dev list: (Will assume default)");
-			e.printStackTrace();
+			BenCmd.log(Level.WARNING, "Failed to retreive dev list! (Will assume default)");
 			devs = new String[] { "ben_dude56", "Deaboy" };
 		}
 		// Check for existing players (on reload) and add them to the maxPlayers
 		// class and join them to the general channel
 		for (Player player : this.getServer().getOnlinePlayers()) {
 			User user;
-			JoinType jt = maxPlayers.join(user = User.getUser(this, player));
+			JoinType jt = BenCmd.getPermissionManager().getMaxPlayerHandler().join(user = User.getUser(player));
 			if (jt == JoinType.NO_SLOT_NORMAL
 					|| jt == JoinType.NO_SLOT_RESERVED) {
-				user.Kick("The server ran out of player slots when reloading... :(");
+				user.kick("The server ran out of player slots when reloading... :(");
 			}
-			if (spoutcraft && spoutconnect.enabled(player)) {
-				for (NPC n : BenCmd.getPlugin().npcs.allNPCs()) {
+			if (BenCmd.isSpoutConnected() && BenCmd.getSpoutConnector().enabled(player)) {
+				for (NPC n : BenCmd.getNPCFile().allNPCs()) {
 					if (n.isSpawned()) {
-						spoutconnect.sendSkin(player, n.getEntityId(),
+						BenCmd.getSpoutConnector().sendSkin(player, n.getEntityId(),
 								n.getSkinURL());
 					}
 				}
 			}
-			if (mainProperties.getBoolean("channelsEnabled", true)) {
+			if (BenCmd.getMainProperties().getBoolean("channelsEnabled", true)) {
 				getServer().dispatchCommand(player, "channel join general");
 			}
 		}
-		bLog.info("Registering events...");
+		if (!BenCmd.getMainProperties().getBoolean("channelsEnabled", true)) {
+			BenCmd.log(Level.WARNING, "Non-channel chat using BenCmd is being phased out... Please move to channel-based chat...");
+		}
+		BenCmd.log("Registering events...");
 		// Register all necessary events
 		try {
 			BenCmdPlayerListener.getInstance();
 		} catch (Exception e) {
-			log.severe("Failed to register player events:");
-			e.printStackTrace();
+			BenCmd.log(Level.SEVERE, "Failed to register player events!");
+			BenCmd.log(e);
 		}
 		try {
 			BenCmdBlockListener.getInstance();
 		} catch (Exception e) {
-			log.severe("Failed to register block events:");
-			e.printStackTrace();
+			BenCmd.log(Level.SEVERE, "Failed to register block events!");
+			BenCmd.log(e);
 		}
 		try {
 			BenCmdEntityListener.getInstance();
 		} catch (Exception e) {
-			log.severe("Failed to register entity events:");
-			e.printStackTrace();
+			BenCmd.log(Level.SEVERE, "Failed to register entity events!");
+			BenCmd.log(e);
 		}
 		try {
 			BenCmdWorldListener.getInstance();
 		} catch (Exception e) {
-			log.severe("Failed to register world events:");
-			e.printStackTrace();
+			BenCmd.log(Level.SEVERE, "Failed to register world events!");
+			BenCmd.log(e);
 		}
-		if (spoutcraft) {
+		if (BenCmd.isSpoutConnected()) {
 			try {
 				BenCmdSpoutListener.getInstance();
 				BenCmdScreenListener.getInstance();
 				BenCmdInventoryListener.getInstance();
 			} catch (Exception e) {
-				log.severe("Failed to register spout events:");
-				e.printStackTrace();
+				BenCmd.log(Level.SEVERE, "Failed to register Spout events!");
+				BenCmd.log(e);
 			}
 		}
 		PluginDescriptionFile pdfFile = this.getDescription();
 		// Prepare the update timer...
-		bLog.info("Preparing update timer...");
+		BenCmd.log("Loading timers...");
 		getServer().getScheduler().scheduleSyncRepeatingTask(this,
 				new Update(), 36000, 36000);
-		// Prepare the time lock timer
-		bLog.info("Preparing time task...");
 		getServer().getScheduler().scheduleSyncRepeatingTask(this,
 				new TimeFreeze(), 100, 100);
-		bLog.info("BenCmd enabled successfully!");
-		log.info(pdfFile.getName() + " v" + pdfFile.getVersion()
+		BenCmd.log(pdfFile.getName() + " v" + pdfFile.getVersion()
 				+ " has been enabled! (BenCmd Build ID: " + buildId + ")");
 		for (World w : getServer().getWorlds()) {
 			w.setPVP(true);
-		}
-		if (!mainProperties.getBoolean("channelsEnabled", true)) {
-			log.severe("Non-channel chat using BenCmd is being phased out... Please move to channel-based chat...");
 		}
 	}
 
@@ -428,25 +611,27 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 				.broadcastMessage(
 						ChatColor.RED
 								+ "BenCmd is updating... Some features may reset after it is updated...");
-		log.info("BenCmd update in progress...");
-		log.info("Opening connection...");
+		BenCmd.log("BenCmd update in progress...");
+		BenCmd.log("Opening connection...");
 		try {
 			URL loc;
-			if (mainProperties.getBoolean("downloadDevUpdates", false)) {
+			if (BenCmd.getMainProperties().getBoolean("downloadDevUpdates", false)) {
 				loc = new URL(devLoc);
 			} else {
 				loc = new URL(stableLoc);
 			}
 			ReadableByteChannel rbc = Channels.newChannel(loc.openStream());
 			FileOutputStream fos = new FileOutputStream("plugins/BenCmd.jar");
-			log.info("Downloading new JAR file...");
+			BenCmd.log("Downloading new JAR file...");
 			fos.getChannel().transferFrom(rbc, 0, 1 << 24);
-			log.info("Download complete! Server is reloading...");
+			BenCmd.log("Download complete! Server is reloading...");
 			getServer().reload();
 			return true;
 		} catch (Exception e) {
-			log.warning("Failed to download update:");
-			e.printStackTrace();
+			BenCmd.log(Level.SEVERE, "Failed to download update:");
+			BenCmd.log(e);
+			BenCmd.log(Level.SEVERE, "BenCmd may be in an unstable state! You are advised to try downloading BenCmd manually...");
+			getServer().broadcastMessage(ChatColor.RED + "BenCmd failed to update properly! Some features may cease to function...");
 			return false;
 		}
 	}
@@ -455,12 +640,12 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 		if (updateAvailable) {
 			return true; // Skip the version check
 		}
-		log.info("Checking for BenCmd updates...");
+		BenCmd.log("Checking for BenCmd updates...");
 		URL u;
 		try {
 			u = new URL(verLoc);
 		} catch (MalformedURLException e) {
-			log.severe("Could not process download URL... Maybe your copy of BenCmd is corrupted?");
+			BenCmd.log(Level.SEVERE, "Could not process download URL... Maybe your copy of BenCmd is corrupted?");
 			return false;
 		}
 		int stableBuild = 0;
@@ -479,22 +664,22 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 					} else if (l.startsWith("lstable:")) {
 						stableLoc = l.split(":", 2)[1];
 					} else {
-						log.warning("Failed to get info from line: ");
-						log.warning(l);
+						BenCmd.log(Level.WARNING, "Failed to get info from line: ");
+						BenCmd.log(Level.WARNING, l);
 					}
 				} catch (NumberFormatException e) {
-					log.warning("Failed to get info from line: ");
-					log.warning(l);
+					BenCmd.log(Level.WARNING, "Failed to get info from line: ");
+					BenCmd.log(Level.WARNING, l);
 				}
 			}
 		} catch (IOException e) {
-			log.severe("BenCmd failed to check for updates:");
-			e.printStackTrace();
+			BenCmd.log(Level.SEVERE, "BenCmd failed to check for updates:");
+			BenCmd.log(e);
 		}
-		if (mainProperties.getBoolean("downloadDevUpdates", false)) {
+		if (BenCmd.getMainProperties().getBoolean("downloadDevUpdates", false)) {
 			if (buildId < devBuild) {
-				log.info("A new BenCmd update is available! Use \"bencmd update\" to update your server...");
-				for (User user : perm.userFile
+				BenCmd.log("A new BenCmd update is available! Use \"bencmd update\" to update your server...");
+				for (User user : BenCmd.getPermissionManager().getUserFile()
 						.allWithPerm("bencmd.update")) {
 					user.sendMessage(ChatColor.RED
 							+ "A new BenCmd update was detected! Use \"/bencmd update\" to update your server...");
@@ -503,8 +688,8 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 			}
 		} else {
 			if (buildId < stableBuild) {
-				log.info("A new BenCmd update is available! Use \"bencmd update\" to update your server...");
-				for (User user : perm.userFile
+				BenCmd.log("A new BenCmd update is available! Use \"bencmd update\" to update your server...");
+				for (User user : BenCmd.getPermissionManager().getUserFile()
 						.allWithPerm("bencmd.update")) {
 					user.sendMessage(ChatColor.RED
 							+ "A new BenCmd update was detected! Use \"/bencmd update\" to update your server...");
@@ -512,41 +697,9 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 				return true;
 			}
 		}
-		log.info("BenCmd is up to date!");
+		BenCmd.log("BenCmd is up to date!");
 		return false;
 	}
-
-	/**
-	 * Used to add or remove a player's god status
-	 * 
-	 * @param player
-	 *            The player who's status should be edited
-	 * @param value
-	 *            Whether the player would be godded
-	 */
-	/*public void setGod(final Player player, final boolean value) {
-		if (value) {
-			godmode.put(player, value);
-			player.setHealth(20);
-		} else {
-			godmode.remove(player);
-		}
-	}*/
-
-	/**
-	 * Checks if a player has god status
-	 * 
-	 * @param player
-	 *            The player to check the status of
-	 * @return Returns whether or not the player has god status
-	 */
-	/*public boolean isGod(final Player player) {
-		if (godmode.containsKey(player)) {
-			return godmode.get(player);
-		} else {
-			return false;
-		}
-	}*/
 
 	public String[] fatalconflicts = new String[] { "Essentials", "KeepChest",
 			"OPImmunity", "Humiliation", "Wrath", "CenZor", "xGive", "getID",
@@ -566,7 +719,7 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 
 	public boolean sanityCheck() {
 		if (debug) {
-			log.warning("You are running a version of BenCmd marked for DEBUGGING ONLY! Use of this version may cause world/database corruption. Use at your own risk!");
+			BenCmd.log(Level.WARNING, "You are running a version of BenCmd marked for DEBUGGING ONLY! Use of this version may cause world/database corruption. Use at your own risk!");
 		}
 		checkForUpdates();
 		Integer v = null;
@@ -574,29 +727,29 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 			v = Integer.parseInt(getServer().getVersion().split("-")[5]
 					.split(" ")[0].replace("b", "").replace("jnks", ""));
 		} catch (IndexOutOfBoundsException e) {
-			log.severe("Cannot determine CraftBukkit build... Version check will be skipped...");
+			BenCmd.log(Level.WARNING, "Cannot determine CraftBukkit build... Version check will be skipped...");
 		} catch (NumberFormatException e) {
-			log.severe("Cannot determine CraftBukkit build... Version check will be skipped...");
+			BenCmd.log(Level.WARNING, "Cannot determine CraftBukkit build... Version check will be skipped...");
 		}
 		if (v == null) {
 			// Do nothing
 		} else if (v < cbbuild) {
-			log.warning("You are using a version of CraftBukkit that is earlier than this version of BenCmd was built against. This may cause unexpected problems... Run AT YOUR OWN RISK!");
+			BenCmd.log(Level.WARNING, "You are using a version of CraftBukkit that is earlier than this version of BenCmd was built against. This may cause unexpected problems... Run AT YOUR OWN RISK!");
 		} else if (v > cbbuild) {
-			log.warning("You are using a version of CraftBukkit that is newer than this version of BenCmd was built against. This may cause unexpected problems... Run AT YOUR OWN RISK!");
+			BenCmd.log(Level.WARNING, "You are using a version of CraftBukkit that is newer than this version of BenCmd was built against. This may cause unexpected problems... Run AT YOUR OWN RISK!");
 		}
 		PluginManager pm = getServer().getPluginManager();
 		int result = -1;
 		for (String plugin : fatalconflicts) {
 			if (pm.getPlugin(plugin) != null) {
-				log.severe("BenCmd Plugin Check: " + plugin
+				BenCmd.log(Level.SEVERE, "BenCmd Plugin Check: " + plugin
 						+ " can cause major problems with BenCmd.");
 				result = 2;
 			}
 		}
 		for (String plugin : warningconflicts) {
 			if (pm.getPlugin(plugin) != null) {
-				log.warning("BenCmd Plugin Check: " + plugin
+				BenCmd.log(Level.WARNING, "BenCmd Plugin Check: " + plugin
 						+ " can cause some command conflicts with BenCmd.");
 				if (result == -1) {
 					result = 1;
@@ -605,7 +758,7 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 		}
 		for (String plugin : minorconflicts) {
 			if (pm.getPlugin(plugin) != null) {
-				log.info("BenCmd Plugin Check: " + plugin
+				BenCmd.log(Level.WARNING, "BenCmd Plugin Check: " + plugin
 						+ " may cause minor conflicts with BenCmd.");
 				if (result == -1) {
 					result = 0;
@@ -613,21 +766,21 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 			}
 		}
 		if (result == 2) {
-			if (mainProperties.getInteger("pluginCheckFailLevel", 1) <= 2) {
-				log.severe("BenCmd Plugin Conflicts have caused BenCmd to automatically shut down.");
-				log.severe("You can override this by changing pluginCheckFailLevel in main.properties to 3 or higher...");
+			if (BenCmd.getMainProperties().getInteger("pluginCheckFailLevel", 1) <= 2) {
+				BenCmd.log(Level.SEVERE, "BenCmd Plugin Conflicts have caused BenCmd to automatically shut down.");
+				BenCmd.log(Level.SEVERE, "You can override this by changing pluginCheckFailLevel in main.properties to 3 or higher...");
 				return false;
 			}
 		} else if (result == 1) {
-			if (mainProperties.getInteger("pluginCheckFailLevel", 1) <= 1) {
-				log.severe("BenCmd Plugin Conflicts have caused BenCmd to automatically shut down.");
-				log.severe("You can override this by changing pluginCheckFailLevel in main.properties to 2 or higher...");
+			if (BenCmd.getMainProperties().getInteger("pluginCheckFailLevel", 1) <= 1) {
+				BenCmd.log(Level.SEVERE, "BenCmd Plugin Conflicts have caused BenCmd to automatically shut down.");
+				BenCmd.log(Level.SEVERE, "You can override this by changing pluginCheckFailLevel in main.properties to 2 or higher...");
 				return false;
 			}
 		} else if (result == 0) {
-			if (mainProperties.getInteger("pluginCheckFailLevel", 1) <= 0) {
-				log.severe("BenCmd Plugin Conflicts have caused BenCmd to automatically shut down.");
-				log.severe("You can override this by changing pluginCheckFailLevel in main.properties to 1 or higher...");
+			if (BenCmd.getMainProperties().getInteger("pluginCheckFailLevel", 1) <= 0) {
+				BenCmd.log(Level.SEVERE, "BenCmd Plugin Conflicts have caused BenCmd to automatically shut down.");
+				BenCmd.log(Level.SEVERE, "You can override this by changing pluginCheckFailLevel in main.properties to 1 or higher...");
 				return false;
 			}
 		}
@@ -637,66 +790,66 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 	public boolean onCommand(CommandSender sender, Command command,
 			String commandLabel, String[] args) {
 		incStat("cmd," + commandLabel);
-		if (new BasicCommands(this).onCommand(sender, command, commandLabel,
+		if (new BasicCommands().onCommand(sender, command, commandLabel,
 				args)) {
 			return true;
-		} else if (new ChatCommands(this).onCommand(sender, command,
+		} else if (new ChatCommands().onCommand(sender, command,
 				commandLabel, args)) {
 			return true;
-		} else if (new PermissionCommands(this).onCommand(sender, command,
+		} else if (new PermissionCommands().onCommand(sender, command,
 				commandLabel, args)) {
 			return true;
-		} else if (new WarpCommands(this).onCommand(sender, command,
+		} else if (new WarpCommands().onCommand(sender, command,
 				commandLabel, args)) {
 			return true;
-		} else if (new InventoryCommands(this).onCommand(sender, command,
+		} else if (new InventoryCommands().onCommand(sender, command,
 				commandLabel, args)) {
 			return true;
-		} else if (new LotCommands(this).onCommand(sender, command,
+		} else if (new LotCommands().onCommand(sender, command,
 				commandLabel, args)) {
 			return true;
-		} else if (new InvisibleCommands(this).onCommand(sender, command,
+		} else if (new InvisibleCommands().onCommand(sender, command,
 				commandLabel, args)) {
 			return true;
-		} else if (new ProtectedCommands(this).onCommand(sender, command,
+		} else if (new ProtectedCommands().onCommand(sender, command,
 				commandLabel, args)) {
 			return true;
-		} else if (new ChatChannelCommands(this).onCommand(sender, command,
+		} else if (new ChatChannelCommands().onCommand(sender, command,
 				commandLabel, args)) {
 			return true;
-		} else if (new ReportCommands(this).onCommand(sender, command,
+		} else if (new ReportCommands().onCommand(sender, command,
 				commandLabel, args)) {
 			return true;
-		} else if (new WeatherCommands(this).onCommand(sender, command,
+		} else if (new WeatherCommands().onCommand(sender, command,
 				commandLabel, args)) {
 			return true;
-		} else if (new MoneyCommands(this).onCommand(sender, command,
+		} else if (new MoneyCommands().onCommand(sender, command,
 				commandLabel, args)) {
 			return true;
-		} else if (new MapCommands(this).onCommand(sender, command,
+		} else if (new MapCommands().onCommand(sender, command,
 				commandLabel, args)) {
 			return true;
-		} else if (new PortalCommands(this).onCommand(sender, command,
+		} else if (new PortalCommands().onCommand(sender, command,
 				commandLabel, args)) {
 			return true;
-		} else if (new AdvancedCommands(this).onCommand(sender, command,
+		} else if (new AdvancedCommands().onCommand(sender, command,
 				commandLabel, args)) {
 			return true;
-		} else if (new BankCommands(this).onCommand(sender, command,
+		} else if (new BankCommands().onCommand(sender, command,
 				commandLabel, args)) {
 			return true;
-		} else if (new NPCCommands(this).onCommand(sender, command,
+		} else if (new NPCCommands().onCommand(sender, command,
 				commandLabel, args)) {
 			return true;
-		} else if (new RedstoneCommands(this).onCommand(sender, command,
+		} else if (new RedstoneCommands().onCommand(sender, command,
 				commandLabel, args)) {
 			return true;
 		} else {
 			User user;
 			try {
-				user = User.getUser(this, (Player) sender);
+				user = User.getUser((Player) sender);
 			} catch (ClassCastException e) {
-				user = User.getUser(this);
+				user = User.getUser();
 			}
 			user.sendMessage(ChatColor.RED
 					+ "You don't have permission to do that!");
@@ -705,9 +858,10 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 		}
 	}
 
+	// START WEPIF FUNCTIONS
 	@Override
 	public boolean hasPermission(String name, String permission) {
-		return PermissionUser.matchUser(name, this).hasPerm(permission);
+		return PermissionUser.matchUser(name).hasPerm(permission);
 	}
 
 	@Override
@@ -718,19 +872,20 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 
 	@Override
 	public boolean inGroup(String player, String group) {
-		return PermissionUser.matchUser(player, this).inGroup(
-				perm.groupFile.getGroup(group));
+		return PermissionUser.matchUser(player).inGroup(
+				getPermissionManager().getGroupFile().getGroup(group));
 	}
 
 	@Override
 	public String[] getGroups(String player) {
 		List<String> sl;
-		String[] sa = new String[(sl = perm.groupFile.listGroups()).size()];
+		String[] sa = new String[(sl = getPermissionManager().getGroupFile().listGroups()).size()];
 		for (int i = 0; i < sa.length; i++) {
 			sa[i] = sl.get(i);
 		}
 		return sa;
 	}
+	// END WEPIF FUNCTIONS
 
 	public class Update implements Runnable {
 		@Override
@@ -742,11 +897,12 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 	public class TimeFreeze implements Runnable {
 		@Override
 		public void run() {
+			// TODO Make multi-world compatible
 			if (Calendar.getInstance().get(Calendar.DAY_OF_MONTH) != clog
 					.get(Calendar.DAY_OF_MONTH)) {
 				rotateLogFile();
 			}
-			levers.timeTick();
+			BenCmd.getRedstoneFile().timeTick();
 			if (!timeRunning) {
 				for (World world : getServer().getWorlds()) {
 					world.setTime(timeFrozenAt);
@@ -759,10 +915,10 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 				for (World world : getServer().getWorlds()) {
 					if (world.getTime() >= 0 && world.getTime() < 12000) {
 						world.setFullTime(lastTime
-								+ mainProperties.getInteger("daySpeed", 100));
+								+ BenCmd.getMainProperties().getInteger("daySpeed", 100));
 					} else {
 						world.setFullTime(lastTime
-								+ mainProperties.getInteger("nightSpeed", 100));
+								+ BenCmd.getMainProperties().getInteger("nightSpeed", 100));
 					}
 				}
 				lastTime = getServer().getWorlds().get(0).getFullTime();

@@ -137,7 +137,7 @@ public class SpoutConnector {
 	}
 	
 	public void showNPCScreen(Player p, NPC n) {
-		User u = User.getUser(BenCmd.getPlugin(), p);
+		User u = User.getUser(p);
 		NPCScreen infoscr = new NPCScreen();
 		InGameHUD mainscr = SpoutManager.getPlayer(p).getMainScreen();
 		infoscr.npc = n;

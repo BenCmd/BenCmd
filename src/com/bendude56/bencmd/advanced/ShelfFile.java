@@ -2,6 +2,9 @@ package com.bendude56.bencmd.advanced;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import com.bendude56.bencmd.BenCmd;
@@ -19,7 +22,6 @@ public class ShelfFile extends BenCmdFile {
 	}
 
 	public void loadAll() {
-		BenCmd plugin = BenCmd.getPlugin();
 		shelves.clear();
 		for (int i = 0; i < getFile().size(); i++) {
 			String key = (String) getFile().keySet().toArray()[i];
@@ -33,23 +35,17 @@ public class ShelfFile extends BenCmdFile {
 				y = Integer.parseInt(key.split(",")[2]);
 				z = Integer.parseInt(key.split(",")[3]);
 			} catch (NumberFormatException e) {
-				plugin.bLog
-						.warning("SHELF ERROR: A shelf location was discovered to be invalid...");
-				plugin.log.warning("Shelf (" + getFile().keySet().toArray()[i]
+				BenCmd.log(Level.WARNING, "Shelf (" + getFile().keySet().toArray()[i]
 						+ ")'s location is invalid!");
 				continue;
 			} catch (IndexOutOfBoundsException e) {
-				plugin.bLog
-						.warning("SHELF ERROR: A shelf location was discovered to be invalid...");
-				plugin.log.warning("Shelf (" + getFile().keySet().toArray()[i]
-						+ ")'s location is invalid!");
+				BenCmd.log(Level.WARNING, "Shelf (" + getFile().keySet().toArray()[i]
+				                                           						+ ")'s location is invalid!");
 				continue;
 			}
-			if ((world = plugin.getServer().getWorld(key.split(",")[0])) == null) {
-				plugin.bLog
-						.warning("SHELF ERROR: A shelf location was discovered to be invalid...");
-				plugin.log.warning("Shelf (" + getFile().keySet().toArray()[i]
-						+ ")'s location is invalid!");
+			if ((world = Bukkit.getWorld(key.split(",")[0])) == null) {
+				BenCmd.log(Level.WARNING, "Shelf (" + getFile().keySet().toArray()[i]
+				                                           						+ ")'s location is invalid!");
 				continue;
 			}
 			location = new Location(world, x, y, z);

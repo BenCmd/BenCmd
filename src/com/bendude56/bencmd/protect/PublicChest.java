@@ -6,16 +6,15 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 
-import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.permissions.PermissionUser;
 
 
 public class PublicChest extends PublicBlock {
 	private Location blockLocation;
 
-	public PublicChest(BenCmd instance, int id, PermissionUser owner,
+	public PublicChest(int id, PermissionUser owner,
 			List<PermissionUser> guests, Location loc) {
-		super(instance, id, owner, guests, loc);
+		super(id, owner, guests, loc);
 		blockLocation = loc;
 	}
 

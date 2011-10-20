@@ -8,13 +8,11 @@ import com.bendude56.bencmd.InvalidPermissionError;
 
 
 public class InternalUser {
-	protected BenCmd plugin;
 	private String name;
 	private List<String> permissions;
 
-	protected InternalUser(BenCmd instance, String name,
+	protected InternalUser(String name,
 			List<String> permissions) {
-		this.plugin = instance;
 		this.name = name;
 		this.permissions = permissions;
 	}
@@ -36,7 +34,7 @@ public class InternalUser {
 		List<String> perms = new ArrayList<String>();
 		perms.addAll(permissions);
 		if (testGroup) {
-			for (PermissionGroup group : plugin.perm.groupFile
+			for (PermissionGroup group : BenCmd.getPermissionManager().getGroupFile()
 					.getAllUserGroups(this)) {
 				perms.addAll(group.getInternal().getPermissions(false));
 			}
@@ -45,15 +43,15 @@ public class InternalUser {
 	}
 
 	public Action isMuted() {
-		return plugin.actions.isMuted(new PermissionUser(this));
+		return BenCmd.getPermissionManager().getActionFile().isMuted(new PermissionUser(this));
 	}
 
 	public Action isJailed() {
-		return plugin.actions.isJailed(new PermissionUser(this));
+		return BenCmd.getPermissionManager().getActionFile().isJailed(new PermissionUser(this));
 	}
 
 	public Action isBanned() {
-		return plugin.actions.isBanned(new PermissionUser(this));
+		return BenCmd.getPermissionManager().getActionFile().isBanned(new PermissionUser(this));
 	}
 
 	public boolean hasPerm(String perm, boolean testStar, boolean testGroup) {
@@ -71,7 +69,7 @@ public class InternalUser {
 		boolean isAllowed = false;
 		List<String> perms = new ArrayList<String>(permissions);
 		if (testGroup) {
-			for (PermissionGroup group : plugin.perm.groupFile
+			for (PermissionGroup group : BenCmd.getPermissionManager().getGroupFile()
 					.getAllUserGroups(this)) {
 				perms.addAll(group.getInternal().getPermissions(true));
 			}
@@ -112,7 +110,7 @@ public class InternalUser {
 			return;
 		}
 		permissions.add(perm);
-		plugin.perm.userFile.updateUser(this);
+		BenCmd.getPermissionManager().getUserFile().updateUser(this, true);
 	}
 
 	public void remPerm(String perm) {
@@ -120,14 +118,14 @@ public class InternalUser {
 			return;
 		}
 		permissions.remove(perm);
-		plugin.perm.userFile.updateUser(this);
+		BenCmd.getPermissionManager().getUserFile().updateUser(this, true);
 	}
 
 	public boolean inGroup(PermissionGroup group) {
 		if (isServer()) {
 			return false;
 		}
-		for (PermissionGroup group2 : plugin.perm.groupFile
+		for (PermissionGroup group2 : BenCmd.getPermissionManager().getGroupFile()
 				.getAllUserGroups(this)) {
 			if (group.getName().equals(group2.getName())) {
 				return true;

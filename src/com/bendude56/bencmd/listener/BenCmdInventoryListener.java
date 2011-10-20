@@ -37,12 +37,11 @@ public class BenCmdInventoryListener extends InventoryListener {
 	}
 	
 	public void onInventoryCraft(InventoryCraftEvent event) {
-		BenCmd plugin = BenCmd.getPlugin();
-		User user = User.getUser(plugin, event.getPlayer());
+		User user = User.getUser(event.getPlayer());
 		Material m = event.getResult().getType();
 		if (user.hasPerm("bencmd.inv.craft.disallow." + m.getId(), false) && !user.hasPerm("bencmd.inv.craft.override")) {
-			if (plugin.spoutconnect.enabled(event.getPlayer())) {
-				plugin.spoutconnect.sendNotification(event.getPlayer(), "Item disabled", "You can't craft that!", m);
+			if (BenCmd.getSpoutConnector().enabled(event.getPlayer())) {
+				BenCmd.getSpoutConnector().sendNotification(event.getPlayer(), "Item disabled", "You can't craft that!", m);
 			} else {
 				user.sendMessage(ChatColor.RED + "Crafting of that item has been disabled.");
 				user.sendMessage(ChatColor.RED + "Please see an administrator for more information.");

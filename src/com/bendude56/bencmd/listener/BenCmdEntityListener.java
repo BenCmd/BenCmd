@@ -79,19 +79,18 @@ public class BenCmdEntityListener extends EntityListener {
 	}
 	
 	private void pvpHit(EntityDamageEvent e) {
-		BenCmd plugin = BenCmd.getPlugin();
 		
 		if (e instanceof EntityDamageByEntityEvent) {
 			EntityDamageByEntityEvent event = (EntityDamageByEntityEvent) e;
 			if (event.getDamager() instanceof Player
 					&& event.getEntity() instanceof Player) {
 				if (((CraftPlayer)event.getDamager()).getHandle() instanceof EntityNPC) {
-					if (User.getUser(BenCmd.getPlugin(), (Player) event.getEntity()).isGod()) 
+					if (User.getUser((Player) event.getEntity()).isGod()) 
 						event.setCancelled(true);
 					return;
 				}
 				if (((CraftPlayer)event.getEntity()).getHandle() instanceof EntityNPC) {
-					NPC npc = plugin.npcs.getNPC((EntityNPC) ((CraftPlayer) event.getEntity()).getHandle());
+					NPC npc = BenCmd.getNPCFile().getNPC((EntityNPC) ((CraftPlayer) event.getEntity()).getHandle());
 					if(npc instanceof Damageable) {
 						((Damageable) npc).onDamage(event.getDamager(), event.getDamage());
 						return;
@@ -104,12 +103,10 @@ public class BenCmdEntityListener extends EntityListener {
 	}
 
 	private void pvpDie(EntityDeathEvent event) {
-		BenCmd plugin = BenCmd.getPlugin();
-		
 		if (!(event.getEntity() instanceof Player)) {
 			return;
 		}
-		User user = User.getUser(plugin, (Player) event.getEntity());
+		User user = User.getUser((Player) event.getEntity());
 		PVPArea a;
 		if ((a = inPVP(user.getHandle())) != null) {
 			HashMap<ItemStack, PVPArea.DropMode> result = a.getDrops(event
@@ -125,17 +122,17 @@ public class BenCmdEntityListener extends EntityListener {
 					toReturn.add(item);
 				}
 			}
-			plugin.returns.put(user.getHandle(), toReturn);
+			BenCmd.getPlugin().returns.put(user.getHandle(), toReturn);
 			return;
 		}
-		if (plugin.mainProperties.getBoolean("gravesEnabled", true)) {
-			for (int i = 0; i < plugin.graves.size(); i++) {
-				Grave g = plugin.graves.get(i);
+		if (BenCmd.getMainProperties().getBoolean("gravesEnabled", true)) {
+			for (int i = 0; i < BenCmd.getPlugin().graves.size(); i++) {
+				Grave g = BenCmd.getPlugin().graves.get(i);
 				if (g.getPlayer().equals((Player) event.getEntity())) {
-					if (plugin.mainProperties.getBoolean(
+					if (BenCmd.getMainProperties().getBoolean(
 							"newerGraveOverwrites", false)) {
 						g.delete();
-						plugin.graves.remove(i);
+						BenCmd.getPlugin().graves.remove(i);
 					} else {
 						return;
 					}
@@ -158,8 +155,8 @@ public class BenCmdEntityListener extends EntityListener {
 			graveSign.setLine(1, "R.I.P.");
 			graveSign.setLine(2, user.getDisplayName());
 			graveSign.update();
-			plugin.graves.add(new Grave(plugin, grave, (Player) event
-					.getEntity(), event.getDrops(), plugin.mainProperties
+			BenCmd.getPlugin().graves.add(new Grave(grave, (Player) event
+					.getEntity(), event.getDrops(), BenCmd.getMainProperties()
 					.getInteger("graveDuration", 180)));
 			((Player) event.getEntity())
 					.sendMessage(ChatColor.RED
@@ -169,37 +166,31 @@ public class BenCmdEntityListener extends EntityListener {
 	}
 	
 	private void endermanPassive(EntityTargetEvent event) {
-		BenCmd plugin = BenCmd.getPlugin();
-		
 		if (event.getEntity().toString().equalsIgnoreCase("CraftEnderman")
-				&& plugin.mainProperties.getBoolean("endermenPassive", true))
+				&& BenCmd.getMainProperties().getBoolean("endermenPassive", true))
 			event.setCancelled(true);
 		if (event.getTarget() instanceof Player
-				&& User.getUser(plugin, (Player) event.getTarget()).isPoofed())
+				&& User.getUser((Player) event.getTarget()).isPoofed())
 			event.setCancelled(true);
 	}
 	
 	private void endermanGriefTake(EndermanPickupEvent event) {
-		BenCmd plugin = BenCmd.getPlugin();
-		
-		if (!plugin.mainProperties.getBoolean("endermenGriefing", true)) {
+		if (!BenCmd.getMainProperties().getBoolean("endermenGriefing", true)) {
 			event.setCancelled(true);
 			return;
 		}
 		Location BlockLocation = event.getBlock().getLocation();
-		if (!plugin.lots.isInLot(BlockLocation).equalsIgnoreCase("-1")
-				&& !plugin.mainProperties.getBoolean("endermenLotGriefing", false)) {
+		if (!BenCmd.getLots().isInLot(BlockLocation).equalsIgnoreCase("-1")
+				&& !BenCmd.getMainProperties().getBoolean("endermenLotGriefing", false)) {
 			event.setCancelled(true);
 		}
 	}
 	
 	private void endermanGriefPlace(EndermanPlaceEvent event) {
-		BenCmd plugin = BenCmd.getPlugin();
-		
-		if (!plugin.mainProperties.getBoolean("endermenGriefing", true)) {
+		if (!BenCmd.getMainProperties().getBoolean("endermenGriefing", true)) {
 			event.setCancelled(true);
 		}
-		if (!plugin.mainProperties.getBoolean("endermenLotGriefing", false)) {
+		if (!BenCmd.getMainProperties().getBoolean("endermenLotGriefing", false)) {
 			int range=4;
 			int xoffset=-range;
 			int yoffset=-range;
@@ -213,7 +204,7 @@ public class BenCmdEntityListener extends EntityListener {
 				loc.setX(x+xoffset);
 				loc.setY(y+yoffset);
 				loc.setZ(z+zoffset);
-				if (!plugin.lots.isInLot(loc).equalsIgnoreCase("-1")) {
+				if (!BenCmd.getLots().isInLot(loc).equalsIgnoreCase("-1")) {
 					event.setCancelled(true);
 					return;
 				} 
@@ -231,9 +222,7 @@ public class BenCmdEntityListener extends EntityListener {
 	}
 	
 	private void endermanDropBlock(EntityDeathEvent event) {
-		BenCmd plugin = BenCmd.getPlugin();
-		
-		if (plugin.mainProperties.getBoolean("endermenDropCarriedBlock", false)) {
+		if (BenCmd.getMainProperties().getBoolean("endermenDropCarriedBlock", false)) {
 			return;
 		} else if (event.getEntity() instanceof Enderman) {
 			Enderman ender = (Enderman)event.getEntity();
@@ -246,18 +235,16 @@ public class BenCmdEntityListener extends EntityListener {
 	}
 	
 	private void creeperPassive(EntityTargetEvent event) {
-		BenCmd plugin = BenCmd.getPlugin();
 		
 		if (event.getEntity().toString().equalsIgnoreCase("CraftCreeper")
-				&& plugin.mainProperties.getBoolean("creepersPassive", true))
+				&& BenCmd.getMainProperties().getBoolean("creepersPassive", true))
 			event.setCancelled(true);
 		if (event.getTarget() instanceof Player
-				&& User.getUser(plugin, (Player) event.getTarget()).isPoofed())
+				&& User.getUser((Player) event.getTarget()).isPoofed())
 			event.setCancelled(true);
 	}
 	
 	private void tntExplode(ExplosionPrimeEvent event) {
-		BenCmd plugin = BenCmd.getPlugin();
 		
 		if (event.getEntity() instanceof TNTPrimed) {
 			event.setCancelled(true);
@@ -267,19 +254,19 @@ public class BenCmdEntityListener extends EntityListener {
 			Player nearPlayer = nearestPlayer(event.getEntity().getLocation());
 			logMessage += "Nearest detected player: "
 					+ nearPlayer.getDisplayName();
-			plugin.getServer()
+			Bukkit
 					.broadcastMessage(
 							ChatColor.RED
 									+ "Attempted redstone TNT detonation detected! Nearest player:  "
 									+ nearPlayer.getDisplayName());
 			Logger.getLogger("minecraft").info(logMessage);
-			if (plugin.mainProperties.getBoolean("attemptRedstoneTntKick",
+			if (BenCmd.getMainProperties().getBoolean("attemptRedstoneTntKick",
 					false)) {
-				User user = User.getUser(plugin, nearPlayer);
-				plugin.getServer().broadcastMessage(
+				User user = User.getUser(nearPlayer);
+				Bukkit.broadcastMessage(
 						ChatColor.RED + user.getDisplayName()
 								+ " tried to detonate TNT!");
-				user.Kick(plugin.mainProperties.getString("TNTKick",
+				user.kick(BenCmd.getMainProperties().getString("TNTKick",
 						"You can't detonate TNT!"));
 			}
 			return;
@@ -287,47 +274,45 @@ public class BenCmdEntityListener extends EntityListener {
 	}
 	
 	private void mobDrop(EntityDeathEvent event) {
-		BenCmd plugin = BenCmd.getPlugin();
-		
 		if (event.getEntity() instanceof CraftZombie) {
-			if (plugin.mainProperties.getString("zombieDrop", "").isEmpty()) {
+			if (BenCmd.getMainProperties().getString("zombieDrop", "").isEmpty()) {
 				return;
 			}
-			DropTable table = new DropTable(plugin,
-					plugin.mainProperties.getString("zombieDrop", ""));
+			DropTable table = new DropTable(
+					BenCmd.getMainProperties().getString("zombieDrop", ""));
 			event.getDrops().clear();
 			for (ItemStack item : table.getRandomDrops(new Random())) {
 				event.getDrops().add(item);
 			}
 		}
 		if (event.getEntity() instanceof CraftSkeleton) {
-			if (plugin.mainProperties.getString("skeletonDrop", "").isEmpty()) {
+			if (BenCmd.getMainProperties().getString("skeletonDrop", "").isEmpty()) {
 				return;
 			}
-			DropTable table = new DropTable(plugin,
-					plugin.mainProperties.getString("skeletonDrop", ""));
+			DropTable table = new DropTable(
+					BenCmd.getMainProperties().getString("skeletonDrop", ""));
 			event.getDrops().clear();
 			for (ItemStack item : table.getRandomDrops(new Random())) {
 				event.getDrops().add(item);
 			}
 		}
 		if (event.getEntity() instanceof CraftSpider) {
-			if (plugin.mainProperties.getString("spiderDrop", "").isEmpty()) {
+			if (BenCmd.getMainProperties().getString("spiderDrop", "").isEmpty()) {
 				return;
 			}
-			DropTable table = new DropTable(plugin,
-					plugin.mainProperties.getString("spiderDrop", ""));
+			DropTable table = new DropTable(
+					BenCmd.getMainProperties().getString("spiderDrop", ""));
 			event.getDrops().clear();
 			for (ItemStack item : table.getRandomDrops(new Random())) {
 				event.getDrops().add(item);
 			}
 		}
 		if (event.getEntity() instanceof CraftCreeper) {
-			if (plugin.mainProperties.getString("creeperDrop", "").isEmpty()) {
+			if (BenCmd.getMainProperties().getString("creeperDrop", "").isEmpty()) {
 				return;
 			}
-			DropTable table = new DropTable(plugin,
-					plugin.mainProperties.getString("creeperDrop", ""));
+			DropTable table = new DropTable(
+					BenCmd.getMainProperties().getString("creeperDrop", ""));
 			event.getDrops().clear();
 			for (ItemStack item : table.getRandomDrops(new Random())) {
 				event.getDrops().add(item);
@@ -335,49 +320,43 @@ public class BenCmdEntityListener extends EntityListener {
 		}
 	}
 	
-	private void playerDie(EntityDeathEvent event) {
-		BenCmd plugin = BenCmd.getPlugin();
-		
+	private void playerDie(EntityDeathEvent event) {	
 		if (!(event.getEntity() instanceof Player)) {
 			return;
 		}
 		
-		if (plugin.mainProperties.getBoolean("noDeathMessages", true)) {
+		if (BenCmd.getMainProperties().getBoolean("noDeathMessages", true)) {
 			((PlayerDeathEvent) event).setDeathMessage(null);
 		}
 		
-		User user = User.getUser(plugin, (Player) event.getEntity());
+		User user = User.getUser((Player) event.getEntity());
 		if (user.hasPerm("bencmd.warp.back") && user.hasPerm("bencmd.warp.deathback")) {
-			plugin.checkpoints.SetPreWarp(user.getHandle());
+			BenCmd.getWarpCheckpoints().SetPreWarp(user.getHandle());
 			user.sendMessage(ChatColor.RED
 					+ "Use /back to return to your death point...");
 		}
 	}
 
 	private void invincible(EntityDamageEvent event) {
-		BenCmd plugin = BenCmd.getPlugin();
-		
 		if (!(event.getEntity() instanceof Player)) {
 			return;
 		}
-		if (User.getUser(plugin, (Player) event.getEntity()).isJailed() != null) {
+		if (User.getUser((Player) event.getEntity()).isJailed() != null) {
 			event.setCancelled(true);
 		}
-		if (User.getUser(plugin, (Player) event.getEntity()).isPoofed()) {
+		if (User.getUser((Player) event.getEntity()).isPoofed()) {
 			event.setCancelled(true);
 		}
 		Player player = (Player) event.getEntity();
-		if (User.getUser(plugin, player).isGod()) {
+		if (User.getUser(player).isGod()) {
 			event.setCancelled(true);
 		}
 	}
 
 	private Player nearestPlayer(Location loc) {
-		BenCmd plugin = BenCmd.getPlugin();
-		
 		Player lastPlayer = null;
 		double olddistance = 0.0;
-		for (Player onlinePlayer : plugin.getServer().getOnlinePlayers()) {
+		for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
 			if (lastPlayer == null) {
 				lastPlayer = onlinePlayer;
 				olddistance = distanceBetween(loc, lastPlayer.getLocation());
@@ -402,7 +381,7 @@ public class BenCmdEntityListener extends EntityListener {
 	}
 
 	private PVPArea inPVP(Player p) {
-		for (SPArea a : BenCmd.getPlugin().spafile.listAreas()) {
+		for (SPArea a : BenCmd.getAreas().listAreas()) {
 			if (a instanceof PVPArea) {
 				if (a.insideArea(p.getLocation())) {
 					return (PVPArea) a;

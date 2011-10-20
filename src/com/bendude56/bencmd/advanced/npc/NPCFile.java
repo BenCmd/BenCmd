@@ -3,6 +3,8 @@ package com.bendude56.bencmd.advanced.npc;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -37,7 +39,6 @@ public class NPCFile extends BenCmdFile {
 	}
 
 	public void loadAll() {
-		BenCmd plugin = BenCmd.getPlugin();
 		for (int i = 0; i < getFile().size(); i++) {
 			Integer key = Integer.parseInt((String) getFile().keySet().toArray()[i]);
 			String value = getFile().getProperty(key.toString());
@@ -45,11 +46,11 @@ public class NPCFile extends BenCmdFile {
 			switch (value.split("\\|")[0].charAt(0)) {
 			case 'b':
 				l = toLocation(value.split("\\|")[1]);
-				npcs.put(key, new BankerNPC(plugin, key, l));
+				npcs.put(key, new BankerNPC(key, l));
 				break;
 			case 'm':
 				l = toLocation(value.split("\\|")[1]);
-				npcs.put(key, new BankManagerNPC(plugin, key, l));
+				npcs.put(key, new BankManagerNPC(key, l));
 				break;
 			case 's':
 				l = toLocation(value.split("\\|")[1]);
@@ -61,14 +62,14 @@ public class NPCFile extends BenCmdFile {
 				} else if (value.split("\\|").length == 3) {
 					t = BlacksmithNPC.readTools(value.split("\\|")[2]);
 				}
-				npcs.put(key, new BlacksmithNPC(plugin, key, l, t, a));
+				npcs.put(key, new BlacksmithNPC(key, l, t, a));
 				break;
 			case 'n':
 				l = toLocation(value.split("\\|")[1]);
 				String s = value.split("\\|")[2];
 				String n = value.split("\\|")[3];
 				ItemStack item = new ItemStack(Integer.parseInt(value.split("\\|")[4].split(":")[0]), Integer.parseInt(value.split("\\|")[4].split(":")[1]));
-				npcs.put(key, new StaticNPC(plugin, n, s, key, l, item, true));
+				npcs.put(key, new StaticNPC(n, s, key, l, item, true));
 				break;
 			case 'p':
 				/*l = toLocation(value.split("\\|")[1]);
@@ -89,10 +90,7 @@ public class NPCFile extends BenCmdFile {
 				}
 				break;*/
 			default:
-				plugin.bLog
-						.warning("NPC ERROR: An invalid NPC type was detected in NPC with UID "
-								+ key);
-				plugin.log.warning("INVALID NPC TYPE! (ID " + key + ")");
+				BenCmd.log(Level.WARNING, "INVALID NPC TYPE! (ID " + key + ")");
 				break;
 			}
 		}

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import com.bendude56.bencmd.chat.channels.ChatChannel;
@@ -11,7 +12,6 @@ import com.bendude56.bencmd.chat.channels.ChatChannel.ChatLevel;
 
 
 public class User extends ActionableUser {
-	BenCmd plugin;
 	private static HashMap<String, ChatChannel> activeChannels = new HashMap<String, ChatChannel>();
 	private static HashMap<String, List<ChatChannel>> spyingChannels = new HashMap<String, List<ChatChannel>>();
 	private static HashMap<String, User> activeUsers = new HashMap<String, User>();
@@ -19,11 +19,11 @@ public class User extends ActionableUser {
 	private List<ChatChannel> spying;
 	private Player player;
 
-	public static User matchUser(String name, BenCmd instance) {
-		for (Player online : instance.getServer().getOnlinePlayers()) {
+	public static User matchUser(String name) {
+		for (Player online : Bukkit.getOnlinePlayers()) {
 			if (online.getName().equalsIgnoreCase(name)
 					|| online.getDisplayName().equalsIgnoreCase(name)) {
-				return User.getUser(instance, online);
+				return User.getUser(online);
 			}
 		}
 		return null;
@@ -33,8 +33,8 @@ public class User extends ActionableUser {
 		return activeUsers;
 	}
 
-	public static User matchUserIgnoreCase(String name, BenCmd instance) {
-		return User.matchUser(name, instance);
+	public static User matchUserIgnoreCase(String name) {
+		return User.matchUser(name);
 	}
 
 	public static void finalizeAll() {
@@ -48,16 +48,16 @@ public class User extends ActionableUser {
 		assert (!User.activeUsers.containsKey(user.getName()));
 	}
 
-	public static User getUser(BenCmd instance, Player entity) {
+	public static User getUser(Player entity) {
 		if (User.activeUsers.containsKey(entity.getName())) {
 			return User.activeUsers.get(entity.getName());
 		} else {
-			return new User(instance, entity);
+			return new User(entity);
 		}
 	}
 
-	public static User getUser(BenCmd instance) {
-		return new User(instance);
+	public static User getUser() {
+		return new User();
 	}
 
 	/**
@@ -69,9 +69,8 @@ public class User extends ActionableUser {
 	 *            The player entity that this ActionableUser should point to.
 	 * @throws NullPointerException
 	 */
-	private User(BenCmd instance, Player entity) throws NullPointerException {
-		super(instance, entity);
-		plugin = instance;
+	private User(Player entity) throws NullPointerException {
+		super(entity);
 		player = entity;
 		if (User.activeChannels.containsKey(entity.getName())) {
 			activeChannel = User.activeChannels.get(entity.getName());
@@ -92,9 +91,8 @@ public class User extends ActionableUser {
 	 * @param instance
 	 *            The BenCmd Plugin reference to point to
 	 */
-	private User(BenCmd instance) {
-		super(instance);
-		plugin = instance;
+	private User() {
+		super();
 	}
 
 	public boolean inChannel() {

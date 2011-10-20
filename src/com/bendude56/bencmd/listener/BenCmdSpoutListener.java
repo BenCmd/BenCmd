@@ -41,7 +41,7 @@ public class BenCmdSpoutListener extends SpoutListener {
 	public void onSpoutCraftEnable(SpoutCraftEnableEvent event) {
 		SpoutPlayer p = SpoutManager.getPlayer(event.getPlayer());
 		if (p.isSpoutCraftEnabled()) {
-			for (NPC n : BenCmd.getPlugin().npcs.allNPCs()) {
+			for (NPC n : BenCmd.getNPCFile().allNPCs()) {
 				if (n.isSpawned()) {
 					p.sendPacket(new PacketSkinURL(n.getEntityId(), n.getSkinURL()));
 				}

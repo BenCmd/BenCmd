@@ -9,7 +9,6 @@ import com.bendude56.bencmd.permissions.PermissionUser;
 
 
 public class Report implements Comparable<Report> {
-	private BenCmd plugin;
 	private Integer idNumber;
 	private PermissionUser sender;
 	private PermissionUser accused;
@@ -19,10 +18,9 @@ public class Report implements Comparable<Report> {
 	private Integer timesReopened;
 	private List<String> addedInfo;
 
-	public Report(BenCmd instance, Integer ID, PermissionUser sender,
+	public Report(Integer ID, PermissionUser sender,
 			PermissionUser accused, ReportStatus status, String reason,
 			String finalRemark, Integer timesReopened, List<String> addedInfo) {
-		this.plugin = instance;
 		this.idNumber = ID;
 		this.sender = sender;
 		this.accused = accused;
@@ -70,18 +68,18 @@ public class Report implements Comparable<Report> {
 			addedInfo.clear();
 		}
 		addedInfo.add(newInfo);
-		plugin.reports.saveTicket(this);
+		BenCmd.getReports().saveTicket(this, true);
 	}
 
 	public void setStatus(ReportStatus newStatus) {
 		this.status = newStatus;
-		plugin.reports.saveTicket(this);
+		BenCmd.getReports().saveTicket(this, true);
 	}
 
 	public String readReport(Boolean isAdmin, Boolean isAnon) {
 		if (this.status == ReportStatus.UNREAD && isAdmin) {
 			this.status = ReportStatus.READ;
-			plugin.reports.saveTicket(this);
+			BenCmd.getReports().saveTicket(this, true);
 		}
 		String message = "";
 		message += ChatColor.GRAY + "(" + this.status.toString() + ") "
@@ -128,7 +126,7 @@ public class Report implements Comparable<Report> {
 		if (isAdmin) {
 			this.status = ReportStatus.READ;
 		} else {
-			if (timesReopened < plugin.mainProperties.getInteger(
+			if (timesReopened < BenCmd.getMainProperties().getInteger(
 					"ticketMaxReopen", 1)) {
 				timesReopened += 1;
 				this.status = ReportStatus.UNREAD;
@@ -136,30 +134,30 @@ public class Report implements Comparable<Report> {
 				return false;
 			}
 		}
-		plugin.reports.saveTicket(this);
+		BenCmd.getReports().saveTicket(this, true);
 		return true;
 	}
 
 	public void InvestigateTicket() {
 		this.status = ReportStatus.INVESTIGATING;
-		plugin.reports.saveTicket(this);
+		BenCmd.getReports().saveTicket(this, true);
 	}
 
 	public void UninvestigateTicket() {
 		this.status = ReportStatus.READ;
-		plugin.reports.saveTicket(this);
+		BenCmd.getReports().saveTicket(this, true);
 	}
 
 	public void closeTicket(String finalRemark) {
 		this.finalRemark = finalRemark;
 		this.status = ReportStatus.CLOSED;
-		plugin.reports.saveTicket(this);
+		BenCmd.getReports().saveTicket(this, true);
 	}
 
 	public void lockTicket(String finalRemark) {
 		this.finalRemark = finalRemark;
 		this.status = ReportStatus.LOCKED;
-		plugin.reports.saveTicket(this);
+		BenCmd.getReports().saveTicket(this, true);
 	}
 
 	public boolean canRead(PermissionUser user) {

@@ -55,9 +55,9 @@ public class BenCmdScreenListener extends ScreenListener {
 					s.npc.setHeldItem(new ItemStack(s.item.getTypeId(), s.item.getData()));
 				}
 			} else if (event.getButton().equals(s.iup) && s.iup.isEnabled()) {
-				BenCmd.getPlugin().spoutconnect.nextItem(s);
+				BenCmd.getSpoutConnector().nextItem(s);
 			} else if (event.getButton().equals(s.idown) && s.idown.isEnabled()) {
-				BenCmd.getPlugin().spoutconnect.prevItem(s);
+				BenCmd.getSpoutConnector().prevItem(s);
 			} else if (event.getButton().equals(s.cancel) && s.cancel.isEnabled()) {
 				// Don't save any changes
 				s.close();

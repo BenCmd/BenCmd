@@ -16,18 +16,18 @@ public class TRArea extends TimedArea {
 	private List<Player> inside;
 	private int waitTime;
 
-	public TRArea(BenCmd instance, String key, String value)
+	public TRArea(String key, String value)
 			throws NumberFormatException, NullPointerException,
 			IndexOutOfBoundsException {
-		super(instance, key, value.substring(0, value.lastIndexOf('/')) + "/0");
+		super(key, value.substring(0, value.lastIndexOf('/')) + "/0");
 		locked = new HashMap<Player, Integer>();
 		inside = new ArrayList<Player>();
 		waitTime = Integer.parseInt(value.split("/")[3]);
 	}
 
-	public TRArea(BenCmd instance, Integer id, Location corner1,
+	public TRArea(Integer id, Location corner1,
 			Location corner2, Integer minimumTime) {
-		super(instance, id, corner1, corner2, 0);
+		super(id, corner1, corner2, 0);
 		locked = new HashMap<Player, Integer>();
 		inside = new ArrayList<Player>();
 		waitTime = minimumTime;
@@ -66,7 +66,7 @@ public class TRArea extends TimedArea {
 
 	public void setMinTime(int value) {
 		waitTime = value;
-		super.plugin.spafile.updateArea(this);
+		BenCmd.getAreas().updateArea(this, true);
 	}
 
 	public String getValue() {

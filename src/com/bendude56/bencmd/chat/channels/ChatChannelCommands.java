@@ -1,5 +1,6 @@
 package com.bendude56.bencmd.chat.channels;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -12,21 +13,15 @@ import com.bendude56.bencmd.permissions.PermissionUser;
 
 
 public class ChatChannelCommands implements Commands {
-	private BenCmd plugin;
-
-	public ChatChannelCommands(BenCmd instance) {
-		plugin = instance;
-	}
-
 	public boolean onCommand(CommandSender sender, Command command,
 			String commandLabel, String[] args) {
 		User user;
 		try {
-			user = User.getUser(plugin, (Player) sender);
+			user = User.getUser((Player) sender);
 		} catch (ClassCastException e) {
-			user = User.getUser(plugin);
+			user = User.getUser();
 		}
-		if (!plugin.mainProperties.getBoolean("channelsEnabled", false)) {
+		if (!BenCmd.getMainProperties().getBoolean("channelsEnabled", false)) {
 			return false;
 		}
 		if (commandLabel.equalsIgnoreCase("channel")) {
@@ -39,14 +34,14 @@ public class ChatChannelCommands implements Commands {
 						arguments += " " + args[i];
 					}
 				}
-				plugin.getServer().dispatchCommand(sender,
+				Bukkit.dispatchCommand(sender,
 						"channel guest " + arguments);
 				return true;
 			}
 			Channel(args, user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("pause")) {
-			plugin.getServer().dispatchCommand(sender, "channel pause");
+			Bukkit.dispatchCommand(sender, "channel pause");
 		} else if (commandLabel.equalsIgnoreCase("me")) {
 			String message = "";
 			for (int i = 0; i < args.length; i++) {
@@ -93,9 +88,9 @@ public class ChatChannelCommands implements Commands {
 			} else if (args[0].equalsIgnoreCase("list")) {
 				if (!user.inChannel()) {
 					if (args.length == 1) {
-						plugin.channels.listChannels(user);
+						BenCmd.getChatChannels().listChannels(user);
 					} else {
-						ChatChannel channel = plugin.channels
+						ChatChannel channel = BenCmd.getChatChannels()
 								.getChannel(args[1]);
 						if (channel == null) {
 							user.sendMessage(ChatColor.RED
@@ -113,7 +108,7 @@ public class ChatChannelCommands implements Commands {
 					if (args.length == 1) {
 						user.getActiveChannel().listUsers(user);
 					} else {
-						ChatChannel channel = plugin.channels
+						ChatChannel channel = BenCmd.getChatChannels()
 								.getChannel(args[1]);
 						if (channel == null) {
 							user.sendMessage(ChatColor.RED
@@ -139,7 +134,7 @@ public class ChatChannelCommands implements Commands {
 					if (user.getActiveChannel().isMod(user)
 							|| user.getActiveChannel().isOwner(user)) {
 						PermissionUser mutee = PermissionUser
-								.matchUserIgnoreCase(args[1], plugin);
+								.matchUserIgnoreCase(args[1]);
 						if (mutee != null) {
 							if (user.getActiveChannel().isMod(user)
 									&& user.getActiveChannel().isMod(mutee)) {
@@ -174,8 +169,7 @@ public class ChatChannelCommands implements Commands {
 					if (user.getActiveChannel().isMod(user)
 							|| user.getActiveChannel().isOwner(user)) {
 						User kickee = user.getActiveChannel().isOnline(
-								PermissionUser.matchUserIgnoreCase(args[1],
-										plugin));
+								PermissionUser.matchUserIgnoreCase(args[1]));
 						if (kickee != null) {
 							if (user.getActiveChannel().isMod(user)
 									&& user.getActiveChannel().isMod(kickee)) {
@@ -198,7 +192,7 @@ public class ChatChannelCommands implements Commands {
 			} else if (args[0].equalsIgnoreCase("remove")) {
 				if (user.inChannel()) {
 					if (user.getActiveChannel().isOwner(user)) {
-						plugin.channels.removeChannel(user.getActiveChannel());
+						BenCmd.getChatChannels().removeChannel(user.getActiveChannel());
 					} else {
 						user.sendMessage(ChatColor.RED
 								+ "You must be the channel owner to do that!");
@@ -216,7 +210,7 @@ public class ChatChannelCommands implements Commands {
 					if (user.getActiveChannel().isMod(user)
 							|| user.getActiveChannel().isOwner(user)) {
 						PermissionUser banee = PermissionUser
-								.matchUserIgnoreCase(args[1], plugin);
+								.matchUserIgnoreCase(args[1]);
 						if (banee != null) {
 							if (user.getActiveChannel().isMod(user)
 									&& user.getActiveChannel().isMod(banee)) {
@@ -246,7 +240,7 @@ public class ChatChannelCommands implements Commands {
 					if (user.getActiveChannel().isMod(user)
 							|| user.getActiveChannel().isOwner(user)) {
 						PermissionUser guestee = PermissionUser
-								.matchUserIgnoreCase(args[1], plugin);
+								.matchUserIgnoreCase(args[1]);
 						if (guestee != null) {
 							if (user.getActiveChannel().isMod(user)
 									&& user.getActiveChannel().isMod(guestee)) {
@@ -356,7 +350,7 @@ public class ChatChannelCommands implements Commands {
 				if (user.inChannel()) {
 					if (user.getActiveChannel().isOwner(user)) {
 						PermissionUser owner = PermissionUser
-								.matchUserIgnoreCase(args[1], plugin);
+								.matchUserIgnoreCase(args[1]);
 						if (owner != null) {
 							user.getActiveChannel().changeOwner(owner);
 						} else {
@@ -379,7 +373,7 @@ public class ChatChannelCommands implements Commands {
 				if (user.inChannel()) {
 					if (user.getActiveChannel().isOwner(user)) {
 						PermissionUser mod = PermissionUser
-								.matchUserIgnoreCase(args[1], plugin);
+								.matchUserIgnoreCase(args[1]);
 						if (mod != null) {
 							user.getActiveChannel().Mod(mod);
 						} else {
@@ -399,7 +393,7 @@ public class ChatChannelCommands implements Commands {
 							+ "Proper use is /channel join <channel>");
 					return;
 				}
-				ChatChannel channel = plugin.channels.getChannel(args[1]);
+				ChatChannel channel = BenCmd.getChatChannels().getChannel(args[1]);
 				if (channel != null) {
 					user.joinChannel(channel);
 				} else {
@@ -412,7 +406,7 @@ public class ChatChannelCommands implements Commands {
 							+ "Proper use is /channel spy <channel>");
 					return;
 				}
-				ChatChannel channel = plugin.channels.getChannel(args[1]);
+				ChatChannel channel = BenCmd.getChatChannels().getChannel(args[1]);
 				if (channel != null) {
 					user.spyChannel(channel);
 				} else {
@@ -425,7 +419,7 @@ public class ChatChannelCommands implements Commands {
 							+ "Proper use is /channel unspy <channel>");
 					return;
 				}
-				ChatChannel channel = plugin.channels.getChannel(args[1]);
+				ChatChannel channel = BenCmd.getChatChannels().getChannel(args[1]);
 				if (channel != null) {
 					user.unspyChannel(channel);
 				} else {
@@ -439,7 +433,7 @@ public class ChatChannelCommands implements Commands {
 					return;
 				}
 				if (args.length == 2) {
-					plugin.channels.addChannel(args[1], user);
+					BenCmd.getChatChannels().addChannel(args[1], user);
 				} else {
 					user.sendMessage(ChatColor.YELLOW
 							+ "Proper use is /channel add <name>");

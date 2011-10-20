@@ -5,26 +5,29 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
+import java.util.logging.Level;
 
 import org.bukkit.util.FileUtil;
 
 public abstract class BenCmdFile {
 	private final String l;
 	private final String h;
+	private final boolean r;
 	private Properties _prop;
 	
 	public BenCmdFile(String file, String header, boolean allowRestore) {
 		l = file;
 		h = header;
+		r = allowRestore;
 		_prop = null;
 		if (allowRestore && new File(BenCmd.propDir + "_" + l).exists()) {
-			BenCmdManager.getMCLogger().warning("Backup file found (_" + l + ")... Restoring...");
+			BenCmd.log(Level.WARNING, "Backup file found (_" + l + ")... Restoring...");
 			if (FileUtil.copy(new File(BenCmd.propDir + "_" + l), new File(
 					BenCmd.propDir + l))) {
 				new File(BenCmd.propDir + "_" + l).delete();
-				BenCmdManager.getMCLogger().info("Restoration suceeded!");
+				BenCmd.log("Restoration suceeded!");
 			} else {
-				BenCmdManager.getMCLogger().warning("Failed to restore from backup!");
+				BenCmd.log(Level.SEVERE, "Failed to restore from backup!");
 			}
 		}
 	}
@@ -39,8 +42,8 @@ public abstract class BenCmdFile {
 				file.createNewFile(); // If the file doesn't exist, create it!
 			} catch (IOException ex) {
 				// If you can't, produce an error.
-				BenCmdManager.getBCLogger().severe("Problem loading " + l + ":");
-				ex.printStackTrace();
+				BenCmd.log(Level.SEVERE, "Problem loading " + l + ":");
+				BenCmd.log(ex);
 				return false;
 			}
 		}
@@ -49,8 +52,8 @@ public abstract class BenCmdFile {
 			return true;
 		} catch (IOException ex) {
 			// If you can't, produce an error.
-			BenCmdManager.getBCLogger().severe("Problem loading " + l + ":");
-			ex.printStackTrace();
+			BenCmd.log(Level.SEVERE, "Problem loading " + l + ":");
+			BenCmd.log(ex);
 			return false;
 		}
 	}
@@ -63,15 +66,17 @@ public abstract class BenCmdFile {
 	protected final boolean saveFile() {
 		if (_prop == null)
 			throw new UnsupportedOperationException("Cannot save a file that hasn't been loaded!");
-		BenCmd plugin = BenCmd.getPlugin();
-		try {
-			new File(BenCmd.propDir + "_" + l).createNewFile();
-			if (!FileUtil.copy(new File(BenCmd.propDir + l), new File(
-					BenCmd.propDir + "_" + l))) {
-				plugin.log.warning("Failed to back up bank database!");
+		if (r)
+		{
+			try {
+				new File(BenCmd.propDir + "_" + l).createNewFile();
+				if (!FileUtil.copy(new File(BenCmd.propDir + l), new File(
+						BenCmd.propDir + "_" + l))) {
+					BenCmd.log(Level.WARNING, "Failed to back up database!");
+				}
+			} catch (IOException e) {
+				BenCmd.log(Level.WARNING, "Failed to back updatabase!");
 			}
-		} catch (IOException e) {
-			plugin.log.warning("Failed to back up bank database!");
 		}
 		File file = new File(BenCmd.propDir + l); // Prepare the file
 		if (!file.exists()) {
@@ -79,22 +84,25 @@ public abstract class BenCmdFile {
 				file.createNewFile(); // If the file doesn't exist, create it!
 			} catch (IOException ex) {
 				// If you can't, produce an error.
-				BenCmdManager.getBCLogger().severe("Problem saving " + l + ":");
-				ex.printStackTrace();
+				BenCmd.log(Level.SEVERE, "Problem loading " + l + ":");
+				BenCmd.log(ex);
 				return false;
 			}
 		}
 		try {
 			// Save the values
 			_prop.store(new FileOutputStream(file), h);
-			try {
-				new File(BenCmd.propDir + "_" + l).delete();
-			} catch (Exception e) { }
+			if (r)
+			{
+				try {
+					new File(BenCmd.propDir + "_" + l).delete();
+				} catch (Exception e) { }
+			}
 			return true;
 		} catch (IOException ex) {
 			// If you can't, produce an error.
-			BenCmdManager.getBCLogger().severe("Problem saving " + l + ":");
-			ex.printStackTrace();
+			BenCmd.log(Level.SEVERE, "Problem loading " + l + ":");
+			BenCmd.log(ex);
 			try {
 				new File(BenCmd.propDir + "_" + l).delete();
 			} catch (Exception e) { }

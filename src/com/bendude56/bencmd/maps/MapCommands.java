@@ -13,19 +13,13 @@ import com.bendude56.bencmd.User;
 
 
 public class MapCommands implements Commands {
-	BenCmd plugin;
-
-	public MapCommands(BenCmd instance) {
-		plugin = instance;
-	}
-
 	public boolean onCommand(CommandSender sender, Command command,
 			String commandLabel, String[] args) {
 		User user;
 		try {
-			user = User.getUser(plugin, (Player) sender);
+			user = User.getUser((Player) sender);
 		} catch (ClassCastException e) {
-			user = User.getUser(plugin);
+			user = User.getUser();
 		}
 		if (commandLabel.equalsIgnoreCase("map")
 				&& (user.hasPerm("bencmd.map.zoom") || user.hasPerm("bencmd.map.center"))) {
@@ -48,7 +42,7 @@ public class MapCommands implements Commands {
 			if (!user.hasPerm("bencmd.map.zoom")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
-				plugin.logPermFail();
+				BenCmd.getPlugin().logPermFail();
 				return;
 			}
 			map.zoomIn();
@@ -56,7 +50,7 @@ public class MapCommands implements Commands {
 			if (!user.hasPerm("bencmd.map.zoom")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
-				plugin.logPermFail();
+				BenCmd.getPlugin().logPermFail();
 				return;
 			}
 			map.zoomOut();
@@ -64,7 +58,7 @@ public class MapCommands implements Commands {
 			if (!user.hasPerm("bencmd.map.center")) {
 				user.sendMessage(ChatColor.RED
 						+ "You don't have permission to do that!");
-				plugin.logPermFail();
+				BenCmd.getPlugin().logPermFail();
 				return;
 			}
 			map.setCenter(user.getHandle().getLocation().getBlockX(), user

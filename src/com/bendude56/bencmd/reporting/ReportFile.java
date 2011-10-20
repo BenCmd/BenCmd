@@ -1,50 +1,29 @@
 package com.bendude56.bencmd.reporting;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Properties;
+import java.util.Map;
+import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
-import org.bukkit.util.FileUtil;
-
 import com.bendude56.bencmd.BenCmd;
+import com.bendude56.bencmd.BenCmdFile;
 import com.bendude56.bencmd.User;
 import com.bendude56.bencmd.permissions.PermissionUser;
 import com.bendude56.bencmd.reporting.Report.ReportStatus;
 
 
-public class ReportFile extends Properties {
-
-	private static final long serialVersionUID = 0L;
-	private BenCmd plugin;
-	private String proFile = "plugins/BenCmd/tickets.db";
+public class ReportFile extends BenCmdFile {
 	private HashMap<Integer, Report> reports = new HashMap<Integer, Report>();
 	private List<Integer> unread = new ArrayList<Integer>();
 	private List<Integer> open = new ArrayList<Integer>();
 
-	public ReportFile(BenCmd instance) {
-		plugin = instance;
-		if (new File("plugins/BenCmd/_tickets.db").exists()) {
-			plugin.log.warning("Ticket backup file found... Restoring...");
-			if (FileUtil.copy(new File("plugins/BenCmd/_tickets.db"), new File(
-					proFile))) {
-				new File("plugins/BenCmd/_tickets.db").delete();
-				plugin.log.info("Restoration suceeded!");
-			} else {
-				plugin.log.warning("Failed to restore from backup!");
-			}
-		}
-		this.loadFile();
-		this.loadTickets();
+	public ReportFile() {
+		super("tickets.db", "--BenCmd Ticket File--", true);
+		loadFile();
+		loadAll();
 	}
 
 	public void setRead(Report r) {
@@ -71,84 +50,34 @@ public class ReportFile extends Properties {
 		}
 	}
 
-	public void loadFile() {
-		File file = new File(proFile);
-		if (file.exists()) {
-			try {
-				load(new FileInputStream(file));
-			} catch (IOException e) {
-				System.out.println("BenCmd had a problem:");
-				e.printStackTrace();
-			}
-		}
-	}
-
-	public void copyToOld() throws IOException, FileNotFoundException {
-		File current = new File(proFile);
-		File old = new File("plugins/BenCmd/oldtickets.db");
-		if (!old.exists()) {
-			old.createNewFile();
-		}
-		InputStream in = new FileInputStream(current);
-		OutputStream out = new FileOutputStream(old);
-		byte[] buf = new byte[1024];
-		int len;
-		while ((len = in.read(buf)) > 0) {
-			out.write(buf, 0, len);
-		}
-		in.close();
-		out.close();
-	}
-
-	public void loadTickets() {
+	public void loadAll() {
 		reports.clear();
-		for (int i = 0; i < this.values().size(); i++) {
-			if (((String) this.values().toArray()[i]).split("/").length != 7) {
-				try {
-					Integer id = Integer.parseInt((String) this.keySet()
-							.toArray()[i]);
-					plugin.log.info("Ticket #" + this.keySet().toArray()[i]
-							+ " is outdated! Attempting to upgrade...");
-					plugin.bLog.info("Ticket #" + this.keySet().toArray()[i]
-							+ " is outdated! Attempting to upgrade...");
-					reports.put(id, this.TicketUpgrade(id));
-				} catch (Exception e) {
-					try {
-						copyToOld();
-						plugin.log
-								.warning("Ticket couldn't be updated! You can upgrade it manually in oldtickets.db...");
-						plugin.bLog
-								.warning("Ticket couldn't be updated! You can upgrade it manually in oldtickets.db...");
-					} catch (Exception e1) {
-						plugin.log
-								.warning("Ticket couldn't be updated! You can upgrade it manually in tickets.db...");
-						plugin.bLog
-								.warning("Ticket couldn't be updated! You can upgrade it manually in tickets.db...");
-					}
-				}
+		// TODO Make this more efficient
+		for (int i = 0; i < getFile().values().size(); i++) {
+			if (((String) getFile().values().toArray()[i]).split("/").length != 7) {
+				BenCmd.log(Level.WARNING, "Ticket #" + ((String) getFile().keySet().toArray()[i]) +
+						" is outdated... It must be upgraded manually!");
 				continue;
 			}
 			try {
 				Integer id = Integer
-						.parseInt((String) this.keySet().toArray()[i]);
+						.parseInt((String) getFile().keySet().toArray()[i]);
 				PermissionUser sender = PermissionUser.matchUserIgnoreCase(
-						((String) this.values().toArray()[i]).split("/")[0],
-						plugin);
+						((String) getFile().values().toArray()[i]).split("/")[0]);
 				PermissionUser accused = PermissionUser.matchUserIgnoreCase(
-						((String) this.values().toArray()[i]).split("/")[1],
-						plugin);
-				String reason = ((String) this.values().toArray()[i])
+						((String) getFile().values().toArray()[i]).split("/")[1]);
+				String reason = ((String) getFile().values().toArray()[i])
 						.split("/")[2];
-				Integer timesReopened = Integer.parseInt(((String) this
+				Integer timesReopened = Integer.parseInt(((String) getFile()
 						.values().toArray()[i]).split("/")[3]);
-				String finalRemark = ((String) this.values().toArray()[i])
+				String finalRemark = ((String) getFile().values().toArray()[i])
 						.split("/")[4];
 				List<String> addedinfo = new ArrayList<String>();
-				for (String addedinfostr : ((String) this.values().toArray()[i])
+				for (String addedinfostr : ((String) getFile().values().toArray()[i])
 						.split("/")[5].split(",")) {
 					addedinfo.add(addedinfostr);
 				}
-				String type = ((String) this.values().toArray()[i]).split("/")[6];
+				String type = ((String) getFile().values().toArray()[i]).split("/")[6];
 				Report.ReportStatus status;
 				if (type.equalsIgnoreCase("u")) {
 					status = Report.ReportStatus.UNREAD;
@@ -167,15 +96,19 @@ public class ReportFile extends Properties {
 				} else {
 					throw new Exception();
 				}
-				reports.put(id, new Report(plugin, id, sender, accused, status,
+				reports.put(id, new Report(id, sender, accused, status,
 						reason, finalRemark, timesReopened, addedinfo));
 			} catch (Exception e) {
-				plugin.log
-						.warning("A ticket in the tickets list couldn't be loaded!");
-				plugin.bLog
-						.warning("A ticket in the tickets list couldn't be loaded!");
+				BenCmd.log(Level.WARNING, "A ticket in the tickets list couldn't be loaded!");
 			}
 		}
+	}
+	
+	public void saveAll() {
+		for (Map.Entry<Integer, Report> e : reports.entrySet()) {
+			saveTicket(e.getValue(), false);
+		}
+		saveFile();
 	}
 
 	public void PurgeOpen(final User user) {
@@ -224,54 +157,6 @@ public class ReportFile extends Properties {
 		}.start();
 	}
 
-	public Report TicketUpgrade(Integer id) throws Exception {
-		Integer i = getIndexById(id);
-		if (i == -1) {
-			return null;
-		}
-		PermissionUser sender = PermissionUser.matchUserIgnoreCase(
-				((String) this.values().toArray()[i]).split("/")[0], plugin);
-		PermissionUser accused = PermissionUser.matchUserIgnoreCase(
-				((String) this.values().toArray()[i]).split("/")[1], plugin);
-		String reason = ((String) this.values().toArray()[i]).split("/")[2];
-		Integer timesReopened = Integer.parseInt(((String) this.values()
-				.toArray()[i]).split("/")[3]);
-		String finalRemark = ((String) this.values().toArray()[i]).split("/")[4];
-		String type = ((String) this.values().toArray()[i]).split("/")[5];
-		Report.ReportStatus status;
-		if (type.equalsIgnoreCase("u")) {
-			status = Report.ReportStatus.UNREAD;
-			unread.add(id);
-			open.add(id);
-		} else if (type.equalsIgnoreCase("r")) {
-			status = Report.ReportStatus.READ;
-			open.add(id);
-		} else if (type.equalsIgnoreCase("i")) {
-			status = Report.ReportStatus.INVESTIGATING;
-			open.add(id);
-		} else if (type.equalsIgnoreCase("c")) {
-			status = Report.ReportStatus.CLOSED;
-		} else if (type.equalsIgnoreCase("l")) {
-			status = Report.ReportStatus.LOCKED;
-		} else {
-			throw new Exception();
-		}
-		return new Report(plugin, id, sender, accused, status, reason,
-				finalRemark, timesReopened, new ArrayList<String>());
-	}
-
-	public void saveFile(String header) {
-		File file = new File(proFile);
-		if (file.exists()) {
-			try {
-				store(new FileOutputStream(file), header);
-			} catch (IOException e) {
-				System.out.println("BenCmd had a problem:");
-				e.printStackTrace();
-			}
-		}
-	}
-
 	public void listTickets(final User user, final int page) {
 		user.sendMessage(ChatColor.YELLOW
 				+ "Please wait... The report databases are being queried...");
@@ -293,7 +178,7 @@ public class ReportFile extends Properties {
 				} else {
 					user.sendMessage(ChatColor.RED
 							+ "You don't have permission to do that!");
-					plugin.logPermFail();
+					BenCmd.getPlugin().logPermFail();
 					return;
 				}
 				try {
@@ -333,7 +218,7 @@ public class ReportFile extends Properties {
 				} else {
 					user.sendMessage(ChatColor.RED
 							+ "You don't have permission to do that!");
-					plugin.logPermFail();
+					BenCmd.getPlugin().logPermFail();
 					return;
 				}
 				Collections.sort(results);
@@ -426,7 +311,7 @@ public class ReportFile extends Properties {
 		}
 	}
 
-	public void saveTicket(Report ticket) {
+	public void saveTicket(Report ticket, boolean saveFile) {
 		String key = ticket.getId().toString();
 		String value = ticket.getSender().getName() + "/";
 		value += ticket.getAccused().getName() + "/";
@@ -460,20 +345,7 @@ public class ReportFile extends Properties {
 			value += "l";
 			break;
 		}
-		this.put(key, value);
-		try {
-			new File("plugins/BenCmd/_tickets.db").createNewFile();
-			if (!FileUtil.copy(new File(proFile), new File(
-					"plugins/BenCmd/_tickets.db"))) {
-				plugin.log.warning("Failed to back up ticket database!");
-			}
-		} catch (IOException e) {
-			plugin.log.warning("Failed to back up ticket database!");
-		}
-		saveFile("== BenCmd Tickets ==");
-		try {
-			new File("plugins/BenCmd/_tickets.db").delete();
-		} catch (Exception e) { }
+		getFile().put(key, value);
 		if (ticket.getStatus() == ReportStatus.UNREAD) {
 			setUnread(ticket);
 		} else {
@@ -485,6 +357,8 @@ public class ReportFile extends Properties {
 		} else {
 			setOpen(ticket);
 		}
+		if (saveFile)
+			saveFile();
 	}
 
 	public void searchTickets(final User user, final String search,
@@ -549,7 +423,7 @@ public class ReportFile extends Properties {
 
 	public void addTicket(Report report) {
 		reports.put(report.getId(), report);
-		this.saveTicket(report);
+		saveTicket(report, true);
 	}
 
 	public Integer nextId() {
@@ -573,8 +447,8 @@ public class ReportFile extends Properties {
 	}
 
 	public Integer getIndexById(Integer id) {
-		for (int i = 0; i < this.keySet().size(); i++) {
-			if (this.keySet().toArray()[i].toString().equalsIgnoreCase(
+		for (int i = 0; i < getFile().keySet().size(); i++) {
+			if (getFile().keySet().toArray()[i].toString().equalsIgnoreCase(
 					id.toString())) {
 				return i;
 			}

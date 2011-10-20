@@ -13,14 +13,12 @@ public class ProtectedBlock {
 	private PermissionUser blockOwner;
 	private List<PermissionUser> blockGuests;
 	private Location blockLocation;
-	BenCmd plugin;
 
-	public ProtectedBlock(BenCmd instance, int id, PermissionUser owner,
+	public ProtectedBlock(int id, PermissionUser owner,
 			List<PermissionUser> guests, Location loc) {
 		idNumber = id;
 		blockGuests = guests;
 		blockOwner = owner;
-		plugin = instance;
 		blockLocation = loc;
 	}
 
@@ -54,14 +52,14 @@ public class ProtectedBlock {
 
 	public boolean setOwner(PermissionUser user) {
 		blockOwner = user;
-		plugin.protectFile.updateValue(this, false);
+		BenCmd.getProtections().updateValue(this, false, true);
 		return true;
 	}
 
 	public boolean addGuest(PermissionUser guest) {
 		if (isGuest(guest) == -1) {
 			blockGuests.add(guest);
-			plugin.protectFile.updateValue(this, false);
+			BenCmd.getProtections().updateValue(this, false, true);
 			return true;
 		} else {
 			return false;
@@ -82,7 +80,7 @@ public class ProtectedBlock {
 		int id;
 		if ((id = isGuest(guest)) != -1) {
 			blockGuests.remove(id);
-			plugin.protectFile.updateValue(this, false);
+			BenCmd.getProtections().updateValue(this, false, true);
 			return true;
 		} else {
 			return false;
