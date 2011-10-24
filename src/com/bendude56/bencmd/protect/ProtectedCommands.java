@@ -7,7 +7,6 @@ import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
 import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.Commands;
 import com.bendude56.bencmd.User;
@@ -241,6 +240,11 @@ public class ProtectedCommands implements Commands {
 			return;
 		}
 		Block pointedAt = user.getHandle().getTargetBlock(null, 4);
+		BenCmd.getPlugin();
+		if (BenCmd.getLots().ownsHere(user.getHandle(), pointedAt.getLocation()).equalsIgnoreCase("false")) {
+			user.sendMessage(ChatColor.RED + "You cannot lock something in a lot that you don't own!");
+			return;
+		}
 		if (args.length == 1) {
 			this.Lock(pointedAt, user, false);
 		} else if (args.length == 2) {
@@ -264,6 +268,10 @@ public class ProtectedCommands implements Commands {
 			return;
 		}
 		Block pointedAt = user.getHandle().getTargetBlock(null, 4);
+		if (BenCmd.getLots().ownsHere(user.getHandle(), pointedAt.getLocation()).equalsIgnoreCase("false")) {
+			user.sendMessage(ChatColor.RED + "You cannot lock something in a lot that you don't own!");
+			return;
+		}
 		if (args.length == 1) {
 			this.Lock(pointedAt, user, true);
 		} else if (args.length == 2) {
