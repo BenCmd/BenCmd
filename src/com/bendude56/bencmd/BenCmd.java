@@ -411,9 +411,6 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 		}
 		graves.clear();
 		BenCmd.unloadAll(true);
-		for (NPC npc : npcs.allNPCs()) {
-			npc.despawn();
-		}
 		BenCmdBlockListener.destroyInstance();
 		BenCmdPlayerListener.destroyInstance();
 		BenCmdEntityListener.destroyInstance();

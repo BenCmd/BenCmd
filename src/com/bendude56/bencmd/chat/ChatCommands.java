@@ -48,7 +48,7 @@ public class ChatCommands implements Commands {
 					message += " " + word;
 				}
 			}
-			user2.getHandle().setDisplayName(message);
+			((Player) user.getHandle()).setDisplayName(message);
 			BenCmd.log(user2.getName() + " is now imitating " + message
 					+ "!");
 			((EntityHuman) ((CraftPlayer) user2.getHandle()).getHandle()).name = message;

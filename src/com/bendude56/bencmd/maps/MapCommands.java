@@ -33,11 +33,11 @@ public class MapCommands implements Commands {
 		if (args.length == 0) {
 			return;
 		}
-		if (user.getHandle().getItemInHand().getType() != Material.MAP) {
+		if (((Player) user.getHandle()).getItemInHand().getType() != Material.MAP) {
 			return;
 		}
-		BCMap map = new BCMap(user.getHandle().getItemInHand().getDurability(),
-				((CraftWorld) user.getHandle().getWorld()).getHandle());
+		BCMap map = new BCMap(((Player) user.getHandle()).getItemInHand().getDurability(),
+				((CraftWorld) ((Player) user.getHandle()).getWorld()).getHandle());
 		if (args[0].equalsIgnoreCase("zoomin")) {
 			if (!user.hasPerm("bencmd.map.zoom")) {
 				user.sendMessage(ChatColor.RED
@@ -61,8 +61,7 @@ public class MapCommands implements Commands {
 				BenCmd.getPlugin().logPermFail();
 				return;
 			}
-			map.setCenter(user.getHandle().getLocation().getBlockX(), user
-					.getHandle().getLocation().getBlockZ());
+			map.setCenter(((Player) user.getHandle()).getLocation().getBlockX(), ((Player) user.getHandle()).getLocation().getBlockZ());
 		}
 	}
 }

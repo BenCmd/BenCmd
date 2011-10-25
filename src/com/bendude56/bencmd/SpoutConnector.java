@@ -106,7 +106,7 @@ public class SpoutConnector {
 	
 	public void showStatusScreen(User u, PermissionUser u2, boolean adv) {
 		StatusScreen scr = new StatusScreen();
-		InGameHUD hud = SpoutManager.getPlayer(u.getHandle()).getMainScreen();
+		InGameHUD hud = SpoutManager.getPlayer(((Player) u.getHandle())).getMainScreen();
 		
 		// labelbanned
 		GenericLabel labelbanned = new GenericLabel();

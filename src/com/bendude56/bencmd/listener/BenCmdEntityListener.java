@@ -108,7 +108,7 @@ public class BenCmdEntityListener extends EntityListener {
 		}
 		User user = User.getUser((Player) event.getEntity());
 		PVPArea a;
-		if ((a = inPVP(user.getHandle())) != null) {
+		if ((a = inPVP(((Player) user.getHandle()))) != null) {
 			HashMap<ItemStack, PVPArea.DropMode> result = a.getDrops(event
 					.getDrops());
 			List<ItemStack> toReturn = new ArrayList<ItemStack>();
@@ -122,7 +122,7 @@ public class BenCmdEntityListener extends EntityListener {
 					toReturn.add(item);
 				}
 			}
-			BenCmd.getPlugin().returns.put(user.getHandle(), toReturn);
+			BenCmd.getPlugin().returns.put(((Player) user.getHandle()), toReturn);
 			return;
 		}
 		if (BenCmd.getMainProperties().getBoolean("gravesEnabled", true)) {
@@ -138,17 +138,16 @@ public class BenCmdEntityListener extends EntityListener {
 					}
 				}
 			}
-			Location graveLoc = new Location(user.getHandle().getWorld(), user
-					.getHandle().getLocation().getBlockX(), user.getHandle()
-					.getLocation().getBlockY(), user.getHandle().getLocation()
+			Location graveLoc = new Location(((Player) user.getHandle()).getWorld(), ((Player) user.getHandle()).getLocation().getBlockX(), ((Player) user.getHandle())
+					.getLocation().getBlockY(), ((Player) user.getHandle()).getLocation()
 					.getBlockZ());
-			Block grave = user.getHandle().getWorld().getBlockAt(graveLoc);
+			Block grave = ((Player) user.getHandle()).getWorld().getBlockAt(graveLoc);
 			while (grave.getType() != Material.AIR) {
 				if (graveLoc.getBlockY() == 1) {
 					return;
 				}
 				graveLoc.setY(graveLoc.getY() + 1);
-				grave = user.getHandle().getWorld().getBlockAt(graveLoc);
+				grave = ((Player) user.getHandle()).getWorld().getBlockAt(graveLoc);
 			}
 			grave.setType(Material.SIGN_POST);
 			CraftSign graveSign = new CraftSign(grave);
@@ -331,7 +330,7 @@ public class BenCmdEntityListener extends EntityListener {
 		
 		User user = User.getUser((Player) event.getEntity());
 		if (user.hasPerm("bencmd.warp.back") && user.hasPerm("bencmd.warp.deathback")) {
-			BenCmd.getWarpCheckpoints().SetPreWarp(user.getHandle());
+			BenCmd.getWarpCheckpoints().SetPreWarp(((Player) user.getHandle()));
 			user.sendMessage(ChatColor.RED
 					+ "Use /back to return to your death point...");
 		}

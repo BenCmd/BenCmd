@@ -30,15 +30,15 @@ public class RedstoneCommands implements Commands {
 
 	public void Lever(String[] args, User user) {
 		if (args[0].equalsIgnoreCase("day")) {
-			BenCmd.getRedstoneFile().addLever(new RedstoneLever(user.getHandle()
+			BenCmd.getRedstoneFile().addLever(new RedstoneLever(((Player) user.getHandle())
 					.getTargetBlock(null, 4).getLocation(),
 					RedstoneLever.LeverType.DAY));
 		} else if (args[0].equalsIgnoreCase("night")) {
-			BenCmd.getRedstoneFile().addLever(new RedstoneLever(user.getHandle()
+			BenCmd.getRedstoneFile().addLever(new RedstoneLever(((Player) user.getHandle())
 					.getTargetBlock(null, 4).getLocation(),
 					RedstoneLever.LeverType.NIGHT));
 		} else if (args[0].equalsIgnoreCase("none")) {
-			BenCmd.getRedstoneFile().removeLever(user.getHandle().getTargetBlock(null, 4)
+			BenCmd.getRedstoneFile().removeLever(((Player) user.getHandle()).getTargetBlock(null, 4)
 					.getLocation());
 		}
 	}

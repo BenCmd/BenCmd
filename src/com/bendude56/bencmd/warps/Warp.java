@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 
 import com.bendude56.bencmd.*;
 
@@ -56,8 +57,8 @@ public class Warp {
 			return;
 		}
 		try {
-			BenCmd.getWarpCheckpoints().SetPreWarp(player.getHandle());
-			player.getHandle().teleport(loc);
+			BenCmd.getWarpCheckpoints().SetPreWarp(((Player)player.getHandle()));
+			((Player)player.getHandle()).teleport(loc);
 			player.sendMessage(ChatColor.YELLOW + "Woosh!");
 			BenCmd.log(player.getName() + " just warped to warp "
 					+ warpName + ".");
@@ -77,8 +78,8 @@ public class Warp {
 					+ ", but they don't have permission.");
 		}
 		try {
-			BenCmd.getWarpCheckpoints().SetPreWarp(player.getHandle());
-			player.getHandle().teleport(loc);
+			BenCmd.getWarpCheckpoints().SetPreWarp(((Player)player.getHandle()));
+			((Player)player.getHandle()).teleport(loc);
 			player.sendMessage(ChatColor.YELLOW + "Woosh!");
 			BenCmd.log(sender.getName() + " just warped "
 					+ player.getName() + " to warp " + warpName + ".");

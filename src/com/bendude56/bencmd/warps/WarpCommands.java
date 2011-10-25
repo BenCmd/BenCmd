@@ -142,7 +142,7 @@ public class WarpCommands implements Commands {
 			return;
 		}
 		try {
-			Player player = user.getHandle();
+			Player player = ((Player) user.getHandle());
 			double x = player.getLocation().getX();
 			double y = player.getLocation().getY();
 			double z = player.getLocation().getZ();
@@ -353,7 +353,7 @@ public class WarpCommands implements Commands {
 			user.sendMessage(ChatColor.RED + "The server cannot do that!");
 			return;
 		}
-		BenCmd.getPermissionManager().setJailWarp(user.getHandle().getLocation());
+		BenCmd.getPermissionManager().setJailWarp(((Player) user.getHandle()).getLocation());
 	}
 
 	public void Tp(String[] args, User user) {
@@ -374,8 +374,8 @@ public class WarpCommands implements Commands {
 						+ " cannot be teleported to!");
 				return;
 			}
-			BenCmd.getWarpCheckpoints().SetPreWarp(user.getHandle());
-			user.getHandle().teleport(user2.getHandle());
+			BenCmd.getWarpCheckpoints().SetPreWarp(((Player) user.getHandle()));
+			((Player) user.getHandle()).teleport(((Player) user2.getHandle()));
 			BenCmd.log(user.getName() + " has teleported to "
 					+ user2.getName());
 			user.sendMessage(ChatColor.YELLOW + "Woosh!");
@@ -411,8 +411,8 @@ public class WarpCommands implements Commands {
 						+ " cannot be teleported to!");
 				return;
 			}
-			BenCmd.getWarpCheckpoints().SetPreWarp(user1.getHandle());
-			user1.getHandle().teleport(user2.getHandle());
+			BenCmd.getWarpCheckpoints().SetPreWarp(((Player) user1.getHandle()));
+			((Player) user1.getHandle()).teleport(((Player) user2.getHandle()));
 			BenCmd.log(user1.getName() + " has been teleported to "
 					+ user2.getName() + " by " + user.getName());
 			user1.sendMessage(ChatColor.YELLOW + "Woosh!");

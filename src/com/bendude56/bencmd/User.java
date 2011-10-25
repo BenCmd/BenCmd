@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 import com.bendude56.bencmd.chat.channels.ChatChannel;
@@ -17,7 +19,6 @@ public class User extends ActionableUser {
 	private static HashMap<String, User> activeUsers = new HashMap<String, User>();
 	private ChatChannel activeChannel;
 	private List<ChatChannel> spying;
-	private Player player;
 
 	public static User matchUser(String name) {
 		for (Player online : Bukkit.getOnlinePlayers()) {
@@ -47,12 +48,16 @@ public class User extends ActionableUser {
 		}
 		assert (!User.activeUsers.containsKey(user.getName()));
 	}
-
-	public static User getUser(Player entity) {
-		if (User.activeUsers.containsKey(entity.getName())) {
-			return User.activeUsers.get(entity.getName());
+	
+	public static User getUser(CommandSender s) {
+		if (s instanceof ConsoleCommandSender) {
+			return getUser();
 		} else {
-			return new User(entity);
+			if (User.activeUsers.containsKey(s.getName())) {
+				return User.activeUsers.get(s.getName());
+			} else {
+				return new User(s);
+			}
 		}
 	}
 
@@ -69,20 +74,19 @@ public class User extends ActionableUser {
 	 *            The player entity that this ActionableUser should point to.
 	 * @throws NullPointerException
 	 */
-	private User(Player entity) throws NullPointerException {
-		super(entity);
-		player = entity;
-		if (User.activeChannels.containsKey(entity.getName())) {
-			activeChannel = User.activeChannels.get(entity.getName());
+	private User(CommandSender s) throws NullPointerException {
+		super(s);
+		if (User.activeChannels.containsKey(s.getName())) {
+			activeChannel = User.activeChannels.get(s.getName());
 		} else {
 			activeChannel = null;
 		}
-		if (User.spyingChannels.containsKey(entity.getName())) {
-			spying = User.spyingChannels.get(entity.getName());
+		if (User.spyingChannels.containsKey(s.getName())) {
+			spying = User.spyingChannels.get(s.getName());
 		} else {
 			spying = new ArrayList<ChatChannel>();
 		}
-		User.activeUsers.put(entity.getName(), this);
+		User.activeUsers.put(s.getName(), this);
 	}
 
 	/**
@@ -100,11 +104,11 @@ public class User extends ActionableUser {
 	}
 
 	private void pushActive() {
-		User.activeChannels.put(player.getName(), activeChannel);
+		User.activeChannels.put(getHandle().getName(), activeChannel);
 	}
 
 	private void pushSpying() {
-		User.spyingChannels.put(player.getName(), spying);
+		User.spyingChannels.put(getHandle().getName(), spying);
 	}
 
 	public boolean joinChannel(ChatChannel channel) {

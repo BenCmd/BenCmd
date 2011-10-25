@@ -2,6 +2,7 @@ package com.bendude56.bencmd;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.bendude56.bencmd.warps.WarpableUser;
@@ -10,9 +11,9 @@ import com.bendude56.bencmd.warps.WarpableUser;
 public class ActionableUser extends WarpableUser {
 	private boolean god;
 
-	public ActionableUser(Player entity)
+	public ActionableUser(CommandSender s)
 			throws NullPointerException {
-		super(entity);
+		super(s);
 		god = false;
 	}
 
@@ -25,49 +26,49 @@ public class ActionableUser extends WarpableUser {
 		if (isServer()) {
 			throw new UnsupportedOperationException();
 		}
-		BenCmd.getPoofController().addInv(getHandle());
+		BenCmd.getPoofController().addInv((Player) getHandle());
 	}
 
 	public void unPoof() {
 		if (isServer()) {
 			throw new UnsupportedOperationException();
 		}
-		BenCmd.getPoofController().remInv(getHandle());
+		BenCmd.getPoofController().remInv((Player) getHandle());
 	}
 
 	public void noPoof() {
 		if (isServer()) {
 			throw new UnsupportedOperationException();
 		}
-		BenCmd.getPoofController().addNoInv(getHandle());
+		BenCmd.getPoofController().addNoInv((Player) getHandle());
 	}
 
 	public void unNoPoof() {
 		if (isServer()) {
 			throw new UnsupportedOperationException();
 		}
-		BenCmd.getPoofController().remNoInv(getHandle());
+		BenCmd.getPoofController().remNoInv((Player) getHandle());
 	}
 
 	public void allPoof() {
 		if (isServer()) {
 			throw new UnsupportedOperationException();
 		}
-		BenCmd.getPoofController().addAInv(getHandle());
+		BenCmd.getPoofController().addAInv((Player) getHandle());
 	}
 
 	public void unAllPoof() {
 		if (isServer()) {
 			throw new UnsupportedOperationException();
 		}
-		BenCmd.getPoofController().remAInv(getHandle());
+		BenCmd.getPoofController().remAInv((Player) getHandle());
 	}
 
 	public boolean isPoofed() {
 		if (isServer()) {
 			return false;
 		} else {
-			return BenCmd.getPoofController().isInv(getHandle());
+			return BenCmd.getPoofController().isInv((Player) getHandle());
 		}
 	}
 
@@ -75,7 +76,7 @@ public class ActionableUser extends WarpableUser {
 		if (isServer()) {
 			return false;
 		} else {
-			return BenCmd.getPoofController().isNoInv(getHandle());
+			return BenCmd.getPoofController().isNoInv((Player) getHandle());
 		}
 	}
 
@@ -83,7 +84,7 @@ public class ActionableUser extends WarpableUser {
 		if (isServer()) {
 			return false;
 		} else {
-			return BenCmd.getPoofController().isAInv(getHandle());
+			return BenCmd.getPoofController().isAInv((Player) getHandle());
 		}
 	}
 
@@ -92,7 +93,7 @@ public class ActionableUser extends WarpableUser {
 			throw new UnsupportedOperationException();
 		}
 		BenCmd.getPermissionManager().getKickTracker().addUser(this);
-		getHandle().kickPlayer("You have been kicked by user: "
+		((Player) getHandle()).kickPlayer("You have been kicked by user: "
 				+ sender.getDisplayName() + ". Reason: " + reason + ".");
 	}
 
@@ -101,7 +102,7 @@ public class ActionableUser extends WarpableUser {
 			throw new UnsupportedOperationException();
 		}
 		BenCmd.getPermissionManager().getKickTracker().addUser(this);
-		getHandle().kickPlayer("You have been kicked. Reason: " + reason + ".");
+		((Player) getHandle()).kickPlayer("You have been kicked. Reason: " + reason + ".");
 	}
 
 	public void kick(User sender) {
@@ -109,7 +110,7 @@ public class ActionableUser extends WarpableUser {
 			throw new UnsupportedOperationException();
 		}
 		BenCmd.getPermissionManager().getKickTracker().addUser(this);
-		getHandle().kickPlayer("You have been kicked by user: "
+		((Player) getHandle()).kickPlayer("You have been kicked by user: "
 				+ sender.getDisplayName() + ".");
 	}
 
@@ -118,7 +119,7 @@ public class ActionableUser extends WarpableUser {
 			throw new UnsupportedOperationException();
 		}
 		BenCmd.getPermissionManager().getKickTracker().addUser(this);
-		getHandle().kickPlayer("You have been kicked.");
+		((Player) getHandle()).kickPlayer("You have been kicked.");
 	}
 
 	public boolean kill() {
@@ -128,8 +129,8 @@ public class ActionableUser extends WarpableUser {
 		if (god) {
 			return false;
 		} else {
-			getHandle().setHealth(1);
-			getHandle().damage(1);
+			((Player) getHandle()).setHealth(1);
+			((Player) getHandle()).damage(1);
 			return true;
 		}
 	}
@@ -138,14 +139,14 @@ public class ActionableUser extends WarpableUser {
 		if (isServer()) {
 			throw new UnsupportedOperationException();
 		}
-		getHandle().setHealth(20);
+		((Player) getHandle()).setHealth(20);
 	}
 	
 	public void feed() {
 		if (isServer()) {
 			throw new UnsupportedOperationException();
 		}
-		getHandle().setFoodLevel(20);
+		((Player) getHandle()).setFoodLevel(20);
 	}
 
 	public void makeGod() {
@@ -202,8 +203,12 @@ public class ActionableUser extends WarpableUser {
 
 	public String getDisplayName() {
 		if (isServer()) {
-			return "Server";
+			if (getPermissionUser().getName().equals("*")) {
+				return "Server";
+			} else {
+				return getHandle().getName();
+			}
 		}
-		return getHandle().getDisplayName();
+		return ((Player) getHandle()).getDisplayName();
 	}
 }

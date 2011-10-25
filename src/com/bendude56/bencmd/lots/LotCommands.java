@@ -111,7 +111,7 @@ public class LotCommands implements Commands {
 								+ "The server cannot do that!");
 						return;
 					}
-					Player player = user.getHandle();
+					Player player = ((Player) user.getHandle());
 					LotID = String.valueOf(BenCmd.getLots().isInLot(player
 							.getLocation()));
 					if (LotID == "-1") {
@@ -136,7 +136,7 @@ public class LotCommands implements Commands {
 							+ "The server cannot do that!");
 					return;
 				}
-				LotID = String.valueOf(BenCmd.getLots().isInLot(user.getHandle()
+				LotID = String.valueOf(BenCmd.getLots().isInLot(((Player) user.getHandle())
 						.getLocation()));
 			}
 			if (LotID.equalsIgnoreCase("-1")) {
@@ -179,7 +179,7 @@ public class LotCommands implements Commands {
 							+ "The server cannot do that!");
 					return;
 				}
-				Player player = user.getHandle();
+				Player player = ((Player) user.getHandle());
 				String LotID = String.valueOf(BenCmd.getLots().isInLot(player
 						.getLocation()));
 				if (LotID == "-1") {
@@ -189,7 +189,7 @@ public class LotCommands implements Commands {
 				}
 				Lot lot = BenCmd.getLots().getLot(LotID);
 				if (!user.hasPerm("bencmd.lot.info")
-						&& !lot.isOwner(user.getHandle())) {
+						&& !lot.isOwner(((Player) user.getHandle()))) {
 					user.sendMessage(ChatColor.RED
 							+ "You do not have permission to check lots!");
 					BenCmd.getPlugin().logPermFail();
@@ -209,7 +209,7 @@ public class LotCommands implements Commands {
 								+ "The server cannot do that!");
 						return;
 					}
-					Player player = user.getHandle();
+					Player player = ((Player) user.getHandle());
 					LotID = BenCmd.getLots().ownsHere(player, player.getLocation());
 					if (LotID.equalsIgnoreCase("false")) {
 						user.sendMessage(ChatColor.RED
@@ -256,7 +256,7 @@ public class LotCommands implements Commands {
 				}
 				if (args.length == 2) {
 					if (user.hasPerm("bencmd.lot.info")
-							|| lot.isOwner(user.getHandle())) {
+							|| lot.isOwner(((Player) user.getHandle()))) {
 						BenCmd.getLots().getLot(LotID).listGuests(user);
 						return;
 					}
@@ -270,7 +270,7 @@ public class LotCommands implements Commands {
 					}
 					if (str.startsWith("+")) {
 						if (!user.hasPerm("bencmd.lot.guest")
-								&& !lot.isOwner(user.getHandle())) {
+								&& !lot.isOwner(((Player) user.getHandle()))) {
 							user.sendMessage(ChatColor.RED
 									+ "You don't have permission to edit this lot!");
 							return;
@@ -290,7 +290,7 @@ public class LotCommands implements Commands {
 
 					} else if (str.startsWith("-")) {
 						if (!user.hasPerm("bencmd.lot.guest")
-								&& !lot.isOwner(user.getHandle())) {
+								&& !lot.isOwner(((Player) user.getHandle()))) {
 							user.sendMessage(ChatColor.RED
 									+ "You don't have permission to this lot!");
 							return;
@@ -316,7 +316,7 @@ public class LotCommands implements Commands {
 					return;
 				}
 				String LotID = "";
-				Player player = user.getHandle();
+				Player player = ((Player) user.getHandle());
 				LotID = BenCmd.getLots().ownsHere(player, player.getLocation());
 				if (LotID.equalsIgnoreCase("false")) {
 					user.sendMessage(ChatColor.RED + "You do not own this lot!");
@@ -341,7 +341,7 @@ public class LotCommands implements Commands {
 					}
 					if (str.startsWith("+")) {
 						if (!user.hasPerm("bencmd.lot.guest")
-								&& !lot.isOwner(user.getHandle())) {
+								&& !lot.isOwner(((Player) user.getHandle()))) {
 							user.sendMessage(ChatColor.RED
 									+ "You don't have permission to edit this lot!");
 							return;
@@ -361,7 +361,7 @@ public class LotCommands implements Commands {
 
 					} else if (str.startsWith("-")) {
 						if (!user.hasPerm("bencmd.lot.guest")
-								&& !lot.isOwner(user.getHandle())) {
+								&& !lot.isOwner(((Player) user.getHandle()))) {
 							user.sendMessage(ChatColor.RED
 									+ "You don't have permission to this lot!");
 							return;
@@ -432,7 +432,7 @@ public class LotCommands implements Commands {
 
 				World c1world = corner1.getWorld();
 				World c2world = corner2.getWorld();
-				World pworld = user.getHandle().getWorld();
+				World pworld = ((Player) user.getHandle()).getWorld();
 				if (c1world != pworld && c2world != pworld) {
 					user.sendMessage(ChatColor.RED
 							+ "You need to mark off some corners first!");
@@ -538,7 +538,7 @@ public class LotCommands implements Commands {
 
 				World c1world = corner1.getWorld();
 				World c2world = corner2.getWorld();
-				World pworld = user.getHandle().getWorld();
+				World pworld = ((Player) user.getHandle()).getWorld();
 				if (c1world != pworld && c2world != pworld) {
 					user.sendMessage(ChatColor.RED
 							+ "You need to mark off some corners first!");
@@ -687,7 +687,7 @@ public class LotCommands implements Commands {
 							+ "The server cannot do that!");
 					return;
 				}
-				Player player = user.getHandle();
+				Player player = ((Player) user.getHandle());
 				LotID = String.valueOf(
 						BenCmd.getLots().isInLot(player.getLocation())).split(",")[0];
 				if (LotID == "-1") {
@@ -762,8 +762,7 @@ public class LotCommands implements Commands {
 									+ "The server needs to specify a lot!");
 							return;
 						}
-						LotID = String.valueOf(BenCmd.getLots().isInLot(user
-								.getHandle().getLocation()));
+						LotID = String.valueOf(BenCmd.getLots().isInLot(((Player) user.getHandle()).getLocation()));
 						if (LotID == "-1") {
 							user.sendMessage(ChatColor.RED
 									+ "You're not inside a lot!");
@@ -776,7 +775,7 @@ public class LotCommands implements Commands {
 								+ "The server needs to specify a lot!");
 						return;
 					}
-					LotID = String.valueOf(BenCmd.getLots().isInLot(user.getHandle()
+					LotID = String.valueOf(BenCmd.getLots().isInLot(((Player) user.getHandle())
 							.getLocation()));
 					if (LotID == "-1") {
 						user.sendMessage(ChatColor.RED
@@ -963,7 +962,7 @@ public class LotCommands implements Commands {
 
 		if (args[0].equalsIgnoreCase("group")) {
 			String LotID, group;
-			Player player = user.getHandle();
+			Player player = ((Player) user.getHandle());
 			if (args.length < 2) {
 				user.sendMessage(ChatColor.YELLOW
 						+ "Correct usage is: /lot group {group name} [lot id]");
@@ -1079,7 +1078,7 @@ public class LotCommands implements Commands {
 						+ "Be sure to use a wooden shovel!");
 				return;
 			}
-			Player player = user.getHandle();
+			Player player = ((Player) user.getHandle());
 			if (args.length >= 2)
 				LotID = args[1];
 			else
@@ -1114,7 +1113,7 @@ public class LotCommands implements Commands {
 
 				World c1world = corner1.getWorld();
 				World c2world = corner2.getWorld();
-				World pworld = user.getHandle().getWorld();
+				World pworld = ((Player) user.getHandle()).getWorld();
 				if (c1world != pworld && c2world != pworld) {
 					user.sendMessage(ChatColor.RED
 							+ "You need to mark off some corners first!");
@@ -1182,7 +1181,7 @@ public class LotCommands implements Commands {
 				BenCmd.getPlugin().logPermFail();
 				return;
 			}
-			Player player = user.getHandle();
+			Player player = ((Player) user.getHandle());
 			Location corner1;
 			Location corner2;
 			String LotID;
@@ -1212,7 +1211,7 @@ public class LotCommands implements Commands {
 
 				World c1world = corner1.getWorld();
 				World c2world = corner2.getWorld();
-				World pworld = user.getHandle().getWorld();
+				World pworld = ((Player) user.getHandle()).getWorld();
 				if (c1world != pworld && c2world != pworld) {
 					user.sendMessage(ChatColor.RED
 							+ "You need to mark off some corners first!");
@@ -1379,7 +1378,7 @@ public class LotCommands implements Commands {
 			if (args.length == 1) {
 				List<SPArea> e = new ArrayList<SPArea>();
 				for (SPArea a2 : BenCmd.getAreas().listAreas()) {
-					if (a2.insideArea(user.getHandle().getLocation())) {
+					if (a2.insideArea(((Player) user.getHandle()).getLocation())) {
 						e.add(a2);
 					}
 				}
@@ -1501,7 +1500,7 @@ public class LotCommands implements Commands {
 				List<PVPArea> e = new ArrayList<PVPArea>();
 				for (SPArea a2 : BenCmd.getAreas().listAreas()) {
 					if (a2 instanceof PVPArea
-							&& a2.insideArea(user.getHandle().getLocation())) {
+							&& a2.insideArea(((Player) user.getHandle()).getLocation())) {
 						e.add((PVPArea) a2);
 					}
 				}
@@ -1968,7 +1967,7 @@ public class LotCommands implements Commands {
 			SPArea d = null;
 			if (args.length == 1) {
 				for (SPArea a : BenCmd.getAreas().listAreas()) {
-					if (a.insideArea(user.getHandle().getLocation())) {
+					if (a.insideArea(((Player) user.getHandle()).getLocation())) {
 						d = a;
 						break;
 					}
@@ -2015,7 +2014,7 @@ public class LotCommands implements Commands {
 			MsgArea e = null;
 			for (SPArea a : BenCmd.getAreas().listAreas()) {
 				if (a instanceof MsgArea
-						&& a.insideArea(user.getHandle().getLocation())) {
+						&& a.insideArea(((Player) user.getHandle()).getLocation())) {
 					e = (MsgArea) a;
 					break;
 				}
@@ -2044,7 +2043,7 @@ public class LotCommands implements Commands {
 			MsgArea e = null;
 			for (SPArea a : BenCmd.getAreas().listAreas()) {
 				if (a instanceof MsgArea
-						&& a.insideArea(user.getHandle().getLocation())) {
+						&& a.insideArea(((Player) user.getHandle()).getLocation())) {
 					e = (MsgArea) a;
 					break;
 				}
@@ -2104,7 +2103,7 @@ public class LotCommands implements Commands {
 			PVPArea e = null;
 			for (SPArea a : BenCmd.getAreas().listAreas()) {
 				if (a instanceof PVPArea
-						&& a.insideArea(user.getHandle().getLocation())) {
+						&& a.insideArea(((Player) user.getHandle()).getLocation())) {
 					e = (PVPArea) a;
 					break;
 				}
@@ -2133,7 +2132,7 @@ public class LotCommands implements Commands {
 				PVPArea e = null;
 				for (SPArea a : BenCmd.getAreas().listAreas()) {
 					if (a instanceof PVPArea
-							&& a.insideArea(user.getHandle().getLocation())) {
+							&& a.insideArea(((Player) user.getHandle()).getLocation())) {
 						e = (PVPArea) a;
 						break;
 					}
@@ -2193,7 +2192,7 @@ public class LotCommands implements Commands {
 					PVPArea e = null;
 					for (SPArea a : BenCmd.getAreas().listAreas()) {
 						if (a instanceof PVPArea
-								&& a.insideArea(user.getHandle().getLocation())) {
+								&& a.insideArea(((Player) user.getHandle()).getLocation())) {
 							e = (PVPArea) a;
 							break;
 						}
@@ -2238,7 +2237,7 @@ public class LotCommands implements Commands {
 				TimedArea e = null;
 				for (SPArea a : BenCmd.getAreas().listAreas()) {
 					if (a instanceof TimedArea
-							&& a.insideArea(user.getHandle().getLocation())) {
+							&& a.insideArea(((Player) user.getHandle()).getLocation())) {
 						e = (TimedArea) a;
 						break;
 					}

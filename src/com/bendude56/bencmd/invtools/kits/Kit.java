@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.bendude56.bencmd.BenCmd;
@@ -132,11 +133,11 @@ public class Kit {
 			return false;
 		}
 		for (ItemStack item : items) {
-			if (user.getHandle().getInventory().firstEmpty() >= 0) {
-				user.getHandle().getInventory().addItem(item);
+			if (((Player) user.getHandle()).getInventory().firstEmpty() >= 0) {
+				((Player) user.getHandle()).getInventory().addItem(item);
 			} else {
-				user.getHandle().getWorld()
-						.dropItem(user.getHandle().getLocation(), item);
+				((Player) user.getHandle()).getWorld()
+						.dropItem(((Player) user.getHandle()).getLocation(), item);
 			}
 		}
 		return true;
@@ -144,11 +145,11 @@ public class Kit {
 
 	public void forceGiveKit(User user) {
 		for (ItemStack item : items) {
-			if (user.getHandle().getInventory().firstEmpty() >= 0) {
-				user.getHandle().getInventory().addItem(item);
+			if (((Player) user.getHandle()).getInventory().firstEmpty() >= 0) {
+				((Player) user.getHandle()).getInventory().addItem(item);
 			} else {
-				user.getHandle().getWorld()
-						.dropItem(user.getHandle().getLocation(), item);
+				((Player) user.getHandle()).getWorld()
+						.dropItem(((Player) user.getHandle()).getLocation(), item);
 			}
 		}
 	}

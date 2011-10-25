@@ -61,7 +61,7 @@ public class InventoryCommands implements Commands {
 		}
 		BCItem Item;
 		Item = InventoryBackend.getInstance().checkAlias(args[0]);
-		Block blockToAdd = user.getHandle().getTargetBlock(null, 30);
+		Block blockToAdd = ((Player) user.getHandle()).getTargetBlock(null, 30);
 		if (blockToAdd.getType() != Material.DISPENSER) {
 			user.sendMessage(ChatColor.RED
 					+ "You must be pointing at a dispenser to do that!");
@@ -94,7 +94,7 @@ public class InventoryCommands implements Commands {
 			user.sendMessage(ChatColor.YELLOW + "Proper use is /disp");
 			return;
 		}
-		Block blockToAdd = user.getHandle().getTargetBlock(null, 30);
+		Block blockToAdd = ((Player) user.getHandle()).getTargetBlock(null, 30);
 		if (blockToAdd.getType() != Material.CHEST) {
 			user.sendMessage(ChatColor.RED
 					+ "You must be pointing at a chest to do that!");
@@ -153,17 +153,17 @@ public class InventoryCommands implements Commands {
 				return;
 			}
 			for (Integer amount : splitamount) {
-				if (user2.getHandle().getInventory().firstEmpty() >= 0) {
-					user2.getHandle()
+				if (((Player) user.getHandle()).getInventory().firstEmpty() >= 0) {
+					((Player) user.getHandle())
 							.getInventory()
 							.addItem(
 									new ItemStack(mat, amount,
 											(short) ItemDamage));
 				} else {
-					user2.getHandle()
+					((Player) user.getHandle())
 							.getWorld()
 							.dropItem(
-									user2.getHandle().getLocation(),
+									((Player) user.getHandle()).getLocation(),
 									new ItemStack(mat, amount,
 											(short) ItemDamage));
 				}
@@ -182,17 +182,17 @@ public class InventoryCommands implements Commands {
 				return;
 			}
 			for (Integer amount : splitamount) {
-				if (user.getHandle().getInventory().firstEmpty() >= 0) {
-					user.getHandle()
+				if (((Player) user.getHandle()).getInventory().firstEmpty() >= 0) {
+					((Player) user.getHandle())
 							.getInventory()
 							.addItem(
 									new ItemStack(mat, amount,
 											(short) ItemDamage));
 				} else {
-					user.getHandle()
+					((Player) user.getHandle())
 							.getWorld()
 							.dropItem(
-									user.getHandle().getLocation(),
+									((Player) user.getHandle()).getLocation(),
 									new ItemStack(mat, amount,
 											(short) ItemDamage));
 				}
@@ -213,7 +213,7 @@ public class InventoryCommands implements Commands {
 				user.sendMessage(ChatColor.RED + "The server cannot do that!");
 				return;
 			}
-			user.getHandle().getInventory().clear(); // Clear the player's
+			((Player) user.getHandle()).getInventory().clear(); // Clear the player's
 														// inventory
 			BenCmd.log(user.getDisplayName()
 					+ " has cleared their own inventory.");
@@ -231,7 +231,7 @@ public class InventoryCommands implements Commands {
 					user.sendMessage(ChatColor.RED + "That player is protected from being godded/ungodded by others!");
 					return;
 				}
-				user2.getHandle().getInventory().clear();
+				((Player) user2.getHandle()).getInventory().clear();
 				BenCmd.log(user.getDisplayName() + " has cleared "
 						+ args[0] + "'s inventory.");
 			} else {

@@ -209,8 +209,7 @@ public class BenCmdBlockListener extends BlockListener {
 		}
 		try {
 			User user = User.getUser(event.getPlayer());
-			Material material = user
-					.getHandle()
+			Material material = ((Player) user.getHandle())
 					.getWorld()
 					.getBlockAt(event.getBlock().getX(),
 							event.getBlock().getY() - 1,
@@ -222,7 +221,7 @@ public class BenCmdBlockListener extends BlockListener {
 			if (!user.hasPerm("bencmd.fire.netherrack", false)
 					&& material != Material.AIR
 					&& material != Material.NETHERRACK
-					&& user.getHandle().getTargetBlock(null, 4).getType() != Material.NETHERRACK) {
+					&& ((Player) user.getHandle()).getTargetBlock(null, 4).getType() != Material.NETHERRACK) {
 				event.setCancelled(true);
 			}
 			if (user.hasPerm("bencmd.fire.all")) {
@@ -255,8 +254,8 @@ public class BenCmdBlockListener extends BlockListener {
 			if (spy.getName().equals(p.getName()) || firstLine == -1) {
 				continue;
 			}
-			if (BenCmd.isSpoutConnected() && BenCmd.getSpoutConnector().enabled(spy.getHandle())) {
-				BenCmd.getSpoutConnector().sendNotification(spy.getHandle(), "Sign by " + p.getName(), ls[firstLine], Material.SIGN);
+			if (BenCmd.isSpoutConnected() && BenCmd.getSpoutConnector().enabled(((Player) spy.getHandle()))) {
+				BenCmd.getSpoutConnector().sendNotification(((Player) spy.getHandle()), "Sign by " + p.getName(), ls[firstLine], Material.SIGN);
 			} else {
 				spy.sendMessage(ChatColor.GRAY + p.getName() + " placed a sign: "
 						+ ls[firstLine]);

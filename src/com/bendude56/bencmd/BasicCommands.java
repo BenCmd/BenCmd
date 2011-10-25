@@ -110,17 +110,25 @@ public class BasicCommands implements Commands {
 			KillEntities(args, user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("rechunk")) {
-			Chunk chunk = user.getHandle().getWorld()
-					.getChunkAt(user.getHandle().getLocation());
+			if (user.isServer()) {
+				user.sendMessage(ChatColor.RED + "The server cannot do that!");
+				return true;
+			}
+			Chunk chunk = ((Player) user.getHandle()).getWorld()
+					.getChunkAt(((Player) user.getHandle()).getLocation());
 			int chunkx = chunk.getX();
 			int chunkz = chunk.getZ();
-			user.getHandle().getWorld().unloadChunk(chunkx, chunkz);
-			user.getHandle().getWorld().loadChunk(chunkx, chunkz);
-			user.getHandle().getWorld().refreshChunk(chunkx, chunkz);
+			((Player) user.getHandle()).getWorld().unloadChunk(chunkx, chunkz);
+			((Player) user.getHandle()).getWorld().loadChunk(chunkx, chunkz);
+			((Player) user.getHandle()).getWorld().refreshChunk(chunkx, chunkz);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("fire")
 				&& user.hasPerm("bencmd.fire.spread")) {
-			Location loc = user.getHandle().getTargetBlock(null, 4)
+			if (user.isServer()) {
+				user.sendMessage(ChatColor.RED + "The server cannot do that!");
+				return true;
+			}
+			Location loc = ((Player) user.getHandle()).getTargetBlock(null, 4)
 					.getLocation();
 			user.sendMessage(ChatColor.GREEN
 					+ "Fire next to that block can now spread...");
@@ -128,6 +136,10 @@ public class BasicCommands implements Commands {
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("nofire")
 				&& user.hasPerm("bencmd.fire.spread")) {
+			if (user.isServer()) {
+				user.sendMessage(ChatColor.RED + "The server cannot do that!");
+				return true;
+			}
 			BenCmd.getPlugin().canSpread.clear();
 			user.sendMessage(ChatColor.GREEN
 					+ "All area-specific fire-spread is now disabled.");
@@ -240,8 +252,8 @@ public class BasicCommands implements Commands {
 						BenCmd.getPlugin().lastTime = world.getFullTime();
 					}
 				} else {
-					user.getHandle().getWorld().setTime(0);
-					BenCmd.getPlugin().lastTime = user.getHandle().getWorld().getFullTime();
+					((Player) user.getHandle()).getWorld().setTime(0);
+					BenCmd.getPlugin().lastTime = ((Player) user.getHandle()).getWorld().getFullTime();
 				}
 			} else if (args[0].equalsIgnoreCase("night")) {
 				if (!user.hasPerm("bencmd.time.set")) {
@@ -256,8 +268,8 @@ public class BasicCommands implements Commands {
 						BenCmd.getPlugin().lastTime = world.getFullTime();
 					}
 				} else {
-					user.getHandle().getWorld().setTime(15000);
-					BenCmd.getPlugin().lastTime = user.getHandle().getWorld().getFullTime();
+					((Player) user.getHandle()).getWorld().setTime(15000);
+					BenCmd.getPlugin().lastTime = ((Player) user.getHandle()).getWorld().getFullTime();
 				}
 			} else if (args[0].equalsIgnoreCase("set")) {
 				if (!user.hasPerm("bencmd.time.set")) {
@@ -281,8 +293,8 @@ public class BasicCommands implements Commands {
 						BenCmd.getPlugin().lastTime = world.getFullTime();
 					}
 				} else {
-					user.getHandle().getWorld().setTime(time);
-					BenCmd.getPlugin().lastTime = user.getHandle().getWorld().getFullTime();
+					((Player) user.getHandle()).getWorld().setTime(time);
+					BenCmd.getPlugin().lastTime = ((Player) user.getHandle()).getWorld().getFullTime();
 				}
 			} else if (args[0].equalsIgnoreCase("dawn")) {
 				if (!user.hasPerm("bencmd.time.set")) {
@@ -297,8 +309,8 @@ public class BasicCommands implements Commands {
 						BenCmd.getPlugin().lastTime = world.getFullTime();
 					}
 				} else {
-					user.getHandle().getWorld().setTime(23000);
-					BenCmd.getPlugin().lastTime = user.getHandle().getWorld().getFullTime();
+					((Player) user.getHandle()).getWorld().setTime(23000);
+					BenCmd.getPlugin().lastTime = ((Player) user.getHandle()).getWorld().getFullTime();
 				}
 			} else if (args[0].equalsIgnoreCase("sunrise")) {
 				if (!user.hasPerm("bencmd.time.set")) {
@@ -313,8 +325,8 @@ public class BasicCommands implements Commands {
 						BenCmd.getPlugin().lastTime = world.getFullTime();
 					}
 				} else {
-					user.getHandle().getWorld().setTime(22500);
-					BenCmd.getPlugin().lastTime = user.getHandle().getWorld().getFullTime();
+					((Player) user.getHandle()).getWorld().setTime(22500);
+					BenCmd.getPlugin().lastTime = ((Player) user.getHandle()).getWorld().getFullTime();
 				}
 			} else if (args[0].equalsIgnoreCase("noon")) {
 				if (!user.hasPerm("bencmd.time.set")) {
@@ -329,8 +341,8 @@ public class BasicCommands implements Commands {
 						BenCmd.getPlugin().lastTime = world.getFullTime();
 					}
 				} else {
-					user.getHandle().getWorld().setTime(6000);
-					BenCmd.getPlugin().lastTime = user.getHandle().getWorld().getFullTime();
+					((Player) user.getHandle()).getWorld().setTime(6000);
+					BenCmd.getPlugin().lastTime = ((Player) user.getHandle()).getWorld().getFullTime();
 				}
 			} else if (args[0].equalsIgnoreCase("dusk")) {
 				if (!user.hasPerm("bencmd.time.set")) {
@@ -345,8 +357,8 @@ public class BasicCommands implements Commands {
 						BenCmd.getPlugin().lastTime = world.getFullTime();
 					}
 				} else {
-					user.getHandle().getWorld().setTime(13000);
-					BenCmd.getPlugin().lastTime = user.getHandle().getWorld().getFullTime();
+					((Player) user.getHandle()).getWorld().setTime(13000);
+					BenCmd.getPlugin().lastTime = ((Player) user.getHandle()).getWorld().getFullTime();
 				}
 			} else if (args[0].equalsIgnoreCase("sunset")) {
 				if (!user.hasPerm("bencmd.time.set")) {
@@ -361,8 +373,8 @@ public class BasicCommands implements Commands {
 						BenCmd.getPlugin().lastTime = world.getFullTime();
 					}
 				} else {
-					user.getHandle().getWorld().setTime(12000);
-					BenCmd.getPlugin().lastTime = user.getHandle().getWorld().getFullTime();
+					((Player) user.getHandle()).getWorld().setTime(12000);
+					BenCmd.getPlugin().lastTime = ((Player) user.getHandle()).getWorld().getFullTime();
 				}
 			} else if (args[0].equalsIgnoreCase("midnight")) {
 				if (!user.hasPerm("bencmd.time.set")) {
@@ -377,8 +389,8 @@ public class BasicCommands implements Commands {
 						BenCmd.getPlugin().lastTime = world.getFullTime();
 					}
 				} else {
-					user.getHandle().getWorld().setTime(18000);
-					BenCmd.getPlugin().lastTime = user.getHandle().getWorld().getFullTime();
+					((Player) user.getHandle()).getWorld().setTime(18000);
+					BenCmd.getPlugin().lastTime = ((Player) user.getHandle()).getWorld().getFullTime();
 				}
 			} else if (args[0].equalsIgnoreCase("lock")) {
 				if (!user.hasPerm("bencmd.time.lock")) {
@@ -394,7 +406,7 @@ public class BasicCommands implements Commands {
 						BenCmd.getPlugin().timeFrozenAt = Bukkit.getWorlds()
 								.get(0).getTime();
 					} else {
-						BenCmd.getPlugin().timeFrozenAt = user.getHandle().getWorld()
+						BenCmd.getPlugin().timeFrozenAt = ((Player) user.getHandle()).getWorld()
 								.getTime();
 					}
 					BenCmd.getPlugin().timeRunning = false;
@@ -610,13 +622,13 @@ public class BasicCommands implements Commands {
 			user.sendMessage(ChatColor.RED + "The server cannot do that!");
 			return;
 		}
-		Location newSpawn = user.getHandle().getLocation();
+		Location newSpawn = ((Player) user.getHandle()).getLocation();
 		user.sendMessage(ChatColor.GREEN + "The spawn location has been set!");
 		BenCmd.log(user.getDisplayName()
 				+ " has set the spawn location to (" + newSpawn.getBlockX()
 				+ ", " + newSpawn.getBlockY() + ", " + newSpawn.getBlockZ()
 				+ ")");
-		user.getHandle()
+		((Player) user.getHandle())
 				.getWorld()
 				.setSpawnLocation(newSpawn.getBlockX(), newSpawn.getBlockY(),
 						newSpawn.getBlockZ());
@@ -695,8 +707,8 @@ public class BasicCommands implements Commands {
 			for (int p = 0; p < passengers.length; p++) {
 				mobName = getMobAlias(passengers[p]);
 				if (!mobName.equalsIgnoreCase("ERROR")) {
-					mob = user.getHandle().getWorld()
-						.spawnCreature(user.getHandle().getLocation(),
+					mob = ((Player) user.getHandle()).getWorld()
+						.spawnCreature(((Player) user.getHandle()).getLocation(),
 								CreatureType.fromName(mobName));
 		
 					// Add up the passengers
@@ -718,6 +730,10 @@ public class BasicCommands implements Commands {
 	}
 	
 	public void KillEntities(String args[], User user) {
+		if (user.isServer()) {
+			user.sendMessage(ChatColor.RED + "The server cannot do that!");
+			return;
+		}
 		// Tally up the mobs
 		String mobToKill;
 		int mobCounter = 0;
@@ -730,14 +746,14 @@ public class BasicCommands implements Commands {
 		for (int i = 0 ; i < args.length ; i++) {
 			mobToKill = getCraftMobAlias(args[i]);
 			if (mobToKill != null) {
-				for (int ii = 0 ; ii < user.getHandle().getWorld().getEntities().size() ; ii++) {
-					String entity = user.getHandle().getWorld().getEntities().get(ii).toString(); {
+				for (int ii = 0 ; ii < ((Player) user.getHandle()).getWorld().getEntities().size() ; ii++) {
+					String entity = ((Player) user.getHandle()).getWorld().getEntities().get(ii).toString(); {
 						if (entity == mobToKill) {
 							if (range == -1 ||
-									getDistance(user.getHandle().getLocation(),
-											user.getHandle().getWorld().getEntities().get(ii).getLocation(),
+									getDistance(((Player) user.getHandle()).getLocation(),
+											((Player) user.getHandle()).getWorld().getEntities().get(ii).getLocation(),
 											false) <= range) {
-								user.getHandle().getWorld().getEntities().get(ii).remove();
+								((Player) user.getHandle()).getWorld().getEntities().get(ii).remove();
 								mobCounter++;
 							}
 						}
@@ -1026,12 +1042,16 @@ public class BasicCommands implements Commands {
 	
 	public void Cr(String[] args, User user) {
 		if (args.length == 0) {
-			if (user.getHandle().getGameMode() == GameMode.CREATIVE) {
-				user.getHandle().setGameMode(GameMode.SURVIVAL);
+			if (user.isServer()) {
+				user.sendMessage(ChatColor.RED + "The server cannot do that!");
+				return;
+			}
+			if (((Player) user.getHandle()).getGameMode() == GameMode.CREATIVE) {
+				((Player) user.getHandle()).setGameMode(GameMode.SURVIVAL);
 				user.sendMessage(ChatColor.GREEN + "You are now in survival mode!");
 				BenCmd.log(user.getName() + " has left creative mode");
 			} else {
-				user.getHandle().setGameMode(GameMode.CREATIVE);
+				((Player) user.getHandle()).setGameMode(GameMode.CREATIVE);
 				user.sendMessage(ChatColor.GREEN + "You are now in creative mode!");
 				BenCmd.log(user.getName() + " has entered creative mode!");
 			}
@@ -1046,13 +1066,13 @@ public class BasicCommands implements Commands {
 				user.sendMessage(ChatColor.RED + args[0] + " isn't online right now!");
 				return;
 			}
-			if (u.getHandle().getGameMode() == GameMode.CREATIVE) {
-				u.getHandle().setGameMode(GameMode.SURVIVAL);
+			if (((Player) user.getHandle()).getGameMode() == GameMode.CREATIVE) {
+				((Player) user.getHandle()).setGameMode(GameMode.SURVIVAL);
 				u.sendMessage(ChatColor.GREEN + "You are now in survival mode!");
 				user.sendMessage(ChatColor.GREEN + "That user is now in survival mode!");
 				BenCmd.log(u.getName() + " has left creative mode (" + user.getName() + ")");
 			} else {
-				u.getHandle().setGameMode(GameMode.CREATIVE);
+				((Player) user.getHandle()).setGameMode(GameMode.CREATIVE);
 				u.sendMessage(ChatColor.GREEN + "You are now in creative mode!");
 				user.sendMessage(ChatColor.GREEN + "That user is now in creative mode!");
 				BenCmd.log(u.getName() + " has entered creative mode (" + user.getName() + ")");

@@ -46,7 +46,7 @@ public class BankCommands implements Commands {
 				BenCmd.getBankController().addBank(new BankInventory(user.getName()));
 			}
 			BenCmd.log(user.getName() + " has opened their bank!");
-			BenCmd.getBankController().openInventory(user.getHandle());
+			BenCmd.getBankController().openInventory(((Player) user.getHandle()));
 		} else if (args.length == 1) {
 			if (args[0].equalsIgnoreCase("upgrade")) {
 				if (BenCmd.getBankController().getBank(user.getName()).isUpgraded()) {
@@ -96,18 +96,18 @@ public class BankCommands implements Commands {
 							Currency c = (Currency) change.keySet().toArray()[i];
 							int a = change.get(c);
 							if (a != 0) {
-								if (user.getHandle().getInventory()
+								if (((Player) user.getHandle()).getInventory()
 										.firstEmpty() >= 0) {
-									user.getHandle()
+									((Player) user.getHandle())
 											.getInventory()
 											.addItem(
 													new ItemStack(c
 															.getMaterial(), a));
 								} else {
-									user.getHandle()
+									((Player) user.getHandle())
 											.getWorld()
 											.dropItem(
-													user.getHandle()
+													((Player) user.getHandle())
 															.getLocation(),
 													new ItemStack(c
 															.getMaterial(), a));
@@ -139,7 +139,7 @@ public class BankCommands implements Commands {
 					return;
 				}
 				BenCmd.log(user.getName() + " has opened " + args[0] + "'s bank!");
-				BenCmd.getBankController().openInventory(args[0], user.getHandle());
+				BenCmd.getBankController().openInventory(args[0], ((Player) user.getHandle()));
 			}
 		} else if (args.length == 2) {
 			if (!user.hasPerm("bencmd.bank.admin")) {

@@ -76,8 +76,10 @@ public class TileEntityBankChest extends TileEntityChest {
 
 	@Override
 	public void setItem(int i, ItemStack items) {
-		if (empty.contains(i)) {
+		if (items != null && empty.contains(i)) {
 			empty.remove(new Integer(i));
+		} else if (items == null && !empty.contains(i)) {
+			empty.add(new Integer(i));
 		}
 		super.setItem(i, items);
 	}

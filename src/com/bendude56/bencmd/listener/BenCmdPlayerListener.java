@@ -325,7 +325,7 @@ public class BenCmdPlayerListener extends PlayerListener {
 		
 		// Special effects for devs
 		if (user.isDev()) {
-			user.getHandle().getWorld().strikeLightningEffect(user.getHandle().getLocation());
+			((Player) user.getHandle()).getWorld().strikeLightningEffect(((Player) user.getHandle()).getLocation());
 			Bukkit.broadcastMessage(ChatColor.DARK_GREEN + "A BenCmd developer has joined the game!");
 		}
 	}

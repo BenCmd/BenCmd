@@ -38,7 +38,7 @@ public class PortalCommands implements Commands {
 	}
 	
 	public void RemPortal(String[] args, User user) {
-		Block pointedAt = user.getHandle().getTargetBlock(null, 4);
+		Block pointedAt = ((Player) user.getHandle()).getTargetBlock(null, 4);
 		if (pointedAt.getType() != Material.PORTAL) {
 			user.sendMessage(ChatColor.RED
 					+ "You're not pointing at a portal!");
@@ -53,7 +53,7 @@ public class PortalCommands implements Commands {
 			user.sendMessage(ChatColor.YELLOW
 					+ "Proper use is /setportal <warp> [group]");
 		} else {
-			Block pointedAt = user.getHandle().getTargetBlock(null, 4);
+			Block pointedAt = ((Player) user.getHandle()).getTargetBlock(null, 4);
 			if (pointedAt.getType() != Material.PORTAL) {
 				user.sendMessage(ChatColor.RED
 						+ "You're not pointing at a portal!");

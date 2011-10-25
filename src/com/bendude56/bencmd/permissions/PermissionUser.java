@@ -117,7 +117,7 @@ public class PermissionUser {
 	public String getPrefix() {
 		List<InternalGroup> hasPrefix = new ArrayList<InternalGroup>();
 		for (PermissionGroup group : BenCmd.getPermissionManager().getGroupFile()
-				.getUserGroups(user)) {
+				.getAllUserGroups(user)) {
 			if (!group.getPrefix().isEmpty()) {
 				hasPrefix.add(group.getInternal());
 			}
@@ -135,7 +135,7 @@ public class PermissionUser {
 		}
 		List<InternalGroup> hasColor = new ArrayList<InternalGroup>();
 		for (PermissionGroup group : BenCmd.getPermissionManager().getGroupFile()
-				.getUserGroups(user)) {
+				.getAllUserGroups(user)) {
 			if (group.getColor() != ChatColor.YELLOW) {
 				hasColor.add(group.getInternal());
 			}

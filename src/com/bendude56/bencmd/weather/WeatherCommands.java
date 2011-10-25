@@ -54,7 +54,7 @@ public class WeatherCommands implements Commands {
 			if (user.isServer()) {
 				world = Bukkit.getWorlds().get(0);
 			} else {
-				world = user.getHandle().getWorld();
+				world = ((Player) user.getHandle()).getWorld();
 			}
 		}
 		if (args[0].equalsIgnoreCase("off")) {
@@ -74,7 +74,7 @@ public class WeatherCommands implements Commands {
 			user.sendMessage(ChatColor.YELLOW
 					+ "Proper use is /strike {bind|unbind|[Player]}");
 		}
-		Block targetBlock = user.getHandle().getTargetBlock(null, 100);
+		Block targetBlock = ((Player) user.getHandle()).getTargetBlock(null, 100);
 		Location loc = null;
 		if (args.length == 0) {
 			if (user.isServer()) {
@@ -95,7 +95,7 @@ public class WeatherCommands implements Commands {
 							+ "The server cannot do that!");
 					return;
 				}
-				if (BenCmd.getStrikeBindings().tryBind(user.getHandle())) {
+				if (BenCmd.getStrikeBindings().tryBind(((Player) user.getHandle()))) {
 					user.sendMessage(ChatColor.GREEN
 							+ "That item has now been bound to strike lightning!");
 				} else {
@@ -115,8 +115,8 @@ public class WeatherCommands implements Commands {
 							+ "The server cannot do that!");
 					return;
 				}
-				if (BenCmd.getStrikeBindings().hasBoundItem(user.getHandle())) {
-					BenCmd.getStrikeBindings().clearBinding(user.getHandle());
+				if (BenCmd.getStrikeBindings().hasBoundItem(((Player) user.getHandle()))) {
+					BenCmd.getStrikeBindings().clearBinding(((Player) user.getHandle()));
 					user.sendMessage(ChatColor.GREEN
 							+ "You no longer have an item bound to strike lightning.");
 				} else {
@@ -137,9 +137,9 @@ public class WeatherCommands implements Commands {
 							+ "That user couldn't be found!");
 					return;
 				}
-				loc = user2.getHandle().getLocation();
+				loc = ((Player) user2.getHandle()).getLocation();
 			}
 		}
-		user.getHandle().getWorld().strikeLightning(loc);
+		((Player) user.getHandle()).getWorld().strikeLightning(loc);
 	}
 }

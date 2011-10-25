@@ -35,12 +35,12 @@ public class AdvancedCommands implements Commands {
 
 	public void Write(String[] args, User user) {
 		// TODO Log writing on bookcases as if they were signs
-		if (user.getHandle().getTargetBlock(null, 4).getType() != Material.BOOKSHELF) {
+		if (((Player) user.getHandle()).getTargetBlock(null, 4).getType() != Material.BOOKSHELF) {
 			user.sendMessage(ChatColor.RED
 					+ "You're not pointing at a bookshelf!");
 			return;
 		}
-		if (!BenCmd.getLots().canBuildHere(user.getHandle(), user.getHandle()
+		if (!BenCmd.getLots().canBuildHere(((Player) user.getHandle()), ((Player) user.getHandle())
 				.getTargetBlock(null, 4).getLocation())) {
 			user.sendMessage(ChatColor.RED
 					+ "You're not allowed to do that here!");
@@ -55,7 +55,7 @@ public class AdvancedCommands implements Commands {
 				message += " " + word;
 			}
 		}
-		BenCmd.getShelfFile().addShelf(new Shelf(user.getHandle()
+		BenCmd.getShelfFile().addShelf(new Shelf(((Player) user.getHandle())
 				.getTargetBlock(null, 4).getLocation(), message));
 		user.sendMessage(ChatColor.GREEN
 				+ "Magically, writing appears on that shelf.");

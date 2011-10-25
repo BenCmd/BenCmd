@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.bendude56.bencmd.BenCmd;
@@ -13,13 +14,13 @@ import com.bendude56.bencmd.permissions.PermissionUser;
 
 
 public class WarpableUser extends PermissionUser {
-	private Player player;
+	private CommandSender sender;
 	private boolean isConsole;
 
-	public WarpableUser(Player entity)
+	public WarpableUser(CommandSender s)
 			throws NullPointerException {
-		super(entity.getName(), new ArrayList<String>());
-		player = entity;
+		super(s.getName(), new ArrayList<String>());
+		sender = s;
 		isConsole = false;
 	}
 
@@ -29,96 +30,96 @@ public class WarpableUser extends PermissionUser {
 	}
 
 	public boolean canWarpTo(String warpName) {
-		if (isConsole) {
+		if (isServer()) {
 			throw new UnsupportedOperationException();
 		}
 		return BenCmd.getWarps().getWarp(warpName).canWarpHere(this);
 	}
 
 	public void warpTo(String warpName) {
-		if (isConsole) {
+		if (isServer()) {
 			throw new UnsupportedOperationException();
 		}
 		BenCmd.getWarps().getWarp(warpName).WarpHere(this);
 	}
 
 	public void warpTo(String warpName, User sender) {
-		if (isConsole) {
+		if (isServer()) {
 			throw new UnsupportedOperationException();
 		}
 		BenCmd.getWarps().getWarp(warpName).WarpHere(this, sender.getWarpableUser());
 	}
 
 	public List<Warp> listWarps() {
-		if (this.isConsole) {
+		if (isServer()) {
 			return BenCmd.getWarps().listAllWarps();
 		} else {
-			return BenCmd.getWarps().listWarps(player);
+			return BenCmd.getWarps().listWarps((Player) sender);
 		}
 	}
 
 	public void warpTo(Warp warp) {
-		if (isConsole) {
+		if (isServer()) {
 			throw new UnsupportedOperationException();
 		}
 		warp.WarpHere(this);
 	}
 
 	public void warpTo(Warp warp, User sender) {
-		if (isConsole) {
+		if (isServer()) {
 			throw new UnsupportedOperationException();
 		}
 		warp.WarpHere(this, sender.getWarpableUser());
 	}
 
 	public void homeWarp(Integer homeNumber) {
-		if (isConsole) {
+		if (isServer()) {
 			throw new UnsupportedOperationException();
 		}
-		BenCmd.getHomes().WarpOwnHome(player, homeNumber);
+		BenCmd.getHomes().WarpOwnHome((Player) sender, homeNumber);
 	}
 
 	public void homeWarp(Integer homeNumber, PermissionUser homeOf) {
-		if (isConsole || homeOf.getName().equalsIgnoreCase("*")) {
+		if (isServer() || homeOf.getName().equalsIgnoreCase("*")) {
 			throw new UnsupportedOperationException();
 		}
-		BenCmd.getHomes().WarpOtherHome(player, homeOf.getName(), homeNumber);
+		BenCmd.getHomes().WarpOtherHome((Player) sender, homeOf.getName(), homeNumber);
 	}
 
 	public boolean lastCheck() {
-		if (isConsole) {
+		if (isServer()) {
 			throw new UnsupportedOperationException();
 		}
-		return BenCmd.getWarpCheckpoints().returnPreWarp(player);
+		return BenCmd.getWarpCheckpoints().returnPreWarp((Player) sender);
 	}
 
 	public void setHome(Integer homeNumber) {
-		if (isConsole) {
+		if (isServer()) {
 			throw new UnsupportedOperationException();
 		}
-		BenCmd.getHomes().SetOwnHome(player, homeNumber);
+		BenCmd.getHomes().SetOwnHome((Player) sender, homeNumber);
 	}
 
 	public void setHome(Integer homeNumber, PermissionUser homeOf) {
-		if (isConsole || homeOf.getName().equalsIgnoreCase("*")) {
+		if (isServer() || homeOf.getName().equalsIgnoreCase("*")) {
 			throw new UnsupportedOperationException();
 		}
-		BenCmd.getHomes().SetOtherHome(player, homeOf.getName(), homeNumber);
+		BenCmd.getHomes().SetOtherHome((Player) sender, homeOf.getName(), homeNumber);
 	}
 
 	public void spawn() {
-		if (isConsole) {
+		if (isServer()) {
 			throw new UnsupportedOperationException();
 		}
 		if (!BenCmd.getMainProperties().getBoolean("perWorldSpawn", false)) {
 			spawn(BenCmd.getMainProperties().getString("defaultWorld", "world"));
 		} else {
-			spawn(player.getWorld().getName());
+			spawn(((Player) sender).getWorld().getName());
 		}
 	}
 
 	public void spawn(String world) {
-		if (isConsole) {
+		if (isServer()) {
 			throw new UnsupportedOperationException();
 		}
 		Location spawn;
@@ -144,14 +145,18 @@ public class WarpableUser extends PermissionUser {
 			message = message.replaceAll("§.", "");
 			BenCmd.log(message);
 		} else {
-			player.sendMessage(message);
+			sender.sendMessage(message);
 		}
 	}
+	
+	public boolean isServer() {
+		return super.isServer() || !(sender instanceof Player);
+	}
 
-	public Player getHandle() {
+	public CommandSender getHandle() {
 		if (isConsole) {
 			return null;
 		}
-		return player;
+		return sender;
 	}
 }

@@ -490,7 +490,7 @@ public class PermissionCommands implements Commands {
 					+ "Proper use is: /status [player]");
 			return;
 		}
-		if (BenCmd.isSpoutConnected() && BenCmd.getSpoutConnector().enabled(user.getHandle())) {
+		if (BenCmd.isSpoutConnected() && BenCmd.getSpoutConnector().enabled(((Player) user.getHandle()))) {
 			BenCmd.getSpoutConnector().showStatusScreen(user, (user2 == null) ? puser2 : user2,
 					(user.hasPerm("bencmd.action.status.advanced") || user.getName().equals(user2.getName())));
 			return;
@@ -534,7 +534,7 @@ public class PermissionCommands implements Commands {
 			boolean allpoofed = user2.isNoPoofed();
 			boolean poofed = user2.isPoofed();
 			boolean nopoofed = user2.isNoPoofed();
-			int health = user2.getHandle().getHealth();
+			int health = ((Player) user.getHandle()).getHealth();
 			if (user.getActiveChannel() != null) {
 				user.sendMessage(ChatColor.GRAY + "   -Chat channel: "
 						+ user.getActiveChannel().getDisplayName());
