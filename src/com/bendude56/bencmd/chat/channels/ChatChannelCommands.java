@@ -11,10 +11,8 @@ import com.bendude56.bencmd.Commands;
 import com.bendude56.bencmd.User;
 import com.bendude56.bencmd.permissions.PermissionUser;
 
-
 public class ChatChannelCommands implements Commands {
-	public boolean onCommand(CommandSender sender, Command command,
-			String commandLabel, String[] args) {
+	public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
 		User user;
 		try {
 			user = User.getUser((Player) sender);
@@ -34,8 +32,7 @@ public class ChatChannelCommands implements Commands {
 						arguments += " " + args[i];
 					}
 				}
-				Bukkit.dispatchCommand(sender,
-						"channel guest " + arguments);
+				Bukkit.dispatchCommand(sender, "channel guest " + arguments);
 				return true;
 			}
 			Channel(args, user);
@@ -65,18 +62,14 @@ public class ChatChannelCommands implements Commands {
 		if (args.length == 0) {
 			if (user.inChannel()) {
 				if (user.getActiveChannel().isOwner(user)) {
-					user.sendMessage(ChatColor.YELLOW
-							+ "Proper use is /channel {spy|unspy|list|leave|remove|mute|kick|ban|guest|slow|pause|motd|giveto|mod|name}");
+					user.sendMessage(ChatColor.YELLOW + "Proper use is /channel {spy|unspy|list|leave|remove|mute|kick|ban|guest|slow|pause|motd|giveto|mod|name}");
 				} else if (user.getActiveChannel().isMod(user)) {
-					user.sendMessage(ChatColor.YELLOW
-							+ "Proper use is /channel {spy|unspy|list|leave|mute|kick|ban|guest|slow|pause|motd}");
+					user.sendMessage(ChatColor.YELLOW + "Proper use is /channel {spy|unspy|list|leave|mute|kick|ban|guest|slow|pause|motd}");
 				} else {
-					user.sendMessage(ChatColor.YELLOW
-							+ "Proper use is /channel {spy|unspy|list|leave}");
+					user.sendMessage(ChatColor.YELLOW + "Proper use is /channel {spy|unspy|list|leave}");
 				}
 			} else {
-				user.sendMessage(ChatColor.YELLOW
-						+ "Proper use is /channel {join|spy|list|add|remove}");
+				user.sendMessage(ChatColor.YELLOW + "Proper use is /channel {join|spy|list|add|remove}");
 			}
 		} else {
 			if (args[0].equalsIgnoreCase("leave")) {
@@ -90,17 +83,14 @@ public class ChatChannelCommands implements Commands {
 					if (args.length == 1) {
 						BenCmd.getChatChannels().listChannels(user);
 					} else {
-						ChatChannel channel = BenCmd.getChatChannels()
-								.getChannel(args[1]);
+						ChatChannel channel = BenCmd.getChatChannels().getChannel(args[1]);
 						if (channel == null) {
-							user.sendMessage(ChatColor.RED
-									+ "That chat channel doesn't exist!");
+							user.sendMessage(ChatColor.RED + "That chat channel doesn't exist!");
 						} else {
 							if (channel.isMod(user) || channel.isOwner(user)) {
 								channel.listUsers(user);
 							} else {
-								user.sendMessage(ChatColor.RED
-										+ "You must be a mod in that channel to do that!");
+								user.sendMessage(ChatColor.RED + "You must be a mod in that channel to do that!");
 							}
 						}
 					}
@@ -108,83 +98,61 @@ public class ChatChannelCommands implements Commands {
 					if (args.length == 1) {
 						user.getActiveChannel().listUsers(user);
 					} else {
-						ChatChannel channel = BenCmd.getChatChannels()
-								.getChannel(args[1]);
+						ChatChannel channel = BenCmd.getChatChannels().getChannel(args[1]);
 						if (channel == null) {
-							user.sendMessage(ChatColor.RED
-									+ "That chat channel doesn't exist!");
+							user.sendMessage(ChatColor.RED + "That chat channel doesn't exist!");
 						} else {
-							if (channel.isMod(user) || channel.isOwner(user)
-									|| (channel.isOnline(user) != null)) {
+							if (channel.isMod(user) || channel.isOwner(user) || (channel.isOnline(user) != null)) {
 								channel.listUsers(user);
 							} else {
-								user.sendMessage(ChatColor.RED
-										+ "You must be a mod in that channel to do that!");
+								user.sendMessage(ChatColor.RED + "You must be a mod in that channel to do that!");
 							}
 						}
 					}
 				}
 			} else if (args[0].equalsIgnoreCase("mute")) {
 				if (args.length != 2) {
-					user.sendMessage(ChatColor.YELLOW
-							+ "Proper use is /channel mute <player>");
+					user.sendMessage(ChatColor.YELLOW + "Proper use is /channel mute <player>");
 					return;
 				}
 				if (user.inChannel()) {
-					if (user.getActiveChannel().isMod(user)
-							|| user.getActiveChannel().isOwner(user)) {
-						PermissionUser mutee = PermissionUser
-								.matchUserIgnoreCase(args[1]);
+					if (user.getActiveChannel().isMod(user) || user.getActiveChannel().isOwner(user)) {
+						PermissionUser mutee = PermissionUser.matchUserIgnoreCase(args[1]);
 						if (mutee != null) {
-							if (user.getActiveChannel().isMod(user)
-									&& user.getActiveChannel().isMod(mutee)) {
-								user.sendMessage(ChatColor.RED
-										+ "You can't mute another mod!");
+							if (user.getActiveChannel().isMod(user) && user.getActiveChannel().isMod(mutee)) {
+								user.sendMessage(ChatColor.RED + "You can't mute another mod!");
 								return;
 							}
 							user.getActiveChannel().Mute(mutee);
-							user.sendMessage(mutee.getColor() + mutee.getName()
-									+ ChatColor.GREEN
-									+ "Has been muted from the "
-									+ user.getActiveChannel().getName()
-									+ " channel!");
+							user.sendMessage(mutee.getColor() + mutee.getName() + ChatColor.GREEN + "Has been muted from the " + user.getActiveChannel().getName() + " channel!");
 						} else {
-							user.sendMessage(ChatColor.RED
-									+ "That user couldn't be found!");
+							user.sendMessage(ChatColor.RED + "That user couldn't be found!");
 						}
 					} else {
-						user.sendMessage(ChatColor.RED
-								+ "You must be a mod to do that!");
+						user.sendMessage(ChatColor.RED + "You must be a mod to do that!");
 					}
 				} else {
 					user.sendMessage(ChatColor.RED + "You're not in a channel!");
 				}
 			} else if (args[0].equalsIgnoreCase("kick")) {
 				if (args.length != 2) {
-					user.sendMessage(ChatColor.YELLOW
-							+ "Proper use is /channel kick <player>");
+					user.sendMessage(ChatColor.YELLOW + "Proper use is /channel kick <player>");
 					return;
 				}
 				if (user.inChannel()) {
-					if (user.getActiveChannel().isMod(user)
-							|| user.getActiveChannel().isOwner(user)) {
-						User kickee = user.getActiveChannel().isOnline(
-								PermissionUser.matchUserIgnoreCase(args[1]));
+					if (user.getActiveChannel().isMod(user) || user.getActiveChannel().isOwner(user)) {
+						User kickee = user.getActiveChannel().isOnline(PermissionUser.matchUserIgnoreCase(args[1]));
 						if (kickee != null) {
-							if (user.getActiveChannel().isMod(user)
-									&& user.getActiveChannel().isMod(kickee)) {
-								user.sendMessage(ChatColor.RED
-										+ "You can't kick another mod!");
+							if (user.getActiveChannel().isMod(user) && user.getActiveChannel().isMod(kickee)) {
+								user.sendMessage(ChatColor.RED + "You can't kick another mod!");
 								return;
 							}
 							user.getActiveChannel().Kick(kickee);
 						} else {
-							user.sendMessage(ChatColor.RED
-									+ "That user couldn't be found!");
+							user.sendMessage(ChatColor.RED + "That user couldn't be found!");
 						}
 					} else {
-						user.sendMessage(ChatColor.RED
-								+ "You must be a mod to do that!");
+						user.sendMessage(ChatColor.RED + "You must be a mod to do that!");
 					}
 				} else {
 					user.sendMessage(ChatColor.RED + "You're not in a channel!");
@@ -194,81 +162,64 @@ public class ChatChannelCommands implements Commands {
 					if (user.getActiveChannel().isOwner(user)) {
 						BenCmd.getChatChannels().removeChannel(user.getActiveChannel());
 					} else {
-						user.sendMessage(ChatColor.RED
-								+ "You must be the channel owner to do that!");
+						user.sendMessage(ChatColor.RED + "You must be the channel owner to do that!");
 					}
 				} else {
 					user.sendMessage(ChatColor.RED + "You're not in a channel!");
 				}
 			} else if (args[0].equalsIgnoreCase("ban")) {
 				if (args.length != 2) {
-					user.sendMessage(ChatColor.YELLOW
-							+ "Proper use is /channel ban <player>");
+					user.sendMessage(ChatColor.YELLOW + "Proper use is /channel ban <player>");
 					return;
 				}
 				if (user.inChannel()) {
-					if (user.getActiveChannel().isMod(user)
-							|| user.getActiveChannel().isOwner(user)) {
-						PermissionUser banee = PermissionUser
-								.matchUserIgnoreCase(args[1]);
+					if (user.getActiveChannel().isMod(user) || user.getActiveChannel().isOwner(user)) {
+						PermissionUser banee = PermissionUser.matchUserIgnoreCase(args[1]);
 						if (banee != null) {
-							if (user.getActiveChannel().isMod(user)
-									&& user.getActiveChannel().isMod(banee)) {
-								user.sendMessage(ChatColor.RED
-										+ "You can't ban another mod!");
+							if (user.getActiveChannel().isMod(user) && user.getActiveChannel().isMod(banee)) {
+								user.sendMessage(ChatColor.RED + "You can't ban another mod!");
 								return;
 							}
 							user.getActiveChannel().Ban(banee);
 						} else {
-							user.sendMessage(ChatColor.RED
-									+ "That user couldn't be found!");
+							user.sendMessage(ChatColor.RED + "That user couldn't be found!");
 						}
 					} else {
-						user.sendMessage(ChatColor.RED
-								+ "You must be a mod to do that!");
+						user.sendMessage(ChatColor.RED + "You must be a mod to do that!");
 					}
 				} else {
 					user.sendMessage(ChatColor.RED + "You're not in a channel!");
 				}
 			} else if (args[0].equalsIgnoreCase("guest")) {
 				if (args.length != 2) {
-					user.sendMessage(ChatColor.YELLOW
-							+ "Proper use is /channel guest <player>");
+					user.sendMessage(ChatColor.YELLOW + "Proper use is /channel guest <player>");
 					return;
 				}
 				if (user.inChannel()) {
-					if (user.getActiveChannel().isMod(user)
-							|| user.getActiveChannel().isOwner(user)) {
-						PermissionUser guestee = PermissionUser
-								.matchUserIgnoreCase(args[1]);
+					if (user.getActiveChannel().isMod(user) || user.getActiveChannel().isOwner(user)) {
+						PermissionUser guestee = PermissionUser.matchUserIgnoreCase(args[1]);
 						if (guestee != null) {
-							if (user.getActiveChannel().isMod(user)
-									&& user.getActiveChannel().isMod(guestee)) {
-								user.sendMessage(ChatColor.RED
-										+ "You can't guest another mod!");
+							if (user.getActiveChannel().isMod(user) && user.getActiveChannel().isMod(guestee)) {
+								user.sendMessage(ChatColor.RED + "You can't guest another mod!");
 								return;
 							}
 							user.getActiveChannel().Guest(guestee);
 						} else {
-							user.sendMessage(ChatColor.RED
-									+ "That user couldn't be found!");
+							user.sendMessage(ChatColor.RED + "That user couldn't be found!");
 						}
 					} else {
-						user.sendMessage(ChatColor.RED
-								+ "You must be a mod to do that!");
+						user.sendMessage(ChatColor.RED + "You must be a mod to do that!");
 					}
 				} else {
 					user.sendMessage(ChatColor.RED + "You're not in a channel!");
 				}
 			} else if (args[0].equalsIgnoreCase("slow")) {
 				if (args.length > 2) {
-					user.sendMessage(ChatColor.YELLOW
-							+ "Proper use is /channel slow [delay]");
+					user.sendMessage(ChatColor.YELLOW + "Proper use is /channel slow [delay]");
 					return;
 				}
 				if (user.inChannel()) {
-					if (user.getActiveChannel().isMod(user)
-							|| user.getActiveChannel().isOwner(user)) {
+					if (user.getActiveChannel().isMod(user) || user.getActiveChannel().isOwner(user)) {
 						if (args.length == 1) {
 							if (user.getActiveChannel().isSlow()) {
 								user.getActiveChannel().disableSlow();
@@ -280,15 +231,13 @@ public class ChatChannelCommands implements Commands {
 							try {
 								millis = Integer.parseInt(args[1]);
 							} catch (NumberFormatException e) {
-								user.sendMessage(ChatColor.RED
-										+ "Invalid delay!");
+								user.sendMessage(ChatColor.RED + "Invalid delay!");
 								return;
 							}
 							user.getActiveChannel().enableSlow(millis);
 						}
 					} else {
-						user.sendMessage(ChatColor.RED
-								+ "You must be a mod to do that!");
+						user.sendMessage(ChatColor.RED + "You must be a mod to do that!");
 					}
 				} else {
 					user.sendMessage(ChatColor.RED + "You're not in a channel!");
@@ -298,10 +247,8 @@ public class ChatChannelCommands implements Commands {
 					user.sendMessage(ChatColor.RED + "You're not in a channel!");
 					return;
 				}
-				if (!user.getActiveChannel().isMod(user)
-						&& !user.getActiveChannel().isOwner(user)) {
-					user.sendMessage(ChatColor.RED
-							+ "You must be a mod to do that!");
+				if (!user.getActiveChannel().isMod(user) && !user.getActiveChannel().isOwner(user)) {
+					user.sendMessage(ChatColor.RED + "You must be a mod to do that!");
 					return;
 				}
 				if (user.getActiveChannel().isPaused()) {
@@ -315,11 +262,9 @@ public class ChatChannelCommands implements Commands {
 					return;
 				}
 				if (args.length == 1) {
-					user.sendMessage(ChatColor.YELLOW
-							+ user.getActiveChannel().getMotd());
+					user.sendMessage(ChatColor.YELLOW + user.getActiveChannel().getMotd());
 				} else {
-					if (user.getActiveChannel().isMod(user)
-							|| user.getActiveChannel().isOwner(user)) {
+					if (user.getActiveChannel().isMod(user) || user.getActiveChannel().isOwner(user)) {
 						String newMotd = "";
 						for (int i = 1; i < args.length; i++) {
 							if (newMotd.isEmpty()) {
@@ -329,114 +274,95 @@ public class ChatChannelCommands implements Commands {
 							}
 						}
 						if (newMotd.contains("`")) {
-							user.sendMessage(ChatColor.RED
-									+ "MOTDs cannot contain the special character: `");
+							user.sendMessage(ChatColor.RED + "MOTDs cannot contain the special character: `");
 							return;
 						}
 						user.getActiveChannel().setMotd(newMotd);
-						user.sendMessage(ChatColor.YELLOW
-								+ user.getActiveChannel().getMotd());
+						user.sendMessage(ChatColor.YELLOW + user.getActiveChannel().getMotd());
 					} else {
-						user.sendMessage(ChatColor.RED
-								+ "You must be a mod to do that!");
+						user.sendMessage(ChatColor.RED + "You must be a mod to do that!");
 					}
 				}
 			} else if (args[0].equalsIgnoreCase("giveto")) {
 				if (args.length != 2) {
-					user.sendMessage(ChatColor.YELLOW
-							+ "Proper use is /channel giveto <player>");
+					user.sendMessage(ChatColor.YELLOW + "Proper use is /channel giveto <player>");
 					return;
 				}
 				if (user.inChannel()) {
 					if (user.getActiveChannel().isOwner(user)) {
-						PermissionUser owner = PermissionUser
-								.matchUserIgnoreCase(args[1]);
+						PermissionUser owner = PermissionUser.matchUserIgnoreCase(args[1]);
 						if (owner != null) {
 							user.getActiveChannel().changeOwner(owner);
 						} else {
-							user.sendMessage(ChatColor.RED
-									+ "That user couldn't be found!");
+							user.sendMessage(ChatColor.RED + "That user couldn't be found!");
 						}
 					} else {
-						user.sendMessage(ChatColor.RED
-								+ "You must be the channel owner to do that!");
+						user.sendMessage(ChatColor.RED + "You must be the channel owner to do that!");
 					}
 				} else {
 					user.sendMessage(ChatColor.RED + "You're not in a channel!");
 				}
 			} else if (args[0].equalsIgnoreCase("mod")) {
 				if (args.length != 2) {
-					user.sendMessage(ChatColor.YELLOW
-							+ "Proper use is /channel mod <player>");
+					user.sendMessage(ChatColor.YELLOW + "Proper use is /channel mod <player>");
 					return;
 				}
 				if (user.inChannel()) {
 					if (user.getActiveChannel().isOwner(user)) {
-						PermissionUser mod = PermissionUser
-								.matchUserIgnoreCase(args[1]);
+						PermissionUser mod = PermissionUser.matchUserIgnoreCase(args[1]);
 						if (mod != null) {
 							user.getActiveChannel().Mod(mod);
 						} else {
-							user.sendMessage(ChatColor.RED
-									+ "That user couldn't be found!");
+							user.sendMessage(ChatColor.RED + "That user couldn't be found!");
 						}
 					} else {
-						user.sendMessage(ChatColor.RED
-								+ "You must be the channel owner to do that!");
+						user.sendMessage(ChatColor.RED + "You must be the channel owner to do that!");
 					}
 				} else {
 					user.sendMessage(ChatColor.RED + "You're not in a channel!");
 				}
 			} else if (args[0].equalsIgnoreCase("join")) {
 				if (args.length != 2) {
-					user.sendMessage(ChatColor.YELLOW
-							+ "Proper use is /channel join <channel>");
+					user.sendMessage(ChatColor.YELLOW + "Proper use is /channel join <channel>");
 					return;
 				}
 				ChatChannel channel = BenCmd.getChatChannels().getChannel(args[1]);
 				if (channel != null) {
 					user.joinChannel(channel);
 				} else {
-					user.sendMessage(ChatColor.RED
-							+ "That channel couldn't be found!");
+					user.sendMessage(ChatColor.RED + "That channel couldn't be found!");
 				}
 			} else if (args[0].equalsIgnoreCase("spy")) {
 				if (args.length != 2) {
-					user.sendMessage(ChatColor.YELLOW
-							+ "Proper use is /channel spy <channel>");
+					user.sendMessage(ChatColor.YELLOW + "Proper use is /channel spy <channel>");
 					return;
 				}
 				ChatChannel channel = BenCmd.getChatChannels().getChannel(args[1]);
 				if (channel != null) {
 					user.spyChannel(channel);
 				} else {
-					user.sendMessage(ChatColor.RED
-							+ "That channel couldn't be found!");
+					user.sendMessage(ChatColor.RED + "That channel couldn't be found!");
 				}
 			} else if (args[0].equalsIgnoreCase("unspy")) {
 				if (args.length != 2) {
-					user.sendMessage(ChatColor.YELLOW
-							+ "Proper use is /channel unspy <channel>");
+					user.sendMessage(ChatColor.YELLOW + "Proper use is /channel unspy <channel>");
 					return;
 				}
 				ChatChannel channel = BenCmd.getChatChannels().getChannel(args[1]);
 				if (channel != null) {
 					user.unspyChannel(channel);
 				} else {
-					user.sendMessage(ChatColor.RED
-							+ "That channel couldn't be found!");
+					user.sendMessage(ChatColor.RED + "That channel couldn't be found!");
 				}
 			} else if (args[0].equalsIgnoreCase("add")) {
 				if (!user.hasPerm("bencmd.chat.newchannel")) {
-					user.sendMessage(ChatColor.RED
-							+ "You don't have permission to do that!");
+					user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
 					return;
 				}
 				if (args.length == 2) {
 					BenCmd.getChatChannels().addChannel(args[1], user);
 				} else {
-					user.sendMessage(ChatColor.YELLOW
-							+ "Proper use is /channel add <name>");
+					user.sendMessage(ChatColor.YELLOW + "Proper use is /channel add <name>");
 				}
 			} else if (args[0].equalsIgnoreCase("name")) {
 				if (!user.inChannel()) {
@@ -444,8 +370,7 @@ public class ChatChannelCommands implements Commands {
 					return;
 				}
 				if (args.length == 1) {
-					user.sendMessage(ChatColor.YELLOW
-							+ "Proper use is /channel name <name>");
+					user.sendMessage(ChatColor.YELLOW + "Proper use is /channel name <name>");
 				} else {
 					if (user.getActiveChannel().isOwner(user)) {
 						String newName = "";
@@ -457,16 +382,13 @@ public class ChatChannelCommands implements Commands {
 							}
 						}
 						if (newName.contains("`")) {
-							user.sendMessage(ChatColor.RED
-									+ "Display namess cannot contain the special character: `");
+							user.sendMessage(ChatColor.RED + "Display namess cannot contain the special character: `");
 							return;
 						}
 						user.getActiveChannel().setDisplayName(newName);
-						user.sendMessage(ChatColor.GREEN
-								+ "The display name was successfully set.");
+						user.sendMessage(ChatColor.GREEN + "The display name was successfully set.");
 					} else {
-						user.sendMessage(ChatColor.RED
-								+ "You must be the channel owner to do that!");
+						user.sendMessage(ChatColor.RED + "You must be the channel owner to do that!");
 					}
 				}
 			}

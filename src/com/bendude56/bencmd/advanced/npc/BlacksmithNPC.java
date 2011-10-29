@@ -12,18 +12,16 @@ import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.User;
 import com.bendude56.bencmd.money.BuyableItem;
 
-
 public class BlacksmithNPC extends NPC implements Clickable {
-	private HashMap<ToolMaterial, HashMap<ToolType, Double>> toolPrices;
-	private HashMap<ArmorMaterial, HashMap<ArmorType, Double>> armorPrices;
-	
+	private HashMap<ToolMaterial, HashMap<ToolType, Double>>	toolPrices;
+	private HashMap<ArmorMaterial, HashMap<ArmorType, Double>>	armorPrices;
+
 	@Override
 	public String getSkinURL() {
 		return "https://s3.amazonaws.com/squirt/i4e3a60f8b073748006686458381081478116.png";
 	}
 
-	public static HashMap<ToolMaterial, HashMap<ToolType, Double>> readTools(
-			String s) {
+	public static HashMap<ToolMaterial, HashMap<ToolType, Double>> readTools(String s) {
 		HashMap<ToolMaterial, HashMap<ToolType, Double>> t = new HashMap<ToolMaterial, HashMap<ToolType, Double>>();
 		String[] s1 = s.split(";");
 		for (String s2 : s1) {
@@ -83,8 +81,7 @@ public class BlacksmithNPC extends NPC implements Clickable {
 		return t;
 	}
 
-	public static HashMap<ArmorMaterial, HashMap<ArmorType, Double>> readArmor(
-			String s) {
+	public static HashMap<ArmorMaterial, HashMap<ArmorType, Double>> readArmor(String s) {
 		HashMap<ArmorMaterial, HashMap<ArmorType, Double>> a = new HashMap<ArmorMaterial, HashMap<ArmorType, Double>>();
 		String[] s1 = s.split(";");
 		for (String s2 : s1) {
@@ -142,8 +139,7 @@ public class BlacksmithNPC extends NPC implements Clickable {
 		return a;
 	}
 
-	private static String valueOfT(
-			HashMap<ToolMaterial, HashMap<ToolType, Double>> tools) {
+	private static String valueOfT(HashMap<ToolMaterial, HashMap<ToolType, Double>> tools) {
 		String s = "";
 		for (int i = 0; i < tools.size(); i++) {
 			ToolMaterial m = (ToolMaterial) tools.keySet().toArray()[i];
@@ -188,8 +184,7 @@ public class BlacksmithNPC extends NPC implements Clickable {
 		return s;
 	}
 
-	private static String valueOfA(
-			HashMap<ArmorMaterial, HashMap<ArmorType, Double>> armor) {
+	private static String valueOfA(HashMap<ArmorMaterial, HashMap<ArmorType, Double>> armor) {
 		String s = "";
 		for (int i = 0; i < armor.size(); i++) {
 			ArmorMaterial m = (ArmorMaterial) armor.keySet().toArray()[i];
@@ -232,9 +227,7 @@ public class BlacksmithNPC extends NPC implements Clickable {
 		return s;
 	}
 
-	public BlacksmithNPC(int id, Location l,
-			HashMap<ToolMaterial, HashMap<ToolType, Double>> tools,
-			HashMap<ArmorMaterial, HashMap<ArmorType, Double>> armor) {
+	public BlacksmithNPC(int id, Location l, HashMap<ToolMaterial, HashMap<ToolType, Double>> tools, HashMap<ArmorMaterial, HashMap<ArmorType, Double>> armor) {
 		super("Blacksmith", id, l, new ItemStack(Material.IRON_AXE));
 		if (tools == null) {
 			toolPrices = new HashMap<ToolMaterial, HashMap<ToolType, Double>>();
@@ -312,36 +305,30 @@ public class BlacksmithNPC extends NPC implements Clickable {
 					if (c == -1.0) {
 						toolPrices.get(tm).remove(t);
 						BenCmd.getNPCFile().saveNPC(this);
-						p.sendMessage(ChatColor.GREEN
-								+ "That tool can no longer be repaired!");
+						p.sendMessage(ChatColor.GREEN + "That tool can no longer be repaired!");
 					} else {
 						toolPrices.get(tm).put(t, c);
 						BenCmd.getNPCFile().saveNPC(this);
-						p.sendMessage(ChatColor.GREEN
-								+ "That tool's price has been updated!");
+						p.sendMessage(ChatColor.GREEN + "That tool's price has been updated!");
 					}
 				} else {
 					if (c == -1.0) {
-						p.sendMessage(ChatColor.RED
-								+ "That tool is not set as repairable...");
+						p.sendMessage(ChatColor.RED + "That tool is not set as repairable...");
 					} else {
 						toolPrices.get(tm).put(t, c);
 						BenCmd.getNPCFile().saveNPC(this);
-						p.sendMessage(ChatColor.GREEN
-								+ "That tool can now be repaired!");
+						p.sendMessage(ChatColor.GREEN + "That tool can now be repaired!");
 					}
 				}
 			} else {
 				if (c == -1.0) {
-					p.sendMessage(ChatColor.RED
-							+ "That tool is not set as repairable...");
+					p.sendMessage(ChatColor.RED + "That tool is not set as repairable...");
 				} else {
 					HashMap<ToolType, Double> toPut = new HashMap<ToolType, Double>();
 					toPut.put(t, c);
 					toolPrices.put(tm, toPut);
 					BenCmd.getNPCFile().saveNPC(this);
-					p.sendMessage(ChatColor.GREEN
-							+ "That tool can now be repaired!");
+					p.sendMessage(ChatColor.GREEN + "That tool can now be repaired!");
 				}
 			}
 			return;
@@ -355,36 +342,30 @@ public class BlacksmithNPC extends NPC implements Clickable {
 					if (c == -1.0) {
 						armorPrices.get(am).remove(t);
 						BenCmd.getNPCFile().saveNPC(this);
-						p.sendMessage(ChatColor.GREEN
-								+ "That armor can no longer be repaired!");
+						p.sendMessage(ChatColor.GREEN + "That armor can no longer be repaired!");
 					} else {
 						armorPrices.get(am).put(t, c);
 						BenCmd.getNPCFile().saveNPC(this);
-						p.sendMessage(ChatColor.GREEN
-								+ "That armor's price has been updated!");
+						p.sendMessage(ChatColor.GREEN + "That armor's price has been updated!");
 					}
 				} else {
 					if (c == -1.0) {
-						p.sendMessage(ChatColor.RED
-								+ "That armor is not set as repairable...");
+						p.sendMessage(ChatColor.RED + "That armor is not set as repairable...");
 					} else {
 						armorPrices.get(am).put(t, c);
 						BenCmd.getNPCFile().saveNPC(this);
-						p.sendMessage(ChatColor.GREEN
-								+ "That armor can now be repaired!");
+						p.sendMessage(ChatColor.GREEN + "That armor can now be repaired!");
 					}
 				}
 			} else {
 				if (c == -1.0) {
-					p.sendMessage(ChatColor.RED
-							+ "That armor is not set as repairable...");
+					p.sendMessage(ChatColor.RED + "That armor is not set as repairable...");
 				} else {
 					HashMap<ArmorType, Double> toPut = new HashMap<ArmorType, Double>();
 					toPut.put(t, c);
 					armorPrices.put(am, toPut);
 					BenCmd.getNPCFile().saveNPC(this);
-					p.sendMessage(ChatColor.GREEN
-							+ "That armor can now be repaired!");
+					p.sendMessage(ChatColor.GREEN + "That armor can now be repaired!");
 				}
 			}
 			return;
@@ -395,51 +376,38 @@ public class BlacksmithNPC extends NPC implements Clickable {
 	@Override
 	public void onRightClick(Player p) {
 		if (p.getItemInHand() == null) {
-			p.sendMessage(ChatColor.RED
-					+ "Right-click with a tool or armor in your hand to have it repaired.");
+			p.sendMessage(ChatColor.RED + "Right-click with a tool or armor in your hand to have it repaired.");
 			return;
 		}
 		int id = p.getItemInHand().getTypeId();
-		if (ToolMaterial.getMaterial(id) == ToolMaterial.NOTATOOL
-				&& ArmorMaterial.getMaterial(id) == ArmorMaterial.NOTARMOR) {
-			p.sendMessage(ChatColor.RED
-					+ "Right-click with a tool or armor in your hand to have it repaired.");
+		if (ToolMaterial.getMaterial(id) == ToolMaterial.NOTATOOL && ArmorMaterial.getMaterial(id) == ArmorMaterial.NOTARMOR) {
+			p.sendMessage(ChatColor.RED + "Right-click with a tool or armor in your hand to have it repaired.");
 			return;
 		}
 		if (canRepair(id)) {
 			if (getRepairPrice(id) == -1.0) {
-				p.sendMessage(ChatColor.RED
-						+ "This blacksmith can't repair that item!");
+				p.sendMessage(ChatColor.RED + "This blacksmith can't repair that item!");
 			} else if (p.getItemInHand().getDurability() == 0) {
-				p.sendMessage(ChatColor.RED
-						+ "That item cannot be repaired further!");
-			} else if (BuyableItem.hasMoney(User.getUser(p),
-					getRepairPrice(id))) {
-				BuyableItem.remMoney(User.getUser(p),
-						getRepairPrice(id));
+				p.sendMessage(ChatColor.RED + "That item cannot be repaired further!");
+			} else if (BuyableItem.hasMoney(User.getUser(p), getRepairPrice(id))) {
+				BuyableItem.remMoney(User.getUser(p), getRepairPrice(id));
 				p.getItemInHand().setDurability((short) 0);
 				p.sendMessage(ChatColor.GREEN + "That item has been repaired!");
 			} else {
-				p.sendMessage(ChatColor.RED + "You must have at least "
-						+ getRepairPrice(id)
-						+ " worth of currency to repair that item!");
+				p.sendMessage(ChatColor.RED + "You must have at least " + getRepairPrice(id) + " worth of currency to repair that item!");
 			}
 		} else {
-			p.sendMessage(ChatColor.RED
-					+ "This blacksmith can't repair that item!");
+			p.sendMessage(ChatColor.RED + "This blacksmith can't repair that item!");
 		}
 	}
 
 	@Override
-	public void onLeftClick(Player p) {
-	}
+	public void onLeftClick(Player p) {}
 
 	@Override
 	public String getValue() {
 		Location l = super.getLocation();
-		return "s|" + l.getWorld().getName() + "," + l.getX() + "," + l.getY()
-				+ "," + l.getZ() + "," + l.getYaw() + "," + l.getPitch() + "|"
-				+ valueOfT(toolPrices) + "|" + valueOfA(armorPrices);
+		return "s|" + l.getWorld().getName() + "," + l.getX() + "," + l.getY() + "," + l.getZ() + "," + l.getYaw() + "," + l.getPitch() + "|" + valueOfT(toolPrices) + "|" + valueOfA(armorPrices);
 	}
 
 	public enum ToolMaterial {

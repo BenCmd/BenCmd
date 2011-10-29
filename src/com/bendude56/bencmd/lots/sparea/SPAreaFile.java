@@ -10,19 +10,17 @@ import org.bukkit.Bukkit;
 import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.BenCmdFile;
 
-
 public class SPAreaFile extends BenCmdFile {
-	private HashMap<Integer, SPArea> areas = new HashMap<Integer, SPArea>();
-	private Integer task;
+	private HashMap<Integer, SPArea>	areas	= new HashMap<Integer, SPArea>();
+	private Integer						task;
 
 	public SPAreaFile() {
 		super("sparea.db", "--BenCmd SPArea File--", true);
 		loadFile();
 		loadAll();
-		task = Bukkit.getServer().getScheduler()
-				.scheduleAsyncRepeatingTask(BenCmd.getPlugin(), new TimeCheck(), 20, 20);
+		task = Bukkit.getServer().getScheduler().scheduleAsyncRepeatingTask(BenCmd.getPlugin(), new TimeCheck(), 20, 20);
 	}
-	
+
 	public void forceStopTimer() {
 		Bukkit.getScheduler().cancelTask(task);
 	}
@@ -36,8 +34,7 @@ public class SPAreaFile extends BenCmdFile {
 			try {
 				id = Integer.parseInt(key);
 			} catch (NumberFormatException e) {
-				BenCmd.log(Level.WARNING, "SPArea " + key
-						+ " is invalid and was ignored.");
+				BenCmd.log(Level.WARNING, "SPArea " + key + " is invalid and was ignored.");
 				continue;
 			}
 			String type = value.split("/")[0];
@@ -54,13 +51,11 @@ public class SPAreaFile extends BenCmdFile {
 				} else if (type.equals("tr")) {
 					areas.put(id, new TRArea(key, value));
 				} else {
-					BenCmd.log(Level.WARNING, "SPArea " + key
-							+ " is invalid and was ignored.");
+					BenCmd.log(Level.WARNING, "SPArea " + key + " is invalid and was ignored.");
 					continue;
 				}
 			} catch (Exception e) {
-				BenCmd.log(Level.WARNING, "SPArea " + key
-						+ " is invalid and was ignored.");
+				BenCmd.log(Level.WARNING, "SPArea " + key + " is invalid and was ignored.");
 				continue;
 			}
 		}

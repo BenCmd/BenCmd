@@ -5,9 +5,8 @@ import org.bukkit.entity.Player;
 
 import com.bendude56.bencmd.*;
 
-
 public class HomeWarps {
-	public HomeList homes;
+	public HomeList	homes;
 
 	public HomeWarps() {
 		homes = new HomeList();
@@ -31,11 +30,9 @@ public class HomeWarps {
 				homes.removeHome(name);
 			}
 			homes.addHome(x, y, z, yaw, pitch, world, name, "");
-			player.sendMessage(ChatColor.GREEN + "Your home #"
-					+ HomeNumber.toString() + " has been successfully set!");
+			player.sendMessage(ChatColor.GREEN + "Your home #" + HomeNumber.toString() + " has been successfully set!");
 		} else {
-			player.sendMessage(ChatColor.RED + "You are only allowed to have "
-					+ maxHomes + " homes on this server.");
+			player.sendMessage(ChatColor.RED + "You are only allowed to have " + maxHomes + " homes on this server.");
 		}
 	}
 
@@ -46,35 +43,28 @@ public class HomeWarps {
 			if (homes.warps.containsKey(name)) {
 				homes.getHome(name).WarpHere(new WarpableUser(player));
 			} else {
-				player.sendMessage(ChatColor.RED
-						+ "You must set that home first!");
+				player.sendMessage(ChatColor.RED + "You must set that home first!");
 			}
 		} else {
-			player.sendMessage(ChatColor.RED + "You are only allowed to have "
-					+ maxHomes + " homes on this server.");
+			player.sendMessage(ChatColor.RED + "You are only allowed to have " + maxHomes + " homes on this server.");
 		}
 	}
 
-	public void WarpOtherHome(Player player, String otherPlayer,
-			Integer HomeNumber) {
+	public void WarpOtherHome(Player player, String otherPlayer, Integer HomeNumber) {
 		int maxHomes = BenCmd.getMainProperties().getInteger("maxHomes", 3);
 		if (HomeNumber <= maxHomes && HomeNumber > 0) {
 			String name = otherPlayer + HomeNumber.toString();
 			if (homes.warps.containsKey(name)) {
 				homes.getHome(name).WarpHere(new WarpableUser(player));
 			} else {
-				player.sendMessage(ChatColor.RED + otherPlayer
-						+ " doesn't have a home #" + HomeNumber.toString()
-						+ "!");
+				player.sendMessage(ChatColor.RED + otherPlayer + " doesn't have a home #" + HomeNumber.toString() + "!");
 			}
 		} else {
-			player.sendMessage(ChatColor.RED + "You are only allowed to have "
-					+ maxHomes + " homes on this server.");
+			player.sendMessage(ChatColor.RED + "You are only allowed to have " + maxHomes + " homes on this server.");
 		}
 	}
 
-	public void SetOtherHome(Player player, String otherPlayer,
-			Integer HomeNumber) {
+	public void SetOtherHome(Player player, String otherPlayer, Integer HomeNumber) {
 		int maxHomes = BenCmd.getMainProperties().getInteger("maxHomes", 3);
 		if (HomeNumber <= maxHomes && HomeNumber > 0) {
 			double x = player.getLocation().getX();
@@ -88,11 +78,9 @@ public class HomeWarps {
 				homes.removeHome(name);
 			}
 			homes.addHome(x, y, z, yaw, pitch, world, name, "");
-			player.sendMessage(ChatColor.GREEN + otherPlayer + "'s home #"
-					+ HomeNumber.toString() + " has been successfully set!");
+			player.sendMessage(ChatColor.GREEN + otherPlayer + "'s home #" + HomeNumber.toString() + " has been successfully set!");
 		} else {
-			player.sendMessage(ChatColor.RED + "You are only allowed to have "
-					+ maxHomes + " homes on this server.");
+			player.sendMessage(ChatColor.RED + "You are only allowed to have " + maxHomes + " homes on this server.");
 		}
 	}
 

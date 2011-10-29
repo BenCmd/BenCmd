@@ -11,13 +11,12 @@ import com.bendude56.bencmd.SpoutConnector.NPCScreen;
 import com.bendude56.bencmd.SpoutConnector.StatusScreen;
 import com.bendude56.bencmd.advanced.npc.Skinnable;
 
-
 public class BenCmdScreenListener extends ScreenListener {
-	
+
 	// Singleton instancing
-	
-	private static BenCmdScreenListener instance = null;
-	
+
+	private static BenCmdScreenListener	instance	= null;
+
 	public static BenCmdScreenListener getInstance() {
 		if (instance == null) {
 			return instance = new BenCmdScreenListener();
@@ -25,33 +24,32 @@ public class BenCmdScreenListener extends ScreenListener {
 			return instance;
 		}
 	}
-	
+
 	public static void destroyInstance() {
 		instance = null;
 	}
-	
+
 	private BenCmdScreenListener() {
 		PluginManager pm = Bukkit.getPluginManager();
-		pm.registerEvent(Event.Type.CUSTOM_EVENT,
-				this, Event.Priority.Normal, BenCmd.getPlugin());
+		pm.registerEvent(Event.Type.CUSTOM_EVENT, this, Event.Priority.Normal, BenCmd.getPlugin());
 	}
-	
+
 	private void buttonNPC(ButtonClickEvent event) {
 		if (event.getButton().getScreen() instanceof NPCScreen) {
-			NPCScreen s = (NPCScreen)event.getButton().getScreen();
+			NPCScreen s = (NPCScreen) event.getButton().getScreen();
 			if (event.getButton().equals(s.ok) && s.ok.isEnabled()) {
 				// Save all changes, then close
 				if (s.npc instanceof Skinnable) {
 					s.npc.setName(s.name.getText());
-					((Skinnable)s.npc).setSkin(s.skin.getText());
+					((Skinnable) s.npc).setSkin(s.skin.getText());
 					s.npc.setHeldItem(new ItemStack(s.item.getTypeId(), s.item.getData()));
 				}
 				s.close();
-			} else if (event.getButton().equals(s.apply) && s.apply.isEnabled()){
+			} else if (event.getButton().equals(s.apply) && s.apply.isEnabled()) {
 				// Save all changes, but stay open
 				if (s.npc instanceof Skinnable) {
 					s.npc.setName(s.name.getText());
-					((Skinnable)s.npc).setSkin(s.skin.getText());
+					((Skinnable) s.npc).setSkin(s.skin.getText());
 					s.npc.setHeldItem(new ItemStack(s.item.getTypeId(), s.item.getData()));
 				}
 			} else if (event.getButton().equals(s.iup) && s.iup.isEnabled()) {
@@ -64,18 +62,18 @@ public class BenCmdScreenListener extends ScreenListener {
 			}
 		}
 	}
-	
+
 	private void buttonStatus(ButtonClickEvent event) {
 		if (event.getButton().getScreen() instanceof StatusScreen) {
-			StatusScreen s = (StatusScreen)event.getButton().getScreen();
+			StatusScreen s = (StatusScreen) event.getButton().getScreen();
 			if (event.getButton().equals(s.close)) {
 				s.close();
 			}
 		}
 	}
-	
+
 	// Split-off events
-	
+
 	public void onButtonClick(ButtonClickEvent event) {
 		buttonNPC(event);
 		buttonStatus(event);

@@ -9,24 +9,20 @@ import org.bukkit.entity.Player;
 
 import com.bendude56.bencmd.BenCmd;
 
-
 public class TRArea extends TimedArea {
 
-	private HashMap<Player, Integer> locked;
-	private List<Player> inside;
-	private int waitTime;
+	private HashMap<Player, Integer>	locked;
+	private List<Player>				inside;
+	private int							waitTime;
 
-	public TRArea(String key, String value)
-			throws NumberFormatException, NullPointerException,
-			IndexOutOfBoundsException {
+	public TRArea(String key, String value) throws NumberFormatException, NullPointerException, IndexOutOfBoundsException {
 		super(key, value.substring(0, value.lastIndexOf('/')) + "/0");
 		locked = new HashMap<Player, Integer>();
 		inside = new ArrayList<Player>();
 		waitTime = Integer.parseInt(value.split("/")[3]);
 	}
 
-	public TRArea(Integer id, Location corner1,
-			Location corner2, Integer minimumTime) {
+	public TRArea(Integer id, Location corner1, Location corner2, Integer minimumTime) {
 		super(id, corner1, corner2, 0);
 		locked = new HashMap<Player, Integer>();
 		inside = new ArrayList<Player>();

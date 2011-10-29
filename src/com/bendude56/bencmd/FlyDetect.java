@@ -14,28 +14,25 @@ import org.bukkit.entity.Player;
 
 import com.bendude56.bencmd.permissions.Action.ActionType;
 
-
 public class FlyDetect {
-	public long lastUpdate;
-	private HashMap<Player, Long> timed;
-	private HashMap<Player, Double> rise;
-	private HashMap<String, Integer> offenders;
-	private List<FlyResponse> responses;
-	private FlyResponse jailResponse;
-	private Integer task;
-	public HashMap<Player, Location> lastL;
+	public long							lastUpdate;
+	private HashMap<Player, Long>		timed;
+	private HashMap<Player, Double>		rise;
+	private HashMap<String, Integer>	offenders;
+	private List<FlyResponse>			responses;
+	private FlyResponse					jailResponse;
+	private Integer						task;
+	public HashMap<Player, Location>	lastL;
 
 	public FlyDetect() {
-		task = Bukkit.getServer().getScheduler()
-				.scheduleAsyncRepeatingTask(BenCmd.getPlugin(), new FlyTimer(), 2, 2);
+		task = Bukkit.getServer().getScheduler().scheduleAsyncRepeatingTask(BenCmd.getPlugin(), new FlyTimer(), 2, 2);
 		lastUpdate = new Date().getTime();
 		timed = new HashMap<Player, Long>();
 		rise = new HashMap<Player, Double>();
 		offenders = new HashMap<String, Integer>();
 		responses = new ArrayList<FlyResponse>();
 		lastL = new HashMap<Player, Location>();
-		for (String s : BenCmd.getMainProperties().getString("flyResponses", "p")
-				.split(",")) {
+		for (String s : BenCmd.getMainProperties().getString("flyResponses", "p").split(",")) {
 			if (s.equalsIgnoreCase("p")) {
 				responses.add(FlyResponse.PULLDOWN);
 			} else if (s.equalsIgnoreCase("r")) {
@@ -70,7 +67,7 @@ public class FlyDetect {
 			BenCmd.log(Level.WARNING, "A jailFlyResponse of 'j' will not produce any action when a person in jail flies, as you cannot double-jail someone!");
 		}
 	}
-	
+
 	public void forceStopTimer() {
 		Bukkit.getScheduler().cancelTask(task);
 	}
@@ -97,59 +94,52 @@ public class FlyDetect {
 
 	public void actionOnce(Player player, FlyResponse action) {
 		switch (action) {
-		case PULLDOWN:
-			Location l = player.getLocation();
-			while (l.getBlock().getType() == Material.AIR) {
-				if (l.getY() <= 0) {
-					l.setY(l.getWorld().getHighestBlockYAt(l) - 1);
-				} else {
-					l.setY(l.getY() - 1);
+			case PULLDOWN:
+				Location l = player.getLocation();
+				while (l.getBlock().getType() == Material.AIR) {
+					if (l.getY() <= 0) {
+						l.setY(l.getWorld().getHighestBlockYAt(l) - 1);
+					} else {
+						l.setY(l.getY() - 1);
+					}
 				}
-			}
-			l.setY(l.getY() + 1);
-			player.teleport(l);
-			BenCmd.log(player.getName()
-					+ " was sent to ground level for flying!");
-			break;
-		case RESPAWN:
-			User.getUser(player).spawn();
-			BenCmd.getWarpCheckpoints().RemovePreWarp(player);
-			player.sendMessage(ChatColor.RED
-					+ "You have been respawned for flying!");
-			BenCmd.log(player.getName() + " was sent to spawn for flying!");
-			lastL.put(player, player.getLocation());
-			break;
-		case KICK:
-			User.getUser(player).kick(
-					"You have been kicked for flying!");
-			BenCmd.log(player.getName() + " was kicked for flying!");
-			break;
-		case JAIL:
-			User user = User.getUser(player);
-			if (user.isJailed() != null) {
-				BenCmd.log(Level.WARNING, "Cannot jail " + user.getName()
-						+ " for flying, because they're already jailed!");
-			} else {
-				BenCmd.getPermissionManager().getActionFile().addAction(user, ActionType.JAIL, 3600000L);
-				User.getUser(player).warpTo(BenCmd.getPermissionManager().getJailWarp());
-				player.sendMessage(ChatColor.RED
-						+ "You have been jailed for 1 hour for flying!");
+				l.setY(l.getY() + 1);
+				player.teleport(l);
+				BenCmd.log(player.getName() + " was sent to ground level for flying!");
+				break;
+			case RESPAWN:
+				User.getUser(player).spawn();
+				BenCmd.getWarpCheckpoints().RemovePreWarp(player);
+				player.sendMessage(ChatColor.RED + "You have been respawned for flying!");
+				BenCmd.log(player.getName() + " was sent to spawn for flying!");
 				lastL.put(player, player.getLocation());
-				BenCmd.log(player.getName()
-						+ " was jailed (1hr) for flying!");
-			}
-			break;
-		case BAN:
-			User u = User.getUser(player);
-			BenCmd.getPermissionManager().getActionFile().addAction(u, ActionType.BAN, 3600000L);
-			u.kick("You have been banned for 1 hour for flying!");
-			BenCmd.log(player.getName() + " was banned (1hr) for flying!");
-			break;
-		case WARN:
-			player.sendMessage(ChatColor.RED
-					+ "WARNING: You have been detected flying! Action may be taken if you continue...");
-			BenCmd.log(player.getName() + " has been warned for flying!");
-			break;
+				break;
+			case KICK:
+				User.getUser(player).kick("You have been kicked for flying!");
+				BenCmd.log(player.getName() + " was kicked for flying!");
+				break;
+			case JAIL:
+				User user = User.getUser(player);
+				if (user.isJailed() != null) {
+					BenCmd.log(Level.WARNING, "Cannot jail " + user.getName() + " for flying, because they're already jailed!");
+				} else {
+					BenCmd.getPermissionManager().getActionFile().addAction(user, ActionType.JAIL, 3600000L);
+					User.getUser(player).warpTo(BenCmd.getPermissionManager().getJailWarp());
+					player.sendMessage(ChatColor.RED + "You have been jailed for 1 hour for flying!");
+					lastL.put(player, player.getLocation());
+					BenCmd.log(player.getName() + " was jailed (1hr) for flying!");
+				}
+				break;
+			case BAN:
+				User u = User.getUser(player);
+				BenCmd.getPermissionManager().getActionFile().addAction(u, ActionType.BAN, 3600000L);
+				u.kick("You have been banned for 1 hour for flying!");
+				BenCmd.log(player.getName() + " was banned (1hr) for flying!");
+				break;
+			case WARN:
+				player.sendMessage(ChatColor.RED + "WARNING: You have been detected flying! Action may be taken if you continue...");
+				BenCmd.log(player.getName() + " has been warned for flying!");
+				break;
 		}
 	}
 
@@ -279,8 +269,7 @@ public class FlyDetect {
 					if (!lastL.containsKey(player)) {
 						lastL.put(player, player.getLocation());
 					} else {
-						riseChange(player, player.getLocation().getY()
-								- lastL.get(player).getY());
+						riseChange(player, player.getLocation().getY() - lastL.get(player).getY());
 						lastL.put(player, player.getLocation());
 					}
 					loc.setY(loc.getY() - 1);
@@ -290,8 +279,7 @@ public class FlyDetect {
 						timeUndetect(player);
 					}
 				}
-			} catch (Exception e) {
-			}
+			} catch (Exception e) {}
 		}
 	}
 }

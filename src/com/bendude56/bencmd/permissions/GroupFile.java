@@ -11,7 +11,7 @@ import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.BenCmdFile;
 
 public class GroupFile extends BenCmdFile {
-	HashMap<String, InternalGroup> groups = new HashMap<String, InternalGroup>();
+	HashMap<String, InternalGroup>	groups	= new HashMap<String, InternalGroup>();
 
 	public GroupFile() {
 		super("groups.db", "--BenCmd Group File--", true);
@@ -49,12 +49,7 @@ public class GroupFile extends BenCmdFile {
 				groups += "," + groupn;
 			}
 		}
-		getFile().put(
-				group.getName(),
-				permissions + "/" + users + "/" + groups + "/"
-						+ group.getPrefix() + "/"
-						+ Integer.toString(group.getColorCode(), 16) + "/"
-						+ group.getLevel().toString());
+		getFile().put(group.getName(), permissions + "/" + users + "/" + groups + "/" + group.getPrefix() + "/" + Integer.toString(group.getColorCode(), 16) + "/" + group.getLevel().toString());
 		if (saveFile)
 			saveFile();
 	}
@@ -84,8 +79,7 @@ public class GroupFile extends BenCmdFile {
 				String prefix;
 				Integer color;
 				Integer level;
-				permissions
-						.addAll(Arrays.asList(value.split("/")[0].split(",")));
+				permissions.addAll(Arrays.asList(value.split("/")[0].split(",")));
 				users.addAll(Arrays.asList(value.split("/")[1].split(",")));
 				groups.addAll(Arrays.asList(value.split("/")[2].split(",")));
 				prefix = value.split("/")[3];
@@ -99,15 +93,14 @@ public class GroupFile extends BenCmdFile {
 				} catch (NumberFormatException e) {
 					level = 0;
 				}
-				this.groups.put(name, new InternalGroup(name,
-						permissions, users, groups, prefix, color, level));
+				this.groups.put(name, new InternalGroup(name, permissions, users, groups, prefix, color, level));
 			} catch (Exception e) {
-				BenCmd.log(Level.SEVERE,  "Group " + name + " failed to load:");
+				BenCmd.log(Level.SEVERE, "Group " + name + " failed to load:");
 				BenCmd.log(e);
 			}
 		}
 	}
-	
+
 	public void saveAll() {
 		for (Map.Entry<String, InternalGroup> e : groups.entrySet()) {
 			updateGroup(e.getValue(), false);

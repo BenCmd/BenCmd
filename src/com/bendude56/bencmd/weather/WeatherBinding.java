@@ -7,12 +7,10 @@ import org.bukkit.entity.Player;
 
 import com.bendude56.bencmd.invtools.InventoryBackend;
 
-
 public class WeatherBinding {
-	private HashMap<Player, Material> bindings = new HashMap<Player, Material>();
+	private HashMap<Player, Material>	bindings	= new HashMap<Player, Material>();
 
-	public WeatherBinding() {
-	}
+	public WeatherBinding() {}
 
 	public void clearBinding(Player player) {
 		if (bindings.containsKey(player)) {

@@ -4,8 +4,8 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 
 public class RedstoneLever {
-	Location l;
-	LeverType f;
+	Location	l;
+	LeverType	f;
 
 	public RedstoneLever(Location loc, LeverType type) {
 		l = loc;

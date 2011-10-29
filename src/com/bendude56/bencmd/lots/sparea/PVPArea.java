@@ -12,44 +12,41 @@ import org.bukkit.inventory.ItemStack;
 import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.invtools.BCItem;
 
-
 public class PVPArea extends MsgArea {
-	private int mm;
-	private DropMode dmn;
-	private DropMode dmc;
-	private DropTable t;
+	private int			mm;
+	private DropMode	dmn;
+	private DropMode	dmc;
+	private DropTable	t;
 
-	public PVPArea(String key, String value)
-			throws NumberFormatException, NullPointerException,
-			IndexOutOfBoundsException {
+	public PVPArea(String key, String value) throws NumberFormatException, NullPointerException, IndexOutOfBoundsException {
 		super(key, value);
 		mm = Integer.parseInt(value.split("/")[5]);
 		String dms = value.split("/")[6];
 		switch (dms.charAt(0)) {
-		case 'd':
-			dmn = DropMode.DROP;
-			break;
-		case 'l':
-			dmn = DropMode.LOSE;
-			break;
-		case 'k':
-			dmn = DropMode.KEEP;
-			break;
-		default:
-			throw new NoSuchElementException("Drop mode (normal) invalid!");
+			case 'd':
+				dmn = DropMode.DROP;
+				break;
+			case 'l':
+				dmn = DropMode.LOSE;
+				break;
+			case 'k':
+				dmn = DropMode.KEEP;
+				break;
+			default:
+				throw new NoSuchElementException("Drop mode (normal) invalid!");
 		}
 		switch (dms.charAt(1)) {
-		case 'd':
-			dmc = DropMode.DROP;
-			break;
-		case 'l':
-			dmc = DropMode.LOSE;
-			break;
-		case 'k':
-			dmc = DropMode.KEEP;
-			break;
-		default:
-			throw new NoSuchElementException("Drop mode (normal) invalid!");
+			case 'd':
+				dmc = DropMode.DROP;
+				break;
+			case 'l':
+				dmc = DropMode.LOSE;
+				break;
+			case 'k':
+				dmc = DropMode.KEEP;
+				break;
+			default:
+				throw new NoSuchElementException("Drop mode (normal) invalid!");
 		}
 		try {
 			t = new DropTable(value.split("/")[7]);
@@ -58,26 +55,16 @@ public class PVPArea extends MsgArea {
 		}
 	}
 
-	public PVPArea(Integer id, Location corner1,
-			Location corner2, String enter, String leave, int minMoney) {
-		super(id, corner1, corner2, ChatColor.RED + enter,
-				ChatColor.RED + leave);
+	public PVPArea(Integer id, Location corner1, Location corner2, String enter, String leave, int minMoney) {
+		super(id, corner1, corner2, ChatColor.RED + enter, ChatColor.RED + leave);
 		mm = minMoney;
 		dmn = DropMode.DROP;
 		dmc = DropMode.DROP;
 		t = new DropTable("");
 	}
 
-	public PVPArea(Integer id, Location corner1,
-			Location corner2, int minMoney) {
-		super(
-				id,
-				corner1,
-				corner2,
-				ChatColor.RED
-						+ "You have entered a PVP Area! Other players can now attack you!",
-				ChatColor.RED
-						+ "You have left a PVP Area! Other players can no longer attack you...");
+	public PVPArea(Integer id, Location corner1, Location corner2, int minMoney) {
+		super(id, corner1, corner2, ChatColor.RED + "You have entered a PVP Area! Other players can now attack you!", ChatColor.RED + "You have left a PVP Area! Other players can no longer attack you...");
 		mm = minMoney;
 		dmn = DropMode.DROP;
 		dmc = DropMode.DROP;
@@ -124,26 +111,26 @@ public class PVPArea extends MsgArea {
 	public String getValue() {
 		String r = "pvp" + super.getInternalValue() + "/" + mm + "/";
 		switch (dmn) {
-		case DROP:
-			r += "d";
-			break;
-		case LOSE:
-			r += "l";
-			break;
-		case KEEP:
-			r += "k";
-			break;
+			case DROP:
+				r += "d";
+				break;
+			case LOSE:
+				r += "l";
+				break;
+			case KEEP:
+				r += "k";
+				break;
 		}
 		switch (dmc) {
-		case DROP:
-			r += "d";
-			break;
-		case LOSE:
-			r += "l";
-			break;
-		case KEEP:
-			r += "k";
-			break;
+			case DROP:
+				r += "d";
+				break;
+			case LOSE:
+				r += "l";
+				break;
+			case KEEP:
+				r += "k";
+				break;
 		}
 		r += "/" + t.getValue();
 		return r;

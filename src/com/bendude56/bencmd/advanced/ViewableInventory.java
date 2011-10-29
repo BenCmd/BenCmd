@@ -12,8 +12,7 @@ public class ViewableInventory extends InventoryPlayer {
 	public static void replInv(CraftPlayer player) {
 		EntityPlayer entityplayer = player.getHandle();
 		entityplayer.inventory = new ViewableInventory(entityplayer.inventory);
-		entityplayer.defaultContainer = new ContainerPlayer(
-				entityplayer.inventory, !entityplayer.world.isStatic);
+		entityplayer.defaultContainer = new ContainerPlayer(entityplayer.inventory, !entityplayer.world.isStatic);
 		entityplayer.activeContainer = entityplayer.defaultContainer;
 		player.setHandle(entityplayer);
 	}
@@ -25,8 +24,7 @@ public class ViewableInventory extends InventoryPlayer {
 		this.itemInHandIndex = inv.itemInHandIndex;
 		this.e = inv.e;
 		this.b(inv.l());
-		inv.d.defaultContainer = new ContainerPlayer(this,
-				!inv.d.world.isStatic);
+		inv.d.defaultContainer = new ContainerPlayer(this, !inv.d.world.isStatic);
 		inv.d.activeContainer = inv.d.defaultContainer;
 	}
 

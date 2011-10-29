@@ -5,10 +5,9 @@ import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-
 public class BankInventory {
-	protected TileEntityBankChest chest;
-	protected String p;
+	protected TileEntityBankChest	chest;
+	protected String				p;
 
 	public BankInventory(String player) {
 		p = player;

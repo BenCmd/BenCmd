@@ -13,8 +13,7 @@ public class UnlimitedDisp extends BenCmdFile {
 	}
 
 	public boolean isUnlimitedDispenser(Location loc) {
-		String property = loc.getBlockX() + "," + loc.getBlockY() + ","
-				+ loc.getBlockZ() + "," + loc.getWorld().getName();
+		String property = loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ() + "," + loc.getWorld().getName();
 		return getFile().containsKey(property);
 	}
 
@@ -25,11 +24,8 @@ public class UnlimitedDisp extends BenCmdFile {
 
 	public BCItem getDispensedItem(Location loc) {
 		try {
-			String property = getFile().getProperty(loc.getBlockX() + ","
-					+ loc.getBlockY() + "," + loc.getBlockZ() + ","
-					+ loc.getWorld().getName());
-			return new BCItem(Material.getMaterial(Integer.parseInt(property
-					.split(":")[0])), Integer.parseInt(property.split(":")[1]));
+			String property = getFile().getProperty(loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ() + "," + loc.getWorld().getName());
+			return new BCItem(Material.getMaterial(Integer.parseInt(property.split(":")[0])), Integer.parseInt(property.split(":")[1]));
 		} catch (NumberFormatException e) {
 			return null;
 		}
@@ -37,8 +33,7 @@ public class UnlimitedDisp extends BenCmdFile {
 
 	public Material getDispensedItem(int x, int y, int z, String world) {
 		try {
-			String property = getFile().getProperty(x + "," + y + "," + z + ","
-					+ world);
+			String property = getFile().getProperty(x + "," + y + "," + z + "," + world);
 			return Material.getMaterial(Integer.parseInt(property));
 		} catch (NumberFormatException e) {
 			return null;
@@ -46,8 +41,7 @@ public class UnlimitedDisp extends BenCmdFile {
 	}
 
 	public void addDispenser(Location loc, String id) {
-		String property = loc.getBlockX() + "," + loc.getBlockY() + ","
-				+ loc.getBlockZ() + "," + loc.getWorld().getName();
+		String property = loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ() + "," + loc.getWorld().getName();
 		getFile().put(property, id);
 		saveFile();
 	}
@@ -59,8 +53,7 @@ public class UnlimitedDisp extends BenCmdFile {
 	}
 
 	public void removeDispenser(Location loc) {
-		String property = loc.getBlockX() + "," + loc.getBlockY() + ","
-				+ loc.getBlockZ() + "," + loc.getWorld().getName();
+		String property = loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ() + "," + loc.getWorld().getName();
 		getFile().remove(property);
 		saveFile();
 	}

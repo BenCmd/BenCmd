@@ -9,16 +9,14 @@ import java.util.logging.LogRecord;
 
 final public class LogFormatter extends Formatter {
 
-	private SimpleDateFormat a = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	private SimpleDateFormat	a	= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-	public LogFormatter() {
-	}
+	public LogFormatter() {}
 
 	public String format(LogRecord logrecord) {
 		StringBuilder stringbuilder = new StringBuilder();
 
-		stringbuilder
-				.append(this.a.format(Long.valueOf(logrecord.getMillis())));
+		stringbuilder.append(this.a.format(Long.valueOf(logrecord.getMillis())));
 		Level level = logrecord.getLevel();
 
 		if (level == Level.FINEST) {

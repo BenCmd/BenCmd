@@ -8,20 +8,17 @@ import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.Commands;
 import com.bendude56.bencmd.User;
 
-
 public class RedstoneCommands implements Commands {
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command command,
-			String commandLabel, String[] args) {
+	public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
 		User user;
 		try {
 			user = User.getUser((Player) sender);
 		} catch (ClassCastException e) {
 			user = User.getUser();
 		}
-		if (commandLabel.equalsIgnoreCase("lever")
-				&& user.hasPerm("bencmd.lever")) {
+		if (commandLabel.equalsIgnoreCase("lever") && user.hasPerm("bencmd.lever")) {
 			Lever(args, user);
 			return true;
 		}
@@ -30,16 +27,11 @@ public class RedstoneCommands implements Commands {
 
 	public void Lever(String[] args, User user) {
 		if (args[0].equalsIgnoreCase("day")) {
-			BenCmd.getRedstoneFile().addLever(new RedstoneLever(((Player) user.getHandle())
-					.getTargetBlock(null, 4).getLocation(),
-					RedstoneLever.LeverType.DAY));
+			BenCmd.getRedstoneFile().addLever(new RedstoneLever(((Player) user.getHandle()).getTargetBlock(null, 4).getLocation(), RedstoneLever.LeverType.DAY));
 		} else if (args[0].equalsIgnoreCase("night")) {
-			BenCmd.getRedstoneFile().addLever(new RedstoneLever(((Player) user.getHandle())
-					.getTargetBlock(null, 4).getLocation(),
-					RedstoneLever.LeverType.NIGHT));
+			BenCmd.getRedstoneFile().addLever(new RedstoneLever(((Player) user.getHandle()).getTargetBlock(null, 4).getLocation(), RedstoneLever.LeverType.NIGHT));
 		} else if (args[0].equalsIgnoreCase("none")) {
-			BenCmd.getRedstoneFile().removeLever(((Player) user.getHandle()).getTargetBlock(null, 4)
-					.getLocation());
+			BenCmd.getRedstoneFile().removeLever(((Player) user.getHandle()).getTargetBlock(null, 4).getLocation());
 		}
 	}
 

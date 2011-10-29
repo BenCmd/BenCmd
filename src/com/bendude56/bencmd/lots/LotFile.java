@@ -11,11 +11,10 @@ import com.bendude56.bencmd.BenCmdFile;
 import com.bendude56.bencmd.User;
 import com.bendude56.bencmd.permissions.PermissionUser;
 
-
 public class LotFile extends BenCmdFile {
 	// TODO Use lot instances instead of Strings!
-	
-	protected HashMap<String, Lot> lots = new HashMap<String, Lot>();
+
+	protected HashMap<String, Lot>	lots	= new HashMap<String, Lot>();
 
 	public LotFile() {
 		super("lots.db", "--BenCmd Lot File--", true);
@@ -28,11 +27,8 @@ public class LotFile extends BenCmdFile {
 		for (Object key : getFile().keySet()) {
 			String LotIDString = (String) key;
 			try {
-				lots.put(LotIDString,
-						new Lot(LotIDString, (String) getFile()
-								.get(LotIDString)));
-			} catch (NumberFormatException e) {
-			}
+				lots.put(LotIDString, new Lot(LotIDString, (String) getFile().get(LotIDString)));
+			} catch (NumberFormatException e) {}
 		}
 	}
 
@@ -45,7 +41,7 @@ public class LotFile extends BenCmdFile {
 		}
 		saveFile();
 	}
-	
+
 	public void saveLot(Lot lot, boolean saveFile) {
 		Location corner1, corner2;
 		corner1 = lot.getCorner1();
@@ -89,8 +85,7 @@ public class LotFile extends BenCmdFile {
 	 *            The opposite corner
 	 * 
 	 */
-	public boolean addLot(String LotID, Location corner1, Location corner2,
-			String owner, String group) {
+	public boolean addLot(String LotID, Location corner1, Location corner2, String owner, String group) {
 		try {
 			// TODO Make a Lot constructor that doesn't require this!
 			String value = "";
@@ -287,11 +282,7 @@ public class LotFile extends BenCmdFile {
 			if (lotExists((LotID + "," + i))) {
 				if (sort > 0) {
 					// TODO Clean this up!
-					this.addLot((LotID + "," + (i - sort)),
-							this.getLot(LotID + "," + i).getCorner1(), this
-									.getLot(LotID + "," + i).getCorner2(), this
-									.getLot(LotID + "," + i).getOwner(), this
-									.getLot(LotID + "," + i).getGroup());
+					this.addLot((LotID + "," + (i - sort)), this.getLot(LotID + "," + i).getCorner1(), this.getLot(LotID + "," + i).getCorner2(), this.getLot(LotID + "," + i).getOwner(), this.getLot(LotID + "," + i).getGroup());
 					this.lots.remove(LotID + "," + i);
 				}
 			} else {
@@ -317,8 +308,7 @@ public class LotFile extends BenCmdFile {
 
 			User user = User.getUser(player);
 
-			if (BenCmd.getMainProperties().getBoolean("useGlobalLot", false)
-					&& !user.hasPerm("bencmd.lot.globalguest")) {
+			if (BenCmd.getMainProperties().getBoolean("useGlobalLot", false) && !user.hasPerm("bencmd.lot.globalguest")) {
 				return false;
 			} else {
 				return true;
@@ -332,13 +322,11 @@ public class LotFile extends BenCmdFile {
 		for (String LotID : lots.keySet()) {
 			if (getLot(LotID).withinLot(location)) {
 				inLot = true;
-				PermissionUser user = PermissionUser.matchUser(
-						player.getName());
+				PermissionUser user = PermissionUser.matchUser(player.getName());
 				if (user == null) {
 					return "noUser";
 				}
-				if (getLot(LotID).isOwner(player)
-						|| user.hasPerm("bencmd.lot.buildall")) {
+				if (getLot(LotID).isOwner(player) || user.hasPerm("bencmd.lot.buildall")) {
 					return getLot(LotID).getLotID();
 				}
 			}

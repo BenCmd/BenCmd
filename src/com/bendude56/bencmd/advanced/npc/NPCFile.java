@@ -14,9 +14,8 @@ import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.BenCmdFile;
 import com.bendude56.bencmd.advanced.npc.BlacksmithNPC.*;
 
-
 public class NPCFile extends BenCmdFile {
-	private HashMap<Integer, NPC> npcs;
+	private HashMap<Integer, NPC>	npcs;
 
 	public NPCFile() {
 		super("npc.db", "--BenCmd NPC File--", true);
@@ -29,9 +28,9 @@ public class NPCFile extends BenCmdFile {
 		loadFile();
 		loadAll();
 	}
-	
+
 	public void reloadNPCs() {
-		for(NPC n : allNPCs()) {
+		for (NPC n : allNPCs()) {
 			n.despawn();
 		}
 		npcs.clear();
@@ -44,54 +43,52 @@ public class NPCFile extends BenCmdFile {
 			String value = getFile().getProperty(key.toString());
 			Location l = null;
 			switch (value.split("\\|")[0].charAt(0)) {
-			case 'b':
-				l = toLocation(value.split("\\|")[1]);
-				npcs.put(key, new BankerNPC(key, l));
-				break;
-			case 'm':
-				l = toLocation(value.split("\\|")[1]);
-				npcs.put(key, new BankManagerNPC(key, l));
-				break;
-			case 's':
-				l = toLocation(value.split("\\|")[1]);
-				HashMap<ToolMaterial, HashMap<ToolType, Double>> t = null;
-				HashMap<ArmorMaterial, HashMap<ArmorType, Double>> a = null;
-				if (value.split("\\|").length == 4) {
-					t = BlacksmithNPC.readTools(value.split("\\|")[2]);
-					a = BlacksmithNPC.readArmor(value.split("\\|")[3]);
-				} else if (value.split("\\|").length == 3) {
-					t = BlacksmithNPC.readTools(value.split("\\|")[2]);
-				}
-				npcs.put(key, new BlacksmithNPC(key, l, t, a));
-				break;
-			case 'n':
-				l = toLocation(value.split("\\|")[1]);
-				String s = value.split("\\|")[2];
-				String n = value.split("\\|")[3];
-				ItemStack item = new ItemStack(Integer.parseInt(value.split("\\|")[4].split(":")[0]), Integer.parseInt(value.split("\\|")[4].split(":")[1]));
-				npcs.put(key, new StaticNPC(n, s, key, l, item, true));
-				break;
-			case 'p':
-				/*l = toLocation(value.split("\\|")[1]);
-				String s1 = value.split("\\|")[2];
-				String n1 = value.split("\\|")[3];
-				ItemStack item1 = new ItemStack(Integer.parseInt(value.split("\\|")[4].split(":")[0]), Integer.parseInt(value.split("\\|")[4].split(":")[1]));
-				String[] slocs = value.split("\\|")[5].split("/");
-				List<Location> locs = new ArrayList<Location>();
-				for (String loc : slocs) {
-					if (!loc.isEmpty()) {
-						locs.add(toLocation(loc));
+				case 'b':
+					l = toLocation(value.split("\\|")[1]);
+					npcs.put(key, new BankerNPC(key, l));
+					break;
+				case 'm':
+					l = toLocation(value.split("\\|")[1]);
+					npcs.put(key, new BankManagerNPC(key, l));
+					break;
+				case 's':
+					l = toLocation(value.split("\\|")[1]);
+					HashMap<ToolMaterial, HashMap<ToolType, Double>> t = null;
+					HashMap<ArmorMaterial, HashMap<ArmorType, Double>> a = null;
+					if (value.split("\\|").length == 4) {
+						t = BlacksmithNPC.readTools(value.split("\\|")[2]);
+						a = BlacksmithNPC.readArmor(value.split("\\|")[3]);
+					} else if (value.split("\\|").length == 3) {
+						t = BlacksmithNPC.readTools(value.split("\\|")[2]);
 					}
-				}
-				if (locs.isEmpty()) {
-					npcs.put(key, new PathableNPC())
-				} else {
-					
-				}
-				break;*/
-			default:
-				BenCmd.log(Level.WARNING, "INVALID NPC TYPE! (ID " + key + ")");
-				break;
+					npcs.put(key, new BlacksmithNPC(key, l, t, a));
+					break;
+				case 'n':
+					l = toLocation(value.split("\\|")[1]);
+					String s = value.split("\\|")[2];
+					String n = value.split("\\|")[3];
+					ItemStack item = new ItemStack(Integer.parseInt(value.split("\\|")[4].split(":")[0]), Integer.parseInt(value.split("\\|")[4].split(":")[1]));
+					npcs.put(key, new StaticNPC(n, s, key, l, item, true));
+					break;
+				case 'p':
+					/*
+					 * l = toLocation(value.split("\\|")[1]); String s1 =
+					 * value.split("\\|")[2]; String n1 = value.split("\\|")[3];
+					 * ItemStack item1 = new
+					 * ItemStack(Integer.parseInt(value.split
+					 * ("\\|")[4].split(":")[0]),
+					 * Integer.parseInt(value.split("\\|")[4].split(":")[1]));
+					 * String[] slocs = value.split("\\|")[5].split("/");
+					 * List<Location> locs = new ArrayList<Location>(); for
+					 * (String loc : slocs) { if (!loc.isEmpty()) {
+					 * locs.add(toLocation(loc)); } } if (locs.isEmpty()) {
+					 * npcs.put(key, new PathableNPC()) } else {
+					 * 
+					 * } break;
+					 */
+				default:
+					BenCmd.log(Level.WARNING, "INVALID NPC TYPE! (ID " + key + ")");
+					break;
 			}
 		}
 	}
@@ -99,9 +96,7 @@ public class NPCFile extends BenCmdFile {
 	public List<NPC> inChunk(Chunk c) {
 		List<NPC> list = new ArrayList<NPC>();
 		for (NPC n : npcs.values()) {
-			if (c.getX() * 16 < n.getLocation().getX() && n.getLocation().getX() < (c.getX() * 16) + 16
-					&& c.getZ() * 16 < n.getLocation().getZ() && n.getLocation().getZ() < (c.getZ() * 16) + 16)
-			{
+			if (c.getX() * 16 < n.getLocation().getX() && n.getLocation().getX() < (c.getX() * 16) + 16 && c.getZ() * 16 < n.getLocation().getZ() && n.getLocation().getZ() < (c.getZ() * 16) + 16) {
 				list.add(n);
 			}
 		}
@@ -138,8 +133,7 @@ public class NPCFile extends BenCmdFile {
 
 	public int nextId() {
 		int i = 0;
-		for (i = 0; npcs.containsKey(i); i++) {
-		}
+		for (i = 0; npcs.containsKey(i); i++) {}
 		return i;
 	}
 
@@ -154,7 +148,7 @@ public class NPCFile extends BenCmdFile {
 		getFile().remove(String.valueOf(npc.getID()));
 		saveFile();
 	}
-	
+
 	public void saveNPC(NPC npc) {
 		saveNPC(npc, true);
 	}
@@ -172,9 +166,9 @@ public class NPCFile extends BenCmdFile {
 		}
 		saveFile();
 	}
-	
+
 	public void tickAll() {
-		for(NPC n : allNPCs()) {
+		for (NPC n : allNPCs()) {
 			n.tick();
 		}
 	}

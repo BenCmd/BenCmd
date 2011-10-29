@@ -7,13 +7,11 @@ import com.bendude56.bencmd.User;
 import com.bendude56.bencmd.permissions.PermissionGroup;
 import com.bendude56.bencmd.warps.Warp;
 
-
 public class HomePortal extends Portal {
 
-	private int num;
+	private int	num;
 
-	public HomePortal(Location location,
-			PermissionGroup allowableGroup, int homeNumber) {
+	public HomePortal(Location location, PermissionGroup allowableGroup, int homeNumber) {
 		super(location, allowableGroup, null);
 		num = homeNumber;
 	}

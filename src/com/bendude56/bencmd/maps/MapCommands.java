@@ -11,18 +11,15 @@ import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.Commands;
 import com.bendude56.bencmd.User;
 
-
 public class MapCommands implements Commands {
-	public boolean onCommand(CommandSender sender, Command command,
-			String commandLabel, String[] args) {
+	public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
 		User user;
 		try {
 			user = User.getUser((Player) sender);
 		} catch (ClassCastException e) {
 			user = User.getUser();
 		}
-		if (commandLabel.equalsIgnoreCase("map")
-				&& (user.hasPerm("bencmd.map.zoom") || user.hasPerm("bencmd.map.center"))) {
+		if (commandLabel.equalsIgnoreCase("map") && (user.hasPerm("bencmd.map.zoom") || user.hasPerm("bencmd.map.center"))) {
 			Map(args, user);
 			return true;
 		}
@@ -36,28 +33,24 @@ public class MapCommands implements Commands {
 		if (((Player) user.getHandle()).getItemInHand().getType() != Material.MAP) {
 			return;
 		}
-		BCMap map = new BCMap(((Player) user.getHandle()).getItemInHand().getDurability(),
-				((CraftWorld) ((Player) user.getHandle()).getWorld()).getHandle());
+		BCMap map = new BCMap(((Player) user.getHandle()).getItemInHand().getDurability(), ((CraftWorld) ((Player) user.getHandle()).getWorld()).getHandle());
 		if (args[0].equalsIgnoreCase("zoomin")) {
 			if (!user.hasPerm("bencmd.map.zoom")) {
-				user.sendMessage(ChatColor.RED
-						+ "You don't have permission to do that!");
+				user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
 				BenCmd.getPlugin().logPermFail();
 				return;
 			}
 			map.zoomIn();
 		} else if (args[0].equalsIgnoreCase("zoomout")) {
 			if (!user.hasPerm("bencmd.map.zoom")) {
-				user.sendMessage(ChatColor.RED
-						+ "You don't have permission to do that!");
+				user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
 				BenCmd.getPlugin().logPermFail();
 				return;
 			}
 			map.zoomOut();
 		} else if (args[0].equalsIgnoreCase("center")) {
 			if (!user.hasPerm("bencmd.map.center")) {
-				user.sendMessage(ChatColor.RED
-						+ "You don't have permission to do that!");
+				user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
 				BenCmd.getPlugin().logPermFail();
 				return;
 			}

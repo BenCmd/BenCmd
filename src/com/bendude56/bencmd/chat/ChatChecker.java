@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.bendude56.bencmd.BenCmd;
 
-
 public class ChatChecker {
 	public static boolean checkBlocked(String message) {
 		List<String> splitChars = new ArrayList<String>();
@@ -18,8 +17,7 @@ public class ChatChecker {
 		splitChars.add("\\)");
 		List<String> splitString = splitBy(splitChars, message);
 		for (String messagePart : splitString) {
-			for (String blockedWord : BenCmd.getMainProperties().getString(
-					"blockedWords", "").split(",")) {
+			for (String blockedWord : BenCmd.getMainProperties().getString("blockedWords", "").split(",")) {
 				if (messagePart.equalsIgnoreCase(blockedWord)) {
 					return true;
 				}
@@ -28,8 +26,7 @@ public class ChatChecker {
 		return false;
 	}
 
-	public static List<String> splitBy(List<String> remainingChars,
-			String originalMessage) {
+	public static List<String> splitBy(List<String> remainingChars, String originalMessage) {
 		List<String> splitMessage = new ArrayList<String>();
 		for (String split : originalMessage.split(remainingChars.get(0))) {
 			splitMessage.add(split);
@@ -39,8 +36,7 @@ public class ChatChecker {
 		if (remainingChars.size() != 1) {
 			remainingChars.remove(0);
 			for (String toSplit : splitMessage) {
-				newSplitMessage
-						.addAll(splitBy(remainingChars, toSplit));
+				newSplitMessage.addAll(splitBy(remainingChars, toSplit));
 			}
 		}
 		return newSplitMessage;

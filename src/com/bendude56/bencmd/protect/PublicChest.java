@@ -8,12 +8,10 @@ import org.bukkit.block.Block;
 
 import com.bendude56.bencmd.permissions.PermissionUser;
 
-
 public class PublicChest extends PublicBlock {
-	private Location blockLocation;
+	private Location	blockLocation;
 
-	public PublicChest(int id, PermissionUser owner,
-			List<PermissionUser> guests, Location loc) {
+	public PublicChest(int id, PermissionUser owner, List<PermissionUser> guests, Location loc) {
 		super(id, owner, guests, loc);
 		blockLocation = loc;
 	}
@@ -23,18 +21,10 @@ public class PublicChest extends PublicBlock {
 	}
 
 	public Block getSecondChest() {
-		Block block1 = new Location(blockLocation.getWorld(),
-				blockLocation.getX() + 1, blockLocation.getY(),
-				blockLocation.getZ()).getBlock();
-		Block block2 = new Location(blockLocation.getWorld(),
-				blockLocation.getX() - 1, blockLocation.getY(),
-				blockLocation.getZ()).getBlock();
-		Block block3 = new Location(blockLocation.getWorld(),
-				blockLocation.getX(), blockLocation.getY(),
-				blockLocation.getZ() + 1).getBlock();
-		Block block4 = new Location(blockLocation.getWorld(),
-				blockLocation.getX(), blockLocation.getY(),
-				blockLocation.getZ() - 1).getBlock();
+		Block block1 = new Location(blockLocation.getWorld(), blockLocation.getX() + 1, blockLocation.getY(), blockLocation.getZ()).getBlock();
+		Block block2 = new Location(blockLocation.getWorld(), blockLocation.getX() - 1, blockLocation.getY(), blockLocation.getZ()).getBlock();
+		Block block3 = new Location(blockLocation.getWorld(), blockLocation.getX(), blockLocation.getY(), blockLocation.getZ() + 1).getBlock();
+		Block block4 = new Location(blockLocation.getWorld(), blockLocation.getX(), blockLocation.getY(), blockLocation.getZ() - 1).getBlock();
 		if (block1.getType() == Material.CHEST) {
 			return block1;
 		} else if (block2.getType() == Material.CHEST) {

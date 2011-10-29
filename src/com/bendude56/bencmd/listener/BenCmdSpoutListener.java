@@ -12,13 +12,12 @@ import org.getspout.spoutapi.player.SpoutPlayer;
 import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.advanced.npc.NPC;
 
-
 public class BenCmdSpoutListener extends SpoutListener {
-	
+
 	// Singleton instancing
-	
-	private static BenCmdSpoutListener instance = null;
-	
+
+	private static BenCmdSpoutListener	instance	= null;
+
 	public static BenCmdSpoutListener getInstance() {
 		if (instance == null) {
 			return instance = new BenCmdSpoutListener();
@@ -26,17 +25,16 @@ public class BenCmdSpoutListener extends SpoutListener {
 			return instance;
 		}
 	}
-	
+
 	public static void destroyInstance() {
 		instance = null;
 	}
-	
+
 	private BenCmdSpoutListener() {
 		PluginManager pm = Bukkit.getPluginManager();
-		pm.registerEvent(Event.Type.CUSTOM_EVENT,
-				this, Event.Priority.Normal, BenCmd.getPlugin());
+		pm.registerEvent(Event.Type.CUSTOM_EVENT, this, Event.Priority.Normal, BenCmd.getPlugin());
 	}
-	
+
 	@Override
 	public void onSpoutCraftEnable(SpoutCraftEnableEvent event) {
 		SpoutPlayer p = SpoutManager.getPlayer(event.getPlayer());

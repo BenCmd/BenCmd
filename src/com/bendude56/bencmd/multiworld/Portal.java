@@ -6,7 +6,6 @@ import org.bukkit.Material;
 import com.bendude56.bencmd.permissions.PermissionGroup;
 import com.bendude56.bencmd.warps.Warp;
 
-
 public class Portal {
 
 	public static Location getHandleBlock(Location loc) {
@@ -14,26 +13,23 @@ public class Portal {
 		loc.setY(loc.getBlockY());
 		loc.setZ(loc.getBlockZ());
 		// Increase to highest possible value that is a portal on the X axis
-		while (new Location(loc.getWorld(), loc.getBlockX() + 1,
-				loc.getBlockY(), loc.getBlockZ()).getBlock().getType() == Material.PORTAL) {
+		while (new Location(loc.getWorld(), loc.getBlockX() + 1, loc.getBlockY(), loc.getBlockZ()).getBlock().getType() == Material.PORTAL) {
 			loc.setX(loc.getBlockX() + 1);
 		}
 		// Increase to highest possible value that is a portal on the Y axis
-		while (new Location(loc.getWorld(), loc.getBlockX(),
-				loc.getBlockY() + 1, loc.getBlockZ()).getBlock().getType() == Material.PORTAL) {
+		while (new Location(loc.getWorld(), loc.getBlockX(), loc.getBlockY() + 1, loc.getBlockZ()).getBlock().getType() == Material.PORTAL) {
 			loc.setY(loc.getBlockY() + 1);
 		}
 		// Increase to highest possible value that is a portal on the Z axis
-		while (new Location(loc.getWorld(), loc.getBlockX(), loc.getBlockY(),
-				loc.getBlockZ() + 1).getBlock().getType() == Material.PORTAL) {
+		while (new Location(loc.getWorld(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ() + 1).getBlock().getType() == Material.PORTAL) {
 			loc.setZ(loc.getBlockZ() + 1);
 		}
 		return loc;
 	}
 
-	private Location location;
-	private PermissionGroup allowed;
-	private Warp warp;
+	private Location		location;
+	private PermissionGroup	allowed;
+	private Warp			warp;
 
 	public Portal(Location location, PermissionGroup allowableGroup, Warp warpTo) {
 		this.location = location;

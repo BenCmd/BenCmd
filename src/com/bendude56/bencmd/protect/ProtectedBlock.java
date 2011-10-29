@@ -7,15 +7,13 @@ import org.bukkit.Location;
 import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.permissions.PermissionUser;
 
-
 public class ProtectedBlock {
-	private int idNumber;
-	private PermissionUser blockOwner;
-	private List<PermissionUser> blockGuests;
-	private Location blockLocation;
+	private int						idNumber;
+	private PermissionUser			blockOwner;
+	private List<PermissionUser>	blockGuests;
+	private Location				blockLocation;
 
-	public ProtectedBlock(int id, PermissionUser owner,
-			List<PermissionUser> guests, Location loc) {
+	public ProtectedBlock(int id, PermissionUser owner, List<PermissionUser> guests, Location loc) {
 		idNumber = id;
 		blockGuests = guests;
 		blockOwner = owner;

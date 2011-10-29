@@ -12,13 +12,11 @@ import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.User;
 import com.bendude56.bencmd.permissions.PermissionUser;
 
-
 public class WarpableUser extends PermissionUser {
-	private CommandSender sender;
-	private boolean isConsole;
+	private CommandSender	sender;
+	private boolean			isConsole;
 
-	public WarpableUser(CommandSender s)
-			throws NullPointerException {
+	public WarpableUser(CommandSender s) throws NullPointerException {
 		super(s.getName(), new ArrayList<String>());
 		sender = s;
 		isConsole = false;
@@ -131,9 +129,7 @@ public class WarpableUser extends PermissionUser {
 		}
 		// Get the spawn location
 
-		new Warp(spawn.getX(), spawn.getY(), spawn.getZ(), spawn.getYaw(),
-				spawn.getPitch(), spawn.getWorld().getName(), spawn.getWorld()
-						.getName() + "-spawn", "").WarpHere(this);
+		new Warp(spawn.getX(), spawn.getY(), spawn.getZ(), spawn.getYaw(), spawn.getPitch(), spawn.getWorld().getName(), spawn.getWorld().getName() + "-spawn", "").WarpHere(this);
 	}
 
 	public WarpableUser getWarpableUser() {
@@ -148,7 +144,7 @@ public class WarpableUser extends PermissionUser {
 			sender.sendMessage(message);
 		}
 	}
-	
+
 	public boolean isServer() {
 		return super.isServer() || !(sender instanceof Player);
 	}

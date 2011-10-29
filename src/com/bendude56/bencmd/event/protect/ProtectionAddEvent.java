@@ -6,8 +6,8 @@ import com.bendude56.bencmd.User;
 import com.bendude56.bencmd.protect.ProtectedBlock;
 
 public final class ProtectionAddEvent extends ProtectionEvent implements Cancellable {
-	private static final long serialVersionUID = 0L;
-	private boolean cancelled = false;
+	private static final long	serialVersionUID	= 0L;
+	private boolean				cancelled			= false;
 
 	public ProtectionAddEvent(ProtectedBlock protection, User user) {
 		super("ProtectionAddEvent", protection, user);

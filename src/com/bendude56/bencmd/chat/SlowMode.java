@@ -8,33 +8,30 @@ import org.bukkit.ChatColor;
 
 import com.bendude56.bencmd.BenCmd;
 
-
 public class SlowMode {
-	
-	private static SlowMode instance = null;
-	
+
+	private static SlowMode	instance	= null;
+
 	public static SlowMode getInstance() {
 		if (instance == null) {
-			return instance = new SlowMode(BenCmd.getMainProperties().getInteger(
-				"slowTime", 1000));
+			return instance = new SlowMode(BenCmd.getMainProperties().getInteger("slowTime", 1000));
 		} else {
 			return instance;
 		}
 	}
-	
+
 	public static SlowMode newUnhandledInstance() {
-		return new SlowMode(BenCmd.getMainProperties().getInteger(
-				"slowTime", 1000));
+		return new SlowMode(BenCmd.getMainProperties().getInteger("slowTime", 1000));
 	}
-	
+
 	public static void destroyInstance() {
 		instance = null;
 	}
-	
-	private boolean enabled;
-	private Integer defTime;
-	private Integer origDefTime;
-	public HashMap<String, Long> playerList = new HashMap<String, Long>();
+
+	private boolean					enabled;
+	private Integer					defTime;
+	private Integer					origDefTime;
+	public HashMap<String, Long>	playerList	= new HashMap<String, Long>();
 
 	public int getDefTime() {
 		return defTime;
@@ -56,10 +53,7 @@ public class SlowMode {
 		if (BenCmd.getMainProperties().getBoolean("channelsEnabled", false)) {
 			return;
 		}
-		Bukkit.broadcastMessage(
-				ChatColor.GRAY + "Slow mode has been enabled. You must wait "
-						+ (defTime / 1000)
-						+ " seconds between each chat message.");
+		Bukkit.broadcastMessage(ChatColor.GRAY + "Slow mode has been enabled. You must wait " + (defTime / 1000) + " seconds between each chat message.");
 	}
 
 	public boolean isEnabled() {
@@ -70,9 +64,7 @@ public class SlowMode {
 		defTime = defaultTime;
 		origDefTime = defaultTime;
 		enabled = false;
-		Bukkit.getScheduler()
-				.scheduleAsyncRepeatingTask(BenCmd.getPlugin(), new SlowModeTimer(), 2,
-						2);
+		Bukkit.getScheduler().scheduleAsyncRepeatingTask(BenCmd.getPlugin(), new SlowModeTimer(), 2, 2);
 	}
 
 	public void playerAdd(String player) {

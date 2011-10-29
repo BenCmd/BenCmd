@@ -3,9 +3,9 @@ package com.bendude56.bencmd.lots.sparea;
 import java.util.Random;
 
 public class DropInfo {
-	private int c;
-	private int min;
-	private int max;
+	private int	c;
+	private int	min;
+	private int	max;
 
 	public DropInfo(int chance, int minAmt, int maxAmt) {
 		if (c == 0) { // Cannot have a change of 1/0!!

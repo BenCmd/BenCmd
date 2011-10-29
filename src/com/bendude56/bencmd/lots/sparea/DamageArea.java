@@ -7,17 +7,13 @@ import org.bukkit.entity.Player;
 
 import com.bendude56.bencmd.User;
 
-
 public class DamageArea extends TimedArea {
 
-	public DamageArea(String key, String value)
-			throws NumberFormatException, NullPointerException,
-			IndexOutOfBoundsException {
+	public DamageArea(String key, String value) throws NumberFormatException, NullPointerException, IndexOutOfBoundsException {
 		super(key, value);
 	}
 
-	public DamageArea(Integer id, Location corner1,
-			Location corner2, Integer minimumTime) {
+	public DamageArea(Integer id, Location corner1, Location corner2, Integer minimumTime) {
 		super(id, corner1, corner2, minimumTime);
 	}
 

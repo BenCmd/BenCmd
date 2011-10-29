@@ -11,11 +11,9 @@ import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.Commands;
 import com.bendude56.bencmd.User;
 
-
 public class AdvancedCommands implements Commands {
 
-	public boolean onCommand(CommandSender sender, Command command,
-			String commandLabel, String[] args) {
+	public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
 		User user;
 		try {
 			user = User.getUser((Player) sender);
@@ -25,8 +23,7 @@ public class AdvancedCommands implements Commands {
 		if (commandLabel.equalsIgnoreCase("write")) {
 			Write(args, user);
 			return true;
-		} else if (commandLabel.equalsIgnoreCase("inv")
-				&& user.hasPerm("bencmd.inv.look")) {
+		} else if (commandLabel.equalsIgnoreCase("inv") && user.hasPerm("bencmd.inv.look")) {
 			Inv(args, user);
 			return true;
 		}
@@ -36,14 +33,11 @@ public class AdvancedCommands implements Commands {
 	public void Write(String[] args, User user) {
 		// TODO Log writing on bookcases as if they were signs
 		if (((Player) user.getHandle()).getTargetBlock(null, 4).getType() != Material.BOOKSHELF) {
-			user.sendMessage(ChatColor.RED
-					+ "You're not pointing at a bookshelf!");
+			user.sendMessage(ChatColor.RED + "You're not pointing at a bookshelf!");
 			return;
 		}
-		if (!BenCmd.getLots().canBuildHere(((Player) user.getHandle()), ((Player) user.getHandle())
-				.getTargetBlock(null, 4).getLocation())) {
-			user.sendMessage(ChatColor.RED
-					+ "You're not allowed to do that here!");
+		if (!BenCmd.getLots().canBuildHere(((Player) user.getHandle()), ((Player) user.getHandle()).getTargetBlock(null, 4).getLocation())) {
+			user.sendMessage(ChatColor.RED + "You're not allowed to do that here!");
 			return;
 		}
 		String message = "";
@@ -55,10 +49,8 @@ public class AdvancedCommands implements Commands {
 				message += " " + word;
 			}
 		}
-		BenCmd.getShelfFile().addShelf(new Shelf(((Player) user.getHandle())
-				.getTargetBlock(null, 4).getLocation(), message));
-		user.sendMessage(ChatColor.GREEN
-				+ "Magically, writing appears on that shelf.");
+		BenCmd.getShelfFile().addShelf(new Shelf(((Player) user.getHandle()).getTargetBlock(null, 4).getLocation(), message));
+		user.sendMessage(ChatColor.GREEN + "Magically, writing appears on that shelf.");
 	}
 
 	public void Inv(String[] args, User user) {
@@ -79,7 +71,6 @@ public class AdvancedCommands implements Commands {
 			ViewableInventory.replInv((CraftPlayer) target.getHandle());
 		}
 		BenCmd.log(user.getName() + " has opened " + args[0] + "'s inventory!");
-		((CraftPlayer) user.getHandle()).getHandle().a(
-				((CraftPlayer) target.getHandle()).getHandle().inventory);
+		((CraftPlayer) user.getHandle()).getHandle().a(((CraftPlayer) target.getHandle()).getHandle().inventory);
 	}
 }

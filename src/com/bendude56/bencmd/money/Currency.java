@@ -2,8 +2,7 @@ package com.bendude56.bencmd.money;
 
 public class Currency extends BuyableItem {
 
-	public Currency(Integer ID, Integer Damage, Double Cost, Integer Supply,
-			Integer SupplyDemand, PriceFile instance) {
+	public Currency(Integer ID, Integer Damage, Double Cost, Integer Supply, Integer SupplyDemand, PriceFile instance) {
 		super(ID, Damage, Cost, Supply, SupplyDemand, instance);
 	}
 

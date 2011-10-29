@@ -15,16 +15,14 @@ import com.bendude56.bencmd.User;
 import com.bendude56.bencmd.permissions.Action.ActionType;
 import com.bendude56.bencmd.permissions.ActionLogEntry.ActionLogType;
 
-
 public class ActionFile extends BenCmdFile {
-	protected HashMap<Integer, Action> actions;
+	protected HashMap<Integer, Action>	actions;
 
 	public ActionFile() {
 		super("action.db", "--BenCmd Action File--", true);
 		this.loadFile();
 		this.loadAll();
-		Bukkit.getScheduler().scheduleSyncRepeatingTask(BenCmd.getPlugin(),
-				new ActionTask(), 1, 1);
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(BenCmd.getPlugin(), new ActionTask(), 1, 1);
 	}
 
 	public void loadAll() {
@@ -36,19 +34,16 @@ public class ActionFile extends BenCmdFile {
 			try {
 				id = Integer.parseInt(key);
 			} catch (NumberFormatException e) {
-				BenCmd.log(Level.WARNING, "In the actions file, " + key
-						+ " is not a valid integer!");
+				BenCmd.log(Level.WARNING, "In the actions file, " + key + " is not a valid integer!");
 				continue;
 			}
 			if (value.length != 3) {
-				BenCmd.log(Level.WARNING, "In the actions file, an entry must contain exactly 2 slashes! (Entry: "
-								+ key + ")");
+				BenCmd.log(Level.WARNING, "In the actions file, an entry must contain exactly 2 slashes! (Entry: " + key + ")");
 				continue;
 			}
 			PermissionUser user = PermissionUser.matchUser(value[0]);
 			if (user == null) {
-				BenCmd.log(Level.WARNING, "In the actions file, " + value[0]
-						+ " is not a valid user! (Entry: " + key + ")");
+				BenCmd.log(Level.WARNING, "In the actions file, " + value[0] + " is not a valid user! (Entry: " + key + ")");
 				continue;
 			}
 			ActionType action;
@@ -61,23 +56,20 @@ public class ActionFile extends BenCmdFile {
 			} else if (value[1].equals("l")) {
 				action = ActionType.LEAVEJAIL;
 			} else {
-				BenCmd.log(Level.WARNING, "In the actions file, " + value[1]
-						+ " is not a valid action type! (Entry: " + key + ")");
+				BenCmd.log(Level.WARNING, "In the actions file, " + value[1] + " is not a valid action type! (Entry: " + key + ")");
 				continue;
 			}
 			long endTime;
 			try {
 				endTime = Long.parseLong(value[2]);
 			} catch (NumberFormatException e) {
-				BenCmd.log(Level.WARNING, "In the actions file, " + value[2]
-						+ " cannot be converted into an integer! (Entry: "
-						+ key + ")");
+				BenCmd.log(Level.WARNING, "In the actions file, " + value[2] + " cannot be converted into an integer! (Entry: " + key + ")");
 				continue;
 			}
 			actions.put(id, new Action(id, user, action, endTime));
 		}
 	}
-	
+
 	public void saveAll() {
 		for (Map.Entry<Integer, Action> e : actions.entrySet()) {
 			updateAction(e.getValue(), false);
@@ -135,21 +127,18 @@ public class ActionFile extends BenCmdFile {
 		if (duration == -1) {
 			this.updateAction(new Action(this.nextId(), user, action, -1), true);
 		} else {
-			this.updateAction(new Action(this.nextId(), user, action,
-					new Date().getTime() + duration), true);
+			this.updateAction(new Action(this.nextId(), user, action, new Date().getTime() + duration), true);
 		}
 	}
 
 	private int nextId() {
 		int i;
-		for (i = 0; getFile().containsKey(String.valueOf(i)); i++) { }
+		for (i = 0; getFile().containsKey(String.valueOf(i)); i++) {}
 		return i;
 	}
 
 	public void updateAction(Action action, boolean saveFile) {
-		getFile().put(String.valueOf(action.getId()),
-				action.getUser().getName() + "/" + action.getActionLetter()
-						+ "/" + String.valueOf(action.getExpiry()));
+		getFile().put(String.valueOf(action.getId()), action.getUser().getName() + "/" + action.getActionLetter() + "/" + String.valueOf(action.getExpiry()));
 		actions.put(action.getId(), action);
 		if (saveFile)
 			saveFile();
@@ -163,7 +152,7 @@ public class ActionFile extends BenCmdFile {
 		actions.remove(action.getId());
 		saveFile();
 	}
-	
+
 	public class ActionTask implements Runnable {
 
 		public void run() {
@@ -174,21 +163,18 @@ public class ActionFile extends BenCmdFile {
 						BenCmd.getPermissionManager().getActionLog().log(new ActionLogEntry(ActionLogType.UNJAIL_AUTO, action.getUser().getName(), "N/A"));
 						User user2;
 						if ((user2 = User.matchUser(action.getUser().getName())) == null) {
-							addAction(action.getUser(),
-									ActionType.LEAVEJAIL, -1);
+							addAction(action.getUser(), ActionType.LEAVEJAIL, -1);
 						} else {
 							user2.spawn();
-							user2.sendMessage(ChatColor.GREEN
-									+ "You've been unjailed!");
+							user2.sendMessage(ChatColor.GREEN + "You've been unjailed!");
 						}
 					} else if (action.getActionType() == ActionType.ALLMUTE) {
 						BenCmd.getPermissionManager().getActionLog().log(new ActionLogEntry(ActionLogType.UNMUTE_AUTO, action.getUser().getName(), "N/A"));
 						User user2;
 						if ((user2 = User.matchUser(action.getUser().getName())) != null) {
-							user2.sendMessage(ChatColor.GREEN
-									+ "You've been unmuted!");
+							user2.sendMessage(ChatColor.GREEN + "You've been unmuted!");
 						}
-					} else if (action.getActionType() == ActionType.BAN){
+					} else if (action.getActionType() == ActionType.BAN) {
 						BenCmd.getPermissionManager().getActionLog().log(new ActionLogEntry(ActionLogType.UNBAN_AUTO, action.getUser().getName(), "N/A"));
 					}
 					removeAction(action);

@@ -26,13 +26,12 @@ import com.bendude56.bencmd.multiworld.Portal;
 import com.bendude56.bencmd.protect.ProtectedBlock;
 import com.bendude56.bencmd.warps.Warp;
 
-
 public class BenCmdBlockListener extends BlockListener {
-	
+
 	// Singleton instancing
-	
-	private static BenCmdBlockListener instance = null;
-	
+
+	private static BenCmdBlockListener	instance	= null;
+
 	public static BenCmdBlockListener getInstance() {
 		if (instance == null) {
 			return instance = new BenCmdBlockListener();
@@ -40,31 +39,24 @@ public class BenCmdBlockListener extends BlockListener {
 			return instance;
 		}
 	}
-	
+
 	public static void destroyInstance() {
 		instance = null;
 	}
-	
+
 	private BenCmdBlockListener() {
 		PluginManager pm = Bukkit.getPluginManager();
-		pm.registerEvent(Event.Type.BLOCK_BREAK, this,
-				Event.Priority.Lowest, BenCmd.getPlugin());
-		pm.registerEvent(Event.Type.BLOCK_PLACE, this,
-				Event.Priority.Lowest, BenCmd.getPlugin());
-		pm.registerEvent(Event.Type.BLOCK_IGNITE, this,
-				Event.Priority.Highest, BenCmd.getPlugin());
-		pm.registerEvent(Event.Type.BLOCK_BURN, this,
-				Event.Priority.Highest, BenCmd.getPlugin());
-		pm.registerEvent(Event.Type.SIGN_CHANGE, this,
-				Event.Priority.Monitor, BenCmd.getPlugin());
-		pm.registerEvent(Event.Type.REDSTONE_CHANGE, this,
-				Event.Priority.Monitor, BenCmd.getPlugin());
+		pm.registerEvent(Event.Type.BLOCK_BREAK, this, Event.Priority.Lowest, BenCmd.getPlugin());
+		pm.registerEvent(Event.Type.BLOCK_PLACE, this, Event.Priority.Lowest, BenCmd.getPlugin());
+		pm.registerEvent(Event.Type.BLOCK_IGNITE, this, Event.Priority.Highest, BenCmd.getPlugin());
+		pm.registerEvent(Event.Type.BLOCK_BURN, this, Event.Priority.Highest, BenCmd.getPlugin());
+		pm.registerEvent(Event.Type.SIGN_CHANGE, this, Event.Priority.Monitor, BenCmd.getPlugin());
+		pm.registerEvent(Event.Type.REDSTONE_CHANGE, this, Event.Priority.Monitor, BenCmd.getPlugin());
 	}
-	
+
 	private void bookshelfBreak(BlockBreakEvent event) {
 		for (int i = 0; i < BenCmd.getPlugin().graves.size(); i++) {
-			if (BenCmd.getPlugin().graves.get(i).getBlock().getLocation()
-					.equals(event.getBlock().getLocation())) {
+			if (BenCmd.getPlugin().graves.get(i).getBlock().getLocation().equals(event.getBlock().getLocation())) {
 				event.setCancelled(true);
 				BenCmd.getPlugin().graves.get(i).destroyBy(event.getPlayer());
 				return;
@@ -78,84 +70,70 @@ public class BenCmdBlockListener extends BlockListener {
 			BenCmd.getShelfFile().remShelf(shelf.getLocation());
 		}
 	}
-	
+
 	private void dcudDestroy(BlockBreakEvent event) {
 		if (event.isCancelled()) {
 			return;
 		}
 		Block block = event.getBlock();
 		Player player = event.getPlayer();
-		if (block.getType() == Material.DISPENSER
-				&& BenCmd.getDispensers().isUnlimitedDispenser(block.getLocation())) {
+		if (block.getType() == Material.DISPENSER && BenCmd.getDispensers().isUnlimitedDispenser(block.getLocation())) {
 			if (!User.getUser(player).hasPerm("bencmd.inv.unlimited.remove")) {
-				player.sendMessage(ChatColor.RED
-						+ "You can't destroy unlimited dispensers!");
+				player.sendMessage(ChatColor.RED + "You can't destroy unlimited dispensers!");
 				event.setCancelled(true);
 				return;
 			}
 			BenCmd.getDispensers().removeDispenser(block.getLocation());
-			player.sendMessage(ChatColor.RED
-					+ "You destroyed an unlimited dispenser!");
+			player.sendMessage(ChatColor.RED + "You destroyed an unlimited dispenser!");
 		}
-		if (block.getType() == Material.CHEST
-				&& BenCmd.getDisposals().isDisposalChest(block.getLocation())) {
+		if (block.getType() == Material.CHEST && BenCmd.getDisposals().isDisposalChest(block.getLocation())) {
 			if (!User.getUser(player).hasPerm("bencmd.inv.disposal.remove")) {
-				player.sendMessage(ChatColor.RED
-						+ "You can't destroy disposal chests!");
+				player.sendMessage(ChatColor.RED + "You can't destroy disposal chests!");
 				event.setCancelled(true);
 				return;
 			}
 			event.setCancelled(true);
 			new CraftChest(block).getInventory().clear();
 			block.setType(Material.AIR);
-			block.getWorld().dropItemNaturally(block.getLocation(),
-					new ItemStack(Material.CHEST, 1));
+			block.getWorld().dropItemNaturally(block.getLocation(), new ItemStack(Material.CHEST, 1));
 			BenCmd.getDisposals().removeDispenser(block.getLocation());
-			player.sendMessage(ChatColor.RED
-					+ "You destroyed a disposal chest!");
+			player.sendMessage(ChatColor.RED + "You destroyed a disposal chest!");
 		}
 	}
 
 	private void unlDispRedstone(BlockRedstoneEvent event) {
-		if (!(event.getOldCurrent() == 0) || !(event.getNewCurrent() > 0)
-				|| !BenCmd.getMainProperties().getBoolean("redstoneUnlDisp", true)) {
+		if (!(event.getOldCurrent() == 0) || !(event.getNewCurrent() > 0) || !BenCmd.getMainProperties().getBoolean("redstoneUnlDisp", true)) {
 			return;
 		}
 		Block block = event.getBlock();
 		Block block2;
-		block2 = block.getWorld().getBlockAt(block.getX() + 1, block.getY(),
-				block.getZ());
+		block2 = block.getWorld().getBlockAt(block.getX() + 1, block.getY(), block.getZ());
 		if (InventoryBackend.getInstance().TryDispense(block2)) {
 			return;
 		}
-		block2 = block.getWorld().getBlockAt(block.getX() - 1, block.getY(),
-				block.getZ());
+		block2 = block.getWorld().getBlockAt(block.getX() - 1, block.getY(), block.getZ());
 		if (InventoryBackend.getInstance().TryDispense(block2)) {
 			return;
 		}
-		block2 = block.getWorld().getBlockAt(block.getX(), block.getY(),
-				block.getZ() + 1);
+		block2 = block.getWorld().getBlockAt(block.getX(), block.getY(), block.getZ() + 1);
 		if (InventoryBackend.getInstance().TryDispense(block2)) {
 			return;
 		}
-		block2 = block.getWorld().getBlockAt(block.getX(), block.getY(),
-				block.getZ() - 1);
+		block2 = block.getWorld().getBlockAt(block.getX(), block.getY(), block.getZ() - 1);
 		if (InventoryBackend.getInstance().TryDispense(block2)) {
 			return;
 		}
-		block2 = block.getWorld().getBlockAt(block.getX(), block.getY() + 1,
-				block.getZ());
+		block2 = block.getWorld().getBlockAt(block.getX(), block.getY() + 1, block.getZ());
 		if (InventoryBackend.getInstance().TryDispense(block2)) {
 			return;
 		}
 	}
-	
+
 	private void lotBreakCheck(BlockBreakEvent event) {
 		Player player = event.getPlayer();
 		User user = User.getUser(player);
 
-		if (player.getItemInHand().getType() == Material.WOOD_SPADE
-				&& user.hasPerm("bencmd.lot.select")) {
+		if (player.getItemInHand().getType() == Material.WOOD_SPADE && user.hasPerm("bencmd.lot.select")) {
 			event.setCancelled(true);
 		}
 
@@ -173,19 +151,16 @@ public class BenCmdBlockListener extends BlockListener {
 			player.sendMessage("You cannot build here.");
 		}
 	}
-	
+
 	private void newPortalCheck(BlockPlaceEvent event) {
 		Warp warpTo;
-		if (event.getBlockPlaced().getType() == Material.PORTAL
-				&& (warpTo = BenCmd.getWarps().getWarp(BenCmd.getMainProperties()
-						.getString("defaultPortalWarp", "portals"))) != null) {
-			BenCmd.getPortalFile().addPortal(new Portal(Portal.getHandleBlock(event
-					.getBlockPlaced().getLocation()), null, warpTo));
+		if (event.getBlockPlaced().getType() == Material.PORTAL && (warpTo = BenCmd.getWarps().getWarp(BenCmd.getMainProperties().getString("defaultPortalWarp", "portals"))) != null) {
+			BenCmd.getPortalFile().addPortal(new Portal(Portal.getHandleBlock(event.getBlockPlaced().getLocation()), null, warpTo));
 		}
 	}
 
 	private void burnCheck(BlockBurnEvent event) {
-		
+
 		if (BenCmd.getMainProperties().getBoolean("allowFireDamage", false)) {
 			return;
 		}
@@ -209,19 +184,12 @@ public class BenCmdBlockListener extends BlockListener {
 		}
 		try {
 			User user = User.getUser(event.getPlayer());
-			Material material = ((Player) user.getHandle())
-					.getWorld()
-					.getBlockAt(event.getBlock().getX(),
-							event.getBlock().getY() - 1,
-							event.getBlock().getZ()).getType();
+			Material material = ((Player) user.getHandle()).getWorld().getBlockAt(event.getBlock().getX(), event.getBlock().getY() - 1, event.getBlock().getZ()).getType();
 			if (event.getBlock().getLocation().getBlockY() <= 0) {
 				event.setCancelled(true);
 				return;
 			}
-			if (!user.hasPerm("bencmd.fire.netherrack", false)
-					&& material != Material.AIR
-					&& material != Material.NETHERRACK
-					&& ((Player) user.getHandle()).getTargetBlock(null, 4).getType() != Material.NETHERRACK) {
+			if (!user.hasPerm("bencmd.fire.netherrack", false) && material != Material.AIR && material != Material.NETHERRACK && ((Player) user.getHandle()).getTargetBlock(null, 4).getType() != Material.NETHERRACK) {
 				event.setCancelled(true);
 			}
 			if (user.hasPerm("bencmd.fire.all")) {
@@ -237,9 +205,7 @@ public class BenCmdBlockListener extends BlockListener {
 		Location l = event.getBlock().getLocation();
 		Player p = event.getPlayer();
 		String[] ls = event.getLines();
-		BenCmd.log(p.getDisplayName() + " put a sign at (" + l.getBlockX()
-				+ ", " + l.getBlockY() + ", " + l.getBlockZ() + ", "
-				+ l.getWorld().getName() + "):");
+		BenCmd.log(p.getDisplayName() + " put a sign at (" + l.getBlockX() + ", " + l.getBlockY() + ", " + l.getBlockZ() + ", " + l.getWorld().getName() + "):");
 		int firstLine = -1;
 		for (int i = 0; i < ls.length; i++) {
 			String line = ls[i];
@@ -257,27 +223,24 @@ public class BenCmdBlockListener extends BlockListener {
 			if (BenCmd.isSpoutConnected() && BenCmd.getSpoutConnector().enabled(((Player) spy.getHandle()))) {
 				BenCmd.getSpoutConnector().sendNotification(((Player) spy.getHandle()), "Sign by " + p.getName(), ls[firstLine], Material.SIGN);
 			} else {
-				spy.sendMessage(ChatColor.GRAY + p.getName() + " placed a sign: "
-						+ ls[firstLine]);
+				spy.sendMessage(ChatColor.GRAY + p.getName() + " placed a sign: " + ls[firstLine]);
 			}
-			
+
 		}
 	}
-	
+
 	private void lockDestroyCheck(BlockBreakEvent event) {
 		if (event.isCancelled()) {
 			return;
 		}
 		int id;
 		ProtectedBlock block;
-		if ((id = BenCmd.getProtections().getProtection(event.getBlock()
-				.getLocation())) != -1) {
+		if ((id = BenCmd.getProtections().getProtection(event.getBlock().getLocation())) != -1) {
 			block = BenCmd.getProtections().getProtection(id);
 			User user = User.getUser(event.getPlayer());
 			if (!block.canChange(user)) {
 				event.setCancelled(true);
-				user.sendMessage(ChatColor.RED
-						+ "That block is protected from use!  Use /protect info for more information...");
+				user.sendMessage(ChatColor.RED + "That block is protected from use!  Use /protect info for more information...");
 			} else {
 				BenCmd.getProtections().removeProtection(block.getLocation());
 				Location loc = block.getLocation();
@@ -285,46 +248,40 @@ public class BenCmdBlockListener extends BlockListener {
 				String x = String.valueOf(loc.getX());
 				String y = String.valueOf(loc.getY());
 				String z = String.valueOf(loc.getZ());
-				BenCmd.log(user.getDisplayName() + " removed "
-						+ block.getOwner().getName()
-						+ "'s protected chest (id: "
-						+ String.valueOf(block.GetId()) + ") at position (" + w
-						+ "," + x + "," + y + "," + z + ")");
-				user.sendMessage(ChatColor.GREEN
-						+ "The protection on that block was removed.");
+				BenCmd.log(user.getDisplayName() + " removed " + block.getOwner().getName() + "'s protected chest (id: " + String.valueOf(block.GetId()) + ") at position (" + w + "," + x + "," + y + "," + z + ")");
+				user.sendMessage(ChatColor.GREEN + "The protection on that block was removed.");
 			}
 		}
 	}
-	
+
 	// Split-off events
-	
+
 	public void onBlockBreak(BlockBreakEvent event) {
 		lotBreakCheck(event);
 		bookshelfBreak(event);
 		dcudDestroy(event);
 		lockDestroyCheck(event);
 	}
-	
+
 	public void onBlockPlace(BlockPlaceEvent event) {
 		lotPlaceCheck(event);
 		newPortalCheck(event);
 	}
-	
+
 	public void onBlockIgnite(BlockIgniteEvent event) {
 		igniteCheck(event);
 	}
-	
+
 	public void onBlockBurn(BlockBurnEvent event) {
 		burnCheck(event);
 	}
-	
+
 	public void onSignChange(SignChangeEvent event) {
 		signLog(event);
 	}
-	
+
 	public void onBlockRedstoneChange(BlockRedstoneEvent event) {
 		unlDispRedstone(event);
 	}
-	
-	
+
 }

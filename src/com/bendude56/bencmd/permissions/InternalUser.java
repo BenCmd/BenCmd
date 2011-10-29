@@ -6,13 +6,11 @@ import java.util.List;
 import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.InvalidPermissionError;
 
-
 public class InternalUser {
-	private String name;
-	private List<String> permissions;
+	private String			name;
+	private List<String>	permissions;
 
-	protected InternalUser(String name,
-			List<String> permissions) {
+	protected InternalUser(String name, List<String> permissions) {
 		this.name = name;
 		this.permissions = permissions;
 	}
@@ -20,9 +18,9 @@ public class InternalUser {
 	public String getName() {
 		return name;
 	}
-	
+
 	public boolean isDev() {
-		for (String dev : BenCmd.devs){
+		for (String dev : BenCmd.devs) {
 			if (dev.equalsIgnoreCase(name)) {
 				return true;
 			}
@@ -34,8 +32,7 @@ public class InternalUser {
 		List<String> perms = new ArrayList<String>();
 		perms.addAll(permissions);
 		if (testGroup) {
-			for (PermissionGroup group : BenCmd.getPermissionManager().getGroupFile()
-					.getAllUserGroups(this)) {
+			for (PermissionGroup group : BenCmd.getPermissionManager().getGroupFile().getAllUserGroups(this)) {
 				perms.addAll(group.getInternal().getPermissions(false));
 			}
 		}
@@ -69,8 +66,7 @@ public class InternalUser {
 		boolean isAllowed = false;
 		List<String> perms = new ArrayList<String>(permissions);
 		if (testGroup) {
-			for (PermissionGroup group : BenCmd.getPermissionManager().getGroupFile()
-					.getAllUserGroups(this)) {
+			for (PermissionGroup group : BenCmd.getPermissionManager().getGroupFile().getAllUserGroups(this)) {
 				perms.addAll(group.getInternal().getPermissions(true));
 			}
 		}
@@ -125,8 +121,7 @@ public class InternalUser {
 		if (isServer()) {
 			return false;
 		}
-		for (PermissionGroup group2 : BenCmd.getPermissionManager().getGroupFile()
-				.getAllUserGroups(this)) {
+		for (PermissionGroup group2 : BenCmd.getPermissionManager().getGroupFile().getAllUserGroups(this)) {
 			if (group.getName().equals(group2.getName())) {
 				return true;
 			}

@@ -11,33 +11,25 @@ import org.bukkit.entity.Player;
 import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.User;
 
-
 public class Lot {
-	
-	// TODO Privatize these and add getters/setters where needed!
-	Location corner1;
-	Location corner2;
-	String owner;
-	String group;
-	List<String> guests;
-	String LotID;
-	String SubID;
-	String FullID;
-	org.bukkit.World World;
 
-	public Lot(String key, String value)
-			throws NumberFormatException {
+	// TODO Privatize these and add getters/setters where needed!
+	Location			corner1;
+	Location			corner2;
+	String				owner;
+	String				group;
+	List<String>		guests;
+	String				LotID;
+	String				SubID;
+	String				FullID;
+	org.bukkit.World	World;
+
+	public Lot(String key, String value) throws NumberFormatException {
 		LotID = key.split(",")[0];
 		SubID = key.split(",")[1];
 		FullID = key;
-		corner1 = new Location(
-				Bukkit.getWorld(value.split(",")[3]),
-				Integer.parseInt(value.split(",")[0]), Integer.parseInt(value
-						.split(",")[1]), Integer.parseInt(value.split(",")[2]));
-		corner2 = new Location(
-				Bukkit.getWorld(value.split(",")[7]),
-				Integer.parseInt(value.split(",")[4]), Integer.parseInt(value
-						.split(",")[5]), Integer.parseInt(value.split(",")[6]));
+		corner1 = new Location(Bukkit.getWorld(value.split(",")[3]), Integer.parseInt(value.split(",")[0]), Integer.parseInt(value.split(",")[1]), Integer.parseInt(value.split(",")[2]));
+		corner2 = new Location(Bukkit.getWorld(value.split(",")[7]), Integer.parseInt(value.split(",")[4]), Integer.parseInt(value.split(",")[5]), Integer.parseInt(value.split(",")[6]));
 		World = corner1.getWorld();
 		if (SubID.equalsIgnoreCase("0")) {
 			owner = value.split(",")[8];
@@ -50,7 +42,7 @@ public class Lot {
 			}
 		}
 	}
-	
+
 	// TODO Constructor that takes variables directly
 
 	public Location getCorner1() {
@@ -106,12 +98,7 @@ public class Lot {
 		if (this.getWorld() != loc.getWorld()) {
 			return false;
 		}
-		if (BenCmd.getLots().isBetween(corner1.getBlockX(), loc.getBlockX(),
-				corner2.getBlockX())
-				&& BenCmd.getLots().isBetween(corner1.getBlockZ(), loc.getBlockZ(),
-						corner2.getBlockZ())
-				&& BenCmd.getLots().isBetween(corner1.getBlockY(), loc.getBlockY(),
-						corner2.getBlockY())) {
+		if (BenCmd.getLots().isBetween(corner1.getBlockX(), loc.getBlockX(), corner2.getBlockX()) && BenCmd.getLots().isBetween(corner1.getBlockZ(), loc.getBlockZ(), corner2.getBlockZ()) && BenCmd.getLots().isBetween(corner1.getBlockY(), loc.getBlockY(), corner2.getBlockY())) {
 			return true;
 		} else
 			return false;
@@ -149,9 +136,7 @@ public class Lot {
 		} else {
 			group = getGroup();
 		}
-		if (isOwner(player) || isGuest(player.getName())
-				|| user.hasPerm("bencmd.lot.buildall")
-				|| user.inGroup(BenCmd.getPermissionManager().getGroupFile().getGroup(group))) {
+		if (isOwner(player) || isGuest(player.getName()) || user.hasPerm("bencmd.lot.buildall") || user.inGroup(BenCmd.getPermissionManager().getGroupFile().getGroup(group))) {
 			return true;
 		} else
 			return false;
@@ -213,8 +198,7 @@ public class Lot {
 				user.sendMessage("Lot " + LotID + " has no guests.");
 				return;
 			} else {
-				user.sendMessage("Lot " + LotID
-						+ " has the following guests: (" + guests.size() + ")");
+				user.sendMessage("Lot " + LotID + " has the following guests: (" + guests.size() + ")");
 			}
 			String list = "";
 			int i = 0, r = 0;

@@ -10,15 +10,12 @@ import org.bukkit.entity.Player;
 
 import com.bendude56.bencmd.BenCmd;
 
-
 public class SPArea {
-	private Location corner1;
-	private Location corner2;
-	private Integer AreaId;
+	private Location	corner1;
+	private Location	corner2;
+	private Integer		AreaId;
 
-	public SPArea(String key, String value)
-			throws NumberFormatException, NullPointerException,
-			IndexOutOfBoundsException {
+	public SPArea(String key, String value) throws NumberFormatException, NullPointerException, IndexOutOfBoundsException {
 		AreaId = Integer.parseInt(key);
 		String[] splt = value.split("/")[1].split(",");
 		int x, y, z;
@@ -36,8 +33,7 @@ public class SPArea {
 		corner2 = new Location(w, x, y, z);
 	}
 
-	protected SPArea(Integer id, Location corner1,
-			Location corner2) {
+	protected SPArea(Integer id, Location corner1, Location corner2) {
 		AreaId = id;
 		this.corner1 = corner1;
 		this.corner2 = corner2;
@@ -56,24 +52,17 @@ public class SPArea {
 	}
 
 	public boolean insideArea(Location loc) {
-		return (BenCmd.getLots().isBetween(corner1.getBlockX(), loc.getBlockX(),
-				corner2.getBlockX())
-				&& BenCmd.getLots().isBetween(corner1.getBlockZ(), loc.getBlockZ(),
-						corner2.getBlockZ()) && BenCmd.getLots().isBetween(
-				corner1.getBlockY(), loc.getBlockY(), corner2.getBlockY()));
+		return (BenCmd.getLots().isBetween(corner1.getBlockX(), loc.getBlockX(), corner2.getBlockX()) && BenCmd.getLots().isBetween(corner1.getBlockZ(), loc.getBlockZ(), corner2.getBlockZ()) && BenCmd.getLots().isBetween(corner1.getBlockY(), loc.getBlockY(), corner2.getBlockY()));
 	}
 
 	public String getValue() {
-		throw new UnsupportedOperationException(
-				"getValue() cannot be used on a generic area!");
+		throw new UnsupportedOperationException("getValue() cannot be used on a generic area!");
 	}
 
 	protected String getInternalValue() {
 		String value = "";
-		value += "/" + corner1.getBlockX() + "," + corner1.getBlockY() + ","
-				+ corner1.getBlockZ() + "," + corner1.getWorld().getName();
-		value += "/" + corner2.getBlockX() + "," + corner2.getBlockY() + ","
-				+ corner2.getBlockZ() + "," + corner2.getWorld().getName();
+		value += "/" + corner1.getBlockX() + "," + corner1.getBlockY() + "," + corner1.getBlockZ() + "," + corner1.getWorld().getName();
+		value += "/" + corner2.getBlockX() + "," + corner2.getBlockY() + "," + corner2.getBlockZ() + "," + corner2.getWorld().getName();
 		value += "/";
 		return value;
 	}

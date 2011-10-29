@@ -9,8 +9,8 @@ import java.util.Properties;
 import java.util.logging.Level;
 
 public class PluginProperties extends Properties {
-	private static final long serialVersionUID = 0L;
-	private String proFile;
+	private static final long	serialVersionUID	= 0L;
+	private String				proFile;
 
 	public PluginProperties(String propertiesFile) {
 		proFile = propertiesFile;
@@ -95,8 +95,7 @@ public class PluginProperties extends Properties {
 	public boolean getBoolean(String key, boolean value) {
 		if (containsKey(key)) {
 			String boolString = getProperty(key);
-			return (boolString.length() > 0)
-					&& (boolString.toLowerCase().charAt(0) == 't');
+			return (boolString.length() > 0) && (boolString.toLowerCase().charAt(0) == 't');
 		}
 		put(key, value ? "true" : "false");
 		saveFile("-BenCmd Main Config-");

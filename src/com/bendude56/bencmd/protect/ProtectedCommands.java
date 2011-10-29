@@ -17,11 +17,9 @@ import com.bendude56.bencmd.event.protect.ProtectionRemoveEvent;
 import com.bendude56.bencmd.permissions.PermissionUser;
 import com.bendude56.bencmd.protect.ProtectFile.ProtectionType;
 
-
 public class ProtectedCommands implements Commands {
 
-	public boolean onCommand(CommandSender sender, Command command,
-			String commandLabel, String[] args) {
+	public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
 		User user;
 		try {
 			user = User.getUser((Player) sender);
@@ -43,8 +41,7 @@ public class ProtectedCommands implements Commands {
 			if (args.length >= 1) {
 				owner = " " + args[0];
 			}
-			Bukkit
-					.dispatchCommand(sender, "protect public" + owner);
+			Bukkit.dispatchCommand(sender, "protect public" + owner);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("unlock")) {
 			Bukkit.dispatchCommand(sender, "protect remove");
@@ -54,16 +51,14 @@ public class ProtectedCommands implements Commands {
 			if (args.length >= 1) {
 				guest = " " + args[0];
 			}
-			Bukkit.dispatchCommand(sender,
-					"protect addguest" + guest);
+			Bukkit.dispatchCommand(sender, "protect addguest" + guest);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("unshare")) {
 			String guest = "";
 			if (args.length >= 1) {
 				guest = " " + args[0];
 			}
-			Bukkit.dispatchCommand(sender,
-					"protect remguest" + guest);
+			Bukkit.dispatchCommand(sender, "protect remguest" + guest);
 			return true;
 		}
 		return false;
@@ -75,8 +70,7 @@ public class ProtectedCommands implements Commands {
 			return;
 		}
 		if (args.length == 0) {
-			user.sendMessage(ChatColor.YELLOW
-					+ "Proper use is /protect {add|public|remove|info|setowner|addguest|remguest}");
+			user.sendMessage(ChatColor.YELLOW + "Proper use is /protect {add|public|remove|info|setowner|addguest|remguest}");
 			return;
 		}
 		if (args[0].equalsIgnoreCase("add")) {
@@ -94,15 +88,14 @@ public class ProtectedCommands implements Commands {
 		} else if (args[0].equalsIgnoreCase("remguest")) {
 			RemGuest(args, user);
 		} else {
-			user.sendMessage(ChatColor.YELLOW
-					+ "Proper use is /protect {add|remove|info|setowner|addguest|remguest}");
+			user.sendMessage(ChatColor.YELLOW + "Proper use is /protect {add|remove|info|setowner|addguest|remguest}");
 		}
 	}
-	
+
 	public boolean Lock(Block l, User u, boolean p) {
 		return Lock(l, u, u, p);
 	}
-	
+
 	public boolean Lock(Block l, User u, PermissionUser o, boolean p) {
 		Material m = l.getType();
 		ProtectionType t;
@@ -132,35 +125,26 @@ public class ProtectedCommands implements Commands {
 			BenCmd.getProtections().removeProtection(id);
 			return false;
 		}
-		u.sendMessage(ChatColor.GREEN
-				+ "Protected block created with owner "
-				+ o.getName() + ".");
+		u.sendMessage(ChatColor.GREEN + "Protected block created with owner " + o.getName() + ".");
 		String w = l.getWorld().getName();
 		String x = String.valueOf(l.getX());
 		String y = String.valueOf(l.getY());
 		String z = String.valueOf(l.getX());
-		BenCmd.log(u.getDisplayName()
-				+ " created protected block (id: " + id
-				+ ") with owner " + o.getName()
-				+ " at position (" + w + "," + x + "," + y + "," + z
-				+ ")");
+		BenCmd.log(u.getDisplayName() + " created protected block (id: " + id + ") with owner " + o.getName() + " at position (" + w + "," + x + "," + y + "," + z + ")");
 		for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-			if (User.getUser(onlinePlayer)
-					.hasPerm("bencmd.lock.hearall") && BenCmd.isSpoutConnected()) {
+			if (User.getUser(onlinePlayer).hasPerm("bencmd.lock.hearall") && BenCmd.isSpoutConnected()) {
 				BenCmd.getSpoutConnector().sendNotification(onlinePlayer, ((p) ? "Public: " : "Lock: ") + u.getName(), "Protection ID: " + id, m);
 			}
 		}
 		return true;
 	}
-	
+
 	public boolean Unlock(Block l, User u) {
 		int id;
-		if ((id = BenCmd.getProtections().getProtection(l
-				.getLocation())) != -1) {
+		if ((id = BenCmd.getProtections().getProtection(l.getLocation())) != -1) {
 			ProtectedBlock block = BenCmd.getProtections().getProtection(id);
 			if (!block.canChange(u) && !u.hasPerm("bencmd.lock.remove")) {
-				u.sendMessage(ChatColor.RED
-						+ "You don't have permission to remove the protection on that block!");
+				u.sendMessage(ChatColor.RED + "You don't have permission to remove the protection on that block!");
 				return false;
 			} else {
 				ProtectionRemoveEvent event = new ProtectionRemoveEvent(block, u);
@@ -173,19 +157,12 @@ public class ProtectedCommands implements Commands {
 				String x = String.valueOf(l.getX());
 				String y = String.valueOf(l.getY());
 				String z = String.valueOf(l.getZ());
-				BenCmd.log(u.getDisplayName() + " removed "
-						+ block.getOwner().getName()
-						+ "'s protected chest (id: "
-						+ String.valueOf(block.GetId())
-						+ ") at position (" + w + "," + x + "," + y
-						+ "," + z + ")");
-				u.sendMessage(ChatColor.GREEN
-						+ "The protection on that block was removed.");
+				BenCmd.log(u.getDisplayName() + " removed " + block.getOwner().getName() + "'s protected chest (id: " + String.valueOf(block.GetId()) + ") at position (" + w + "," + x + "," + y + "," + z + ")");
+				u.sendMessage(ChatColor.GREEN + "The protection on that block was removed.");
 				for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-					if (User.getUser(onlinePlayer)
-							.hasPerm("bencmd.lock.hearall") && BenCmd.isSpoutConnected()) {
+					if (User.getUser(onlinePlayer).hasPerm("bencmd.lock.hearall") && BenCmd.isSpoutConnected()) {
 						Material m = l.getType();
-						if (m == Material.WOODEN_DOOR){
+						if (m == Material.WOODEN_DOOR) {
 							m = Material.WOOD_DOOR;
 						}
 						BenCmd.getSpoutConnector().sendNotification(onlinePlayer, "Unlock: " + u.getName(), "Protection ID: " + id, m);
@@ -194,25 +171,22 @@ public class ProtectedCommands implements Commands {
 				return true;
 			}
 		} else {
-			u.sendMessage(ChatColor.RED
-					+ "You aren't pointing at a protected block!");
+			u.sendMessage(ChatColor.RED + "You aren't pointing at a protected block!");
 			return false;
 		}
 	}
-	
+
 	public void Info(Block b, User u) {
 		int id;
-		if ((id = BenCmd.getProtections().getProtection(b
-				.getLocation())) != -1) {
+		if ((id = BenCmd.getProtections().getProtection(b.getLocation())) != -1) {
 			ProtectedBlock block = BenCmd.getProtections().getProtection(id);
 			Info(block, u);
 		} else {
-			u.sendMessage(ChatColor.RED
-					+ "You aren't pointing at a protected block!");
+			u.sendMessage(ChatColor.RED + "You aren't pointing at a protected block!");
 			return;
 		}
 	}
-	
+
 	public void Info(ProtectedBlock b, User u) {
 		String owner = b.getOwner().getName();
 		String id = String.valueOf(b.GetId());
@@ -234,8 +208,7 @@ public class ProtectedCommands implements Commands {
 
 	public void AddProtect(String[] args, User user) {
 		if (!user.hasPerm("bencmd.lock.create")) {
-			user.sendMessage(ChatColor.RED
-					+ "You don't have permission to do that!");
+			user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
 			BenCmd.getPlugin().logPermFail();
 			return;
 		}
@@ -250,15 +223,13 @@ public class ProtectedCommands implements Commands {
 				user.sendMessage(ChatColor.RED + "That user doesn't exist!");
 			}
 		} else {
-			user.sendMessage(ChatColor.YELLOW
-					+ "Proper use is /protect add [owner]");
+			user.sendMessage(ChatColor.YELLOW + "Proper use is /protect add [owner]");
 		}
 	}
 
 	public void PublicProtect(String[] args, User user) {
 		if (!user.hasPerm("bencmd.lock.public")) {
-			user.sendMessage(ChatColor.RED
-					+ "You don't have permission to do that!");
+			user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
 			BenCmd.getPlugin().logPermFail();
 			return;
 		}
@@ -273,8 +244,7 @@ public class ProtectedCommands implements Commands {
 				user.sendMessage(ChatColor.RED + "That user doesn't exist!");
 			}
 		} else {
-			user.sendMessage(ChatColor.YELLOW
-					+ "Proper use is /protect protect [owner]");
+			user.sendMessage(ChatColor.YELLOW + "Proper use is /protect protect [owner]");
 		}
 	}
 
@@ -287,8 +257,7 @@ public class ProtectedCommands implements Commands {
 			try {
 				id = Integer.parseInt(args[1]);
 			} catch (NumberFormatException e) {
-				user.sendMessage(ChatColor.RED + "'" + args[1]
-						+ "' is not a number...");
+				user.sendMessage(ChatColor.RED + "'" + args[1] + "' is not a number...");
 				return;
 			}
 			ProtectedBlock block = BenCmd.getProtections().getProtection(id);
@@ -298,15 +267,13 @@ public class ProtectedCommands implements Commands {
 			}
 			Unlock(block.getLocation().getWorld().getBlockAt(block.getLocation()), user);
 		} else {
-			user.sendMessage(ChatColor.YELLOW
-					+ "Proper use is /protect remove [ID]");
+			user.sendMessage(ChatColor.YELLOW + "Proper use is /protect remove [ID]");
 		}
 	}
 
 	public void InfoProtect(String[] args, User user) {
 		if (!user.hasPerm("bencmd.lock.info")) {
-			user.sendMessage(ChatColor.RED
-					+ "You don't have permission to do that!");
+			user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
 			BenCmd.getPlugin().logPermFail();
 			return;
 		}
@@ -327,7 +294,7 @@ public class ProtectedCommands implements Commands {
 				user.sendMessage(ChatColor.RED + "No protection exists with id " + id + "!");
 			}
 		} else {
-			
+
 		}
 	}
 
@@ -335,17 +302,14 @@ public class ProtectedCommands implements Commands {
 		Block pointedAt = ((Player) user.getHandle()).getTargetBlock(null, 4);
 		ProtectedBlock block;
 		if (args.length == 2) {
-			if ((block = BenCmd.getProtections().getProtection(BenCmd.getProtections()
-					.getProtection(pointedAt.getLocation()))) != null) {
+			if ((block = BenCmd.getProtections().getProtection(BenCmd.getProtections().getProtection(pointedAt.getLocation()))) != null) {
 				if (!block.canChange(user) && !user.hasPerm("bencmd.lock.edit")) {
-					user.sendMessage(ChatColor.RED
-							+ "You don't have permission to edit the protection on that block!");
+					user.sendMessage(ChatColor.RED + "You don't have permission to edit the protection on that block!");
 					return;
 				}
 				PermissionUser newOwner;
 				if ((newOwner = PermissionUser.matchUser(args[1])) == null) {
-					user.sendMessage(ChatColor.RED
-							+ "That player doesn't exist!");
+					user.sendMessage(ChatColor.RED + "That player doesn't exist!");
 					return;
 				}
 				ProtectionEditEvent event = new ProtectionEditEvent(block, user, ChangeType.SET_OWNER, newOwner);
@@ -353,32 +317,23 @@ public class ProtectedCommands implements Commands {
 				if (event.isCancelled()) {
 					return;
 				}
-				BenCmd.log(user.getDisplayName()
-						+ " has changed the owner of "
-						+ block.getOwner().getName()
-						+ "'s protected block (id: " + block.GetId() + ") to "
-						+ args[1]);
-				user.sendMessage(ChatColor.GREEN
-						+ "That protected block now belongs to "
-						+ newOwner.getName());
+				BenCmd.log(user.getDisplayName() + " has changed the owner of " + block.getOwner().getName() + "'s protected block (id: " + block.GetId() + ") to " + args[1]);
+				user.sendMessage(ChatColor.GREEN + "That protected block now belongs to " + newOwner.getName());
 				BenCmd.getProtections().changeOwner(block.GetId(), newOwner);
 			} else {
-				user.sendMessage(ChatColor.RED
-						+ "You aren't pointing at a protected block!");
+				user.sendMessage(ChatColor.RED + "You aren't pointing at a protected block!");
 			}
 		} else if (args.length == 3) {
 			int id;
 			try {
 				id = Integer.parseInt(args[2]);
 			} catch (NumberFormatException e) {
-				user.sendMessage(ChatColor.RED + args[2]
-						+ "Cannot be converted into a number...");
+				user.sendMessage(ChatColor.RED + args[2] + "Cannot be converted into a number...");
 				return;
 			}
 			block = BenCmd.getProtections().getProtection(id);
 			if (!block.canChange(user) && !user.hasPerm("bencmd.lock.edit")) {
-				user.sendMessage(ChatColor.RED
-						+ "You don't have permission to edit the protection on that block!");
+				user.sendMessage(ChatColor.RED + "You don't have permission to edit the protection on that block!");
 				return;
 			}
 			PermissionUser newOwner;
@@ -391,17 +346,11 @@ public class ProtectedCommands implements Commands {
 			if (event.isCancelled()) {
 				return;
 			}
-			BenCmd.log(user.getDisplayName()
-					+ " has changed the owner of " + block.getOwner().getName()
-					+ "'s protected block (id: " + block.GetId() + ") to "
-					+ args[1]);
-			user.sendMessage(ChatColor.GREEN
-					+ "That protected block now belongs to "
-					+ newOwner.getName());
+			BenCmd.log(user.getDisplayName() + " has changed the owner of " + block.getOwner().getName() + "'s protected block (id: " + block.GetId() + ") to " + args[1]);
+			user.sendMessage(ChatColor.GREEN + "That protected block now belongs to " + newOwner.getName());
 			BenCmd.getProtections().changeOwner(block.GetId(), newOwner);
 		} else {
-			user.sendMessage(ChatColor.YELLOW
-					+ "Proper use is /protect setowner <Owner> [ID]");
+			user.sendMessage(ChatColor.YELLOW + "Proper use is /protect setowner <Owner> [ID]");
 		}
 	}
 
@@ -409,17 +358,14 @@ public class ProtectedCommands implements Commands {
 		Block pointedAt = ((Player) user.getHandle()).getTargetBlock(null, 4);
 		ProtectedBlock block;
 		if (args.length == 2) {
-			if ((block = BenCmd.getProtections().getProtection(BenCmd.getProtections()
-					.getProtection(pointedAt.getLocation()))) != null) {
+			if ((block = BenCmd.getProtections().getProtection(BenCmd.getProtections().getProtection(pointedAt.getLocation()))) != null) {
 				if (!block.canChange(user) && !user.hasPerm("bencmd.lock.edit")) {
-					user.sendMessage(ChatColor.RED
-							+ "You don't have permission to edit the protection on that block!");
+					user.sendMessage(ChatColor.RED + "You don't have permission to edit the protection on that block!");
 					return;
 				}
 				PermissionUser newOwner;
 				if ((newOwner = PermissionUser.matchUser(args[1])) == null) {
-					user.sendMessage(ChatColor.RED
-							+ "That player doesn't exist!");
+					user.sendMessage(ChatColor.RED + "That player doesn't exist!");
 					return;
 				}
 				ProtectionEditEvent event = new ProtectionEditEvent(block, user, ChangeType.ADD_GUEST, newOwner);
@@ -427,31 +373,24 @@ public class ProtectedCommands implements Commands {
 				if (event.isCancelled()) {
 					return;
 				}
-				BenCmd.log(user.getDisplayName() + " has added "
-						+ newOwner.getName() + " to the guest list of "
-						+ block.getOwner().getName()
-						+ "'s protected block (id: " + block.GetId() + ")");
-				user.sendMessage(ChatColor.GREEN + newOwner.getName()
-						+ " now has guest access to that block.");
+				BenCmd.log(user.getDisplayName() + " has added " + newOwner.getName() + " to the guest list of " + block.getOwner().getName() + "'s protected block (id: " + block.GetId() + ")");
+				user.sendMessage(ChatColor.GREEN + newOwner.getName() + " now has guest access to that block.");
 				BenCmd.getProtections().addGuest(block.GetId(), newOwner);
 			} else {
-				user.sendMessage(ChatColor.RED
-						+ "You aren't pointing at a protected block!");
+				user.sendMessage(ChatColor.RED + "You aren't pointing at a protected block!");
 			}
 		} else if (args.length == 3) {
-			
+
 			int id;
 			try {
 				id = Integer.parseInt(args[2]);
 			} catch (NumberFormatException e) {
-				user.sendMessage(ChatColor.RED + args[2]
-						+ "Cannot be converted into a number...");
+				user.sendMessage(ChatColor.RED + args[2] + "Cannot be converted into a number...");
 				return;
 			}
 			if ((block = BenCmd.getProtections().getProtection(id)) != null) {
 				if (!block.canChange(user) && !user.hasPerm("bencmd.lock.edit")) {
-					user.sendMessage(ChatColor.RED
-							+ "You don't have permission to edit the protection on that block!");
+					user.sendMessage(ChatColor.RED + "You don't have permission to edit the protection on that block!");
 					return;
 				}
 				block = BenCmd.getProtections().getProtection(id);
@@ -465,17 +404,12 @@ public class ProtectedCommands implements Commands {
 				if (event.isCancelled()) {
 					return;
 				}
-				BenCmd.log(user.getDisplayName() + " has added "
-						+ newOwner.getName() + " to the guest list of "
-						+ block.getOwner().getName() + "'s protected block (id: "
-						+ block.GetId() + ")");
-				user.sendMessage(ChatColor.GREEN + newOwner.getName()
-						+ " now has guest access to that block.");
+				BenCmd.log(user.getDisplayName() + " has added " + newOwner.getName() + " to the guest list of " + block.getOwner().getName() + "'s protected block (id: " + block.GetId() + ")");
+				user.sendMessage(ChatColor.GREEN + newOwner.getName() + " now has guest access to that block.");
 				BenCmd.getProtections().addGuest(block.GetId(), newOwner);
 			}
 		} else {
-			user.sendMessage(ChatColor.YELLOW
-					+ "Proper use is /protect addguest <Guest> [ID]");
+			user.sendMessage(ChatColor.YELLOW + "Proper use is /protect addguest <Guest> [ID]");
 		}
 	}
 
@@ -483,17 +417,14 @@ public class ProtectedCommands implements Commands {
 		Block pointedAt = ((Player) user.getHandle()).getTargetBlock(null, 4);
 		ProtectedBlock block;
 		if (args.length == 2) {
-			if ((block = BenCmd.getProtections().getProtection(BenCmd.getProtections()
-					.getProtection(pointedAt.getLocation()))) != null) {
+			if ((block = BenCmd.getProtections().getProtection(BenCmd.getProtections().getProtection(pointedAt.getLocation()))) != null) {
 				if (!block.canChange(user) && !user.hasPerm("bencmd.lock.edit")) {
-					user.sendMessage(ChatColor.RED
-							+ "You don't have permission to edit the protection on that block!");
+					user.sendMessage(ChatColor.RED + "You don't have permission to edit the protection on that block!");
 					return;
 				}
 				PermissionUser newOwner;
 				if ((newOwner = PermissionUser.matchUser(args[1])) == null) {
-					user.sendMessage(ChatColor.RED
-							+ "That player doesn't exist!");
+					user.sendMessage(ChatColor.RED + "That player doesn't exist!");
 					return;
 				}
 				ProtectionEditEvent event = new ProtectionEditEvent(block, user, ChangeType.REMOVE_GUEST, newOwner);
@@ -501,30 +432,23 @@ public class ProtectedCommands implements Commands {
 				if (event.isCancelled()) {
 					return;
 				}
-				BenCmd.log(user.getDisplayName() + " has removed "
-						+ newOwner.getName() + " from the guest list of "
-						+ block.getOwner().getName()
-						+ "'s protected block (id: " + block.GetId() + ")");
-				user.sendMessage(ChatColor.GREEN + newOwner.getName()
-						+ " has now lost guest access to that block.");
+				BenCmd.log(user.getDisplayName() + " has removed " + newOwner.getName() + " from the guest list of " + block.getOwner().getName() + "'s protected block (id: " + block.GetId() + ")");
+				user.sendMessage(ChatColor.GREEN + newOwner.getName() + " has now lost guest access to that block.");
 				BenCmd.getProtections().removeGuest(block.GetId(), newOwner);
 			} else {
-				user.sendMessage(ChatColor.RED
-						+ "You aren't pointing at a protected block!");
+				user.sendMessage(ChatColor.RED + "You aren't pointing at a protected block!");
 			}
 		} else if (args.length == 3) {
 			int id;
 			try {
 				id = Integer.parseInt(args[2]);
 			} catch (NumberFormatException e) {
-				user.sendMessage(ChatColor.RED + args[2]
-						+ "Cannot be converted into a number...");
+				user.sendMessage(ChatColor.RED + args[2] + "Cannot be converted into a number...");
 				return;
 			}
 			if ((block = BenCmd.getProtections().getProtection(id)) != null) {
 				if (!block.canChange(user) && !user.hasPerm("bencmd.lock.edit")) {
-					user.sendMessage(ChatColor.RED
-							+ "You don't have permission to edit the protection on that block!");
+					user.sendMessage(ChatColor.RED + "You don't have permission to edit the protection on that block!");
 					return;
 				}
 				PermissionUser newOwner;
@@ -537,17 +461,12 @@ public class ProtectedCommands implements Commands {
 				if (event.isCancelled()) {
 					return;
 				}
-				BenCmd.log(user.getDisplayName() + " has removed "
-						+ newOwner.getName() + " from the guest list of "
-						+ block.getOwner().getName() + "'s protected block (id: "
-						+ block.GetId() + ")");
-				user.sendMessage(ChatColor.GREEN + newOwner.getName()
-						+ " has now lost guest access to that block.");
+				BenCmd.log(user.getDisplayName() + " has removed " + newOwner.getName() + " from the guest list of " + block.getOwner().getName() + "'s protected block (id: " + block.GetId() + ")");
+				user.sendMessage(ChatColor.GREEN + newOwner.getName() + " has now lost guest access to that block.");
 				BenCmd.getProtections().removeGuest(block.GetId(), newOwner);
 			}
 		} else {
-			user.sendMessage(ChatColor.YELLOW
-					+ "Proper use is /protect remguest <Guest> [ID]");
+			user.sendMessage(ChatColor.YELLOW + "Proper use is /protect remguest <Guest> [ID]");
 		}
 	}
 }

@@ -12,18 +12,16 @@ import org.bukkit.entity.Player;
 import com.bendude56.bencmd.chat.channels.ChatChannel;
 import com.bendude56.bencmd.chat.channels.ChatChannel.ChatLevel;
 
-
 public class User extends ActionableUser {
-	private static HashMap<String, ChatChannel> activeChannels = new HashMap<String, ChatChannel>();
-	private static HashMap<String, List<ChatChannel>> spyingChannels = new HashMap<String, List<ChatChannel>>();
-	private static HashMap<String, User> activeUsers = new HashMap<String, User>();
-	private ChatChannel activeChannel;
-	private List<ChatChannel> spying;
+	private static HashMap<String, ChatChannel>			activeChannels	= new HashMap<String, ChatChannel>();
+	private static HashMap<String, List<ChatChannel>>	spyingChannels	= new HashMap<String, List<ChatChannel>>();
+	private static HashMap<String, User>				activeUsers		= new HashMap<String, User>();
+	private ChatChannel									activeChannel;
+	private List<ChatChannel>							spying;
 
 	public static User matchUser(String name) {
 		for (Player online : Bukkit.getOnlinePlayers()) {
-			if (online.getName().equalsIgnoreCase(name)
-					|| online.getDisplayName().equalsIgnoreCase(name)) {
+			if (online.getName().equalsIgnoreCase(name) || online.getDisplayName().equalsIgnoreCase(name)) {
 				return User.getUser(online);
 			}
 		}
@@ -48,7 +46,7 @@ public class User extends ActionableUser {
 		}
 		assert (!User.activeUsers.containsKey(user.getName()));
 	}
-	
+
 	public static User getUser(CommandSender s) {
 		if (s instanceof ConsoleCommandSender) {
 			return getUser();

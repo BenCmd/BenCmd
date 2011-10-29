@@ -12,17 +12,15 @@ import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.User;
 import com.bendude56.bencmd.invtools.InventoryBackend;
 
-
 public class BuyableItem implements Comparable<BuyableItem> {
-	private Integer id;
-	private Integer durability;
-	private Double cost;
-	private Integer supply;
-	private Integer supdem;
-	private PriceFile priceFile;
+	private Integer		id;
+	private Integer		durability;
+	private Double		cost;
+	private Integer		supply;
+	private Integer		supdem;
+	private PriceFile	priceFile;
 
-	public BuyableItem(Integer ID, Integer Damage, Double Cost, Integer Supply,
-			Integer SupplyDemand, PriceFile instance) {
+	public BuyableItem(Integer ID, Integer Damage, Double Cost, Integer Supply, Integer SupplyDemand, PriceFile instance) {
 		id = ID;
 		durability = Damage;
 		cost = Cost;
@@ -72,8 +70,7 @@ public class BuyableItem implements Comparable<BuyableItem> {
 		HashMap<Double, Currency> sortedCurrencies = new HashMap<Double, Currency>();
 		for (Currency currencyType : BenCmd.getMarketController().getCurrencies()) {
 			sortedCurrencies.put(currencyType.getPrice(), currencyType);
-			HashMap<Integer, ? extends ItemStack> matches = ((Player) user.getHandle())
-					.getInventory().all(currencyType.getMaterial());
+			HashMap<Integer, ? extends ItemStack> matches = ((Player) user.getHandle()).getInventory().all(currencyType.getMaterial());
 			for (ItemStack match : matches.values()) {
 				amountHas += currencyType.getPrice() * match.getAmount();
 			}
@@ -90,14 +87,12 @@ public class BuyableItem implements Comparable<BuyableItem> {
 		Object[] reversedCurrencies = sortedCurrencies.values().toArray();
 		for (int i = 0; i < reversedCurrencies.length / 2; i++) {
 			Currency temp = (Currency) reversedCurrencies[i];
-			reversedCurrencies[i] = reversedCurrencies[reversedCurrencies.length
-					- i - 1];
+			reversedCurrencies[i] = reversedCurrencies[reversedCurrencies.length - i - 1];
 			reversedCurrencies[reversedCurrencies.length - i - 1] = temp;
 		}
 		for (Currency currency : sortedCurrencies.values()) {
 			Double value = currency.getPrice();
-			HashMap<Integer, ? extends ItemStack> matches = ((Player) user.getHandle())
-					.getInventory().all(currency.getMaterial());
+			HashMap<Integer, ? extends ItemStack> matches = ((Player) user.getHandle()).getInventory().all(currency.getMaterial());
 			for (Integer pos : matches.keySet()) {
 				ItemStack item = ((Player) user.getHandle()).getInventory().getItem(pos);
 				if (item.getDurability() != currency.getDurability()) {
@@ -108,8 +103,7 @@ public class BuyableItem implements Comparable<BuyableItem> {
 					((Player) user.getHandle()).getInventory().clear(pos);
 				} else if (amountTaken + value <= amountNeeded) {
 					int taken;
-					taken = (int) Math.ceil((amountNeeded - amountTaken)
-							/ value);
+					taken = (int) Math.ceil((amountNeeded - amountTaken) / value);
 					item.setAmount(item.getAmount() - taken);
 					((Player) user.getHandle()).getInventory().setItem(pos, item);
 					amountTaken += taken * value;
@@ -131,18 +125,13 @@ public class BuyableItem implements Comparable<BuyableItem> {
 					} else {
 						((Player) user.getHandle()).getInventory().clear(pos);
 					}
-					HashMap<Currency, Integer> currencies = makeChange(
-							currency.getPrice() - (amountNeeded - amountTaken),
-							reversedCurrencies);
+					HashMap<Currency, Integer> currencies = makeChange(currency.getPrice() - (amountNeeded - amountTaken), reversedCurrencies);
 					for (int i = 0; i < currencies.size(); i++) {
-						Currency changeCurrency = (Currency) currencies
-								.keySet().toArray()[i];
-						Integer changeAmount = (Integer) currencies.values()
-								.toArray()[i];
+						Currency changeCurrency = (Currency) currencies.keySet().toArray()[i];
+						Integer changeAmount = (Integer) currencies.values().toArray()[i];
 						List<Integer> splitamount = new ArrayList<Integer>();
 						while (changeAmount > 0) {
-							Integer maxAmount = InventoryBackend.getInstance()
-									.getStackNumber(changeCurrency.getItemId());
+							Integer maxAmount = InventoryBackend.getInstance().getStackNumber(changeCurrency.getItemId());
 							if (changeAmount > maxAmount) {
 								splitamount.add(maxAmount);
 								changeAmount -= maxAmount;
@@ -153,18 +142,9 @@ public class BuyableItem implements Comparable<BuyableItem> {
 						}
 						for (Integer amt : splitamount) {
 							if (((Player) user.getHandle()).getInventory().firstEmpty() >= 0) {
-								((Player) user.getHandle())
-										.getInventory()
-										.addItem(
-												new ItemStack(changeCurrency
-														.getMaterial(), amt));
+								((Player) user.getHandle()).getInventory().addItem(new ItemStack(changeCurrency.getMaterial(), amt));
 							} else {
-								((Player) user.getHandle())
-										.getWorld()
-										.dropItem(
-												((Player) user.getHandle()).getLocation(),
-												new ItemStack(changeCurrency
-														.getMaterial(), amt));
+								((Player) user.getHandle()).getWorld().dropItem(((Player) user.getHandle()).getLocation(), new ItemStack(changeCurrency.getMaterial(), amt));
 							}
 						}
 					}
@@ -185,11 +165,9 @@ public class BuyableItem implements Comparable<BuyableItem> {
 		HashMap<Double, Currency> sortedCurrencies = new HashMap<Double, Currency>();
 		for (Currency currencyType : priceFile.getCurrencies()) {
 			sortedCurrencies.put(currencyType.getPrice(), currencyType);
-			HashMap<Integer, ? extends ItemStack> matches = ((Player) user.getHandle())
-					.getInventory().all(currencyType.getMaterial());
+			HashMap<Integer, ? extends ItemStack> matches = ((Player) user.getHandle()).getInventory().all(currencyType.getMaterial());
 			for (ItemStack match : matches.values()) {
-				if (match.getTypeId() == this.getItemId()
-						&& match.getDurability() == this.getDurability()) {
+				if (match.getTypeId() == this.getItemId() && match.getDurability() == this.getDurability()) {
 					continue;
 				}
 				amountHas += currencyType.getPrice() * match.getAmount();
@@ -201,21 +179,18 @@ public class BuyableItem implements Comparable<BuyableItem> {
 		Object[] reversedCurrencies = sortedCurrencies.values().toArray();
 		for (int i = 0; i < reversedCurrencies.length / 2; i++) {
 			Currency temp = (Currency) reversedCurrencies[i];
-			reversedCurrencies[i] = reversedCurrencies[reversedCurrencies.length
-					- i - 1];
+			reversedCurrencies[i] = reversedCurrencies[reversedCurrencies.length - i - 1];
 			reversedCurrencies[reversedCurrencies.length - i - 1] = temp;
 		}
 		for (Currency currency : sortedCurrencies.values()) {
 			Double value = currency.getPrice();
-			HashMap<Integer, ? extends ItemStack> matches = ((Player) user.getHandle())
-					.getInventory().all(currency.getMaterial());
+			HashMap<Integer, ? extends ItemStack> matches = ((Player) user.getHandle()).getInventory().all(currency.getMaterial());
 			for (Integer pos : matches.keySet()) {
 				ItemStack item = ((Player) user.getHandle()).getInventory().getItem(pos);
 				if (item.getDurability() != currency.getDurability()) {
 					continue;
 				}
-				if (item.getTypeId() == this.getItemId()
-						&& item.getDurability() == this.getDurability()) {
+				if (item.getTypeId() == this.getItemId() && item.getDurability() == this.getDurability()) {
 					continue;
 				}
 				if (amountTaken + item.getAmount() * value <= amountNeeded) {
@@ -223,8 +198,7 @@ public class BuyableItem implements Comparable<BuyableItem> {
 					((Player) user.getHandle()).getInventory().clear(pos);
 				} else if (amountTaken + value <= amountNeeded) {
 					int taken;
-					taken = (int) Math.ceil((amountNeeded - amountTaken)
-							/ value);
+					taken = (int) Math.ceil((amountNeeded - amountTaken) / value);
 					item.setAmount(item.getAmount() - taken);
 					((Player) user.getHandle()).getInventory().setItem(pos, item);
 					amountTaken += taken * value;
@@ -236,8 +210,7 @@ public class BuyableItem implements Comparable<BuyableItem> {
 		}
 		if (amountTaken < amountNeeded) {
 			for (Currency currency : sortedCurrencies.values()) {
-				if (currency.getItemId() == this.getItemId()
-						&& currency.getDurability() == this.getDurability()) {
+				if (currency.getItemId() == this.getItemId() && currency.getDurability() == this.getDurability()) {
 					continue;
 				}
 				HashMap<Integer, ? extends ItemStack> matches = ((Player) user.getHandle()).getInventory().all(currency.getMaterial());
@@ -250,18 +223,13 @@ public class BuyableItem implements Comparable<BuyableItem> {
 					} else {
 						((Player) user.getHandle()).getInventory().clear(pos);
 					}
-					HashMap<Currency, Integer> currencies = makeChange(
-							currency.getPrice() - (amountNeeded - amountTaken),
-							reversedCurrencies);
+					HashMap<Currency, Integer> currencies = makeChange(currency.getPrice() - (amountNeeded - amountTaken), reversedCurrencies);
 					for (int i = 0; i < currencies.size(); i++) {
-						Currency changeCurrency = (Currency) currencies
-								.keySet().toArray()[i];
-						Integer changeAmount = (Integer) currencies.values()
-								.toArray()[i];
+						Currency changeCurrency = (Currency) currencies.keySet().toArray()[i];
+						Integer changeAmount = (Integer) currencies.values().toArray()[i];
 						List<Integer> splitamount = new ArrayList<Integer>();
 						while (changeAmount > 0) {
-							Integer maxAmount = InventoryBackend.getInstance()
-									.getStackNumber(changeCurrency.getItemId());
+							Integer maxAmount = InventoryBackend.getInstance().getStackNumber(changeCurrency.getItemId());
 							if (changeAmount > maxAmount) {
 								splitamount.add(maxAmount);
 								changeAmount -= maxAmount;
@@ -272,18 +240,9 @@ public class BuyableItem implements Comparable<BuyableItem> {
 						}
 						for (Integer amt : splitamount) {
 							if (((Player) user.getHandle()).getInventory().firstEmpty() >= 0) {
-								((Player) user.getHandle())
-										.getInventory()
-										.addItem(
-												new ItemStack(changeCurrency
-														.getMaterial(), amt));
+								((Player) user.getHandle()).getInventory().addItem(new ItemStack(changeCurrency.getMaterial(), amt));
 							} else {
-								((Player) user.getHandle())
-										.getWorld()
-										.dropItem(
-												((Player) user.getHandle()).getLocation(),
-												new ItemStack(changeCurrency
-														.getMaterial(), amt));
+								((Player) user.getHandle()).getWorld().dropItem(((Player) user.getHandle()).getLocation(), new ItemStack(changeCurrency.getMaterial(), amt));
 							}
 						}
 					}
@@ -293,8 +252,7 @@ public class BuyableItem implements Comparable<BuyableItem> {
 		}
 		List<Integer> splitamount = new ArrayList<Integer>();
 		while (amount > 0) {
-			Integer maxAmount = InventoryBackend.getInstance()
-					.getStackNumber(this.getItemId());
+			Integer maxAmount = InventoryBackend.getInstance().getStackNumber(this.getItemId());
 			if (amount > maxAmount) {
 				splitamount.add(maxAmount);
 				amount -= maxAmount;
@@ -305,18 +263,9 @@ public class BuyableItem implements Comparable<BuyableItem> {
 		}
 		for (Integer amt : splitamount) {
 			if (((Player) user.getHandle()).getInventory().firstEmpty() >= 0) {
-				((Player) user.getHandle())
-						.getInventory()
-						.addItem(
-								new ItemStack(this.getMaterial(), amt,
-										(short) (int) this.getDurability()));
+				((Player) user.getHandle()).getInventory().addItem(new ItemStack(this.getMaterial(), amt, (short) (int) this.getDurability()));
 			} else {
-				((Player) user.getHandle())
-						.getWorld()
-						.dropItem(
-								((Player) user.getHandle()).getLocation(),
-								new ItemStack(this.getMaterial(), amt,
-										(short) (int) this.getDurability()));
+				((Player) user.getHandle()).getWorld().dropItem(((Player) user.getHandle()).getLocation(), new ItemStack(this.getMaterial(), amt, (short) (int) this.getDurability()));
 			}
 		}
 		supdem += fullAmt;
@@ -330,8 +279,7 @@ public class BuyableItem implements Comparable<BuyableItem> {
 		Integer amountHas = 0;
 		Integer amountTaken = 0;
 		Integer fullAmt = amount;
-		HashMap<Integer, ? extends ItemStack> matches = ((Player) user.getHandle())
-				.getInventory().all(this.getMaterial());
+		HashMap<Integer, ? extends ItemStack> matches = ((Player) user.getHandle()).getInventory().all(this.getMaterial());
 		for (ItemStack iStack : matches.values()) {
 			if (iStack.getDurability() != this.durability) {
 				continue;
@@ -367,19 +315,16 @@ public class BuyableItem implements Comparable<BuyableItem> {
 		Object[] reversedCurrencies = sortedCurrencies.values().toArray();
 		for (int i = 0; i < reversedCurrencies.length / 2; i++) {
 			Currency temp = (Currency) reversedCurrencies[i];
-			reversedCurrencies[i] = reversedCurrencies[reversedCurrencies.length
-					- i - 1];
+			reversedCurrencies[i] = reversedCurrencies[reversedCurrencies.length - i - 1];
 			reversedCurrencies[reversedCurrencies.length - i - 1] = temp;
 		}
-		HashMap<Currency, Integer> change = makeChange(amount * cost,
-				reversedCurrencies);
+		HashMap<Currency, Integer> change = makeChange(amount * cost, reversedCurrencies);
 		for (int i = 0; i < change.size(); i++) {
 			Currency changeCurrency = (Currency) change.keySet().toArray()[i];
 			Integer changeAmount = (Integer) change.values().toArray()[i];
 			List<Integer> splitamount = new ArrayList<Integer>();
 			while (changeAmount > 0) {
-				Integer maxAmount = InventoryBackend.getInstance()
-						.getStackNumber(changeCurrency.getItemId());
+				Integer maxAmount = InventoryBackend.getInstance().getStackNumber(changeCurrency.getItemId());
 				if (changeAmount > maxAmount) {
 					splitamount.add(maxAmount);
 					changeAmount -= maxAmount;
@@ -390,18 +335,9 @@ public class BuyableItem implements Comparable<BuyableItem> {
 			}
 			for (Integer amt : splitamount) {
 				if (((Player) user.getHandle()).getInventory().firstEmpty() >= 0) {
-					((Player) user.getHandle())
-							.getInventory()
-							.addItem(
-									new ItemStack(changeCurrency.getMaterial(),
-											amt));
+					((Player) user.getHandle()).getInventory().addItem(new ItemStack(changeCurrency.getMaterial(), amt));
 				} else {
-					((Player) user.getHandle())
-							.getWorld()
-							.dropItem(
-									((Player) user.getHandle()).getLocation(),
-									new ItemStack(changeCurrency.getMaterial(),
-											amt));
+					((Player) user.getHandle()).getWorld().dropItem(((Player) user.getHandle()).getLocation(), new ItemStack(changeCurrency.getMaterial(), amt));
 				}
 			}
 		}
@@ -412,8 +348,7 @@ public class BuyableItem implements Comparable<BuyableItem> {
 		return true;
 	}
 
-	public static HashMap<Currency, Integer> makeChange(Double change,
-			Object[] acceptedCurrencies) {
+	public static HashMap<Currency, Integer> makeChange(Double change, Object[] acceptedCurrencies) {
 		HashMap<Currency, Integer> giveChange = new HashMap<Currency, Integer>();
 		Double given = 0.0;
 		for (Object currencyo : acceptedCurrencies) {

@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BCommand {
-	public static List<BCommand> commands;
-	
+	public static List<BCommand>	commands;
+
 	static {
 		commands = new ArrayList<BCommand>();
 		commands.add(new BCommand("/time", "Change or lock the current time of day", "bencmd.time.set,bencmd.time.lock"));
@@ -15,12 +15,11 @@ public class BCommand {
 		commands.add(new BCommand("/bencmd", "Gets information or performs some special bencmd commands", "bencmd.spawn.normal"));
 		commands.add(new BCommand("/help", "Display this help text", "."));
 	}
-	private String commandLabel;
-	private String commandDescription;
-	private String neededPermission;
+	private String					commandLabel;
+	private String					commandDescription;
+	private String					neededPermission;
 
-	public BCommand(String commandLabel, String commandDescription,
-			String neededPermission) {
+	public BCommand(String commandLabel, String commandDescription, String neededPermission) {
 		this.commandLabel = commandLabel;
 		this.commandDescription = commandDescription;
 		this.neededPermission = neededPermission;

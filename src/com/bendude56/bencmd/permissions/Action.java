@@ -4,10 +4,10 @@ import java.util.Date;
 
 public class Action {
 
-	private PermissionUser user;
-	private ActionType action;
-	private long endTime;
-	private int id;
+	private PermissionUser	user;
+	private ActionType		action;
+	private long			endTime;
+	private int				id;
 
 	public Action(int id, PermissionUser user, ActionType action, long endTime) {
 		this.id = id;
@@ -26,16 +26,16 @@ public class Action {
 
 	public char getActionLetter() {
 		switch (action) {
-		case BAN:
-			return 'b';
-		case JAIL:
-			return 'j';
-		case ALLMUTE:
-			return 'm';
-		case LEAVEJAIL:
-			return 'l';
-		default:
-			return '?';
+			case BAN:
+				return 'b';
+			case JAIL:
+				return 'j';
+			case ALLMUTE:
+				return 'm';
+			case LEAVEJAIL:
+				return 'l';
+			default:
+				return '?';
 		}
 	}
 
@@ -56,11 +56,11 @@ public class Action {
 	public long getExpiry() {
 		return endTime;
 	}
-	
+
 	public String formatTimeLeft() {
 		if (endTime != -1) {
 			long dur = endTime - new Date().getTime();
-			return ((int) Math.floor(((double)dur) / 3600000D)) + "h " + ((int) Math.floor((((double) dur) % 3600000D) / 60000D)) + "m";
+			return ((int) Math.floor(((double) dur) / 3600000D)) + "h " + ((int) Math.floor((((double) dur) % 3600000D) / 60000D)) + "m";
 		} else {
 			return "PERMANENT";
 		}

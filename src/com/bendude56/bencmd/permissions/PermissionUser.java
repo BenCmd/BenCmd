@@ -6,9 +6,8 @@ import org.bukkit.ChatColor;
 
 import com.bendude56.bencmd.BenCmd;
 
-
 public class PermissionUser {
-	private InternalUser user;
+	private InternalUser	user;
 
 	public static PermissionUser matchUserIgnoreCase(String name) {
 		for (Object oUser : BenCmd.getPermissionManager().getUserFile().listUsers().values()) {
@@ -27,9 +26,8 @@ public class PermissionUser {
 		}
 		return null;
 	}
-	
-	public static PermissionUser newUser(String name,
-			List<String> permissions) {
+
+	public static PermissionUser newUser(String name, List<String> permissions) {
 		return new PermissionUser(name, permissions);
 	}
 
@@ -41,8 +39,7 @@ public class PermissionUser {
 		user = internal;
 	}
 
-	protected PermissionUser(String name,
-			List<String> permissions) {
+	protected PermissionUser(String name, List<String> permissions) {
 		user = new InternalUser(name, permissions);
 	}
 
@@ -60,8 +57,7 @@ public class PermissionUser {
 	}
 
 	public PermissionGroup highestLevelGroup() {
-		return InternalGroup.highestLevelP(BenCmd.getPermissionManager().getGroupFile()
-				.getAllUserGroups(this));
+		return InternalGroup.highestLevelP(BenCmd.getPermissionManager().getGroupFile().getAllUserGroups(this));
 	}
 
 	public String getName() {
@@ -116,8 +112,7 @@ public class PermissionUser {
 
 	public String getPrefix() {
 		List<InternalGroup> hasPrefix = new ArrayList<InternalGroup>();
-		for (PermissionGroup group : BenCmd.getPermissionManager().getGroupFile()
-				.getAllUserGroups(user)) {
+		for (PermissionGroup group : BenCmd.getPermissionManager().getGroupFile().getAllUserGroups(user)) {
 			if (!group.getPrefix().isEmpty()) {
 				hasPrefix.add(group.getInternal());
 			}
@@ -134,8 +129,7 @@ public class PermissionUser {
 			return ChatColor.BLUE;
 		}
 		List<InternalGroup> hasColor = new ArrayList<InternalGroup>();
-		for (PermissionGroup group : BenCmd.getPermissionManager().getGroupFile()
-				.getAllUserGroups(user)) {
+		for (PermissionGroup group : BenCmd.getPermissionManager().getGroupFile().getAllUserGroups(user)) {
 			if (group.getColor() != ChatColor.YELLOW) {
 				hasColor.add(group.getInternal());
 			}
@@ -182,18 +176,16 @@ public class PermissionUser {
 			return list;
 		}
 	}
-	
+
 	public boolean isDev() {
 		return user.isDev();
 	}
 
 	public String listGroups() {
 		String groups = "";
-		for (PermissionGroup group : BenCmd.getPermissionManager().getGroupFile()
-				.getAllUserGroups(this)) {
+		for (PermissionGroup group : BenCmd.getPermissionManager().getGroupFile().getAllUserGroups(this)) {
 			boolean direct = false;
-			for (PermissionGroup group2 : BenCmd.getPermissionManager().getGroupFile()
-					.getUserGroups(this)) {
+			for (PermissionGroup group2 : BenCmd.getPermissionManager().getGroupFile().getUserGroups(this)) {
 				if (group.getName().equals(group2.getName())) {
 					direct = true;
 					break;

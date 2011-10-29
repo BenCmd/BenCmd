@@ -10,8 +10,8 @@ import net.minecraft.server.TileEntityChest;
 
 public class TileEntityBankChest extends TileEntityChest {
 
-	protected String name = "null";
-	protected List<Integer> empty;
+	protected String		name	= "null";
+	protected List<Integer>	empty;
 
 	protected TileEntityBankChest() {
 		super();

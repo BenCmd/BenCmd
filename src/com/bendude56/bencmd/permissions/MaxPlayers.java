@@ -5,17 +5,15 @@ import java.util.List;
 
 import com.bendude56.bencmd.User;
 
-
 public class MaxPlayers {
-	private int max;
-	private int reservemax;
-	private boolean reserveActive;
-	private boolean indefActive;
-	private List<PermissionUser> normalList;
-	private List<PermissionUser> reservedList;
+	private int						max;
+	private int						reservemax;
+	private boolean					reserveActive;
+	private boolean					indefActive;
+	private List<PermissionUser>	normalList;
+	private List<PermissionUser>	reservedList;
 
-	public MaxPlayers(int maxPlayers, int maxReserve,
-			boolean allowReserve, boolean allowIndef) {
+	public MaxPlayers(int maxPlayers, int maxReserve, boolean allowReserve, boolean allowIndef) {
 		max = maxPlayers;
 		reserveActive = allowReserve;
 		indefActive = allowIndef;

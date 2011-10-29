@@ -14,19 +14,16 @@ import com.bendude56.bencmd.Commands;
 import com.bendude56.bencmd.User;
 import com.bendude56.bencmd.permissions.PermissionUser;
 
-
 public class ReportCommands implements Commands {
 
-	public boolean onCommand(CommandSender sender, Command command,
-			String commandLabel, String[] args) {
+	public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
 		User user;
 		try {
 			user = User.getUser((Player) sender);
 		} catch (ClassCastException e) {
 			user = User.getUser();
 		}
-		if (commandLabel.equalsIgnoreCase("report")
-				&& user.hasPerm("bencmd.ticket.send")) {
+		if (commandLabel.equalsIgnoreCase("report") && user.hasPerm("bencmd.ticket.send")) {
 			Report(args, user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("ticket")) {
@@ -42,8 +39,7 @@ public class ReportCommands implements Commands {
 			return;
 		}
 		if (args.length < 2) {
-			user.sendMessage(ChatColor.YELLOW
-					+ "Proper use is /report <player> <reason>");
+			user.sendMessage(ChatColor.YELLOW + "Proper use is /report <player> <reason>");
 			return;
 		}
 		PermissionUser reported = PermissionUser.matchUserIgnoreCase(args[0]);
@@ -60,27 +56,18 @@ public class ReportCommands implements Commands {
 			}
 		}
 		Integer id = BenCmd.getReports().nextId();
-		BenCmd.getReports().addTicket(new Report(id, user, reported,
-				Report.ReportStatus.UNREAD, reason, "", 0,
-				new ArrayList<String>()));
-		BenCmd.log(user.getDisplayName() + " opened ticket #"
-				+ id.toString() + "!");
+		BenCmd.getReports().addTicket(new Report(id, user, reported, Report.ReportStatus.UNREAD, reason, "", 0, new ArrayList<String>()));
+		BenCmd.log(user.getDisplayName() + " opened ticket #" + id.toString() + "!");
 		user.sendMessage(ChatColor.GREEN + "Thank you for your report");
-		user.sendMessage(ChatColor.GREEN
-				+ "You can check the status of your report using /ticket " + id
-				+ ".");
-		user.sendMessage(ChatColor.GREEN
-				+ "You can also list your currently open tickets using /ticket list.");
+		user.sendMessage(ChatColor.GREEN + "You can check the status of your report using /ticket " + id + ".");
+		user.sendMessage(ChatColor.GREEN + "You can also list your currently open tickets using /ticket list.");
 		for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
 			User onlineUser;
-			if ((onlineUser = User.getUser(onlinePlayer))
-					.hasPerm("bencmd.ticket.readall")) {
+			if ((onlineUser = User.getUser(onlinePlayer)).hasPerm("bencmd.ticket.readall")) {
 				if (BenCmd.isSpoutConnected() && BenCmd.getSpoutConnector().enabled(onlinePlayer)) {
 					BenCmd.getSpoutConnector().sendNotification(onlinePlayer, "New report filed!", "Ticket ID: " + id, Material.PAPER);
 				} else {
-					onlineUser.sendMessage(ChatColor.RED
-							+ "A new report has been filed! Use /ticket " + id
-							+ " to see details!");
+					onlineUser.sendMessage(ChatColor.RED + "A new report has been filed! Use /ticket " + id + " to see details!");
 				}
 			}
 		}
@@ -88,8 +75,7 @@ public class ReportCommands implements Commands {
 
 	public void Ticket(String[] args, User user) {
 		if (args.length == 0) {
-			user.sendMessage(ChatColor.YELLOW
-					+ "Proper use is /ticket {<id>|list|alist|search|asearch|purge|purgefrom|purgeto} [options]");
+			user.sendMessage(ChatColor.YELLOW + "Proper use is /ticket {<id>|list|alist|search|asearch|purge|purgefrom|purgeto} [options]");
 			return;
 		}
 		if (args[0].equalsIgnoreCase("list")) {
@@ -98,8 +84,7 @@ public class ReportCommands implements Commands {
 				try {
 					page = Integer.parseInt(args[1]);
 				} catch (NumberFormatException e) {
-					user.sendMessage(ChatColor.RED + args[1]
-							+ " isn't a number!");
+					user.sendMessage(ChatColor.RED + args[1] + " isn't a number!");
 					return;
 				}
 			}
@@ -110,52 +95,44 @@ public class ReportCommands implements Commands {
 				try {
 					page = Integer.parseInt(args[1]);
 				} catch (NumberFormatException e) {
-					user.sendMessage(ChatColor.RED + args[1]
-							+ " isn't a number!");
+					user.sendMessage(ChatColor.RED + args[1] + " isn't a number!");
 					return;
 				}
 			}
 			BenCmd.getReports().listAllTickets(user, page);
 		} else if (args[0].equalsIgnoreCase("purge")) {
 			if (!user.hasPerm("bencmd.ticket.purge")) {
-				user.sendMessage(ChatColor.RED
-						+ "You must be an admin to do that!");
+				user.sendMessage(ChatColor.RED + "You must be an admin to do that!");
 				return;
 			}
 			BenCmd.getReports().PurgeOpen(user);
 		} else if (args[0].equalsIgnoreCase("purgefrom")) {
 			if (!user.hasPerm("bencmd.ticket.purge")) {
-				user.sendMessage(ChatColor.RED
-						+ "You must be an admin to do that!");
+				user.sendMessage(ChatColor.RED + "You must be an admin to do that!");
 				return;
 			}
 			if (args.length != 2) {
-				user.sendMessage(ChatColor.YELLOW
-						+ "Proper use is /ticket purgefrom [name]");
+				user.sendMessage(ChatColor.YELLOW + "Proper use is /ticket purgefrom [name]");
 				return;
 			}
 			BenCmd.getReports().PurgeFrom(user, args[1]);
 		} else if (args[0].equalsIgnoreCase("purgeto")) {
 			if (!user.hasPerm("bencmd.ticket.purge")) {
-				user.sendMessage(ChatColor.RED
-						+ "You must be an admin to do that!");
+				user.sendMessage(ChatColor.RED + "You must be an admin to do that!");
 				return;
 			}
 			if (args.length != 2) {
-				user.sendMessage(ChatColor.YELLOW
-						+ "Proper use is /ticket purgeto [name]");
+				user.sendMessage(ChatColor.YELLOW + "Proper use is /ticket purgeto [name]");
 				return;
 			}
 			BenCmd.getReports().PurgeTo(user, args[1]);
 		} else if (args[0].equalsIgnoreCase("search")) {
 			if (!user.hasPerm("bencmd.ticket.search")) {
-				user.sendMessage(ChatColor.RED
-						+ "You must be an admin to do that!");
+				user.sendMessage(ChatColor.RED + "You must be an admin to do that!");
 				return;
 			}
 			if (args.length == 1) {
-				user.sendMessage(ChatColor.YELLOW
-						+ "Proper use is /ticket search <name> [page]");
+				user.sendMessage(ChatColor.YELLOW + "Proper use is /ticket search <name> [page]");
 				return;
 			}
 			int page = 1;
@@ -163,21 +140,18 @@ public class ReportCommands implements Commands {
 				try {
 					page = Integer.parseInt(args[2]);
 				} catch (NumberFormatException e) {
-					user.sendMessage(ChatColor.RED + args[2]
-							+ " isn't a number!");
+					user.sendMessage(ChatColor.RED + args[2] + " isn't a number!");
 					return;
 				}
 			}
 			BenCmd.getReports().searchTickets(user, args[1], page);
 		} else if (args[0].equalsIgnoreCase("asearch")) {
 			if (!user.hasPerm("bencmd.ticket.asearch")) {
-				user.sendMessage(ChatColor.RED
-						+ "You must be an admin to do that!");
+				user.sendMessage(ChatColor.RED + "You must be an admin to do that!");
 				return;
 			}
 			if (args.length == 1) {
-				user.sendMessage(ChatColor.YELLOW
-						+ "Proper use is /ticket asearch <name> [page]");
+				user.sendMessage(ChatColor.YELLOW + "Proper use is /ticket asearch <name> [page]");
 				return;
 			}
 			int page = 1;
@@ -185,8 +159,7 @@ public class ReportCommands implements Commands {
 				try {
 					page = Integer.parseInt(args[2]);
 				} catch (NumberFormatException e) {
-					user.sendMessage(ChatColor.RED + args[2]
-							+ " isn't a number!");
+					user.sendMessage(ChatColor.RED + args[2] + " isn't a number!");
 					return;
 				}
 			}
@@ -201,8 +174,7 @@ public class ReportCommands implements Commands {
 			}
 			Report report = BenCmd.getReports().getTicketById(id);
 			if (report == null) {
-				user.sendMessage(ChatColor.RED + "Ticket #" + args[0]
-						+ " doesn't exist!");
+				user.sendMessage(ChatColor.RED + "Ticket #" + args[0] + " doesn't exist!");
 				return;
 			}
 			if (!report.canRead(user)) {
@@ -210,29 +182,23 @@ public class ReportCommands implements Commands {
 				return;
 			}
 			if (args.length == 1) {
-				for (String s : report
-						.readReport(user.hasPerm("bencmd.ticket.editall"), user.getName().equals(report.getAccused().getName()) && !user.hasPerm("bencmd.ticket.readall")).split("\n")) {
+				for (String s : report.readReport(user.hasPerm("bencmd.ticket.editall"), user.getName().equals(report.getAccused().getName()) && !user.hasPerm("bencmd.ticket.readall")).split("\n")) {
 					user.sendMessage(s);
 				}
 			} else if (args[1].equalsIgnoreCase("close")) {
 				if (user.hasPerm("bencmd.ticket.editall")) {
 					if (report.getStatus() == Report.ReportStatus.LOCKED) {
-						user.sendMessage(ChatColor.RED
-								+ "That ticket is locked!");
+						user.sendMessage(ChatColor.RED + "That ticket is locked!");
 						return;
 					}
 					if (report.getStatus() == Report.ReportStatus.CLOSED) {
-						user.sendMessage(ChatColor.RED
-								+ "That ticket is already closed!");
+						user.sendMessage(ChatColor.RED + "That ticket is already closed!");
 						return;
 					}
 					if (args.length == 2) {
 						report.closeTicket("Ticket closed by admin");
-						BenCmd.log(user.getDisplayName()
-								+ " closed ticket #" + id.toString() + "!");
-						user.sendMessage(ChatColor.GREEN + "Ticket (ID: "
-								+ report.getId()
-								+ ") has been successfully closed!");
+						BenCmd.log(user.getDisplayName() + " closed ticket #" + id.toString() + "!");
+						user.sendMessage(ChatColor.GREEN + "Ticket (ID: " + report.getId() + ") has been successfully closed!");
 					} else {
 						String reason = "";
 						for (int i = 2; i < args.length; i++) {
@@ -243,84 +209,62 @@ public class ReportCommands implements Commands {
 							}
 						}
 						report.closeTicket(reason);
-						BenCmd.log(user.getDisplayName()
-								+ " closed ticket #" + id.toString()
-								+ "! Reason: " + reason);
-						user.sendMessage(ChatColor.GREEN + "Ticket (ID: "
-								+ report.getId()
-								+ ") has been successfully closed!");
+						BenCmd.log(user.getDisplayName() + " closed ticket #" + id.toString() + "! Reason: " + reason);
+						user.sendMessage(ChatColor.GREEN + "Ticket (ID: " + report.getId() + ") has been successfully closed!");
 					}
 				} else {
 					if (report.canBasicChange(user)) {
 						if (report.getStatus() == Report.ReportStatus.LOCKED) {
-							user.sendMessage(ChatColor.RED
-									+ "That ticket is locked!");
+							user.sendMessage(ChatColor.RED + "That ticket is locked!");
 							return;
 						}
 						if (report.getStatus() == Report.ReportStatus.CLOSED) {
-							user.sendMessage(ChatColor.RED
-									+ "That ticket is already closed!");
+							user.sendMessage(ChatColor.RED + "That ticket is already closed!");
 							return;
 						}
 						report.closeTicket("Ticket closed by user");
-						user.sendMessage(ChatColor.GREEN + "Ticket (ID: "
-								+ report.getId()
-								+ ") has been successfully closed!");
-						BenCmd.log(user.getDisplayName()
-								+ " closed ticket #" + id.toString() + "!");
+						user.sendMessage(ChatColor.GREEN + "Ticket (ID: " + report.getId() + ") has been successfully closed!");
+						BenCmd.log(user.getDisplayName() + " closed ticket #" + id.toString() + "!");
 					} else {
-						user.sendMessage(ChatColor.RED
-								+ "You cannot edit that ticket!");
+						user.sendMessage(ChatColor.RED + "You cannot edit that ticket!");
 					}
 				}
 			} else if (args[1].equalsIgnoreCase("reopen")) {
 				if (user.hasPerm("bencmd.ticket.editall")) {
 					if (report.getStatus() == Report.ReportStatus.LOCKED) {
-						user.sendMessage(ChatColor.RED
-								+ "That ticket is locked!");
+						user.sendMessage(ChatColor.RED + "That ticket is locked!");
 						return;
 					}
 					if (report.getStatus() != Report.ReportStatus.CLOSED) {
-						user.sendMessage(ChatColor.RED
-								+ "That ticket is already open!");
+						user.sendMessage(ChatColor.RED + "That ticket is already open!");
 						return;
 					}
 					report.reopenTicket(true);
-					BenCmd.log(user.getDisplayName()
-							+ " re-opened ticket #" + id.toString() + "!");
-					user.sendMessage(ChatColor.GREEN
-							+ "That ticket has been re-opened!");
+					BenCmd.log(user.getDisplayName() + " re-opened ticket #" + id.toString() + "!");
+					user.sendMessage(ChatColor.GREEN + "That ticket has been re-opened!");
 				} else if (report.canBasicChange(user)) {
 					if (report.getStatus() == Report.ReportStatus.LOCKED) {
-						user.sendMessage(ChatColor.RED
-								+ "That ticket is locked!");
+						user.sendMessage(ChatColor.RED + "That ticket is locked!");
 						return;
 					}
 					if (report.getStatus() != Report.ReportStatus.CLOSED) {
-						user.sendMessage(ChatColor.RED
-								+ "That ticket is already open!");
+						user.sendMessage(ChatColor.RED + "That ticket is already open!");
 						return;
 					}
 					if (report.reopenTicket(false)) {
-						BenCmd.log(user.getDisplayName()
-								+ " re-opened ticket #" + id.toString() + "!");
-						user.sendMessage(ChatColor.GREEN
-								+ "That ticket has been re-opened!");
+						BenCmd.log(user.getDisplayName() + " re-opened ticket #" + id.toString() + "!");
+						user.sendMessage(ChatColor.GREEN + "That ticket has been re-opened!");
 					} else {
-						user.sendMessage(ChatColor.RED
-								+ "That ticket has been re-opened too many times!");
-						user.sendMessage(ChatColor.RED
-								+ "Talk to an admin to have it re-opened!");
+						user.sendMessage(ChatColor.RED + "That ticket has been re-opened too many times!");
+						user.sendMessage(ChatColor.RED + "Talk to an admin to have it re-opened!");
 					}
 				} else {
-					user.sendMessage(ChatColor.RED
-							+ "You cannot edit that ticket!");
+					user.sendMessage(ChatColor.RED + "You cannot edit that ticket!");
 				}
 			} else if (args[1].equalsIgnoreCase("lock")) {
 				if (user.hasPerm("bencmd.ticket.lock") && report.canBasicChange(user)) {
 					if (report.getStatus() == Report.ReportStatus.LOCKED) {
-						user.sendMessage(ChatColor.RED
-								+ "That ticket is locked!");
+						user.sendMessage(ChatColor.RED + "That ticket is locked!");
 						return;
 					}
 					if (args.length > 2) {
@@ -338,71 +282,51 @@ public class ReportCommands implements Commands {
 					} else {
 						report.lockTicket("Ticket locked by admin");
 					}
-					user.sendMessage(ChatColor.GREEN
-							+ "That ticket has been locked!");
-					BenCmd.log(user.getDisplayName() + " locked ticket #"
-							+ id.toString() + "!");
+					user.sendMessage(ChatColor.GREEN + "That ticket has been locked!");
+					BenCmd.log(user.getDisplayName() + " locked ticket #" + id.toString() + "!");
 				} else {
-					user.sendMessage(ChatColor.RED
-							+ "You must be an admin to do that!");
+					user.sendMessage(ChatColor.RED + "You must be an admin to do that!");
 				}
 			} else if (args[1].equalsIgnoreCase("inv")) {
 				if (user.hasPerm("bencmd.ticket.investigate") && report.canBasicChange(user)) {
 					if (report.getStatus() == Report.ReportStatus.LOCKED) {
-						user.sendMessage(ChatColor.RED
-								+ "That ticket is locked!");
+						user.sendMessage(ChatColor.RED + "That ticket is locked!");
 						return;
 					}
 					report.InvestigateTicket();
-					user.sendMessage(ChatColor.GREEN
-							+ "That ticket has been marked as under investigation!");
-					BenCmd.log(user.getDisplayName()
-							+ " is investigating #" + id.toString() + "!");
+					user.sendMessage(ChatColor.GREEN + "That ticket has been marked as under investigation!");
+					BenCmd.log(user.getDisplayName() + " is investigating #" + id.toString() + "!");
 				} else {
-					user.sendMessage(ChatColor.RED
-							+ "You must be an admin to do that!");
+					user.sendMessage(ChatColor.RED + "You must be an admin to do that!");
 				}
 			} else if (args[1].equalsIgnoreCase("uninv")) {
 				if (user.hasPerm("bencmd.ticket.investigate") && report.canBasicChange(user)) {
 					if (report.getStatus() == Report.ReportStatus.LOCKED) {
-						user.sendMessage(ChatColor.RED
-								+ "That ticket is locked!");
+						user.sendMessage(ChatColor.RED + "That ticket is locked!");
 						return;
 					}
 					report.UninvestigateTicket();
-					user.sendMessage(ChatColor.GREEN
-							+ "That ticket has been marked as read!");
-					BenCmd.log(user.getDisplayName()
-							+ " is no longer investigating #" + id.toString()
-							+ "!");
+					user.sendMessage(ChatColor.GREEN + "That ticket has been marked as read!");
+					BenCmd.log(user.getDisplayName() + " is no longer investigating #" + id.toString() + "!");
 				} else {
-					user.sendMessage(ChatColor.RED
-							+ "You must be an admin to do that!");
+					user.sendMessage(ChatColor.RED + "You must be an admin to do that!");
 				}
 			} else if (args[1].equalsIgnoreCase("addinfo")) {
 				if (report.canBasicChange(user)) {
 					if (report.getStatus() == Report.ReportStatus.LOCKED) {
-						user.sendMessage(ChatColor.RED
-								+ "That ticket is locked!");
+						user.sendMessage(ChatColor.RED + "That ticket is locked!");
 						return;
 					}
-					if (report.getStatus() == Report.ReportStatus.CLOSED
-							&& !user.hasPerm("bencmd.ticket.editall")) {
-						user.sendMessage(ChatColor.RED
-								+ "That ticket is closed! Re-open it using /ticket "
-								+ report.getId()
-								+ " reopen to add new information.");
+					if (report.getStatus() == Report.ReportStatus.CLOSED && !user.hasPerm("bencmd.ticket.editall")) {
+						user.sendMessage(ChatColor.RED + "That ticket is closed! Re-open it using /ticket " + report.getId() + " reopen to add new information.");
 						return;
 					}
-					if (report.getStatus() == Report.ReportStatus.INVESTIGATING
-							&& !user.hasPerm("bencmd.ticket.editall")) {
-						user.sendMessage(ChatColor.RED
-								+ "That ticket is under investigation and new info cannot be added. Ask an admin for more details...");
+					if (report.getStatus() == Report.ReportStatus.INVESTIGATING && !user.hasPerm("bencmd.ticket.editall")) {
+						user.sendMessage(ChatColor.RED + "That ticket is under investigation and new info cannot be added. Ask an admin for more details...");
 						return;
 					}
 					if (args.length == 2) {
-						user.sendMessage(ChatColor.YELLOW
-								+ "Proper use is /ticket <id> addinfo <additional info>");
+						user.sendMessage(ChatColor.YELLOW + "Proper use is /ticket <id> addinfo <additional info>");
 						return;
 					}
 					String newInfo = "";
@@ -417,36 +341,26 @@ public class ReportCommands implements Commands {
 					if (!user.hasPerm("bencmd.ticket.editall")) {
 						report.setStatus(Report.ReportStatus.UNREAD);
 					}
-					user.sendMessage(ChatColor.GREEN
-							+ "The info has been added successfully!");
-					BenCmd.log(user.getDisplayName()
-							+ " has added information to ticket #"
-							+ id.toString() + "!");
+					user.sendMessage(ChatColor.GREEN + "The info has been added successfully!");
+					BenCmd.log(user.getDisplayName() + " has added information to ticket #" + id.toString() + "!");
 					if (user.hasPerm("bencmd.ticket.editall")) {
 						return;
 					}
-					for (Player onlinePlayer : Bukkit
-							.getOnlinePlayers()) {
+					for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
 						User onlineUser;
-						if ((onlineUser = User.getUser(onlinePlayer))
-								.hasPerm("bencmd.ticket.readall")) {
+						if ((onlineUser = User.getUser(onlinePlayer)).hasPerm("bencmd.ticket.readall")) {
 							if (BenCmd.isSpoutConnected() && BenCmd.getSpoutConnector().enabled(onlinePlayer)) {
 								BenCmd.getSpoutConnector().sendNotification(onlinePlayer, "Report info added!", "Ticket ID: " + id, Material.PAPER);
 							} else {
-								onlineUser
-								.sendMessage(ChatColor.RED
-										+ "Info has been added to a report! Use /ticket "
-										+ id + " to see details!");
+								onlineUser.sendMessage(ChatColor.RED + "Info has been added to a report! Use /ticket " + id + " to see details!");
 							}
 						}
 					}
 				} else {
-					user.sendMessage(ChatColor.RED
-							+ "You cannot edit that ticket!");
+					user.sendMessage(ChatColor.RED + "You cannot edit that ticket!");
 				}
 			} else {
-				user.sendMessage(ChatColor.YELLOW
-						+ "Proper use is /ticket <id> [{close|reopen|lock|inv|uninv|addinfo}]");
+				user.sendMessage(ChatColor.YELLOW + "Proper use is /ticket <id> [{close|reopen|lock|inv|uninv|addinfo}]");
 			}
 		}
 	}

@@ -7,9 +7,8 @@ import org.bukkit.entity.Player;
 import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.BenCmdFile;
 
-
 public class BankFile extends BenCmdFile {
-	private HashMap<String, BankInventory> banks;
+	private HashMap<String, BankInventory>	banks;
 
 	public BankFile() {
 		super("bank.db", "--BenCmd Bank File--", true);
@@ -22,7 +21,7 @@ public class BankFile extends BenCmdFile {
 			public void run() {
 				saveAll();
 			}
-			
+
 		}, 12000, 12000);
 	}
 
@@ -44,8 +43,7 @@ public class BankFile extends BenCmdFile {
 
 	public void loadAll() {
 		for (int i = 0; i < getFile().size(); i++) {
-			String key = (String) getFile().keySet().toArray()[i], value = getFile()
-					.getProperty(key);
+			String key = (String) getFile().keySet().toArray()[i], value = getFile().getProperty(key);
 			int comma = 0;
 			for (char c : value.toCharArray()) {
 				if (c == ',') {
@@ -94,8 +92,7 @@ public class BankFile extends BenCmdFile {
 	public void saveBank(BankInventory bank) {
 		try {
 			getFile().put(bank.p, bank.getValue());
-		} catch (Exception e) {
-		}
+		} catch (Exception e) {}
 		saveFile();
 	}
 

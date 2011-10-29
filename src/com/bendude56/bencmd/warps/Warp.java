@@ -10,18 +10,15 @@ import org.bukkit.entity.Player;
 
 import com.bendude56.bencmd.*;
 
-
 public class Warp {
-	public Location loc;
-	public String warpName;
-	public String mustInheritGroup;
+	public Location	loc;
+	public String	warpName;
+	public String	mustInheritGroup;
 
-	public Warp(double x, double y, double z, double yaw, double pitch,
-			String world, String name, String group) {
+	public Warp(double x, double y, double z, double yaw, double pitch, String world, String name, String group) {
 		warpName = name;
 		try {
-			loc = new Location(Bukkit.getWorld(world), x, y, z,
-					(float) yaw, (float) pitch);
+			loc = new Location(Bukkit.getWorld(world), x, y, z, (float) yaw, (float) pitch);
 		} catch (NullPointerException e) {
 			BenCmd.log(Level.SEVERE, "Couldn't load warp " + warpName + "!");
 			BenCmd.log(e);
@@ -50,42 +47,33 @@ public class Warp {
 
 	public void WarpHere(WarpableUser player) {
 		if (!this.canWarpHere(player)) {
-			player.sendMessage(ChatColor.RED
-					+ "You don't have permission to warp there!");
-			BenCmd.log(player.getName() + " tried to warp to " + warpName
-					+ ", but they don't have permission.");
+			player.sendMessage(ChatColor.RED + "You don't have permission to warp there!");
+			BenCmd.log(player.getName() + " tried to warp to " + warpName + ", but they don't have permission.");
 			return;
 		}
 		try {
-			BenCmd.getWarpCheckpoints().SetPreWarp(((Player)player.getHandle()));
-			((Player)player.getHandle()).teleport(loc);
+			BenCmd.getWarpCheckpoints().SetPreWarp(((Player) player.getHandle()));
+			((Player) player.getHandle()).teleport(loc);
 			player.sendMessage(ChatColor.YELLOW + "Woosh!");
-			BenCmd.log(player.getName() + " just warped to warp "
-					+ warpName + ".");
+			BenCmd.log(player.getName() + " just warped to warp " + warpName + ".");
 		} catch (NullPointerException e) {
-			BenCmd.log(Level.SEVERE, "There was an error warping player "
-					+ player.getName() + " to warp " + warpName + "!");
+			BenCmd.log(Level.SEVERE, "There was an error warping player " + player.getName() + " to warp " + warpName + "!");
 			BenCmd.log(e);
 		}
 	}
 
 	public void WarpHere(WarpableUser player, WarpableUser sender) {
 		if (!this.canWarpHere(sender)) {
-			player.sendMessage(ChatColor.RED
-					+ "You don't have permission to warp them there!");
-			BenCmd.log(sender.getName() + " tried to warp "
-					+ player.getName() + " to " + warpName
-					+ ", but they don't have permission.");
+			player.sendMessage(ChatColor.RED + "You don't have permission to warp them there!");
+			BenCmd.log(sender.getName() + " tried to warp " + player.getName() + " to " + warpName + ", but they don't have permission.");
 		}
 		try {
-			BenCmd.getWarpCheckpoints().SetPreWarp(((Player)player.getHandle()));
-			((Player)player.getHandle()).teleport(loc);
+			BenCmd.getWarpCheckpoints().SetPreWarp(((Player) player.getHandle()));
+			((Player) player.getHandle()).teleport(loc);
 			player.sendMessage(ChatColor.YELLOW + "Woosh!");
-			BenCmd.log(sender.getName() + " just warped "
-					+ player.getName() + " to warp " + warpName + ".");
+			BenCmd.log(sender.getName() + " just warped " + player.getName() + " to warp " + warpName + ".");
 		} catch (NullPointerException e) {
-			BenCmd.log(Level.SEVERE, "There was an error warping player "
-					+ player.getName() + " to warp " + warpName + "!");
+			BenCmd.log(Level.SEVERE, "There was an error warping player " + player.getName() + " to warp " + warpName + "!");
 			BenCmd.log(e);
 		}
 	}
@@ -97,8 +85,7 @@ public class Warp {
 		if (mustInheritGroup == "") {
 			return true;
 		}
-		if (BenCmd.getPermissionManager().getGroupFile().getGroup(mustInheritGroup)
-				.userInGroup(player)) {
+		if (BenCmd.getPermissionManager().getGroupFile().getGroup(mustInheritGroup).userInGroup(player)) {
 			return true;
 		}
 		if (player.hasPerm("bencmd.warp.all")) {

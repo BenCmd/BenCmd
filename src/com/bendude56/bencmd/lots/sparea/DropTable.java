@@ -10,9 +10,8 @@ import org.bukkit.inventory.ItemStack;
 import com.bendude56.bencmd.invtools.BCItem;
 import com.bendude56.bencmd.invtools.InventoryBackend;
 
-
 public class DropTable {
-	private HashMap<BCItem, DropInfo> drops;
+	private HashMap<BCItem, DropInfo>	drops;
 
 	public DropTable(String value) {
 		drops = new HashMap<BCItem, DropInfo>();
@@ -23,8 +22,7 @@ public class DropTable {
 			}
 			String[] info = s.split(" ");
 			BCItem i = InventoryBackend.getInstance().checkAlias(info[0]);
-			int c = Integer.parseInt(info[1]), min = Integer.parseInt(info[2]), max = Integer
-					.parseInt(info[3]);
+			int c = Integer.parseInt(info[1]), min = Integer.parseInt(info[2]), max = Integer.parseInt(info[3]);
 			drops.put(i, new DropInfo(c, min, max));
 		}
 	}
@@ -36,8 +34,7 @@ public class DropTable {
 	public void removeItem(BCItem item) {
 		for (int i = 0; i < drops.size(); i++) {
 			BCItem item2 = (BCItem) drops.keySet().toArray()[i];
-			if (item2.getMaterial() == item.getMaterial()
-					&& item2.getDamage() == item.getDamage()) {
+			if (item2.getMaterial() == item.getMaterial() && item2.getDamage() == item.getDamage()) {
 				drops.remove(item2);
 			}
 		}
@@ -46,8 +43,7 @@ public class DropTable {
 	public DropInfo getInfo(BCItem item) {
 		for (int i = 0; i < drops.size(); i++) {
 			BCItem item2 = (BCItem) drops.keySet().toArray()[i];
-			if (item2.getMaterial() == item.getMaterial()
-					&& item2.getDamage() == item.getDamage()) {
+			if (item2.getMaterial() == item.getMaterial() && item2.getDamage() == item.getDamage()) {
 				return drops.get(item2);
 			}
 		}
@@ -66,8 +62,7 @@ public class DropTable {
 			DropInfo di = drops.get(bci);
 			int a = di.getAmount(r);
 			if (a != 0) {
-				ri.add(new ItemStack(bci.getMaterial(), a, (short) bci
-						.getDamage()));
+				ri.add(new ItemStack(bci.getMaterial(), a, (short) bci.getDamage()));
 			}
 		}
 		return ri;

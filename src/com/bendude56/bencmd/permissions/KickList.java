@@ -7,14 +7,12 @@ import org.bukkit.Bukkit;
 
 import com.bendude56.bencmd.BenCmd;
 
-
 public class KickList {
-	private HashMap<PermissionUser, Long> users;
+	private HashMap<PermissionUser, Long>	users;
 
 	public KickList() {
 		users = new HashMap<PermissionUser, Long>();
-		Bukkit.getServer().getScheduler()
-				.scheduleAsyncRepeatingTask(BenCmd.getPlugin(), new KickTimer(), 2, 2);
+		Bukkit.getServer().getScheduler().scheduleAsyncRepeatingTask(BenCmd.getPlugin(), new KickTimer(), 2, 2);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -32,17 +30,13 @@ public class KickList {
 		if (user.hasPerm("bencmd.action.kick.nodelay")) {
 			return;
 		}
-		users.put(
-				user,
-				new Date().getTime()
-						+ BenCmd.getMainProperties().getInteger("kickDelay", 120000));
+		users.put(user, new Date().getTime() + BenCmd.getMainProperties().getInteger("kickDelay", 120000));
 	}
 
 	public long isBlocked(String name) {
 		for (int i = 0; i < users.size(); i++) {
 			PermissionUser user;
-			if ((user = (PermissionUser) users.keySet().toArray()[i]).getName()
-					.equalsIgnoreCase(name)) {
+			if ((user = (PermissionUser) users.keySet().toArray()[i]).getName().equalsIgnoreCase(name)) {
 				return users.get(user) - new Date().getTime();
 			}
 		}

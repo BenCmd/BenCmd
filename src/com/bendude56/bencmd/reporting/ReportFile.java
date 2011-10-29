@@ -14,11 +14,10 @@ import com.bendude56.bencmd.User;
 import com.bendude56.bencmd.permissions.PermissionUser;
 import com.bendude56.bencmd.reporting.Report.ReportStatus;
 
-
 public class ReportFile extends BenCmdFile {
-	private HashMap<Integer, Report> reports = new HashMap<Integer, Report>();
-	private List<Integer> unread = new ArrayList<Integer>();
-	private List<Integer> open = new ArrayList<Integer>();
+	private HashMap<Integer, Report>	reports	= new HashMap<Integer, Report>();
+	private List<Integer>				unread	= new ArrayList<Integer>();
+	private List<Integer>				open	= new ArrayList<Integer>();
 
 	public ReportFile() {
 		super("tickets.db", "--BenCmd Ticket File--", true);
@@ -55,26 +54,18 @@ public class ReportFile extends BenCmdFile {
 		// TODO Make this more efficient
 		for (int i = 0; i < getFile().values().size(); i++) {
 			if (((String) getFile().values().toArray()[i]).split("/").length != 7) {
-				BenCmd.log(Level.WARNING, "Ticket #" + ((String) getFile().keySet().toArray()[i]) +
-						" is outdated... It must be upgraded manually!");
+				BenCmd.log(Level.WARNING, "Ticket #" + ((String) getFile().keySet().toArray()[i]) + " is outdated... It must be upgraded manually!");
 				continue;
 			}
 			try {
-				Integer id = Integer
-						.parseInt((String) getFile().keySet().toArray()[i]);
-				PermissionUser sender = PermissionUser.matchUserIgnoreCase(
-						((String) getFile().values().toArray()[i]).split("/")[0]);
-				PermissionUser accused = PermissionUser.matchUserIgnoreCase(
-						((String) getFile().values().toArray()[i]).split("/")[1]);
-				String reason = ((String) getFile().values().toArray()[i])
-						.split("/")[2];
-				Integer timesReopened = Integer.parseInt(((String) getFile()
-						.values().toArray()[i]).split("/")[3]);
-				String finalRemark = ((String) getFile().values().toArray()[i])
-						.split("/")[4];
+				Integer id = Integer.parseInt((String) getFile().keySet().toArray()[i]);
+				PermissionUser sender = PermissionUser.matchUserIgnoreCase(((String) getFile().values().toArray()[i]).split("/")[0]);
+				PermissionUser accused = PermissionUser.matchUserIgnoreCase(((String) getFile().values().toArray()[i]).split("/")[1]);
+				String reason = ((String) getFile().values().toArray()[i]).split("/")[2];
+				Integer timesReopened = Integer.parseInt(((String) getFile().values().toArray()[i]).split("/")[3]);
+				String finalRemark = ((String) getFile().values().toArray()[i]).split("/")[4];
 				List<String> addedinfo = new ArrayList<String>();
-				for (String addedinfostr : ((String) getFile().values().toArray()[i])
-						.split("/")[5].split(",")) {
+				for (String addedinfostr : ((String) getFile().values().toArray()[i]).split("/")[5].split(",")) {
 					addedinfo.add(addedinfostr);
 				}
 				String type = ((String) getFile().values().toArray()[i]).split("/")[6];
@@ -96,14 +87,13 @@ public class ReportFile extends BenCmdFile {
 				} else {
 					throw new Exception();
 				}
-				reports.put(id, new Report(id, sender, accused, status,
-						reason, finalRemark, timesReopened, addedinfo));
+				reports.put(id, new Report(id, sender, accused, status, reason, finalRemark, timesReopened, addedinfo));
 			} catch (Exception e) {
 				BenCmd.log(Level.WARNING, "A ticket in the tickets list couldn't be loaded!");
 			}
 		}
 	}
-	
+
 	public void saveAll() {
 		for (Map.Entry<Integer, Report> e : reports.entrySet()) {
 			saveTicket(e.getValue(), false);
@@ -112,22 +102,19 @@ public class ReportFile extends BenCmdFile {
 	}
 
 	public void PurgeOpen(final User user) {
-		user.sendMessage(ChatColor.YELLOW
-				+ "Please wait... Ticket purge in progress...");
+		user.sendMessage(ChatColor.YELLOW + "Please wait... Ticket purge in progress...");
 		new Thread() {
 			public void run() {
 				for (Report r : getOpen()) {
 					r.closeTicket("Ticket purged by admin");
 				}
-				user.sendMessage(ChatColor.GREEN
-						+ "All tickets purged successfully!");
+				user.sendMessage(ChatColor.GREEN + "All tickets purged successfully!");
 			}
 		}.start();
 	}
 
 	public void PurgeFrom(final User user, final String toPurge) {
-		user.sendMessage(ChatColor.YELLOW
-				+ "Please wait... Ticket purge in progress...");
+		user.sendMessage(ChatColor.YELLOW + "Please wait... Ticket purge in progress...");
 		new Thread() {
 			public void run() {
 				for (Report r : getOpen()) {
@@ -135,15 +122,13 @@ public class ReportFile extends BenCmdFile {
 						r.closeTicket("Ticket purged by admin");
 					}
 				}
-				user.sendMessage(ChatColor.GREEN + "All tickets from "
-						+ toPurge + " purged successfully!");
+				user.sendMessage(ChatColor.GREEN + "All tickets from " + toPurge + " purged successfully!");
 			}
 		}.start();
 	}
 
 	public void PurgeTo(final User user, final String toPurge) {
-		user.sendMessage(ChatColor.YELLOW
-				+ "Please wait... Ticket purge in progress...");
+		user.sendMessage(ChatColor.YELLOW + "Please wait... Ticket purge in progress...");
 		new Thread() {
 			public void run() {
 				for (Report r : getOpen()) {
@@ -151,15 +136,13 @@ public class ReportFile extends BenCmdFile {
 						r.closeTicket("Ticket purged by admin");
 					}
 				}
-				user.sendMessage(ChatColor.GREEN + "All tickets against "
-						+ toPurge + " purged successfully!");
+				user.sendMessage(ChatColor.GREEN + "All tickets against " + toPurge + " purged successfully!");
 			}
 		}.start();
 	}
 
 	public void listTickets(final User user, final int page) {
-		user.sendMessage(ChatColor.YELLOW
-				+ "Please wait... The report databases are being queried...");
+		user.sendMessage(ChatColor.YELLOW + "Please wait... The report databases are being queried...");
 		new Thread() {
 			public void run() {
 				List<Report> results;
@@ -168,26 +151,20 @@ public class ReportFile extends BenCmdFile {
 				} else if (user.hasPerm("bencmd.ticket.readown")) {
 					results = new ArrayList<Report>();
 					for (Report ticket : getOpen()) {
-						if (ticket.getAccused().getName()
-								.equalsIgnoreCase(user.getName())
-								|| ticket.getSender().getName()
-										.equalsIgnoreCase(user.getName())) {
+						if (ticket.getAccused().getName().equalsIgnoreCase(user.getName()) || ticket.getSender().getName().equalsIgnoreCase(user.getName())) {
 							results.add(ticket);
 						}
 					}
 				} else {
-					user.sendMessage(ChatColor.RED
-							+ "You don't have permission to do that!");
+					user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
 					BenCmd.getPlugin().logPermFail();
 					return;
 				}
 				try {
 					if (results.isEmpty()) {
-						user.sendMessage(ChatColor.RED
-								+ "Your search returned no OPEN results!");
+						user.sendMessage(ChatColor.RED + "Your search returned no OPEN results!");
 					} else {
-						user.sendMessage(ChatColor.GRAY
-								+ "Your search returned the following OPEN results:");
+						user.sendMessage(ChatColor.GRAY + "Your search returned the following OPEN results:");
 						showTickets(results, page, user);
 					}
 				} catch (NullPointerException e) {
@@ -198,8 +175,7 @@ public class ReportFile extends BenCmdFile {
 	}
 
 	public void listAllTickets(final User user, final int page) {
-		user.sendMessage(ChatColor.YELLOW
-				+ "Please wait... The report databases are being queried...");
+		user.sendMessage(ChatColor.YELLOW + "Please wait... The report databases are being queried...");
 		new Thread() {
 			public void run() {
 				List<Report> results;
@@ -208,27 +184,21 @@ public class ReportFile extends BenCmdFile {
 				} else if (user.hasPerm("bencmd.ticket.readown")) {
 					results = new ArrayList<Report>();
 					for (Report ticket : getReports()) {
-						if (ticket.getAccused().getName()
-								.equalsIgnoreCase(user.getName())
-								|| ticket.getSender().getName()
-										.equalsIgnoreCase(user.getName())) {
+						if (ticket.getAccused().getName().equalsIgnoreCase(user.getName()) || ticket.getSender().getName().equalsIgnoreCase(user.getName())) {
 							results.add(ticket);
 						}
 					}
 				} else {
-					user.sendMessage(ChatColor.RED
-							+ "You don't have permission to do that!");
+					user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
 					BenCmd.getPlugin().logPermFail();
 					return;
 				}
 				Collections.sort(results);
 				try {
 					if (results.isEmpty()) {
-						user.sendMessage(ChatColor.RED
-								+ "Your search returned no results!");
+						user.sendMessage(ChatColor.RED + "Your search returned no results!");
 					} else {
-						user.sendMessage(ChatColor.GRAY
-								+ "Your search returned the following results:");
+						user.sendMessage(ChatColor.GRAY + "Your search returned the following results:");
 						showTickets(results, page, user);
 					}
 				} catch (NullPointerException e) {
@@ -257,56 +227,53 @@ public class ReportFile extends BenCmdFile {
 			cpage--;
 		}
 		if (page <= 0) {
-			user.sendMessage(ChatColor.RED
-					+ "There can be no page lower than 1.");
+			user.sendMessage(ChatColor.RED + "There can be no page lower than 1.");
 			return;
 		}
 		if (page > cpage) {
-			user.sendMessage(ChatColor.RED + "There are only " + cpage
-					+ " pages...");
+			user.sendMessage(ChatColor.RED + "There are only " + cpage + " pages...");
 			return;
 		}
 		if (cpage != 1) {
-			user.sendMessage(ChatColor.GRAY + "Page " + ChatColor.GREEN + page
-					+ ChatColor.GRAY + "/" + ChatColor.GREEN + cpage);
+			user.sendMessage(ChatColor.GRAY + "Page " + ChatColor.GREEN + page + ChatColor.GRAY + "/" + ChatColor.GREEN + cpage);
 		}
 		for (Report r : pages.get(page)) {
 			switch (r.getStatus()) {
-			case UNREAD:
-				if (user.getName().equals(r.getAccused().getName()) && !user.hasPerm("bencmd.ticket.readall")) {
-					user.sendMessage(ChatColor.RED + r.readShorthandAnon());
-				} else {
-					user.sendMessage(ChatColor.RED + r.readShorthand());
-				}
-				break;
-			case READ:
-				if (user.getName().equals(r.getAccused().getName()) && !user.hasPerm("bencmd.ticket.readall")) {
-					user.sendMessage(ChatColor.YELLOW + r.readShorthandAnon());
-				} else {
-					user.sendMessage(ChatColor.YELLOW + r.readShorthand());
-				}
-				break;
-			case INVESTIGATING:
-				if (user.getName().equals(r.getAccused().getName()) && !user.hasPerm("bencmd.ticket.readall")) {
-					user.sendMessage(ChatColor.GREEN + r.readShorthandAnon());
-				} else {
-					user.sendMessage(ChatColor.GREEN + r.readShorthand());
-				}
-				break;
-			case CLOSED:
-				if (user.getName().equals(r.getAccused().getName()) && !user.hasPerm("bencmd.ticket.readall")) {
-					user.sendMessage(ChatColor.GRAY + r.readShorthandAnon());
-				} else {
-					user.sendMessage(ChatColor.GRAY + r.readShorthand());
-				}
-				break;
-			case LOCKED:
-				if (user.getName().equals(r.getAccused().getName()) && !user.hasPerm("bencmd.ticket.readall")) {
-					user.sendMessage(ChatColor.DARK_GRAY + r.readShorthandAnon());
-				} else {
-					user.sendMessage(ChatColor.DARK_GRAY + r.readShorthand());
-				}
-				break;
+				case UNREAD:
+					if (user.getName().equals(r.getAccused().getName()) && !user.hasPerm("bencmd.ticket.readall")) {
+						user.sendMessage(ChatColor.RED + r.readShorthandAnon());
+					} else {
+						user.sendMessage(ChatColor.RED + r.readShorthand());
+					}
+					break;
+				case READ:
+					if (user.getName().equals(r.getAccused().getName()) && !user.hasPerm("bencmd.ticket.readall")) {
+						user.sendMessage(ChatColor.YELLOW + r.readShorthandAnon());
+					} else {
+						user.sendMessage(ChatColor.YELLOW + r.readShorthand());
+					}
+					break;
+				case INVESTIGATING:
+					if (user.getName().equals(r.getAccused().getName()) && !user.hasPerm("bencmd.ticket.readall")) {
+						user.sendMessage(ChatColor.GREEN + r.readShorthandAnon());
+					} else {
+						user.sendMessage(ChatColor.GREEN + r.readShorthand());
+					}
+					break;
+				case CLOSED:
+					if (user.getName().equals(r.getAccused().getName()) && !user.hasPerm("bencmd.ticket.readall")) {
+						user.sendMessage(ChatColor.GRAY + r.readShorthandAnon());
+					} else {
+						user.sendMessage(ChatColor.GRAY + r.readShorthand());
+					}
+					break;
+				case LOCKED:
+					if (user.getName().equals(r.getAccused().getName()) && !user.hasPerm("bencmd.ticket.readall")) {
+						user.sendMessage(ChatColor.DARK_GRAY + r.readShorthandAnon());
+					} else {
+						user.sendMessage(ChatColor.DARK_GRAY + r.readShorthand());
+					}
+					break;
 			}
 		}
 	}
@@ -329,21 +296,21 @@ public class ReportFile extends BenCmdFile {
 		}
 		value += "/";
 		switch (ticket.getStatus()) {
-		case UNREAD:
-			value += "u";
-			break;
-		case READ:
-			value += "r";
-			break;
-		case INVESTIGATING:
-			value += "i";
-			break;
-		case CLOSED:
-			value += "c";
-			break;
-		case LOCKED:
-			value += "l";
-			break;
+			case UNREAD:
+				value += "u";
+				break;
+			case READ:
+				value += "r";
+				break;
+			case INVESTIGATING:
+				value += "i";
+				break;
+			case CLOSED:
+				value += "c";
+				break;
+			case LOCKED:
+				value += "l";
+				break;
 		}
 		getFile().put(key, value);
 		if (ticket.getStatus() == ReportStatus.UNREAD) {
@@ -351,8 +318,7 @@ public class ReportFile extends BenCmdFile {
 		} else {
 			setRead(ticket);
 		}
-		if (ticket.getStatus() == ReportStatus.CLOSED
-				|| ticket.getStatus() == ReportStatus.LOCKED) {
+		if (ticket.getStatus() == ReportStatus.CLOSED || ticket.getStatus() == ReportStatus.LOCKED) {
 			setClosed(ticket);
 		} else {
 			setOpen(ticket);
@@ -361,27 +327,21 @@ public class ReportFile extends BenCmdFile {
 			saveFile();
 	}
 
-	public void searchTickets(final User user, final String search,
-			final int page) {
-		user.sendMessage(ChatColor.YELLOW
-				+ "Please wait... The report databases are being queried...");
+	public void searchTickets(final User user, final String search, final int page) {
+		user.sendMessage(ChatColor.YELLOW + "Please wait... The report databases are being queried...");
 		new Thread() {
 			public void run() {
 				List<Report> results = new ArrayList<Report>();
 				for (Report ticket : getOpen()) {
-					if (ticket.getAccused().getName().equalsIgnoreCase(search)
-							|| ticket.getSender().getName()
-									.equalsIgnoreCase(search)) {
+					if (ticket.getAccused().getName().equalsIgnoreCase(search) || ticket.getSender().getName().equalsIgnoreCase(search)) {
 						results.add(ticket);
 					}
 				}
 				try {
 					if (results.isEmpty()) {
-						user.sendMessage(ChatColor.RED
-								+ "Your search returned no OPEN results!");
+						user.sendMessage(ChatColor.RED + "Your search returned no OPEN results!");
 					} else {
-						user.sendMessage(ChatColor.GRAY
-								+ "Your search returned the following OPEN results:");
+						user.sendMessage(ChatColor.GRAY + "Your search returned the following OPEN results:");
 						showTickets(results, page, user);
 					}
 				} catch (NullPointerException e) {
@@ -391,27 +351,21 @@ public class ReportFile extends BenCmdFile {
 		}.start();
 	}
 
-	public void searchAllTickets(final User user, final String search,
-			final int page) {
-		user.sendMessage(ChatColor.YELLOW
-				+ "Please wait... The report databases are being queried...");
+	public void searchAllTickets(final User user, final String search, final int page) {
+		user.sendMessage(ChatColor.YELLOW + "Please wait... The report databases are being queried...");
 		new Thread() {
 			public void run() {
 				List<Report> results = new ArrayList<Report>();
 				for (Report ticket : getReports()) {
-					if (ticket.getAccused().getName().equalsIgnoreCase(search)
-							|| ticket.getSender().getName()
-									.equalsIgnoreCase(search)) {
+					if (ticket.getAccused().getName().equalsIgnoreCase(search) || ticket.getSender().getName().equalsIgnoreCase(search)) {
 						results.add(ticket);
 					}
 				}
 				try {
 					if (results.isEmpty()) {
-						user.sendMessage(ChatColor.RED
-								+ "Your search returned no results!");
+						user.sendMessage(ChatColor.RED + "Your search returned no results!");
 					} else {
-						user.sendMessage(ChatColor.GRAY
-								+ "Your search returned the following results:");
+						user.sendMessage(ChatColor.GRAY + "Your search returned the following results:");
 						showTickets(results, page, user);
 					}
 				} catch (NullPointerException e) {
@@ -448,8 +402,7 @@ public class ReportFile extends BenCmdFile {
 
 	public Integer getIndexById(Integer id) {
 		for (int i = 0; i < getFile().keySet().size(); i++) {
-			if (getFile().keySet().toArray()[i].toString().equalsIgnoreCase(
-					id.toString())) {
+			if (getFile().keySet().toArray()[i].toString().equalsIgnoreCase(id.toString())) {
 				return i;
 			}
 		}

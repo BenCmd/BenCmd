@@ -8,15 +8,14 @@ import org.bukkit.ChatColor;
 import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.InvalidPermissionError;
 
-
 class InternalGroup {
-	private String groupName;
-	private List<String> permissions;
-	private List<String> users;
-	private List<String> groups;
-	private String prefix;
-	private Integer color;
-	private Integer level;
+	private String			groupName;
+	private List<String>	permissions;
+	private List<String>	users;
+	private List<String>	groups;
+	private String			prefix;
+	private Integer			color;
+	private Integer			level;
 
 	static InternalGroup highestLevel(List<InternalGroup> groups) {
 		InternalGroup highest = null;
@@ -39,9 +38,7 @@ class InternalGroup {
 		return new PermissionGroup(highest);
 	}
 
-	protected InternalGroup(String groupName,
-			List<String> permissions, List<String> users, List<String> groups,
-			String prefix, Integer color, Integer level) {
+	protected InternalGroup(String groupName, List<String> permissions, List<String> users, List<String> groups, String prefix, Integer color, Integer level) {
 		this.groupName = groupName;
 		this.permissions = permissions;
 		this.users = users;
@@ -82,8 +79,7 @@ class InternalGroup {
 		List<String> perms = new ArrayList<String>();
 		perms.addAll(permissions);
 		if (testGroup) {
-			for (InternalGroup group : BenCmd.getPermissionManager().getGroupFile()
-					.getGroupGroups(this)) {
+			for (InternalGroup group : BenCmd.getPermissionManager().getGroupFile().getGroupGroups(this)) {
 				perms.addAll(group.getPermissions(true));
 			}
 		}
@@ -113,11 +109,11 @@ class InternalGroup {
 		}
 		return false;
 	}
-	
+
 	public String getVar(String variable) {
 		return getVar(variable, null);
 	}
-	
+
 	public String getVar(String variable, String def) {
 		if (variable.contains(",")) {
 			throw new InvalidPermissionError(variable, "Variable names cannot contain commas!");
@@ -136,12 +132,12 @@ class InternalGroup {
 			return def;
 		}
 	}
-	
+
 	public void remVar(String variable) {
 		String key = variable + "=" + getVar(variable);
 		permissions.remove(key);
 	}
-	
+
 	public void setVar(String variable, String value) {
 		if (getVar(variable) != null) {
 			remVar(variable);
@@ -163,8 +159,7 @@ class InternalGroup {
 	public String getPrefix() {
 		if (prefix.isEmpty()) {
 			List<InternalGroup> possibleGroups = new ArrayList<InternalGroup>();
-			for (InternalGroup group : BenCmd.getPermissionManager().getGroupFile()
-					.getGroupGroups(this)) {
+			for (InternalGroup group : BenCmd.getPermissionManager().getGroupFile().getGroupGroups(this)) {
 				if (!group.getPrefix().isEmpty()) {
 					possibleGroups.add(group);
 				}
@@ -186,8 +181,7 @@ class InternalGroup {
 	public ChatColor getColor() {
 		if (color == -1) {
 			List<InternalGroup> possibleGroups = new ArrayList<InternalGroup>();
-			for (InternalGroup group : BenCmd.getPermissionManager().getGroupFile()
-					.getGroupGroups(this)) {
+			for (InternalGroup group : BenCmd.getPermissionManager().getGroupFile().getGroupGroups(this)) {
 				if (group.getColor() != ChatColor.YELLOW) {
 					possibleGroups.add(group);
 				}

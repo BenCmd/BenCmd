@@ -4,9 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import com.bendude56.bencmd.*;
 
-
 public class KitList extends BenCmdFile {
-	public List<Kit> kits = new ArrayList<Kit>();
+	public List<Kit>	kits	= new ArrayList<Kit>();
 
 	public KitList() {
 		super("kits.db", "--BenCmd Kit File--", false);
@@ -17,8 +16,7 @@ public class KitList extends BenCmdFile {
 	public void loadAll() {
 		kits.clear();
 		for (int i = 0; i < getFile().size(); i++) {
-			kits.add(new Kit(i, (String) getFile().values().toArray()[i],
-					(String) getFile().keySet().toArray()[i]));
+			kits.add(new Kit(i, (String) getFile().values().toArray()[i], (String) getFile().keySet().toArray()[i]));
 		}
 	}
 

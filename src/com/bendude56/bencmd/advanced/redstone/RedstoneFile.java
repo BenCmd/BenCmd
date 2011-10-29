@@ -8,9 +8,8 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import com.bendude56.bencmd.BenCmdFile;
 
-
 public class RedstoneFile extends BenCmdFile {
-	private HashMap<Location, RedstoneLever> levers;
+	private HashMap<Location, RedstoneLever>	levers;
 
 	public RedstoneFile() {
 		super("lever.db", "--BenCmd Lever File--", true);
@@ -21,14 +20,12 @@ public class RedstoneFile extends BenCmdFile {
 
 	public void loadAll() {
 		for (int i = 0; i < getFile().size(); i++) {
-			String key = (String) getFile().keySet().toArray()[i], value = getFile()
-					.getProperty(key);
+			String key = (String) getFile().keySet().toArray()[i], value = getFile().getProperty(key);
 			Location l = toLocation(key);
 			if (value.equals("d")) {
 				levers.put(l, new RedstoneLever(l, RedstoneLever.LeverType.DAY));
 			} else if (value.equals("n")) {
-				levers.put(l, new RedstoneLever(l,
-						RedstoneLever.LeverType.NIGHT));
+				levers.put(l, new RedstoneLever(l, RedstoneLever.LeverType.NIGHT));
 			}
 		}
 	}
@@ -36,8 +33,7 @@ public class RedstoneFile extends BenCmdFile {
 	public void timeTick() {
 		List<Location> remove = new ArrayList<Location>();
 		for (RedstoneLever lever : levers.values()) {
-			if (!lever.getLocation().getWorld()
-					.isChunkLoaded(lever.getLocation().getBlock().getChunk())) {
+			if (!lever.getLocation().getWorld().isChunkLoaded(lever.getLocation().getBlock().getChunk())) {
 				return;
 			}
 			if (!lever.timeUpdate()) {
@@ -65,20 +61,17 @@ public class RedstoneFile extends BenCmdFile {
 
 	public void removeLever(Location l) {
 		levers.remove(l);
-		getFile().remove(l.getWorld().getName() + "," + l.getBlockX() + ","
-				+ l.getBlockY() + "," + l.getBlockZ());
+		getFile().remove(l.getWorld().getName() + "," + l.getBlockX() + "," + l.getBlockY() + "," + l.getBlockZ());
 		saveFile();
 	}
-	
+
 	public void saveLever(RedstoneLever lever) {
 		saveLever(lever, true);
 	}
 
 	public void saveLever(RedstoneLever lever, boolean saveFile) {
 		Location l = lever.getLocation();
-		getFile().put(
-				l.getWorld().getName() + "," + l.getBlockX() + ","
-						+ l.getBlockY() + "," + l.getBlockZ(), lever.getValue());
+		getFile().put(l.getWorld().getName() + "," + l.getBlockX() + "," + l.getBlockY() + "," + l.getBlockZ(), lever.getValue());
 		if (saveFile) {
 			saveFile();
 		}

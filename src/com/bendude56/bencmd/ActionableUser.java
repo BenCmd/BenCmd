@@ -7,12 +7,10 @@ import org.bukkit.entity.Player;
 
 import com.bendude56.bencmd.warps.WarpableUser;
 
-
 public class ActionableUser extends WarpableUser {
-	private boolean god;
+	private boolean	god;
 
-	public ActionableUser(CommandSender s)
-			throws NullPointerException {
+	public ActionableUser(CommandSender s) throws NullPointerException {
 		super(s);
 		god = false;
 	}
@@ -93,8 +91,7 @@ public class ActionableUser extends WarpableUser {
 			throw new UnsupportedOperationException();
 		}
 		BenCmd.getPermissionManager().getKickTracker().addUser(this);
-		((Player) getHandle()).kickPlayer("You have been kicked by user: "
-				+ sender.getDisplayName() + ". Reason: " + reason + ".");
+		((Player) getHandle()).kickPlayer("You have been kicked by user: " + sender.getDisplayName() + ". Reason: " + reason + ".");
 	}
 
 	public void kick(String reason) {
@@ -110,8 +107,7 @@ public class ActionableUser extends WarpableUser {
 			throw new UnsupportedOperationException();
 		}
 		BenCmd.getPermissionManager().getKickTracker().addUser(this);
-		((Player) getHandle()).kickPlayer("You have been kicked by user: "
-				+ sender.getDisplayName() + ".");
+		((Player) getHandle()).kickPlayer("You have been kicked by user: " + sender.getDisplayName() + ".");
 	}
 
 	public void kick() {
@@ -141,7 +137,7 @@ public class ActionableUser extends WarpableUser {
 		}
 		((Player) getHandle()).setHealth(20);
 	}
-	
+
 	public void feed() {
 		if (isServer()) {
 			throw new UnsupportedOperationException();
@@ -178,9 +174,7 @@ public class ActionableUser extends WarpableUser {
 		if (isServer()) {
 			throw new UnsupportedOperationException();
 		}
-		Bukkit.broadcastMessage(
-				this.getColor() + this.getDisplayName() + ChatColor.WHITE
-						+ " has left the game...");
+		Bukkit.broadcastMessage(this.getColor() + this.getDisplayName() + ChatColor.WHITE + " has left the game...");
 		BenCmd.getPoofController().goOffline(this);
 	}
 
@@ -188,9 +182,7 @@ public class ActionableUser extends WarpableUser {
 		if (isServer()) {
 			throw new UnsupportedOperationException();
 		}
-		Bukkit.broadcastMessage(
-				this.getColor() + this.getDisplayName() + ChatColor.WHITE
-						+ " has joined the game...");
+		Bukkit.broadcastMessage(this.getColor() + this.getDisplayName() + ChatColor.WHITE + " has joined the game...");
 		BenCmd.getPoofController().goOnline(this);
 	}
 

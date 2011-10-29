@@ -20,26 +20,24 @@ import com.bendude56.bencmd.BenCmd;
 public class PathableNPC extends NPC {
 	// TODO Complete this class
 
-	private PathEntity path = null;
-	private int respawnTime = -2;
-	private int maxRespawnTime = -1;
-	private List<Location> patrol;
-	private int cPatrol;
-	
-	public PathableNPC(String name, int id, Location l,
-			ItemStack itemHeld, boolean facePlayer, int maxRespawnTime) {
+	private PathEntity		path			= null;
+	private int				respawnTime		= -2;
+	private int				maxRespawnTime	= -1;
+	private List<Location>	patrol;
+	private int				cPatrol;
+
+	public PathableNPC(String name, int id, Location l, ItemStack itemHeld, boolean facePlayer, int maxRespawnTime) {
 		this(name, id, l, itemHeld, facePlayer, maxRespawnTime, null);
 	}
 
-	public PathableNPC(String name, int id, Location l,
-			ItemStack itemHeld, boolean facePlayer, int maxRespawnTime, List<Location> patrol) {
+	public PathableNPC(String name, int id, Location l, ItemStack itemHeld, boolean facePlayer, int maxRespawnTime, List<Location> patrol) {
 		super(name, id, l, itemHeld, facePlayer);
 		this.maxRespawnTime = maxRespawnTime;
 		this.patrol = patrol;
 		patrol.add(0, getLocation());
 		cPatrol = 0;
 	}
-	
+
 	public void setPatrol(List<Location> patrol) {
 		patrol.add(0, getLocation());
 		this.patrol = patrol;
@@ -51,14 +49,14 @@ public class PathableNPC extends NPC {
 		this.path = path;
 		cPatrol = 0;
 	}
-	
+
 	public void moveTo(Location loc) {
 		if (loc == null)
 			return;
 		else
 			moveTo(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
 	}
-	
+
 	public void moveTo(int x, int y, int z) {
 		this.path = enpc.world.a(enpc, x, y, z, 16.0F);
 		cPatrol = 0;
@@ -83,7 +81,7 @@ public class PathableNPC extends NPC {
 	public boolean hasBow() {
 		return enpc.inventory.getItem(enpc.inventory.itemInHandIndex).id == 261;
 	}
-	
+
 	public boolean respawnTicks() {
 		if (enpc == null || enpc.dead) {
 			if (enpc != null) {
@@ -119,10 +117,8 @@ public class PathableNPC extends NPC {
 		EntityHuman h;
 		if ((h = getClosestPlayer(10.0D)) != null) {
 			NPC.faceEntity(enpc, h);
-		} else if (this.getLocation().getYaw() != this.getCurrentLocation()
-				.getYaw()) {
-			enpc.setLocation(enpc.locX, enpc.locY, enpc.locZ, this
-					.getLocation().getYaw(), enpc.pitch);
+		} else if (this.getLocation().getYaw() != this.getCurrentLocation().getYaw()) {
+			enpc.setLocation(enpc.locX, enpc.locY, enpc.locZ, this.getLocation().getYaw(), enpc.pitch);
 		}
 		Vec3D to = getNextPathPos();
 		if (to != null) {
@@ -145,8 +141,7 @@ public class PathableNPC extends NPC {
 	private Vec3D getNextPathPos() {
 		Vec3D vec3d = path.a(enpc);
 		double length = (enpc.length * 1.82F);
-		while (vec3d != null
-				&& vec3d.d(enpc.locX, vec3d.b, enpc.locZ) < length * length) {
+		while (vec3d != null && vec3d.d(enpc.locX, vec3d.b, enpc.locZ) < length * length) {
 			this.path.a();
 			if (this.path.b()) {
 				vec3d = null;
@@ -170,13 +165,11 @@ public class PathableNPC extends NPC {
 		((CraftPlayer) ply).getHandle().netServerHandler.sendPacket(packet);
 	}
 
-	public static void sendPacketNearby(final Location location,
-			final double radius, final Packet packet) {
+	public static void sendPacketNearby(final Location location, final double radius, final Packet packet) {
 		sendPacketNearby(location, radius, packet, null);
 	}
 
-	public static void sendPacketNearby(final Location location, double radius,
-			final Packet packet, final Player except) {
+	public static void sendPacketNearby(final Location location, double radius, final Packet packet, final Player except) {
 		radius *= radius;
 		final World world = location.getWorld();
 		for (Player ply : Bukkit.getServer().getOnlinePlayers()) {

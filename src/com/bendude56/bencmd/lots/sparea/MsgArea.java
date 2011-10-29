@@ -5,14 +5,11 @@ import org.bukkit.Location;
 
 import com.bendude56.bencmd.BenCmd;
 
-
 public class MsgArea extends SPArea {
-	private String emsg;
-	private String lmsg;
+	private String	emsg;
+	private String	lmsg;
 
-	public MsgArea(String key, String value)
-			throws NumberFormatException, NullPointerException,
-			IndexOutOfBoundsException {
+	public MsgArea(String key, String value) throws NumberFormatException, NullPointerException, IndexOutOfBoundsException {
 		super(key, value);
 		emsg = value.split("/")[3].replace('`', '/');
 		if (emsg.equals("/")) {
@@ -24,8 +21,7 @@ public class MsgArea extends SPArea {
 		}
 	}
 
-	public MsgArea(Integer id, Location corner1,
-			Location corner2, String enter, String leave) {
+	public MsgArea(Integer id, Location corner1, Location corner2, String enter, String leave) {
 		super(id, corner1, corner2);
 		emsg = enter;
 		if (!emsg.startsWith("§")) {

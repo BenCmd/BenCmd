@@ -4,15 +4,12 @@ import org.bukkit.event.CustomEventListener;
 import org.bukkit.event.Event;
 
 public abstract class ProtectionListener extends CustomEventListener {
-	
-	public void onProtectionAdd(ProtectionAddEvent event) {
-	}
-	
-	public void onProtectionRemove(ProtectionRemoveEvent event) {
-	}
-	
-	public void onProtectionEdit(ProtectionEditEvent event) {
-	}
+
+	public void onProtectionAdd(ProtectionAddEvent event) {}
+
+	public void onProtectionRemove(ProtectionRemoveEvent event) {}
+
+	public void onProtectionEdit(ProtectionEditEvent event) {}
 
 	public void onCustomEvent(Event event) {
 		if (event instanceof ProtectionAddEvent) {

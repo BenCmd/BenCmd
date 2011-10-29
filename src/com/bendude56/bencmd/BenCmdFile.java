@@ -10,11 +10,11 @@ import java.util.logging.Level;
 import org.bukkit.util.FileUtil;
 
 public abstract class BenCmdFile {
-	private final String l;
-	private final String h;
-	private final boolean r;
-	private Properties _prop;
-	
+	private final String	l;
+	private final String	h;
+	private final boolean	r;
+	private Properties		_prop;
+
 	public BenCmdFile(String file, String header, boolean allowRestore) {
 		l = file;
 		h = header;
@@ -22,8 +22,7 @@ public abstract class BenCmdFile {
 		_prop = null;
 		if (allowRestore && new File(BenCmd.propDir + "_" + l).exists()) {
 			BenCmd.log(Level.WARNING, "Backup file found (_" + l + ")... Restoring...");
-			if (FileUtil.copy(new File(BenCmd.propDir + "_" + l), new File(
-					BenCmd.propDir + l))) {
+			if (FileUtil.copy(new File(BenCmd.propDir + "_" + l), new File(BenCmd.propDir + l))) {
 				new File(BenCmd.propDir + "_" + l).delete();
 				BenCmd.log("Restoration suceeded!");
 			} else {
@@ -31,7 +30,7 @@ public abstract class BenCmdFile {
 			}
 		}
 	}
-	
+
 	protected final boolean loadFile() {
 		if (_prop != null)
 			unloadFile();
@@ -57,21 +56,19 @@ public abstract class BenCmdFile {
 			return false;
 		}
 	}
-	
+
 	protected final void unloadFile() {
 		_prop.clear();
 		_prop = null;
 	}
-	
+
 	protected final boolean saveFile() {
 		if (_prop == null)
 			throw new UnsupportedOperationException("Cannot save a file that hasn't been loaded!");
-		if (r)
-		{
+		if (r) {
 			try {
 				new File(BenCmd.propDir + "_" + l).createNewFile();
-				if (!FileUtil.copy(new File(BenCmd.propDir + l), new File(
-						BenCmd.propDir + "_" + l))) {
+				if (!FileUtil.copy(new File(BenCmd.propDir + l), new File(BenCmd.propDir + "_" + l))) {
 					BenCmd.log(Level.WARNING, "Failed to back up database!");
 				}
 			} catch (IOException e) {
@@ -92,11 +89,10 @@ public abstract class BenCmdFile {
 		try {
 			// Save the values
 			_prop.store(new FileOutputStream(file), h);
-			if (r)
-			{
+			if (r) {
 				try {
 					new File(BenCmd.propDir + "_" + l).delete();
-				} catch (Exception e) { }
+				} catch (Exception e) {}
 			}
 			return true;
 		} catch (IOException ex) {
@@ -105,20 +101,21 @@ public abstract class BenCmdFile {
 			BenCmd.log(ex);
 			try {
 				new File(BenCmd.propDir + "_" + l).delete();
-			} catch (Exception e) { }
+			} catch (Exception e) {}
 			return false;
 		}
 	}
-	
+
 	public abstract void saveAll();
+
 	public abstract void loadAll();
-	
+
 	public final void reload(boolean save) {
 		if (save)
 			saveAll();
 		loadAll();
 	}
-	
+
 	protected final Properties getFile() {
 		return _prop;
 	}

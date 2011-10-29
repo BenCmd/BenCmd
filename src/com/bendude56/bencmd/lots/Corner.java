@@ -2,11 +2,10 @@ package com.bendude56.bencmd.lots;
 
 import org.bukkit.Location;
 
-
 public class Corner {
 
-	Location corner1, corner2;
-	public boolean corner1set, corner2set;
+	Location	corner1, corner2;
+	public boolean	corner1set, corner2set;
 
 	public Corner() {
 

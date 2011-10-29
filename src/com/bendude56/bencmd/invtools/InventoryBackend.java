@@ -7,15 +7,14 @@ import org.bukkit.inventory.ItemStack;
 
 import com.bendude56.bencmd.BenCmd;
 
-
 public class InventoryBackend {
-	static final int FULL_STACK = 64;
-	static final int THROWABLE_STACK = 16;
-	
+	static final int				FULL_STACK		= 64;
+	static final int				THROWABLE_STACK	= 16;
+
 	// Singleton instancing
-	
-	private static InventoryBackend instance = null;
-	
+
+	private static InventoryBackend	instance		= null;
+
 	public static InventoryBackend getInstance() {
 		if (instance == null) {
 			return instance = new InventoryBackend();
@@ -23,13 +22,12 @@ public class InventoryBackend {
 			return instance;
 		}
 	}
-	
+
 	public static void destroyInstance() {
 		instance = null;
 	}
-	
-	private InventoryBackend() {
-	}
+
+	private InventoryBackend() {}
 
 	public int getStackNumber(int id) {
 		if (id >= 256 && id <= 261)
@@ -90,20 +88,15 @@ public class InventoryBackend {
 			}
 		} catch (NumberFormatException e) {
 			try {
-				if (BenCmd.getItemAliases().containsKey(arg.split(":")[0])
-						&& arg.split(":").length == 2) {
-					ItemID = Integer.parseInt(BenCmd.getItemAliases().getString(
-							arg.split(":")[0], ""));
+				if (BenCmd.getItemAliases().containsKey(arg.split(":")[0]) && arg.split(":").length == 2) {
+					ItemID = Integer.parseInt(BenCmd.getItemAliases().getString(arg.split(":")[0], ""));
 					Damage = Integer.parseInt(arg.split(":")[1]);
 				} else if (BenCmd.getItemAliases().containsKey(arg)) {
 					if (BenCmd.getItemAliases().getString(arg, "").split(":").length == 1) {
-						ItemID = Integer.parseInt(BenCmd.getItemAliases().getString(
-								arg, ""));
+						ItemID = Integer.parseInt(BenCmd.getItemAliases().getString(arg, ""));
 					} else {
-						ItemID = Integer.parseInt(BenCmd.getItemAliases().getString(
-								arg, "").split(":")[0]);
-						Damage = Integer.parseInt(BenCmd.getItemAliases().getString(
-								arg, "").split(":")[1]);
+						ItemID = Integer.parseInt(BenCmd.getItemAliases().getString(arg, "").split(":")[0]);
+						Damage = Integer.parseInt(BenCmd.getItemAliases().getString(arg, "").split(":")[1]);
 					}
 				}
 
@@ -119,25 +112,18 @@ public class InventoryBackend {
 	}
 
 	public boolean TryDispense(Block block) {
-		if (BenCmd.getDispensers().isUnlimitedDispenser(block.getLocation())
-				&& block.getType() == Material.DISPENSER) {
-			BCItem mat = BenCmd.getDispensers()
-					.getDispensedItem(block.getLocation());
+		if (BenCmd.getDispensers().isUnlimitedDispenser(block.getLocation()) && block.getType() == Material.DISPENSER) {
+			BCItem mat = BenCmd.getDispensers().getDispensedItem(block.getLocation());
 			int amt = this.getStackNumber(mat.getMaterial().getId());
 			CraftDispenser disp = new CraftDispenser(block);
 			disp.getInventory().clear();
 			if (amt == InventoryBackend.THROWABLE_STACK) {
-				block.getWorld().dropItem(
-						block.getLocation(),
-						new ItemStack(mat.getMaterial(), amt, (short) mat
-								.getDamage()));
+				block.getWorld().dropItem(block.getLocation(), new ItemStack(mat.getMaterial(), amt, (short) mat.getDamage()));
 				return true;
 			}
 			int i = 0;
 			while (i < amt) {
-				disp.getInventory().addItem(
-						new ItemStack(mat.getMaterial(), amt, (short) mat
-								.getDamage()));
+				disp.getInventory().addItem(new ItemStack(mat.getMaterial(), amt, (short) mat.getDamage()));
 				disp.dispense();
 				i++;
 			}

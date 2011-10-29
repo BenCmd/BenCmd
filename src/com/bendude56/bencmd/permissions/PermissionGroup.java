@@ -6,19 +6,15 @@ import org.bukkit.ChatColor;
 
 import com.bendude56.bencmd.BenCmd;
 
-
 public class PermissionGroup {
-	private InternalGroup group;
+	private InternalGroup	group;
 
 	protected PermissionGroup(InternalGroup internal) {
 		group = internal;
 	}
 
-	public PermissionGroup(String groupName,
-			List<String> permissions, List<String> users, List<String> groups,
-			String prefix, Integer color, Integer level) {
-		group = new InternalGroup(groupName, permissions, users,
-				groups, prefix, color, level);
+	public PermissionGroup(String groupName, List<String> permissions, List<String> users, List<String> groups, String prefix, Integer color, Integer level) {
+		group = new InternalGroup(groupName, permissions, users, groups, prefix, color, level);
 	}
 
 	private void updateInternal() {

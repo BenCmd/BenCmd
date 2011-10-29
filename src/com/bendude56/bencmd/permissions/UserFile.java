@@ -22,10 +22,9 @@ import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.BenCmdFile;
 import com.bendude56.bencmd.User;
 
-
 @SuppressWarnings("unused")
 public class UserFile extends BenCmdFile {
-	HashMap<String, InternalUser> users = new HashMap<String, InternalUser>();
+	HashMap<String, InternalUser>	users	= new HashMap<String, InternalUser>();
 
 	public UserFile() {
 		super("users.db", "--BenCmd User File--", true);
@@ -59,18 +58,16 @@ public class UserFile extends BenCmdFile {
 		for (int i = 0; i < getFile().size(); i++) {
 			String name = (String) getFile().keySet().toArray()[i];
 			List<String> permissions = new ArrayList<String>();
-			permissions
-					.addAll(Arrays.asList(getFile().getProperty(name).split(",")));
-			users.put(name,
-					new InternalUser(name, permissions));
+			permissions.addAll(Arrays.asList(getFile().getProperty(name).split(",")));
+			users.put(name, new InternalUser(name, permissions));
 		}
 	}
-	
+
 	public void saveAll() {
 		for (Map.Entry<String, InternalUser> e : users.entrySet()) {
 			updateUser(e.getValue(), false);
 		}
-		
+
 	}
 
 	public HashMap<String, InternalUser> listUsers() {

@@ -15,8 +15,7 @@ import com.bendude56.bencmd.permissions.PermissionUser;
 
 public class WarpCommands implements Commands {
 
-	public boolean onCommand(CommandSender sender, Command command,
-			String commandLabel, String[] args) {
+	public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
 		User user;
 		try {
 			user = User.getUser((Player) sender);
@@ -26,47 +25,37 @@ public class WarpCommands implements Commands {
 		if (commandLabel.equalsIgnoreCase("warp") && user.hasPerm("bencmd.warp.self")) {
 			Warp(args, user);
 			return true;
-		} else if (commandLabel.equalsIgnoreCase("setwarp")
-				&& user.hasPerm("bencmd.warp.set")) {
+		} else if (commandLabel.equalsIgnoreCase("setwarp") && user.hasPerm("bencmd.warp.set")) {
 			SetWarp(args, user);
 			return true;
-		} else if (commandLabel.equalsIgnoreCase("delwarp")
-				&& user.hasPerm("bencmd.warp.remove")) {
+		} else if (commandLabel.equalsIgnoreCase("delwarp") && user.hasPerm("bencmd.warp.remove")) {
 			DelWarp(args, user);
 			return true;
-		} else if (commandLabel.equalsIgnoreCase("home")
-				&& user.hasPerm("bencmd.home.self")) {
+		} else if (commandLabel.equalsIgnoreCase("home") && user.hasPerm("bencmd.home.self")) {
 			Home(args, user);
 			return true;
-		} else if (commandLabel.equalsIgnoreCase("sethome")
-				&& user.hasPerm("bencmd.home.set")) {
+		} else if (commandLabel.equalsIgnoreCase("sethome") && user.hasPerm("bencmd.home.set")) {
 			SetHome(args, user);
 			return true;
-		} else if (commandLabel.equalsIgnoreCase("delhome")
-				&& user.hasPerm("bencmd.home.remove")) {
+		} else if (commandLabel.equalsIgnoreCase("delhome") && user.hasPerm("bencmd.home.remove")) {
 			DelHome(args, user);
 			return true;
-		} else if (commandLabel.equalsIgnoreCase("back")
-				&& user.hasPerm("bencmd.warp.back")) {
+		} else if (commandLabel.equalsIgnoreCase("back") && user.hasPerm("bencmd.warp.back")) {
 			Back(user);
 			return true;
-		} else if (commandLabel.equalsIgnoreCase("setjail")
-				&& user.hasPerm("bencmd.action.setjail")) {
+		} else if (commandLabel.equalsIgnoreCase("setjail") && user.hasPerm("bencmd.action.setjail")) {
 			SetJail(user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("tp")) {
 			Tp(args, user);
 			return true;
-		} else if (commandLabel.equalsIgnoreCase("tphere")
-				&& user.hasPerm("bencmd.tp.other")) {
+		} else if (commandLabel.equalsIgnoreCase("tphere") && user.hasPerm("bencmd.tp.other")) {
 			if (args.length != 1) {
-				user.sendMessage(ChatColor.YELLOW
-						+ "Proper use is: /tphere <player>");
+				user.sendMessage(ChatColor.YELLOW + "Proper use is: /tphere <player>");
 			} else if (user.isServer()) {
 				user.sendMessage(ChatColor.RED + "The server cannot do that!");
 			} else {
-				Bukkit.dispatchCommand(user.getHandle(),
-						"tp " + args[0] + " " + user.getName());
+				Bukkit.dispatchCommand(user.getHandle(), "tp " + args[0] + " " + user.getName());
 			}
 			return true;
 		}
@@ -109,8 +98,7 @@ public class WarpCommands implements Commands {
 			}
 			User warper;
 			try {
-				warper = User.getUser(
-						Bukkit.matchPlayer(args[1]).get(0));
+				warper = User.getUser(Bukkit.matchPlayer(args[1]).get(0));
 			} catch (NullPointerException e) {
 				user.sendMessage(ChatColor.RED + "That player doesn't exist!");
 				return;
@@ -122,8 +110,7 @@ public class WarpCommands implements Commands {
 			return;
 		}
 		if (user.hasPerm("bencmd.warp.other")) {
-			user.sendMessage(ChatColor.YELLOW
-					+ "Proper use is: /warp <name> [player]");
+			user.sendMessage(ChatColor.YELLOW + "Proper use is: /warp <name> [player]");
 		}
 	}
 
@@ -133,8 +120,7 @@ public class WarpCommands implements Commands {
 			return;
 		}
 		if (args.length == 0 || args.length > 2) {
-			user.sendMessage(ChatColor.YELLOW
-					+ "Proper use is: /setwarp <name> [group]");
+			user.sendMessage(ChatColor.YELLOW + "Proper use is: /setwarp <name> [group]");
 			return;
 		}
 		if (BenCmd.getWarps().getWarp(args[0]) != null) {
@@ -153,19 +139,15 @@ public class WarpCommands implements Commands {
 			if (args.length == 2) {
 				group = args[1];
 				if (!BenCmd.getPermissionManager().getGroupFile().groupExists(group)) {
-					player.sendMessage(ChatColor.RED
-							+ "That group doesn't exist!");
+					player.sendMessage(ChatColor.RED + "That group doesn't exist!");
 				}
 			}
-			if (!BenCmd.getWarps().addWarp(x, y, z, yaw, pitch, world, args[0],
-					group)) {
-				user.sendMessage(ChatColor.RED
-						+ "There was a problem creating the warp!");
+			if (!BenCmd.getWarps().addWarp(x, y, z, yaw, pitch, world, args[0], group)) {
+				user.sendMessage(ChatColor.RED + "There was a problem creating the warp!");
 				return;
 			}
 		} catch (Exception e) {
-			user.sendMessage(ChatColor.RED
-					+ "There was a problem creating the warp!");
+			user.sendMessage(ChatColor.RED + "There was a problem creating the warp!");
 			BenCmd.log(Level.SEVERE, "Couldn't create new warp:");
 			BenCmd.log(e);
 			return;
@@ -175,13 +157,11 @@ public class WarpCommands implements Commands {
 
 	public void DelWarp(String[] args, User user) {
 		if (args.length != 1) {
-			user.sendMessage(ChatColor.YELLOW
-					+ "Proper use is: /delwarp <name>");
+			user.sendMessage(ChatColor.YELLOW + "Proper use is: /delwarp <name>");
 			return;
 		}
 		if (!BenCmd.getWarps().removeWarp(args[0])) {
-			user.sendMessage(ChatColor.RED
-					+ "There was a problem deleting the warp!");
+			user.sendMessage(ChatColor.RED + "There was a problem deleting the warp!");
 		} else {
 			user.sendMessage(ChatColor.GREEN + "Warp successfully deleted!");
 		}
@@ -193,8 +173,7 @@ public class WarpCommands implements Commands {
 			return;
 		}
 		if (!user.lastCheck()) {
-			user.sendMessage(ChatColor.RED
-					+ "There are no known pre-warp checkpoints for you!");
+			user.sendMessage(ChatColor.RED + "There are no known pre-warp checkpoints for you!");
 		}
 	}
 
@@ -205,11 +184,9 @@ public class WarpCommands implements Commands {
 		}
 		if (args.length > 2) {
 			if (user.hasPerm("bencmd.home.warpall")) {
-				user.sendMessage(ChatColor.YELLOW
-						+ "Proper use is: /home <number> [player]");
+				user.sendMessage(ChatColor.YELLOW + "Proper use is: /home <number> [player]");
 			} else {
-				user.sendMessage(ChatColor.YELLOW
-						+ "Proper use is: /home <number>");
+				user.sendMessage(ChatColor.YELLOW + "Proper use is: /home <number>");
 			}
 		} else if (args.length <= 1) {
 			int homenum;
@@ -229,14 +206,12 @@ public class WarpCommands implements Commands {
 				int homenum;
 				try {
 					homenum = Integer.parseInt(args[0]);
-					user.homeWarp(homenum,
-							PermissionUser.matchUserIgnoreCase(args[1]));
+					user.homeWarp(homenum, PermissionUser.matchUserIgnoreCase(args[1]));
 				} catch (NumberFormatException e) {
 					user.sendMessage(ChatColor.RED + "Invalid home number!");
 				}
 			} else {
-				user.sendMessage(ChatColor.YELLOW
-						+ "Proper use is: /home <number>");
+				user.sendMessage(ChatColor.YELLOW + "Proper use is: /home <number>");
 			}
 		}
 	}
@@ -248,11 +223,9 @@ public class WarpCommands implements Commands {
 		}
 		if (args.length > 2) {
 			if (user.hasPerm("bencmd.home.setall")) {
-				user.sendMessage(ChatColor.YELLOW
-						+ "Proper use is: /sethome <number> [player]");
+				user.sendMessage(ChatColor.YELLOW + "Proper use is: /sethome <number> [player]");
 			} else {
-				user.sendMessage(ChatColor.YELLOW
-						+ "Proper use is: /sethome <number>");
+				user.sendMessage(ChatColor.YELLOW + "Proper use is: /sethome <number>");
 			}
 		} else if (args.length <= 1) {
 			int homenum;
@@ -271,14 +244,12 @@ public class WarpCommands implements Commands {
 				int homenum;
 				try {
 					homenum = Integer.parseInt(args[0]);
-					user.setHome(homenum,
-							PermissionUser.matchUserIgnoreCase(args[1]));
+					user.setHome(homenum, PermissionUser.matchUserIgnoreCase(args[1]));
 				} catch (NumberFormatException e) {
 					user.sendMessage(ChatColor.RED + "Invalid home number!");
 				}
 			} else {
-				user.sendMessage(ChatColor.YELLOW
-						+ "Proper use is: /sethome <number>");
+				user.sendMessage(ChatColor.YELLOW + "Proper use is: /sethome <number>");
 			}
 		}
 	}
@@ -286,38 +257,29 @@ public class WarpCommands implements Commands {
 	public void DelHome(String[] args, User user) {
 		if (args.length > 2) {
 			if (user.hasPerm("bencmd.home.removeall")) {
-				user.sendMessage(ChatColor.YELLOW
-						+ "Proper use is: /delhome <number> [player]");
+				user.sendMessage(ChatColor.YELLOW + "Proper use is: /delhome <number> [player]");
 			} else {
-				user.sendMessage(ChatColor.YELLOW
-						+ "Proper use is: /delhome <number>");
+				user.sendMessage(ChatColor.YELLOW + "Proper use is: /delhome <number>");
 			}
 		} else if (args.length <= 1) {
 			if (user.isServer()) {
-				user.sendMessage(ChatColor.YELLOW
-						+ "Proper use is: /delhome <number> [player]");
+				user.sendMessage(ChatColor.YELLOW + "Proper use is: /delhome <number> [player]");
 			}
 			int homenum;
 			if (args.length == 0) {
 				if (BenCmd.getHomes().DeleteHome(user.getName(), 1)) {
-					user.sendMessage(ChatColor.GREEN + "Your home #"
-							+ ((Integer) 1).toString()
-							+ " has been successfully deleted!");
+					user.sendMessage(ChatColor.GREEN + "Your home #" + ((Integer) 1).toString() + " has been successfully deleted!");
 				} else {
-					user.sendMessage(ChatColor.RED
-							+ "You must set that home first!");
+					user.sendMessage(ChatColor.RED + "You must set that home first!");
 				}
 			} else {
 				try {
 					homenum = Integer.parseInt(args[0]);
 					if (BenCmd.getHomes().DeleteHome(user.getName(), homenum)) {
-						user.sendMessage(ChatColor.GREEN + "Your home #"
-								+ ((Integer) homenum).toString()
-								+ " has been successfully deleted!");
+						user.sendMessage(ChatColor.GREEN + "Your home #" + ((Integer) homenum).toString() + " has been successfully deleted!");
 						return;
 					} else {
-						user.sendMessage(ChatColor.RED
-								+ "You must set that home first!");
+						user.sendMessage(ChatColor.RED + "You must set that home first!");
 						return;
 					}
 				} catch (NumberFormatException e) {
@@ -330,20 +292,15 @@ public class WarpCommands implements Commands {
 				try {
 					homenum = Integer.parseInt(args[0]);
 					if (BenCmd.getHomes().DeleteHome(args[1], homenum)) {
-						user.sendMessage(ChatColor.GREEN + args[1]
-								+ "'s home #" + ((Integer) homenum).toString()
-								+ " has been successfully deleted!");
+						user.sendMessage(ChatColor.GREEN + args[1] + "'s home #" + ((Integer) homenum).toString() + " has been successfully deleted!");
 					} else {
-						user.sendMessage(ChatColor.RED + args[1]
-								+ " doesn't have a home #"
-								+ ((Integer) homenum).toString() + "!");
+						user.sendMessage(ChatColor.RED + args[1] + " doesn't have a home #" + ((Integer) homenum).toString() + "!");
 					}
 				} catch (NumberFormatException e) {
 					user.sendMessage(ChatColor.RED + "Invalid home number!");
 				}
 			} else {
-				user.sendMessage(ChatColor.YELLOW
-						+ "Proper use is: /delhome <number>");
+				user.sendMessage(ChatColor.YELLOW + "Proper use is: /delhome <number>");
 			}
 		}
 	}
@@ -359,8 +316,7 @@ public class WarpCommands implements Commands {
 	public void Tp(String[] args, User user) {
 		if (args.length == 1) {
 			if (!user.hasPerm("bencmd.tp.self")) {
-				user.sendMessage(ChatColor.RED
-						+ "You don't have permission to do that!");
+				user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
 				BenCmd.getPlugin().logPermFail();
 				return;
 			}
@@ -370,24 +326,20 @@ public class WarpCommands implements Commands {
 				return;
 			}
 			if (user2.isAllPoofed()) {
-				user.sendMessage(ChatColor.RED + args[0]
-						+ " cannot be teleported to!");
+				user.sendMessage(ChatColor.RED + args[0] + " cannot be teleported to!");
 				return;
 			}
 			BenCmd.getWarpCheckpoints().SetPreWarp(((Player) user.getHandle()));
 			((Player) user.getHandle()).teleport(((Player) user2.getHandle()));
-			BenCmd.log(user.getName() + " has teleported to "
-					+ user2.getName());
+			BenCmd.log(user.getName() + " has teleported to " + user2.getName());
 			user.sendMessage(ChatColor.YELLOW + "Woosh!");
 		} else if (args.length == 2) {
 			if (args[0].equalsIgnoreCase(user.getName())) {
-				Bukkit.dispatchCommand(user.getHandle(),
-						"tp " + args[1]);
+				Bukkit.dispatchCommand(user.getHandle(), "tp " + args[1]);
 				return;
 			}
 			if (!user.hasPerm("bencmd.tp.other")) {
-				user.sendMessage(ChatColor.RED
-						+ "You don't have permission to do that!");
+				user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
 				BenCmd.getPlugin().logPermFail();
 				return;
 			}
@@ -400,29 +352,22 @@ public class WarpCommands implements Commands {
 				user.sendMessage(ChatColor.RED + args[1] + " isn't online!");
 				return;
 			}
-			if (user1.isAllPoofed()
-					&& !user1.getName().equalsIgnoreCase(user.getName())) {
-				user.sendMessage(ChatColor.RED + args[0]
-						+ " cannot be teleported!");
+			if (user1.isAllPoofed() && !user1.getName().equalsIgnoreCase(user.getName())) {
+				user.sendMessage(ChatColor.RED + args[0] + " cannot be teleported!");
 			}
-			if (user2.isAllPoofed()
-					&& !user2.getName().equalsIgnoreCase(user.getName())) {
-				user.sendMessage(ChatColor.RED + args[0]
-						+ " cannot be teleported to!");
+			if (user2.isAllPoofed() && !user2.getName().equalsIgnoreCase(user.getName())) {
+				user.sendMessage(ChatColor.RED + args[0] + " cannot be teleported to!");
 				return;
 			}
 			BenCmd.getWarpCheckpoints().SetPreWarp(((Player) user1.getHandle()));
 			((Player) user1.getHandle()).teleport(((Player) user2.getHandle()));
-			BenCmd.log(user1.getName() + " has been teleported to "
-					+ user2.getName() + " by " + user.getName());
+			BenCmd.log(user1.getName() + " has been teleported to " + user2.getName() + " by " + user.getName());
 			user1.sendMessage(ChatColor.YELLOW + "Woosh!");
 		} else {
 			if (user.hasPerm("bencmd.tp.self") || user.hasPerm("bencmd.tp.other")) {
-				user.sendMessage(ChatColor.YELLOW
-						+ "Proper use is: /tp <player> [player]");
+				user.sendMessage(ChatColor.YELLOW + "Proper use is: /tp <player> [player]");
 			} else {
-				user.sendMessage(ChatColor.RED
-						+ "You don't have permission to do that!");
+				user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
 				BenCmd.getPlugin().logPermFail();
 			}
 		}

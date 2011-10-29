@@ -20,6 +20,5 @@ public interface Commands {
 	 * @return Returns true if a matching command is found that the user has
 	 *         permission to use, otherwise, returns false.
 	 */
-	public boolean onCommand(CommandSender sender, Command command,
-			String commandLabel, String[] args);
+	public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args);
 }

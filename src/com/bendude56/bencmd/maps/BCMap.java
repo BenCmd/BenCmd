@@ -4,8 +4,8 @@ import net.minecraft.server.World;
 import net.minecraft.server.WorldMap;
 
 public class BCMap {
-	WorldMap map;
-	short mapID;
+	WorldMap	map;
+	short		mapID;
 
 	public BCMap(short mapID, World world) {
 		map = (WorldMap) world.a(WorldMap.class, "map_" + mapID);

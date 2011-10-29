@@ -16,15 +16,14 @@ import org.bukkit.inventory.ItemStack;
 
 import com.bendude56.bencmd.BenCmd;
 
-
 public class NPC {
-	protected EntityNPC enpc;
-	private int id;
-	private Location l;
-	private String n;
-	private ItemStack itemHeld;
-	protected boolean faceNearestPlayer;
-	
+	protected EntityNPC	enpc;
+	private int			id;
+	private Location	l;
+	private String		n;
+	private ItemStack	itemHeld;
+	protected boolean	faceNearestPlayer;
+
 	public NPC(String name, int id, Location l, ItemStack itemHeld) {
 		this(name, id, l, itemHeld, true);
 	}
@@ -39,11 +38,11 @@ public class NPC {
 			spawn();
 		}
 	}
-	
+
 	public boolean isSpawned() {
 		return enpc != null;
 	}
-	
+
 	public int getEntityId() {
 		if (isSpawned()) {
 			return enpc.id;
@@ -57,8 +56,7 @@ public class NPC {
 			WorldServer ws = ((CraftWorld) l.getWorld()).getHandle();
 			MinecraftServer ms = ((CraftServer) ws.getServer()).getServer();
 			enpc = new EntityNPC(ms, ws, n, new ItemInWorldManager(ws));
-			enpc.setLocation(l.getX(), l.getY(), l.getZ(), l.getYaw(),
-					l.getPitch());
+			enpc.setLocation(l.getX(), l.getY(), l.getZ(), l.getYaw(), l.getPitch());
 			if (itemHeld.getTypeId() != 0) {
 				enpc.inventory.setItem(0, new net.minecraft.server.ItemStack(itemHeld.getTypeId(), itemHeld.getAmount(), itemHeld.getDurability()));
 				enpc.inventory.itemInHandIndex = 0;
@@ -86,7 +84,7 @@ public class NPC {
 			enpc = null;
 		}
 	}
-	
+
 	public void faceNearest() {
 		EntityHuman h;
 		if ((h = getClosestPlayer(5.0D)) != null) {
@@ -95,7 +93,7 @@ public class NPC {
 			enpc.setLocation(enpc.locX, enpc.locY, enpc.locZ, this.getLocation().getYaw(), enpc.pitch);
 		}
 	}
-	
+
 	protected EntityHuman getClosestPlayer(double range) {
 		if (range <= 0.0D) {
 			return null;
@@ -103,7 +101,7 @@ public class NPC {
 		EntityHuman entityhuman = enpc.world.findNearbyPlayer(enpc, range);
 		return entityhuman != null && enpc.f(entityhuman) ? entityhuman : null;
 	}
-	
+
 	public void tick() {
 		if (faceNearestPlayer) {
 			this.faceNearest();
@@ -113,7 +111,7 @@ public class NPC {
 	public String getValue() {
 		throw new UnsupportedOperationException("getValue() not overridden!");
 	}
-	
+
 	public String getSkinURL() {
 		throw new UnsupportedOperationException("No skin URL provided!");
 	}
@@ -125,18 +123,18 @@ public class NPC {
 	public String getName() {
 		return enpc.name;
 	}
-	
+
 	public ItemStack getHeldItem() {
 		return itemHeld;
 	}
-	
+
 	public void setHeldItem(ItemStack item) {
 		despawn();
 		itemHeld = item;
 		spawn();
 		BenCmd.getNPCFile().saveNPC(this);
 	}
-	
+
 	public void setName(String name) {
 		despawn();
 		n = name;
@@ -145,20 +143,19 @@ public class NPC {
 	}
 
 	public Location getCurrentLocation() {
-		return new Location(enpc.world.getWorld(), enpc.locX, enpc.locY,
-				enpc.locZ, enpc.yaw, enpc.pitch);
+		return new Location(enpc.world.getWorld(), enpc.locX, enpc.locY, enpc.locZ, enpc.yaw, enpc.pitch);
 	}
 
 	public Location getLocation() {
 		return l;
 	}
-	
+
 	public static void faceEntity(EntityNPC enpc, Entity e) {
 		try {
 			faceLocation(enpc, Vec3D.a(e.locX, e.locY, e.locZ));
-		} catch (Exception ex) { }
+		} catch (Exception ex) {}
 	}
-	
+
 	public static void faceLocation(EntityNPC enpc, Vec3D loc2) {
 		Location loc = enpc.getBukkitEntity().getLocation();
 		double xDiff = loc2.a - loc.getX();
@@ -171,7 +168,6 @@ public class NPC {
 		if (zDiff < 0.0) {
 			yaw = yaw + (Math.abs(180 - yaw) * 2);
 		}
-		enpc.setLocation(loc.getX(), loc.getY(), loc.getZ(), (float) yaw - 90,
-		(float) pitch);
+		enpc.setLocation(loc.getX(), loc.getY(), loc.getZ(), (float) yaw - 90, (float) pitch);
 	}
 }

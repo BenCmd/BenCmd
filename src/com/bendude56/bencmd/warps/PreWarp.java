@@ -9,14 +9,12 @@ import org.bukkit.entity.Player;
 
 import com.bendude56.bencmd.*;
 
-
 public class PreWarp {
-	HashMap<String, Warp> prewarps = new HashMap<String, Warp>();
+	HashMap<String, Warp>	prewarps	= new HashMap<String, Warp>();
 
 	public void ClearWarps() {
 		prewarps.clear();
-		Bukkit.broadcastMessage(
-				ChatColor.GRAY + "All pre-warp checkpoints have been cleared.");
+		Bukkit.broadcastMessage(ChatColor.GRAY + "All pre-warp checkpoints have been cleared.");
 	}
 
 	public boolean returnPreWarp(Player player) {
@@ -47,8 +45,7 @@ public class PreWarp {
 			String name = player.getName() + "_check";
 			prewarps.put(name, new Warp(x, y, z, yaw, pitch, world, name, ""));
 		} catch (Exception e) {
-			player.sendMessage(ChatColor.RED
-					+ "There was a problem creating the checkpoint!");
+			player.sendMessage(ChatColor.RED + "There was a problem creating the checkpoint!");
 			BenCmd.log(Level.WARNING, "Couldn't create new checkpoint:");
 			BenCmd.log(e);
 			return;

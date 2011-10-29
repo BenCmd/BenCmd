@@ -11,9 +11,8 @@ import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.BenCmdFile;
 import com.bendude56.bencmd.permissions.PermissionUser;
 
-
 public class ProtectFile extends BenCmdFile {
-	private List<ProtectedBlock> protectedBlocks;
+	private List<ProtectedBlock>	protectedBlocks;
 
 	public ProtectFile() {
 		super("protection.db", "--BenCmd Protection File--", true);
@@ -32,22 +31,19 @@ public class ProtectFile extends BenCmdFile {
 			}
 			String[] slashsplit = value.split("/");
 			if (slashsplit.length != 4) {
-				BenCmd.log(Level.WARNING, "Entry " + key +
-						" in protection.db is invalid and was ignored!");
+				BenCmd.log(Level.WARNING, "Entry " + key + " in protection.db is invalid and was ignored!");
 				continue;
 			}
 			int id;
 			try {
 				id = Integer.parseInt(key);
 			} catch (NumberFormatException e) {
-				BenCmd.log(Level.WARNING, "Entry " + key +
-						" in protection.db is invalid and was ignored!");
+				BenCmd.log(Level.WARNING, "Entry " + key + " in protection.db is invalid and was ignored!");
 				continue;
 			}
 			PermissionUser owner;
 			if ((owner = PermissionUser.matchUser(slashsplit[2])) == null) {
-				BenCmd.log(Level.WARNING, "Entry " + key +
-						" in protection.db is invalid and was ignored!");
+				BenCmd.log(Level.WARNING, "Entry " + key + " in protection.db is invalid and was ignored!");
 				continue;
 			}
 			List<PermissionUser> guests = new ArrayList<PermissionUser>();
@@ -62,67 +58,52 @@ public class ProtectFile extends BenCmdFile {
 					}
 				}
 			} catch (NullPointerException e) {
-				BenCmd.log(Level.WARNING, "Entry " + key +
-						" in protection.db is invalid and was ignored!");
+				BenCmd.log(Level.WARNING, "Entry " + key + " in protection.db is invalid and was ignored!");
 				continue;
 			}
 			String type = slashsplit[0];
 			Location loc;
 			try {
-				World world = Bukkit.getWorld(
-						slashsplit[3].split(",")[0]);
+				World world = Bukkit.getWorld(slashsplit[3].split(",")[0]);
 				int x = Integer.parseInt(slashsplit[3].split(",")[1]);
 				int y = Integer.parseInt(slashsplit[3].split(",")[2]);
 				int z = Integer.parseInt(slashsplit[3].split(",")[3]);
 				loc = new Location(world, x, y, z);
 			} catch (NumberFormatException e) {
-				BenCmd.log(Level.WARNING, "Entry " + key +
-						" in protection.db is invalid and was ignored!");
+				BenCmd.log(Level.WARNING, "Entry " + key + " in protection.db is invalid and was ignored!");
 				continue;
 			} catch (NullPointerException e) {
-				BenCmd.log(Level.WARNING, "Entry " + key +
-						" in protection.db is invalid and was ignored!");
+				BenCmd.log(Level.WARNING, "Entry " + key + " in protection.db is invalid and was ignored!");
 				continue;
 			}
 			if (type.equalsIgnoreCase("c")) {
-				protectedBlocks.add(new ProtectedChest(id, owner,
-						guests, loc));
+				protectedBlocks.add(new ProtectedChest(id, owner, guests, loc));
 			} else if (type.equalsIgnoreCase("d")) {
-				protectedBlocks.add(new ProtectedDoor(id, owner,
-						guests, loc));
+				protectedBlocks.add(new ProtectedDoor(id, owner, guests, loc));
 			} else if (type.equalsIgnoreCase("f")) {
-				protectedBlocks.add(new ProtectedFurnace(id, owner, guests,
-						loc));
+				protectedBlocks.add(new ProtectedFurnace(id, owner, guests, loc));
 			} else if (type.equalsIgnoreCase("di")) {
-				protectedBlocks.add(new ProtectedDispenser(id, owner, guests,
-						loc));
+				protectedBlocks.add(new ProtectedDispenser(id, owner, guests, loc));
 			} else if (type.equalsIgnoreCase("g")) {
-				protectedBlocks.add(new ProtectedGate(id, owner, guests,
-						loc));
+				protectedBlocks.add(new ProtectedGate(id, owner, guests, loc));
 			} else if (type.equalsIgnoreCase("pc")) {
-				protectedBlocks.add(new PublicChest(id, owner, guests,
-						loc));
+				protectedBlocks.add(new PublicChest(id, owner, guests, loc));
 			} else if (type.equalsIgnoreCase("pd")) {
-				protectedBlocks.add(new PublicDoor(id, owner, guests,
-						loc));
+				protectedBlocks.add(new PublicDoor(id, owner, guests, loc));
 			} else if (type.equalsIgnoreCase("pf")) {
-				protectedBlocks.add(new PublicFurnace(id, owner, guests,
-						loc));
+				protectedBlocks.add(new PublicFurnace(id, owner, guests, loc));
 			} else if (type.equalsIgnoreCase("pdi")) {
-				protectedBlocks.add(new PublicDispenser(id, owner, guests,
-						loc));
+				protectedBlocks.add(new PublicDispenser(id, owner, guests, loc));
 			} else if (type.equalsIgnoreCase("pg")) {
-				protectedBlocks.add(new PublicGate(id, owner, guests,
-						loc));
+				protectedBlocks.add(new PublicGate(id, owner, guests, loc));
 			} else {
-				BenCmd.log(Level.WARNING, "Entry " + key +
-						" in protection.db is invalid and was ignored!");
+				BenCmd.log(Level.WARNING, "Entry " + key + " in protection.db is invalid and was ignored!");
 			}
 		}
 	}
-	
+
 	public void saveAll() {
-		for (ProtectedBlock b : protectedBlocks){
+		for (ProtectedBlock b : protectedBlocks) {
 			updateValue(b, false, false);
 		}
 		saveFile();
@@ -146,10 +127,7 @@ public class ProtectFile extends BenCmdFile {
 			}
 			value += "/" + block.getOwner().getName();
 			Location blockLoc = block.getLocation();
-			value += "/" + blockLoc.getWorld().getName() + ","
-					+ String.valueOf(blockLoc.getBlockX()) + ","
-					+ String.valueOf(blockLoc.getBlockY()) + ","
-					+ String.valueOf(blockLoc.getBlockZ());
+			value += "/" + blockLoc.getWorld().getName() + "," + String.valueOf(blockLoc.getBlockX()) + "," + String.valueOf(blockLoc.getBlockY()) + "," + String.valueOf(blockLoc.getBlockZ());
 			getFile().put(key, value);
 		} else if (block instanceof ProtectedDoor) {
 			String value;
@@ -168,10 +146,7 @@ public class ProtectFile extends BenCmdFile {
 			}
 			value += "/" + block.getOwner().getName();
 			Location blockLoc = block.getLocation();
-			value += "/" + blockLoc.getWorld().getName() + ","
-					+ String.valueOf(blockLoc.getBlockX()) + ","
-					+ String.valueOf(blockLoc.getBlockY()) + ","
-					+ String.valueOf(blockLoc.getBlockZ());
+			value += "/" + blockLoc.getWorld().getName() + "," + String.valueOf(blockLoc.getBlockX()) + "," + String.valueOf(blockLoc.getBlockY()) + "," + String.valueOf(blockLoc.getBlockZ());
 			getFile().put(key, value);
 		} else if (block instanceof ProtectedFurnace) {
 			String value;
@@ -190,10 +165,7 @@ public class ProtectFile extends BenCmdFile {
 			}
 			value += "/" + block.getOwner().getName();
 			Location blockLoc = block.getLocation();
-			value += "/" + blockLoc.getWorld().getName() + ","
-					+ String.valueOf(blockLoc.getBlockX()) + ","
-					+ String.valueOf(blockLoc.getBlockY()) + ","
-					+ String.valueOf(blockLoc.getBlockZ());
+			value += "/" + blockLoc.getWorld().getName() + "," + String.valueOf(blockLoc.getBlockX()) + "," + String.valueOf(blockLoc.getBlockY()) + "," + String.valueOf(blockLoc.getBlockZ());
 			getFile().put(key, value);
 		} else if (block instanceof ProtectedDispenser) {
 			String value;
@@ -212,10 +184,7 @@ public class ProtectFile extends BenCmdFile {
 			}
 			value += "/" + block.getOwner().getName();
 			Location blockLoc = block.getLocation();
-			value += "/" + blockLoc.getWorld().getName() + ","
-					+ String.valueOf(blockLoc.getBlockX()) + ","
-					+ String.valueOf(blockLoc.getBlockY()) + ","
-					+ String.valueOf(blockLoc.getBlockZ());
+			value += "/" + blockLoc.getWorld().getName() + "," + String.valueOf(blockLoc.getBlockX()) + "," + String.valueOf(blockLoc.getBlockY()) + "," + String.valueOf(blockLoc.getBlockZ());
 			getFile().put(key, value);
 		} else if (block instanceof ProtectedGate) {
 			String value;
@@ -234,10 +203,7 @@ public class ProtectFile extends BenCmdFile {
 			}
 			value += "/" + block.getOwner().getName();
 			Location blockLoc = block.getLocation();
-			value += "/" + blockLoc.getWorld().getName() + ","
-					+ String.valueOf(blockLoc.getBlockX()) + ","
-					+ String.valueOf(blockLoc.getBlockY()) + ","
-					+ String.valueOf(blockLoc.getBlockZ());
+			value += "/" + blockLoc.getWorld().getName() + "," + String.valueOf(blockLoc.getBlockX()) + "," + String.valueOf(blockLoc.getBlockY()) + "," + String.valueOf(blockLoc.getBlockZ());
 			getFile().put(key, value);
 		} else if (block instanceof PublicChest) {
 			String value;
@@ -256,10 +222,7 @@ public class ProtectFile extends BenCmdFile {
 			}
 			value += "/" + block.getOwner().getName();
 			Location blockLoc = block.getLocation();
-			value += "/" + blockLoc.getWorld().getName() + ","
-					+ String.valueOf(blockLoc.getBlockX()) + ","
-					+ String.valueOf(blockLoc.getBlockY()) + ","
-					+ String.valueOf(blockLoc.getBlockZ());
+			value += "/" + blockLoc.getWorld().getName() + "," + String.valueOf(blockLoc.getBlockX()) + "," + String.valueOf(blockLoc.getBlockY()) + "," + String.valueOf(blockLoc.getBlockZ());
 			getFile().put(key, value);
 		} else if (block instanceof PublicDoor) {
 			String value;
@@ -278,10 +241,7 @@ public class ProtectFile extends BenCmdFile {
 			}
 			value += "/" + block.getOwner().getName();
 			Location blockLoc = block.getLocation();
-			value += "/" + blockLoc.getWorld().getName() + ","
-					+ String.valueOf(blockLoc.getBlockX()) + ","
-					+ String.valueOf(blockLoc.getBlockY()) + ","
-					+ String.valueOf(blockLoc.getBlockZ());
+			value += "/" + blockLoc.getWorld().getName() + "," + String.valueOf(blockLoc.getBlockX()) + "," + String.valueOf(blockLoc.getBlockY()) + "," + String.valueOf(blockLoc.getBlockZ());
 			getFile().put(key, value);
 		} else if (block instanceof PublicFurnace) {
 			String value;
@@ -300,10 +260,7 @@ public class ProtectFile extends BenCmdFile {
 			}
 			value += "/" + block.getOwner().getName();
 			Location blockLoc = block.getLocation();
-			value += "/" + blockLoc.getWorld().getName() + ","
-					+ String.valueOf(blockLoc.getBlockX()) + ","
-					+ String.valueOf(blockLoc.getBlockY()) + ","
-					+ String.valueOf(blockLoc.getBlockZ());
+			value += "/" + blockLoc.getWorld().getName() + "," + String.valueOf(blockLoc.getBlockX()) + "," + String.valueOf(blockLoc.getBlockY()) + "," + String.valueOf(blockLoc.getBlockZ());
 			getFile().put(key, value);
 		} else if (block instanceof PublicDispenser) {
 			String value;
@@ -322,10 +279,7 @@ public class ProtectFile extends BenCmdFile {
 			}
 			value += "/" + block.getOwner().getName();
 			Location blockLoc = block.getLocation();
-			value += "/" + blockLoc.getWorld().getName() + ","
-					+ String.valueOf(blockLoc.getBlockX()) + ","
-					+ String.valueOf(blockLoc.getBlockY()) + ","
-					+ String.valueOf(blockLoc.getBlockZ());
+			value += "/" + blockLoc.getWorld().getName() + "," + String.valueOf(blockLoc.getBlockX()) + "," + String.valueOf(blockLoc.getBlockY()) + "," + String.valueOf(blockLoc.getBlockZ());
 			getFile().put(key, value);
 		} else if (block instanceof PublicGate) {
 			String value;
@@ -344,10 +298,7 @@ public class ProtectFile extends BenCmdFile {
 			}
 			value += "/" + block.getOwner().getName();
 			Location blockLoc = block.getLocation();
-			value += "/" + blockLoc.getWorld().getName() + ","
-					+ String.valueOf(blockLoc.getBlockX()) + ","
-					+ String.valueOf(blockLoc.getBlockY()) + ","
-					+ String.valueOf(blockLoc.getBlockZ());
+			value += "/" + blockLoc.getWorld().getName() + "," + String.valueOf(blockLoc.getBlockX()) + "," + String.valueOf(blockLoc.getBlockY()) + "," + String.valueOf(blockLoc.getBlockZ());
 			getFile().put(key, value);
 		}
 		if (saveFile)
@@ -368,66 +319,54 @@ public class ProtectFile extends BenCmdFile {
 				break;
 			}
 			if (block instanceof ProtectedChest) {
-				if (((ProtectedChest) block).isDoubleChest()
-						&& ((ProtectedChest) block).getSecondChest()
-								.getLocation().equals(loc)) {
+				if (((ProtectedChest) block).isDoubleChest() && ((ProtectedChest) block).getSecondChest().getLocation().equals(loc)) {
 					id = block.GetId();
 					break;
 				}
 			}
 			if (block instanceof PublicChest) {
-				if (((PublicChest) block).isDoubleChest()
-						&& ((PublicChest) block).getSecondChest().getLocation()
-								.equals(loc)) {
+				if (((PublicChest) block).isDoubleChest() && ((PublicChest) block).getSecondChest().getLocation().equals(loc)) {
 					id = block.GetId();
 					break;
 				}
 			}
 			if (block instanceof ProtectedDoor) {
 				try {
-					if (((ProtectedDoor) block).getSecondBlock().getLocation()
-							.equals(loc)) {
+					if (((ProtectedDoor) block).getSecondBlock().getLocation().equals(loc)) {
 						id = block.GetId();
 						break;
 					}
 				} catch (NullPointerException e) {
-					BenCmd.log(Level.WARNING, block.GetId()
-									+ " has a missing secondary block. It will be quarantined...");
+					BenCmd.log(Level.WARNING, block.GetId() + " has a missing secondary block. It will be quarantined...");
 					q.add(block);
 				}
 				try {
-					if (((ProtectedDoor) block).getBelowBlock().getLocation()
-							.equals(loc)) {
+					if (((ProtectedDoor) block).getBelowBlock().getLocation().equals(loc)) {
 						id = block.GetId();
 						break;
 					}
 				} catch (NullPointerException e) {
-					BenCmd.log(Level.WARNING, block.GetId()
-							+ " has a missing secondary block. It will be quarantined...");
+					BenCmd.log(Level.WARNING, block.GetId() + " has a missing secondary block. It will be quarantined...");
 					q.add(block);
 				}
 			}
 			if (block instanceof PublicDoor) {
 				try {
-					if (((PublicDoor) block).getSecondBlock().getLocation()
-							.equals(loc)) {
+					if (((PublicDoor) block).getSecondBlock().getLocation().equals(loc)) {
 						id = block.GetId();
 						break;
 					}
 				} catch (NullPointerException e) {
-					BenCmd.log(Level.WARNING, block.GetId()
-							+ " has a missing secondary block. It will be quarantined...");
+					BenCmd.log(Level.WARNING, block.GetId() + " has a missing secondary block. It will be quarantined...");
 					q.add(block);
 				}
 				try {
-					if (((PublicDoor) block).getBelowBlock().getLocation()
-							.equals(loc)) {
+					if (((PublicDoor) block).getBelowBlock().getLocation().equals(loc)) {
 						id = block.GetId();
 						break;
 					}
 				} catch (NullPointerException e) {
-					BenCmd.log(Level.WARNING, block.GetId()
-							+ " has a missing secondary block. It will be quarantined...");
+					BenCmd.log(Level.WARNING, block.GetId() + " has a missing secondary block. It will be quarantined...");
 					q.add(block);
 				}
 			}
@@ -465,51 +404,40 @@ public class ProtectFile extends BenCmdFile {
 		}
 	}
 
-	public int addProtection(PermissionUser owner, Location loc,
-			ProtectionType type) {
+	public int addProtection(PermissionUser owner, Location loc, ProtectionType type) {
 		int id = getNextId();
 		ProtectedBlock protect = null;
 		switch (type) {
-		case Chest:
-			protectedBlocks.add(protect = new ProtectedChest(id, owner,
-					new ArrayList<PermissionUser>(), loc));
-			break;
-		case Door:
-			protectedBlocks.add(protect = new ProtectedDoor(id, owner,
-					new ArrayList<PermissionUser>(), loc));
-			break;
-		case Furnace:
-			protectedBlocks.add(protect = new ProtectedFurnace(id, owner,
-					new ArrayList<PermissionUser>(), loc));
-			break;
-		case Dispenser:
-			protectedBlocks.add(protect = new ProtectedDispenser(id, owner,
-					new ArrayList<PermissionUser>(), loc));
-			break;
-		case Gate:
-			protectedBlocks.add(protect = new ProtectedGate(id, owner,
-					new ArrayList<PermissionUser>(), loc));
-			break;
-		case PDoor:
-			protectedBlocks.add(protect = new PublicDoor(id, owner,
-					new ArrayList<PermissionUser>(), loc));
-			break;
-		case PChest:
-			protectedBlocks.add(protect = new PublicChest(id, owner,
-					new ArrayList<PermissionUser>(), loc));
-			break;
-		case PFurnace:
-			protectedBlocks.add(protect = new PublicFurnace(id, owner,
-					new ArrayList<PermissionUser>(), loc));
-			break;
-		case PDispenser:
-			protectedBlocks.add(protect = new PublicDispenser(id, owner,
-					new ArrayList<PermissionUser>(), loc));
-			break;
-		case PGate:
-			protectedBlocks.add(protect = new PublicGate(id, owner,
-					new ArrayList<PermissionUser>(), loc));
-			break;
+			case Chest:
+				protectedBlocks.add(protect = new ProtectedChest(id, owner, new ArrayList<PermissionUser>(), loc));
+				break;
+			case Door:
+				protectedBlocks.add(protect = new ProtectedDoor(id, owner, new ArrayList<PermissionUser>(), loc));
+				break;
+			case Furnace:
+				protectedBlocks.add(protect = new ProtectedFurnace(id, owner, new ArrayList<PermissionUser>(), loc));
+				break;
+			case Dispenser:
+				protectedBlocks.add(protect = new ProtectedDispenser(id, owner, new ArrayList<PermissionUser>(), loc));
+				break;
+			case Gate:
+				protectedBlocks.add(protect = new ProtectedGate(id, owner, new ArrayList<PermissionUser>(), loc));
+				break;
+			case PDoor:
+				protectedBlocks.add(protect = new PublicDoor(id, owner, new ArrayList<PermissionUser>(), loc));
+				break;
+			case PChest:
+				protectedBlocks.add(protect = new PublicChest(id, owner, new ArrayList<PermissionUser>(), loc));
+				break;
+			case PFurnace:
+				protectedBlocks.add(protect = new PublicFurnace(id, owner, new ArrayList<PermissionUser>(), loc));
+				break;
+			case PDispenser:
+				protectedBlocks.add(protect = new PublicDispenser(id, owner, new ArrayList<PermissionUser>(), loc));
+				break;
+			case PGate:
+				protectedBlocks.add(protect = new PublicGate(id, owner, new ArrayList<PermissionUser>(), loc));
+				break;
 		}
 		updateValue(protect, false, true);
 		return id;

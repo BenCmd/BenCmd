@@ -3,9 +3,9 @@ package com.bendude56.bencmd.invtools;
 import org.bukkit.Material;
 
 public class BCItem {
-	private Material mat;
-	private int damageValue;
-	private boolean damageInit;
+	private Material	mat;
+	private int			damageValue;
+	private boolean		damageInit;
 
 	public BCItem(Material material) {
 		mat = material;

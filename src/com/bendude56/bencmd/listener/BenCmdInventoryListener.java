@@ -11,13 +11,12 @@ import org.getspout.spoutapi.event.inventory.InventoryListener;
 import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.User;
 
-
 public class BenCmdInventoryListener extends InventoryListener {
-	
+
 	// Singleton instancing
-	
-	private static BenCmdInventoryListener instance = null;
-	
+
+	private static BenCmdInventoryListener	instance	= null;
+
 	public static BenCmdInventoryListener getInstance() {
 		if (instance == null) {
 			return instance = new BenCmdInventoryListener();
@@ -25,17 +24,16 @@ public class BenCmdInventoryListener extends InventoryListener {
 			return instance;
 		}
 	}
-	
+
 	public static void destroyInstance() {
 		instance = null;
 	}
-	
+
 	private BenCmdInventoryListener() {
 		PluginManager pm = Bukkit.getPluginManager();
-		pm.registerEvent(Event.Type.CUSTOM_EVENT,
-				this, Event.Priority.Normal, BenCmd.getPlugin());
+		pm.registerEvent(Event.Type.CUSTOM_EVENT, this, Event.Priority.Normal, BenCmd.getPlugin());
 	}
-	
+
 	public void onInventoryCraft(InventoryCraftEvent event) {
 		User user = User.getUser(event.getPlayer());
 		Material m = event.getResult().getType();

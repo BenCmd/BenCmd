@@ -12,8 +12,7 @@ public class DispChest extends BenCmdFile {
 	}
 
 	public boolean isDisposalChest(Location loc) {
-		String property = loc.getBlockX() + "," + loc.getBlockY() + ","
-				+ loc.getBlockZ() + "," + loc.getWorld().getName();
+		String property = loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ() + "," + loc.getWorld().getName();
 		return getFile().containsKey(property);
 	}
 
@@ -23,8 +22,7 @@ public class DispChest extends BenCmdFile {
 	}
 
 	public void addChest(Location loc) {
-		String property = loc.getBlockX() + "," + loc.getBlockY() + ","
-				+ loc.getBlockZ() + "," + loc.getWorld().getName();
+		String property = loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ() + "," + loc.getWorld().getName();
 		getFile().put(property, "");
 		saveFile();
 	}
@@ -36,8 +34,7 @@ public class DispChest extends BenCmdFile {
 	}
 
 	public void removeDispenser(Location loc) {
-		String property = loc.getBlockX() + "," + loc.getBlockY() + ","
-				+ loc.getBlockZ() + "," + loc.getWorld().getName();
+		String property = loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ() + "," + loc.getWorld().getName();
 		getFile().remove(property);
 		saveFile();
 	}

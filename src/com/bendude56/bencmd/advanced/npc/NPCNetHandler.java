@@ -21,81 +21,62 @@ import net.minecraft.server.Packet9Respawn;
 
 public class NPCNetHandler extends NetServerHandler {
 
-	public NPCNetHandler(MinecraftServer minecraftserver,
-			EntityPlayer entityplayer, NetworkManager netMgr) {
+	public NPCNetHandler(MinecraftServer minecraftserver, EntityPlayer entityplayer, NetworkManager netMgr) {
 		super(minecraftserver, netMgr, entityplayer);
 		netMgr.a(this);
 	}
 
 	@Override
-	public void a() {
-	}
+	public void a() {}
 
 	@Override
-	public void sendMessage(String s) {
-	}
+	public void sendMessage(String s) {}
 
 	@Override
-	public void a(String s, Object[] aobject) {
-	}
+	public void a(String s, Object[] aobject) {}
 
 	@Override
-	public void a(Packet packet) {
-	}
+	public void a(Packet packet) {}
 
 	@Override
-	public void sendPacket(Packet packet) {
-	}
+	public void sendPacket(Packet packet) {}
 
 	@Override
-	public void a(Packet3Chat packet3chat) {
-	}
+	public void a(Packet3Chat packet3chat) {}
 
 	@Override
-	public void a(Packet9Respawn packet9respawn) {
-	}
+	public void a(Packet9Respawn packet9respawn) {}
 
 	@Override
-	public void a(Packet10Flying packet10flying) {
-	}
+	public void a(Packet10Flying packet10flying) {}
 
 	@Override
-	public void a(Packet51MapChunk packet50mapchunk) {
-	}
+	public void a(Packet51MapChunk packet50mapchunk) {}
 
 	@Override
-	public void a(Packet28EntityVelocity packet28entityvelocity) {
-	}
+	public void a(Packet28EntityVelocity packet28entityvelocity) {}
 
 	@Override
-	public void a(Packet14BlockDig packet14blockdig) {
-	}
+	public void a(Packet14BlockDig packet14blockdig) {}
 
 	@Override
-	public void a(Packet15Place packet15place) {
-	}
+	public void a(Packet15Place packet15place) {}
 
 	@Override
-	public void a(Packet16BlockItemSwitch packet16blockitemswitch) {
-	}
+	public void a(Packet16BlockItemSwitch packet16blockitemswitch) {}
 
 	@Override
-	public void a(Packet101CloseWindow packet101closewindow) {
-	}
+	public void a(Packet101CloseWindow packet101closewindow) {}
 
 	@Override
-	public void a(Packet102WindowClick packet102windowclick) {
-	}
+	public void a(Packet102WindowClick packet102windowclick) {}
 
 	@Override
-	public void a(Packet106Transaction packet106transaction) {
-	}
+	public void a(Packet106Transaction packet106transaction) {}
 
 	@Override
-	public void a(Packet255KickDisconnect packet255kickdisconnect) {
-	}
+	public void a(Packet255KickDisconnect packet255kickdisconnect) {}
 
 	@Override
-	public void a(Packet130UpdateSign packet130updatesign) {
-	}
+	public void a(Packet130UpdateSign packet130updatesign) {}
 }

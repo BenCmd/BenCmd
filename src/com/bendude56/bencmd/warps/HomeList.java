@@ -17,16 +17,14 @@ import org.bukkit.util.FileUtil;
 
 import com.bendude56.bencmd.BenCmd;
 
-
 public class HomeList {
-	HashMap<String, Warp> warps = new HashMap<String, Warp>();
-	List<String> warpString = new ArrayList<String>();
+	HashMap<String, Warp>	warps		= new HashMap<String, Warp>();
+	List<String>			warpString	= new ArrayList<String>();
 
 	public HomeList() {
 		if (new File("plugins/BenCmd/_homes.db").exists()) {
 			BenCmd.log(Level.WARNING, "Home backup file found... Restoring...");
-			if (FileUtil.copy(new File("plugins/BenCmd/_homes.db"), new File(
-					"plugins/BenCmd/homes.db"))) {
+			if (FileUtil.copy(new File("plugins/BenCmd/_homes.db"), new File("plugins/BenCmd/homes.db"))) {
 				new File("plugins/BenCmd/_homes.db").delete();
 				BenCmd.log("Restoration suceeded!");
 			} else {
@@ -46,9 +44,7 @@ public class HomeList {
 		Double pitch = (double) warp.loc.getPitch();
 		String world = warp.loc.getWorld().getName();
 		String group = warp.mustInheritGroup;
-		String value = name + ":" + x + "," + y + "," + z + ","
-				+ yaw.toString() + "," + pitch.toString() + ":" + world + ":"
-				+ group;
+		String value = name + ":" + x + "," + y + "," + z + "," + yaw.toString() + "," + pitch.toString() + ":" + world + ":" + group;
 		if (ind == -1) {
 			warpString.add(value);
 		} else {
@@ -56,8 +52,7 @@ public class HomeList {
 		}
 		try {
 			new File("plugins/BenCmd/_homes.db").createNewFile();
-			if (!FileUtil.copy(new File("plugins/BenCmd/homes.db"), new File(
-					"plugins/BenCmd/_homes.db"))) {
+			if (!FileUtil.copy(new File("plugins/BenCmd/homes.db"), new File("plugins/BenCmd/_homes.db"))) {
 				BenCmd.log(Level.WARNING, "Failed to back up home database!");
 			}
 		} catch (IOException e) {
@@ -66,7 +61,7 @@ public class HomeList {
 		SaveFile();
 		try {
 			new File("plugins/BenCmd/_homes.db").delete();
-		} catch (Exception e) { }
+		} catch (Exception e) {}
 		return true;
 	}
 
@@ -78,8 +73,7 @@ public class HomeList {
 		warpString.remove(ind);
 		try {
 			new File("plugins/BenCmd/_homes.db").createNewFile();
-			if (!FileUtil.copy(new File("plugins/BenCmd/homes.db"), new File(
-					"plugins/BenCmd/_homes.db"))) {
+			if (!FileUtil.copy(new File("plugins/BenCmd/homes.db"), new File("plugins/BenCmd/_homes.db"))) {
 				BenCmd.log(Level.WARNING, "Failed to back up home database!");
 			}
 		} catch (IOException e) {
@@ -88,7 +82,7 @@ public class HomeList {
 		SaveFile();
 		try {
 			new File("plugins/BenCmd/_homes.db").delete();
-		} catch (Exception e) { }
+		} catch (Exception e) {}
 		return true;
 	}
 
@@ -120,14 +114,12 @@ public class HomeList {
 		String str = "";
 		BufferedReader br;
 		try {
-			br = new BufferedReader(new InputStreamReader(new FileInputStream(
-					warpFile)));
+			br = new BufferedReader(new InputStreamReader(new FileInputStream(warpFile)));
 		} catch (FileNotFoundException e) {
 			BenCmd.log(Level.WARNING, "homes.db not found. Attempting to create...");
 			try {
 				warpFile.createNewFile();
-				br = new BufferedReader(new InputStreamReader(
-						new FileInputStream(warpFile)));
+				br = new BufferedReader(new InputStreamReader(new FileInputStream(warpFile)));
 			} catch (IOException ex) {
 				BenCmd.log(Level.SEVERE, "Couldn't create homes.db:");
 				BenCmd.log(ex);
@@ -139,19 +131,14 @@ public class HomeList {
 				try {
 					warpString.add(str);
 					String name = str.split(":")[0];
-					double x = Double
-							.parseDouble(str.split(":")[1].split(",")[0]);
-					double y = Double
-							.parseDouble(str.split(":")[1].split(",")[1]);
-					double z = Double
-							.parseDouble(str.split(":")[1].split(",")[2]);
+					double x = Double.parseDouble(str.split(":")[1].split(",")[0]);
+					double y = Double.parseDouble(str.split(":")[1].split(",")[1]);
+					double z = Double.parseDouble(str.split(":")[1].split(",")[2]);
 					double yaw;
 					double pitch;
 					try {
-						yaw = Double
-								.parseDouble(str.split(":")[1].split(",")[3]);
-						pitch = Double
-								.parseDouble(str.split(":")[1].split(",")[4]);
+						yaw = Double.parseDouble(str.split(":")[1].split(",")[3]);
+						pitch = Double.parseDouble(str.split(":")[1].split(",")[4]);
 					} catch (IndexOutOfBoundsException e) {
 						yaw = 0;
 						pitch = 0;
@@ -161,8 +148,7 @@ public class HomeList {
 					if (str.split(":").length == 4) {
 						group = str.split(":")[3];
 					}
-					warps.put(name, new Warp(x, y, z, yaw, pitch, world, name,
-							group));
+					warps.put(name, new Warp(x, y, z, yaw, pitch, world, name, group));
 				} catch (IndexOutOfBoundsException e) {
 					BenCmd.log(Level.WARNING, "Couldn't load one of the homes!");
 					BenCmd.log(e);
@@ -198,8 +184,7 @@ public class HomeList {
 					bw.newLine();
 				}
 			} catch (IOException e) {
-				BenCmd.log(Level.SEVERE, "BenCmd failed to save home "
-						+ value.split(":")[0] + ":");
+				BenCmd.log(Level.SEVERE, "BenCmd failed to save home " + value.split(":")[0] + ":");
 				BenCmd.log(e);
 			}
 		}
@@ -220,8 +205,7 @@ public class HomeList {
 		return warps.get(name);
 	}
 
-	public boolean addHome(double x, double y, double z, double yaw,
-			double pitch, String world, String name, String group) {
+	public boolean addHome(double x, double y, double z, double yaw, double pitch, String world, String name, String group) {
 		Warp warp;
 		try {
 			warp = new Warp(x, y, z, yaw, pitch, world, name, group);

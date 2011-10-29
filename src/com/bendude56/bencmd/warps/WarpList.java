@@ -18,16 +18,14 @@ import org.bukkit.util.FileUtil;
 
 import com.bendude56.bencmd.*;
 
-
 public class WarpList {
-	HashMap<String, Warp> warps = new HashMap<String, Warp>();
-	List<String> warpString = new ArrayList<String>();
+	HashMap<String, Warp>	warps		= new HashMap<String, Warp>();
+	List<String>			warpString	= new ArrayList<String>();
 
 	public WarpList() {
 		if (new File("plugins/BenCmd/_warps.db").exists()) {
 			BenCmd.log(Level.WARNING, "Warp backup file found... Restoring...");
-			if (FileUtil.copy(new File("plugins/BenCmd/_warps.db"), new File(
-					"plugins/BenCmd/warps.db"))) {
+			if (FileUtil.copy(new File("plugins/BenCmd/_warps.db"), new File("plugins/BenCmd/warps.db"))) {
 				new File("plugins/BenCmd/_warps.db").delete();
 				BenCmd.log("Restoration suceeded!");
 			} else {
@@ -47,9 +45,7 @@ public class WarpList {
 		Double pitch = (double) warp.loc.getPitch();
 		String world = warp.loc.getWorld().getName();
 		String group = warp.mustInheritGroup;
-		String value = name + ":" + x + "," + y + "," + z + ","
-				+ yaw.toString() + "," + pitch.toString() + ":" + world + ":"
-				+ group;
+		String value = name + ":" + x + "," + y + "," + z + "," + yaw.toString() + "," + pitch.toString() + ":" + world + ":" + group;
 		if (ind == -1) {
 			warpString.add(value);
 		} else {
@@ -57,8 +53,7 @@ public class WarpList {
 		}
 		try {
 			new File("plugins/BenCmd/_warps.db").createNewFile();
-			if (!FileUtil.copy(new File("plugins/BenCmd/warps.db"), new File(
-					"plugins/BenCmd/_warps.db"))) {
+			if (!FileUtil.copy(new File("plugins/BenCmd/warps.db"), new File("plugins/BenCmd/_warps.db"))) {
 				BenCmd.log(Level.WARNING, "Failed to back up warp database!");
 			}
 		} catch (IOException e) {
@@ -67,7 +62,7 @@ public class WarpList {
 		SaveFile();
 		try {
 			new File("plugins/BenCmd/_warps.db").delete();
-		} catch (Exception e) { }
+		} catch (Exception e) {}
 		return true;
 	}
 
@@ -79,8 +74,7 @@ public class WarpList {
 		warpString.remove(ind);
 		try {
 			new File("plugins/BenCmd/_warps.db").createNewFile();
-			if (!FileUtil.copy(new File("plugins/BenCmd/warps.db"), new File(
-					"plugins/BenCmd/_warps.db"))) {
+			if (!FileUtil.copy(new File("plugins/BenCmd/warps.db"), new File("plugins/BenCmd/_warps.db"))) {
 				BenCmd.log(Level.WARNING, "Failed to back up warp database!");
 			}
 		} catch (IOException e) {
@@ -89,7 +83,7 @@ public class WarpList {
 		SaveFile();
 		try {
 			new File("plugins/BenCmd/_warps.db").delete();
-		} catch (Exception e) { }
+		} catch (Exception e) {}
 		return true;
 	}
 
@@ -101,14 +95,12 @@ public class WarpList {
 		String str = "";
 		BufferedReader br;
 		try {
-			br = new BufferedReader(new InputStreamReader(new FileInputStream(
-					warpFile)));
+			br = new BufferedReader(new InputStreamReader(new FileInputStream(warpFile)));
 		} catch (FileNotFoundException e) {
 			BenCmd.log(Level.WARNING, "warps.db not found. Attempting to create...");
 			try {
 				warpFile.createNewFile();
-				br = new BufferedReader(new InputStreamReader(
-						new FileInputStream(warpFile)));
+				br = new BufferedReader(new InputStreamReader(new FileInputStream(warpFile)));
 			} catch (IOException ex) {
 				BenCmd.log(Level.SEVERE, "Couldn't create warps.db:");
 				BenCmd.log(ex);
@@ -120,19 +112,14 @@ public class WarpList {
 				try {
 					warpString.add(str);
 					String name = str.split(":")[0];
-					double x = Double
-							.parseDouble(str.split(":")[1].split(",")[0]);
-					double y = Double
-							.parseDouble(str.split(":")[1].split(",")[1]);
-					double z = Double
-							.parseDouble(str.split(":")[1].split(",")[2]);
+					double x = Double.parseDouble(str.split(":")[1].split(",")[0]);
+					double y = Double.parseDouble(str.split(":")[1].split(",")[1]);
+					double z = Double.parseDouble(str.split(":")[1].split(",")[2]);
 					double yaw;
 					double pitch;
 					try {
-						yaw = Double
-								.parseDouble(str.split(":")[1].split(",")[3]);
-						pitch = Double
-								.parseDouble(str.split(":")[1].split(",")[4]);
+						yaw = Double.parseDouble(str.split(":")[1].split(",")[3]);
+						pitch = Double.parseDouble(str.split(":")[1].split(",")[4]);
 					} catch (IndexOutOfBoundsException e) {
 						yaw = 0;
 						pitch = 0;
@@ -142,8 +129,7 @@ public class WarpList {
 					if (str.split(":").length == 4) {
 						group = str.split(":")[3];
 					}
-					warps.put(name, new Warp(x, y, z, yaw, pitch, world, name,
-							group));
+					warps.put(name, new Warp(x, y, z, yaw, pitch, world, name, group));
 				} catch (IndexOutOfBoundsException e) {
 					BenCmd.log(Level.WARNING, "Couldn't load one of the warps!");
 					BenCmd.log(e);
@@ -199,8 +185,7 @@ public class WarpList {
 					bw.newLine();
 				}
 			} catch (IOException e) {
-				BenCmd.log(Level.SEVERE, "BenCmd failed to save warp "
-						+ value.split(":")[0] + ":");
+				BenCmd.log(Level.SEVERE, "BenCmd failed to save warp " + value.split(":")[0] + ":");
 				BenCmd.log(e);
 			}
 		}
@@ -221,8 +206,7 @@ public class WarpList {
 		return warps.get(name);
 	}
 
-	public boolean addWarp(double x, double y, double z, double yaw,
-			double pitch, String world, String name, String group) {
+	public boolean addWarp(double x, double y, double z, double yaw, double pitch, String world, String name, String group) {
 		Warp warp;
 		try {
 			warp = new Warp(x, y, z, yaw, pitch, world, name, group);

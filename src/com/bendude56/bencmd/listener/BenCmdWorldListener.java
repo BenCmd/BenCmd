@@ -12,13 +12,12 @@ import org.bukkit.plugin.PluginManager;
 import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.advanced.npc.NPC;
 
-
 public class BenCmdWorldListener extends WorldListener {
-	
+
 	// Singleton instancing
-	
-	private static BenCmdWorldListener instance = null;
-	
+
+	private static BenCmdWorldListener	instance	= null;
+
 	public static BenCmdWorldListener getInstance() {
 		if (instance == null) {
 			return instance = new BenCmdWorldListener();
@@ -26,27 +25,23 @@ public class BenCmdWorldListener extends WorldListener {
 			return instance;
 		}
 	}
-	
+
 	public static void destroyInstance() {
 		instance = null;
 	}
 
 	private BenCmdWorldListener() {
 		PluginManager pm = Bukkit.getPluginManager();
-		pm.registerEvent(Event.Type.WORLD_LOAD, this,
-				Event.Priority.Monitor, BenCmd.getPlugin());
-		pm.registerEvent(Event.Type.WORLD_UNLOAD, this,
-				Event.Priority.Monitor, BenCmd.getPlugin());
-		pm.registerEvent(Event.Type.CHUNK_LOAD, this,
-				Event.Priority.Monitor, BenCmd.getPlugin());
-		pm.registerEvent(Event.Type.CHUNK_UNLOAD, this,
-				Event.Priority.Monitor, BenCmd.getPlugin());
+		pm.registerEvent(Event.Type.WORLD_LOAD, this, Event.Priority.Monitor, BenCmd.getPlugin());
+		pm.registerEvent(Event.Type.WORLD_UNLOAD, this, Event.Priority.Monitor, BenCmd.getPlugin());
+		pm.registerEvent(Event.Type.CHUNK_LOAD, this, Event.Priority.Monitor, BenCmd.getPlugin());
+		pm.registerEvent(Event.Type.CHUNK_UNLOAD, this, Event.Priority.Monitor, BenCmd.getPlugin());
 	}
-	
+
 	public void onWorldLoad(WorldLoadEvent event) {
 		BenCmd.getNPCFile().reloadNPCs();
 	}
-	
+
 	public void onWorldUnload(WorldUnloadEvent event) {
 		BenCmd.getNPCFile().reloadNPCs();
 	}

@@ -14,12 +14,11 @@ import com.bendude56.bencmd.BenCmdFile;
 import com.bendude56.bencmd.invtools.BCItem;
 import com.bendude56.bencmd.invtools.InventoryBackend;
 
-
 public class PriceFile extends BenCmdFile {
-	private HashMap<String, BuyableItem> items = new HashMap<String, BuyableItem>();
-	private long nextUpdate;
-	private int update;
-	private boolean timerenabled;
+	private HashMap<String, BuyableItem>	items	= new HashMap<String, BuyableItem>();
+	private long							nextUpdate;
+	private int								update;
+	private boolean							timerenabled;
 
 	public PriceFile() {
 		super("prices.db", "--BenCmd Price File--", true);
@@ -42,12 +41,11 @@ public class PriceFile extends BenCmdFile {
 			return;
 		}
 		timerenabled = true;
-		update = Bukkit.getServer().getScheduler()
-				.scheduleAsyncRepeatingTask(BenCmd.getPlugin(), new Runnable() {
-					public void run() {
-						pollUpdate();
-					}
-				}, 20, 20);
+		update = Bukkit.getServer().getScheduler().scheduleAsyncRepeatingTask(BenCmd.getPlugin(), new Runnable() {
+			public void run() {
+				pollUpdate();
+			}
+		}, 20, 20);
 	}
 
 	public void unloadTimer() {
@@ -68,100 +66,73 @@ public class PriceFile extends BenCmdFile {
 			int supply;
 			int supplydemand;
 			boolean isCurrency;
-			if (((String) getFile().keySet().toArray()[i])
-					.equalsIgnoreCase("nextUpdate")) {
+			if (((String) getFile().keySet().toArray()[i]).equalsIgnoreCase("nextUpdate")) {
 				try {
 					nextUpdate = Long.parseLong(getFile().getProperty("nextUpdate"));
 				} catch (NumberFormatException e) {
-					BenCmd.log(Level.SEVERE, "nextUpdate (value: "
-							+ getFile().getProperty("nextUpdate")
-							+ ") couldn't be converted to a number!");
+					BenCmd.log(Level.SEVERE, "nextUpdate (value: " + getFile().getProperty("nextUpdate") + ") couldn't be converted to a number!");
 				}
 				continue;
 			}
 			try {
-				itemid = Integer.parseInt(((String) getFile().keySet().toArray()[i])
-						.split(",")[0]);
+				itemid = Integer.parseInt(((String) getFile().keySet().toArray()[i]).split(",")[0]);
 			} catch (NumberFormatException e) {
-				BenCmd.log(Level.SEVERE, "A value in the price file couldn't be loaded ("
-								+ getFile().keySet().toArray()[i] + "): ID is NaN");
+				BenCmd.log(Level.SEVERE, "A value in the price file couldn't be loaded (" + getFile().keySet().toArray()[i] + "): ID is NaN");
 				continue;
 			} catch (IndexOutOfBoundsException e) {
-				BenCmd.log(Level.SEVERE, "A value in the price file couldn't be loaded ("
-								+ getFile().keySet().toArray()[i]
-								+ "): ID is missing");
+				BenCmd.log(Level.SEVERE, "A value in the price file couldn't be loaded (" + getFile().keySet().toArray()[i] + "): ID is missing");
 				continue;
 			}
 			try {
-				damage = Integer.parseInt(((String) getFile().keySet().toArray()[i])
-						.split(",")[1]);
+				damage = Integer.parseInt(((String) getFile().keySet().toArray()[i]).split(",")[1]);
 			} catch (NumberFormatException e) {
-				BenCmd.log(Level.SEVERE, "A value in the price file couldn't be loaded ("
-								+ getFile().keySet().toArray()[i]
-								+ "): Damage is NaN");
+				BenCmd.log(Level.SEVERE, "A value in the price file couldn't be loaded (" + getFile().keySet().toArray()[i] + "): Damage is NaN");
 				continue;
 			} catch (IndexOutOfBoundsException e) {
 				damage = 0;
 			}
-			String[] slashsplit = ((String) getFile().values().toArray()[i])
-					.split("/");
+			String[] slashsplit = ((String) getFile().values().toArray()[i]).split("/");
 			try {
 				price = Double.parseDouble(slashsplit[0]);
 			} catch (NumberFormatException e) {
-				BenCmd.log(Level.SEVERE, "A value in the price file couldn't be loaded ("
-								+ getFile().keySet().toArray()[i] + "): Cost is NaN");
+				BenCmd.log(Level.SEVERE, "A value in the price file couldn't be loaded (" + getFile().keySet().toArray()[i] + "): Cost is NaN");
 				continue;
 			} catch (IndexOutOfBoundsException e) {
-				BenCmd.log(Level.SEVERE, "A value in the price file couldn't be loaded ("
-								+ getFile().keySet().toArray()[i]
-								+ "): Cost is missing");
+				BenCmd.log(Level.SEVERE, "A value in the price file couldn't be loaded (" + getFile().keySet().toArray()[i] + "): Cost is missing");
 				continue;
 			}
 			try {
 				supply = Integer.parseInt(slashsplit[1]);
 			} catch (NumberFormatException e) {
-				BenCmd.log(Level.SEVERE, "A value in the price file couldn't be loaded ("
-								+ getFile().keySet().toArray()[i]
-								+ "): Supply is NaN");
+				BenCmd.log(Level.SEVERE, "A value in the price file couldn't be loaded (" + getFile().keySet().toArray()[i] + "): Supply is NaN");
 				continue;
 			} catch (IndexOutOfBoundsException e) {
-				BenCmd.log(Level.SEVERE, "A value in the price file couldn't be loaded ("
-								+ getFile().keySet().toArray()[i]
-								+ "): Supply is missing");
+				BenCmd.log(Level.SEVERE, "A value in the price file couldn't be loaded (" + getFile().keySet().toArray()[i] + "): Supply is missing");
 				continue;
 			}
 			try {
 				supplydemand = Integer.parseInt(slashsplit[2]);
 			} catch (NumberFormatException e) {
-				BenCmd.log(Level.SEVERE, "A value in the price file couldn't be loaded ("
-								+ getFile().keySet().toArray()[i]
-								+ "): Supply/Demand is NaN");
+				BenCmd.log(Level.SEVERE, "A value in the price file couldn't be loaded (" + getFile().keySet().toArray()[i] + "): Supply/Demand is NaN");
 				continue;
 			} catch (IndexOutOfBoundsException e) {
-				BenCmd.log(Level.SEVERE, "A value in the price file couldn't be loaded ("
-								+ getFile().keySet().toArray()[i]
-								+ "): Supply/Demand is missing");
+				BenCmd.log(Level.SEVERE, "A value in the price file couldn't be loaded (" + getFile().keySet().toArray()[i] + "): Supply/Demand is missing");
 				continue;
 			}
 			try {
 				isCurrency = (slashsplit[3].equalsIgnoreCase("true"));
 			} catch (IndexOutOfBoundsException e) {
-				BenCmd.log(Level.SEVERE, "A value in the price file couldn't be loaded ("
-								+ getFile().keySet().toArray()[i]
-								+ "): isCurrency is missing");
+				BenCmd.log(Level.SEVERE, "A value in the price file couldn't be loaded (" + getFile().keySet().toArray()[i] + "): isCurrency is missing");
 				continue;
 			}
 			if (isCurrency) {
-				items.put(itemid + "," + damage, new Currency(itemid, damage,
-						price, supply, supplydemand, this));
+				items.put(itemid + "," + damage, new Currency(itemid, damage, price, supply, supplydemand, this));
 			} else {
-				items.put(itemid + "," + damage, new BuyableItem(itemid,
-						damage, price, supply, supplydemand, this));
+				items.put(itemid + "," + damage, new BuyableItem(itemid, damage, price, supply, supplydemand, this));
 			}
 		}
 		if (nextUpdate == 0) {
-			nextUpdate = new Date().getTime()
-					+ BenCmd.getMainProperties().getInteger("updateTime", 1800000);
+			nextUpdate = new Date().getTime() + BenCmd.getMainProperties().getInteger("updateTime", 1800000);
 		}
 	}
 
@@ -208,11 +179,9 @@ public class PriceFile extends BenCmdFile {
 	}
 
 	public void ForceUpdate() {
-		nextUpdate = new Date().getTime()
-				+ BenCmd.getMainProperties().getInteger("updateTime", 1800000);
+		nextUpdate = new Date().getTime() + BenCmd.getMainProperties().getInteger("updateTime", 1800000);
 		saveUpdateTime();
-		Bukkit.broadcastMessage(
-				ChatColor.RED + "ALERT: All prices are being updated...");
+		Bukkit.broadcastMessage(ChatColor.RED + "ALERT: All prices are being updated...");
 		for (BuyableItem item : items.values()) {
 			if (item instanceof Currency) {
 				continue;
@@ -220,15 +189,9 @@ public class PriceFile extends BenCmdFile {
 			if (item.getSupplyDemand() > 0) {
 				Double oldPrice = item.getPrice();
 				Double newPrice = oldPrice;
-				newPrice += item.getSupplyDemand()
-						/ ((double) InventoryBackend.getInstance().getStackNumber(item.getItemId()))
-						* BenCmd.getMainProperties().getDouble("marketMultiple",
-								0.25);
-				if (newPrice - oldPrice > BenCmd.getMainProperties().getDouble(
-						"marketMaxChange", 2)) {
-					newPrice = oldPrice
-							+ BenCmd.getMainProperties().getDouble(
-									"marketMaxChange", 2);
+				newPrice += item.getSupplyDemand() / ((double) InventoryBackend.getInstance().getStackNumber(item.getItemId())) * BenCmd.getMainProperties().getDouble("marketMultiple", 0.25);
+				if (newPrice - oldPrice > BenCmd.getMainProperties().getDouble("marketMaxChange", 2)) {
+					newPrice = oldPrice + BenCmd.getMainProperties().getDouble("marketMaxChange", 2);
 				}
 				newPrice *= 100;
 				newPrice = Math.ceil(newPrice) / 100;
@@ -238,19 +201,12 @@ public class PriceFile extends BenCmdFile {
 			} else if (item.getSupplyDemand() < 0) {
 				Double oldPrice = item.getPrice();
 				Double newPrice = oldPrice;
-				newPrice -= -item.getSupplyDemand()
-						/ ((double) InventoryBackend.getInstance().getStackNumber(item.getItemId()))
-						* BenCmd.getMainProperties().getDouble("marketMultiple",
-								0.25);
-				if (newPrice < BenCmd.getMainProperties().getDouble("marketMin",
-						0.05)) {
+				newPrice -= -item.getSupplyDemand() / ((double) InventoryBackend.getInstance().getStackNumber(item.getItemId())) * BenCmd.getMainProperties().getDouble("marketMultiple", 0.25);
+				if (newPrice < BenCmd.getMainProperties().getDouble("marketMin", 0.05)) {
 					newPrice = 0.05;
 				}
-				if (oldPrice - newPrice > BenCmd.getMainProperties().getDouble(
-						"marketMaxChange", 2)) {
-					newPrice = oldPrice
-							- BenCmd.getMainProperties().getDouble(
-									"marketMaxChange", 2);
+				if (oldPrice - newPrice > BenCmd.getMainProperties().getDouble("marketMaxChange", 2)) {
+					newPrice = oldPrice - BenCmd.getMainProperties().getDouble("marketMaxChange", 2);
 				}
 				item.setPrice(newPrice);
 				item.resetSupplyDemand();
@@ -267,8 +223,7 @@ public class PriceFile extends BenCmdFile {
 
 	public BuyableItem getItem(BCItem item) {
 		try {
-			return items.get(item.getMaterial().getId() + ","
-					+ item.getDamage());
+			return items.get(item.getMaterial().getId() + "," + item.getDamage());
 		} catch (NullPointerException e) {
 			return null;
 		}

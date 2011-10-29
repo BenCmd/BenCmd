@@ -10,21 +10,17 @@ import org.bukkit.entity.Player;
 
 import com.bendude56.bencmd.BenCmd;
 
-
 public class TimedArea extends SPArea {
-	private HashMap<Player, Integer> timing;
-	private int minTime;
+	private HashMap<Player, Integer>	timing;
+	private int							minTime;
 
-	public TimedArea(String key, String value)
-			throws NumberFormatException, NullPointerException,
-			IndexOutOfBoundsException {
+	public TimedArea(String key, String value) throws NumberFormatException, NullPointerException, IndexOutOfBoundsException {
 		super(key, value);
 		timing = new HashMap<Player, Integer>();
 		minTime = Integer.parseInt(value.split("/")[3]);
 	}
 
-	protected TimedArea(Integer id, Location corner1,
-			Location corner2, Integer minimumTime) {
+	protected TimedArea(Integer id, Location corner1, Location corner2, Integer minimumTime) {
 		super(id, corner1, corner2);
 		timing = new HashMap<Player, Integer>();
 		minTime = minimumTime;
@@ -66,8 +62,7 @@ public class TimedArea extends SPArea {
 	}
 
 	protected void tick(List<Player> players) {
-		throw new UnsupportedOperationException(
-				"tick(List<Player> players) not overridden!");
+		throw new UnsupportedOperationException("tick(List<Player> players) not overridden!");
 	}
 
 	public void delete() {

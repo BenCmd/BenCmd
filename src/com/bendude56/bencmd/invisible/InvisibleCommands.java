@@ -8,11 +8,9 @@ import org.bukkit.entity.Player;
 import com.bendude56.bencmd.Commands;
 import com.bendude56.bencmd.User;
 
-
 public class InvisibleCommands implements Commands {
 
-	public boolean onCommand(CommandSender sender, Command command,
-			String commandLabel, String[] args) {
+	public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
 		User user;
 		try {
 			user = User.getUser((Player) sender);
@@ -22,20 +20,16 @@ public class InvisibleCommands implements Commands {
 		if (commandLabel.equalsIgnoreCase("poof") && user.hasPerm("bencmd.poof.poof")) {
 			Poof(user);
 			return true;
-		} else if (commandLabel.equalsIgnoreCase("nopoof")
-				&& user.hasPerm("bencmd.poof.nopoof")) {
+		} else if (commandLabel.equalsIgnoreCase("nopoof") && user.hasPerm("bencmd.poof.nopoof")) {
 			NoPoof(user);
 			return true;
-		} else if (commandLabel.equalsIgnoreCase("allpoof")
-				&& user.hasPerm("bencmd.poof.allpoof")) {
+		} else if (commandLabel.equalsIgnoreCase("allpoof") && user.hasPerm("bencmd.poof.allpoof")) {
 			AllPoof(user);
 			return true;
-		} else if (commandLabel.equalsIgnoreCase("offline")
-				&& user.hasPerm("bencmd.poof.offline")) {
+		} else if (commandLabel.equalsIgnoreCase("offline") && user.hasPerm("bencmd.poof.offline")) {
 			Offline(user);
 			return true;
-		} else if (commandLabel.equalsIgnoreCase("online")
-				&& user.hasPerm("bencmd.poof.offline")) {
+		} else if (commandLabel.equalsIgnoreCase("online") && user.hasPerm("bencmd.poof.offline")) {
 			Online(user);
 			return true;
 		}
@@ -48,8 +42,7 @@ public class InvisibleCommands implements Commands {
 			user.sendMessage(ChatColor.GREEN + "POOF!");
 		} else {
 			if (user.isOffline()) {
-				user.sendMessage(ChatColor.RED
-						+ "You cannot unpoof while offline!");
+				user.sendMessage(ChatColor.RED + "You cannot unpoof while offline!");
 				return;
 			} else if (user.isAllPoofed()) {
 				user.unAllPoof();
@@ -72,8 +65,7 @@ public class InvisibleCommands implements Commands {
 			user.sendMessage(ChatColor.GREEN + "ALLPOOF!");
 		} else {
 			user.unAllPoof();
-			user.sendMessage(ChatColor.GREEN
-					+ "REVERSE ALLPOOF! (STILL POOFED!)");
+			user.sendMessage(ChatColor.GREEN + "REVERSE ALLPOOF! (STILL POOFED!)");
 		}
 	}
 

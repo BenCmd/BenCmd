@@ -8,9 +8,8 @@ import com.bendude56.bencmd.User;
 import com.bendude56.bencmd.chat.channels.ChatChannel.ChatLevel;
 import com.bendude56.bencmd.permissions.PermissionUser;
 
-
 public class ChatChannelController extends BenCmdFile {
-	private List<ChatChannel> channels = new ArrayList<ChatChannel>();
+	private List<ChatChannel>	channels	= new ArrayList<ChatChannel>();
 
 	public ChatChannelController() {
 		super("channels.db", "--BenCmd Channel File--", true);
@@ -21,9 +20,7 @@ public class ChatChannelController extends BenCmdFile {
 	public void loadAll() {
 		channels.clear();
 		for (int i = 0; i < getFile().size(); i++) {
-			ChatChannel channel = ChatChannel
-					.getChannel(this, (String) getFile().keySet().toArray()[i],
-							(String) getFile().values().toArray()[i]);
+			ChatChannel channel = ChatChannel.getChannel(this, (String) getFile().keySet().toArray()[i], (String) getFile().values().toArray()[i]);
 			if (channel != null) {
 				channels.add(channel);
 			}
@@ -34,7 +31,7 @@ public class ChatChannelController extends BenCmdFile {
 		getFile().put(channel.getName(), channel.getValue());
 		saveFile();
 	}
-	
+
 	public void saveAll() {
 		for (ChatChannel channel : channels) {
 			getFile().put(channel.getName(), channel.getValue());
@@ -57,15 +54,13 @@ public class ChatChannelController extends BenCmdFile {
 			if (channel.getLevel(user) != ChatLevel.BANNED) {
 				if (value.isEmpty()) {
 					if (channel.hasDisplayName()) {
-						value += channel.getName() + " ("
-								+ channel.getDisplayName() + ")";
+						value += channel.getName() + " (" + channel.getDisplayName() + ")";
 					} else {
 						value += channel.getName();
 					}
 				} else {
 					if (channel.hasDisplayName()) {
-						value += ", " + channel.getName() + " ("
-								+ channel.getDisplayName() + ")";
+						value += ", " + channel.getName() + " (" + channel.getDisplayName() + ")";
 					} else {
 						value += ", " + channel.getName();
 					}
@@ -73,23 +68,16 @@ public class ChatChannelController extends BenCmdFile {
 			}
 		}
 		if (value.isEmpty()) {
-			user.sendMessage(ChatColor.GRAY
-					+ "There are no chat channels that you can join...");
+			user.sendMessage(ChatColor.GRAY + "There are no chat channels that you can join...");
 		} else {
-			user.sendMessage(ChatColor.GRAY
-					+ "The following chat channels are open to you:");
+			user.sendMessage(ChatColor.GRAY + "The following chat channels are open to you:");
 			user.sendMessage(ChatColor.GRAY + value);
 		}
 	}
 
 	protected void addChannel(String name, User owner) {
 		ChatChannel channel;
-		channels.add(channel = new ChatChannel(this, name, owner,
-				new ArrayList<PermissionUser>(),
-				new ArrayList<PermissionUser>(),
-				new ArrayList<PermissionUser>(),
-				new ArrayList<PermissionUser>(), ChatLevel.DEFAULT,
-				"Change this using /channel motd <message>", name));
+		channels.add(channel = new ChatChannel(this, name, owner, new ArrayList<PermissionUser>(), new ArrayList<PermissionUser>(), new ArrayList<PermissionUser>(), new ArrayList<PermissionUser>(), ChatLevel.DEFAULT, "Change this using /channel motd <message>", name));
 		saveChannel(channel);
 		owner.joinChannel(channel);
 	}

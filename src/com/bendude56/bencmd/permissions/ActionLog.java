@@ -19,14 +19,14 @@ import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.User;
 
 public class ActionLog {
-	private String l;
-	private List<ActionLogEntry> sl;
-	
+	private String					l;
+	private List<ActionLogEntry>	sl;
+
 	public ActionLog(String location) {
 		l = location;
 		loadAll();
 	}
-	
+
 	public void loadAll() {
 		sl = new ArrayList<ActionLogEntry>();
 		if (!(new File(l).exists())) {
@@ -61,7 +61,7 @@ public class ActionLog {
 		}
 		Collections.sort(sl);
 	}
-	
+
 	public void log(ActionLogEntry entry) {
 		sl.add(entry);
 		if (!(new File(l).exists())) {
@@ -85,7 +85,7 @@ public class ActionLog {
 			return;
 		}
 	}
-	
+
 	public List<ActionLogEntry> getEntries(String u) {
 		List<ActionLogEntry> res = new ArrayList<ActionLogEntry>();
 		for (ActionLogEntry e : sl) {
@@ -95,7 +95,7 @@ public class ActionLog {
 		}
 		return res;
 	}
-	
+
 	public List<ActionLogEntry> getEntriesFrom(String u) {
 		List<ActionLogEntry> res = new ArrayList<ActionLogEntry>();
 		for (ActionLogEntry e : sl) {
@@ -105,11 +105,11 @@ public class ActionLog {
 		}
 		return res;
 	}
-	
+
 	public List<ActionLogEntry> getEntries() {
 		return sl;
 	}
-	
+
 	public void searchEntries(final User user, final String u, final int page) {
 		user.sendMessage(ChatColor.YELLOW + "Please wait... The action logs are being queried...");
 		new Thread() {
@@ -128,7 +128,7 @@ public class ActionLog {
 			}
 		}.start();
 	}
-	
+
 	public void searchEntries(final User user, final int page) {
 		user.sendMessage(ChatColor.YELLOW + "Please wait... The action logs are being queried...");
 		new Thread() {
@@ -147,7 +147,7 @@ public class ActionLog {
 			}
 		}.start();
 	}
-	
+
 	public void searchEntriesFrom(final User user, final String u, final int page) {
 		user.sendMessage(ChatColor.YELLOW + "Please wait... The action logs are being queried...");
 		new Thread() {
@@ -166,7 +166,7 @@ public class ActionLog {
 			}
 		}.start();
 	}
-	
+
 	public void showEntries(List<ActionLogEntry> entries, int page, User user) {
 		HashMap<Integer, List<ActionLogEntry>> pages = new HashMap<Integer, List<ActionLogEntry>>();
 		int cpage = 1;
@@ -186,18 +186,15 @@ public class ActionLog {
 			cpage--;
 		}
 		if (page <= 0) {
-			user.sendMessage(ChatColor.RED
-					+ "There can be no page lower than 1.");
+			user.sendMessage(ChatColor.RED + "There can be no page lower than 1.");
 			return;
 		}
 		if (page > cpage) {
-			user.sendMessage(ChatColor.RED + "There are only " + cpage
-					+ " pages...");
+			user.sendMessage(ChatColor.RED + "There are only " + cpage + " pages...");
 			return;
 		}
 		if (cpage != 1) {
-			user.sendMessage(ChatColor.GRAY + "Page " + ChatColor.GREEN + page
-					+ ChatColor.GRAY + "/" + ChatColor.GREEN + cpage);
+			user.sendMessage(ChatColor.GRAY + "Page " + ChatColor.GREEN + page + ChatColor.GRAY + "/" + ChatColor.GREEN + cpage);
 		}
 		for (ActionLogEntry l : pages.get(page)) {
 			user.sendMessage(ChatColor.YELLOW + l.readShort());

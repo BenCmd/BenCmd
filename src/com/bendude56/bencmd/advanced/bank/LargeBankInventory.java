@@ -8,8 +8,8 @@ import org.bukkit.inventory.ItemStack;
 import net.minecraft.server.InventoryLargeChest;
 
 public class LargeBankInventory extends BankInventory {
-	protected TileEntityBankChest inv2;
-	protected InventoryLargeChest lc;
+	protected TileEntityBankChest	inv2;
+	protected InventoryLargeChest	lc;
 
 	public LargeBankInventory(String player) {
 		super(player);
