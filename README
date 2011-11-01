@@ -167,3 +167,14 @@ CHANGELOG (STARTING FROM v1.2.2):
         -Fixed banks causing strings that are "too long"
         -Fixed non-static NPCs glitching out
         -Fixed CraftBukkit compatibility
+  1.3.1:
+    -Fixed /inv not working
+    -Combined all listeners into singleton listener classes
+    -All database files are now controlled by a BenCmdFile interface and stored statically in the BenCmd class
+    -No more classes store arbitrary references to the BenCmd instance
+    -Players can no longer lock blocks inside lots that they do not own
+    -Preparations made for BenCmdWeb
+    -A lot of code cleanup
+    -Fixed an annoying NPC bug
+    -Added some TODO tags to mark where improvement is required
+    -Made time control multi-world compatible

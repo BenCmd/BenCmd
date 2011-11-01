@@ -18,6 +18,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
 
 public class BasicCommands implements Commands {
+	
+	private static final long TIME_SUNRISE = 22500;
+	private static final long TIME_DAWN = 23000;
+	private static final long TIME_DAY = 0;
+	private static final long TIME_NOON = 6000;
+	private static final long TIME_SUNSET = 12000;
+	private static final long TIME_DUSK = 13000;
+	private static final long TIME_NIGHT = 15000;
+	private static final long TIME_MIDNIGHT = 18000;
 
 	public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
 		User user;
@@ -215,36 +224,18 @@ public class BasicCommands implements Commands {
 		if (args.length == 0) {
 			user.sendMessage(ChatColor.YELLOW + "Proper use is /time {day|night|set|lock} [time]");
 		} else {
+			World w = null;
+			if ((args[0].equals("set") && args.length == 3) || (!args[0].equals("set") && args.length == 2)) {
+				w = Bukkit.getWorld((args[0].equals("set")) ? args[2] : args[1]);
+				if (w == null) {
+					user.sendMessage(ChatColor.RED + "There is no world by the name of '" + ((args[0].equals("set")) ? args[2] : args[1]) + "'!");
+					return;
+				}
+			}
 			if (args[0].equalsIgnoreCase("day")) {
-				if (!user.hasPerm("bencmd.time.set")) {
-					user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
-					BenCmd.getPlugin().logPermFail();
-					return;
-				}
-				if (user.isServer()) {
-					for (World world : Bukkit.getWorlds()) {
-						world.setTime(0);
-						BenCmd.getPlugin().lastTime = world.getFullTime();
-					}
-				} else {
-					((Player) user.getHandle()).getWorld().setTime(0);
-					BenCmd.getPlugin().lastTime = ((Player) user.getHandle()).getWorld().getFullTime();
-				}
+				Bukkit.dispatchCommand(user.getHandle(), "time set " + TIME_DAY + ((w == null) ? "" : " " + w.getName()));
 			} else if (args[0].equalsIgnoreCase("night")) {
-				if (!user.hasPerm("bencmd.time.set")) {
-					user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
-					BenCmd.getPlugin().logPermFail();
-					return;
-				}
-				if (user.isServer()) {
-					for (World world : Bukkit.getWorlds()) {
-						world.setTime(15000);
-						BenCmd.getPlugin().lastTime = world.getFullTime();
-					}
-				} else {
-					((Player) user.getHandle()).getWorld().setTime(15000);
-					BenCmd.getPlugin().lastTime = ((Player) user.getHandle()).getWorld().getFullTime();
-				}
+				Bukkit.dispatchCommand(user.getHandle(), "time set " + TIME_NIGHT + ((w == null) ? "" : " " + w.getName()));
 			} else if (args[0].equalsIgnoreCase("set")) {
 				if (!user.hasPerm("bencmd.time.set")) {
 					user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
@@ -255,128 +246,78 @@ public class BasicCommands implements Commands {
 				try {
 					time = Integer.parseInt(args[1]);
 				} catch (NumberFormatException e) {
-					user.sendMessage(ChatColor.RED + "Invaled time.");
+					user.sendMessage(ChatColor.RED + "Invalid time.");
 					return;
 				}
-				BenCmd.log("BenCmd: " + user.getDisplayName() + " has set time to " + time);
-				if (user.isServer()) {
+				if (user.isServer() && w == null) {
 					for (World world : Bukkit.getWorlds()) {
 						world.setTime(time);
-						BenCmd.getPlugin().lastTime = world.getFullTime();
+						BenCmd.getTimeManager().syncLastTime(world);
 					}
-				} else {
+				} else if (w == null) {
 					((Player) user.getHandle()).getWorld().setTime(time);
-					BenCmd.getPlugin().lastTime = ((Player) user.getHandle()).getWorld().getFullTime();
+					BenCmd.getTimeManager().syncLastTime(((Player) user.getHandle()).getWorld());
+				} else {
+					w.setTime(time);
+					BenCmd.getTimeManager().syncLastTime(w);
 				}
 			} else if (args[0].equalsIgnoreCase("dawn")) {
-				if (!user.hasPerm("bencmd.time.set")) {
-					user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
-					BenCmd.getPlugin().logPermFail();
-					return;
-				}
-				if (user.isServer()) {
-					for (World world : Bukkit.getWorlds()) {
-						world.setTime(23000);
-						BenCmd.getPlugin().lastTime = world.getFullTime();
-					}
-				} else {
-					((Player) user.getHandle()).getWorld().setTime(23000);
-					BenCmd.getPlugin().lastTime = ((Player) user.getHandle()).getWorld().getFullTime();
-				}
+				Bukkit.dispatchCommand(user.getHandle(), "time set " + TIME_DAWN + ((w == null) ? "" : " " + w.getName()));
 			} else if (args[0].equalsIgnoreCase("sunrise")) {
-				if (!user.hasPerm("bencmd.time.set")) {
-					user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
-					BenCmd.getPlugin().logPermFail();
-					return;
-				}
-				if (user.isServer()) {
-					for (World world : Bukkit.getWorlds()) {
-						world.setTime(22500);
-						BenCmd.getPlugin().lastTime = world.getFullTime();
-					}
-				} else {
-					((Player) user.getHandle()).getWorld().setTime(22500);
-					BenCmd.getPlugin().lastTime = ((Player) user.getHandle()).getWorld().getFullTime();
-				}
+				Bukkit.dispatchCommand(user.getHandle(), "time set " + TIME_SUNRISE + ((w == null) ? "" : " " + w.getName()));
 			} else if (args[0].equalsIgnoreCase("noon")) {
-				if (!user.hasPerm("bencmd.time.set")) {
-					user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
-					BenCmd.getPlugin().logPermFail();
-					return;
-				}
-				if (user.isServer()) {
-					for (World world : Bukkit.getWorlds()) {
-						world.setTime(6000);
-						BenCmd.getPlugin().lastTime = world.getFullTime();
-					}
-				} else {
-					((Player) user.getHandle()).getWorld().setTime(6000);
-					BenCmd.getPlugin().lastTime = ((Player) user.getHandle()).getWorld().getFullTime();
-				}
+				Bukkit.dispatchCommand(user.getHandle(), "time set " + TIME_NOON + ((w == null) ? "" : " " + w.getName()));
 			} else if (args[0].equalsIgnoreCase("dusk")) {
-				if (!user.hasPerm("bencmd.time.set")) {
-					user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
-					BenCmd.getPlugin().logPermFail();
-					return;
-				}
-				if (user.isServer()) {
-					for (World world : Bukkit.getWorlds()) {
-						world.setTime(13000);
-						BenCmd.getPlugin().lastTime = world.getFullTime();
-					}
-				} else {
-					((Player) user.getHandle()).getWorld().setTime(13000);
-					BenCmd.getPlugin().lastTime = ((Player) user.getHandle()).getWorld().getFullTime();
-				}
+				Bukkit.dispatchCommand(user.getHandle(), "time set " + TIME_DUSK + ((w == null) ? "" : " " + w.getName()));
 			} else if (args[0].equalsIgnoreCase("sunset")) {
-				if (!user.hasPerm("bencmd.time.set")) {
-					user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
-					BenCmd.getPlugin().logPermFail();
-					return;
-				}
-				if (user.isServer()) {
-					for (World world : Bukkit.getWorlds()) {
-						world.setTime(12000);
-						BenCmd.getPlugin().lastTime = world.getFullTime();
-					}
-				} else {
-					((Player) user.getHandle()).getWorld().setTime(12000);
-					BenCmd.getPlugin().lastTime = ((Player) user.getHandle()).getWorld().getFullTime();
-				}
+				Bukkit.dispatchCommand(user.getHandle(), "time set " + TIME_SUNSET + ((w == null) ? "" : " " + w.getName()));
 			} else if (args[0].equalsIgnoreCase("midnight")) {
-				if (!user.hasPerm("bencmd.time.set")) {
-					user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
-					BenCmd.getPlugin().logPermFail();
-					return;
-				}
-				if (user.isServer()) {
-					for (World world : Bukkit.getWorlds()) {
-						world.setTime(18000);
-						BenCmd.getPlugin().lastTime = world.getFullTime();
-					}
-				} else {
-					((Player) user.getHandle()).getWorld().setTime(18000);
-					BenCmd.getPlugin().lastTime = ((Player) user.getHandle()).getWorld().getFullTime();
-				}
+				Bukkit.dispatchCommand(user.getHandle(), "time set " + TIME_MIDNIGHT + ((w == null) ? "" : " " + w.getName()));
 			} else if (args[0].equalsIgnoreCase("lock")) {
 				if (!user.hasPerm("bencmd.time.lock")) {
 					user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
 					BenCmd.getPlugin().logPermFail();
 					return;
 				}
-				if (BenCmd.getPlugin().timeRunning) {
-					BenCmd.log("BenCmd: " + user.getDisplayName() + " has frozen time!");
-					if (user.isServer()) {
-						BenCmd.getPlugin().timeFrozenAt = Bukkit.getWorlds().get(0).getTime();
-					} else {
-						BenCmd.getPlugin().timeFrozenAt = ((Player) user.getHandle()).getWorld().getTime();
+				if (user.isServer() && w == null) {
+					for (World world : Bukkit.getWorlds()) {
+						BenCmd.getTimeManager().setFrozen(world, true);
 					}
-					BenCmd.getPlugin().timeRunning = false;
-					Bukkit.broadcastMessage(ChatColor.DARK_BLUE + user.getDisplayName() + " has stopped the clock!");
+					Bukkit.broadcastMessage(ChatColor.BLUE + "Server has frozen time!");
+				} else if (w == null) {
+					w = ((Player) user.getHandle()).getWorld();
+					BenCmd.getTimeManager().setFrozen(w, true);
+					for (Player p : w.getPlayers()) {
+						p.sendMessage(ChatColor.BLUE + user.getDisplayName() + " has frozen time!");
+					}
 				} else {
-					BenCmd.log("BenCmd: " + user.getDisplayName() + " has unfrozen time!");
-					BenCmd.getPlugin().timeRunning = true;
-					Bukkit.broadcastMessage(ChatColor.DARK_BLUE + user.getDisplayName() + " has restarted time!");
+					BenCmd.getTimeManager().setFrozen(w, true);
+					for (Player p : w.getPlayers()) {
+						p.sendMessage(ChatColor.BLUE + user.getDisplayName() + " has frozen time!");
+					}
+				}
+			} else if (args[0].equalsIgnoreCase("unlock")) {
+				if (!user.hasPerm("bencmd.time.lock")) {
+					user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
+					BenCmd.getPlugin().logPermFail();
+					return;
+				}
+				if (user.isServer() && w == null) {
+					for (World world : Bukkit.getWorlds()) {
+						BenCmd.getTimeManager().setFrozen(world, false);
+					}
+					Bukkit.broadcastMessage(ChatColor.BLUE + "Server has unfrozen time!");
+				} else if (w == null) {
+					w = ((Player) user.getHandle()).getWorld();
+					BenCmd.getTimeManager().setFrozen(w, false);
+					for (Player p : w.getPlayers()) {
+						p.sendMessage(ChatColor.BLUE + user.getDisplayName() + " has unfrozen time!");
+					}
+				} else {
+					BenCmd.getTimeManager().setFrozen(w, false);
+					for (Player p : w.getPlayers()) {
+						p.sendMessage(ChatColor.BLUE + user.getDisplayName() + " has unfrozen time!");
+					}
 				}
 			}
 		}
@@ -512,7 +453,6 @@ public class BasicCommands implements Commands {
 		if ((args[0].equalsIgnoreCase("reload") || args[0].equalsIgnoreCase("rel")) && user.hasPerm("bencmd.reload")) {
 			BenCmd.unloadAll(true);
 			BenCmd.loadAll();
-			BenCmd.getPlugin().timeRunning = true;
 			user.sendMessage(ChatColor.GREEN + "BenCmd Config Successfully reloaded!");
 			BenCmd.log(Level.WARNING, user.getDisplayName() + " has reloaded the BenCmd configuration.");
 		} else if (args[0].equalsIgnoreCase("update") && user.hasPerm("bencmd.update")) {

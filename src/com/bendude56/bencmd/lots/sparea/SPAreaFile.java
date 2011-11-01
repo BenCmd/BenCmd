@@ -39,7 +39,6 @@ public class SPAreaFile extends BenCmdFile {
 			}
 			String type = value.split("/")[0];
 			try {
-				// TODO Remove need for plugin references for these constructors
 				if (type.equals("pvp")) {
 					areas.put(id, new PVPArea(key, value));
 				} else if (type.equals("msg")) {

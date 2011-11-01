@@ -116,6 +116,7 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 	private static PluginProperties			main;
 	private static PluginProperties			itemAlias;
 	private static PluginProperties			usage;
+	private static TimeManager              time;
 
 	public static MainPermissions getPermissionManager() {
 		return pManager;
@@ -231,6 +232,10 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 	public static PluginProperties getUsageFile() {
 		return usage;
 	}
+	
+	public static TimeManager getTimeManager() {
+		return time;
+	}
 
 	public static void log(Exception e) {
 		Logger.getLogger("Minecraft").log(Level.SEVERE, e.getMessage(), e);
@@ -257,33 +262,134 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 	}
 
 	protected static void loadAll() {
-		main = new PluginProperties(propDir + "main.properties");
-		pManager = new MainPermissions();
-		bc = new BankFile();
-		warps = new WarpList();
-		homes = new HomeWarps();
-		npcs = new NPCFile();
-		portals = new PortalFile();
-		rf = new RedstoneFile();
-		sf = new ShelfFile();
-		ccc = new ChatChannelController();
-		ic = new Invisibility();
-		kits = new KitList();
-		disp = new DispChest();
-		unl = new UnlimitedDisp();
-		lots = new LotFile();
-		areas = new SPAreaFile();
-		prices = new PriceFile();
-		pro = new ProtectFile();
-		reports = new ReportFile();
-		check = new PreWarp();
-		wb = new WeatherBinding();
-		fd = new FlyDetect();
-		if (Bukkit.getPluginManager().isPluginEnabled("Spout")) {
-			spout = new SpoutConnector();
+		try {
+			main = new PluginProperties(propDir + "main.properties");
+		} catch (Exception e) {
+			log(Level.SEVERE, "Failed to load main properties file!");
+			log(e);
 		}
-		itemAlias = new PluginProperties(propDir + "items.txt");
-		usage = new PluginProperties(propDir + "usage.db");
+		try {
+			pManager = new MainPermissions();
+		} catch (Exception e) {
+			log(Level.SEVERE, "Failed to load BenCmd permissions module!");
+			log(e);
+		}
+		try {
+			bc = new BankFile();
+		} catch (Exception e) {
+			log(Level.SEVERE, "Failed to load banks!");
+			log(e);
+		}
+		try {
+			warps = new WarpList();
+			homes = new HomeWarps();
+			check = new PreWarp();
+			portals = new PortalFile();
+		} catch (Exception e) {
+			log(Level.SEVERE, "Failed to load warps!");
+			log(e);
+		}
+		try {
+			npcs = new NPCFile();
+		} catch (Exception e) {
+			log(Level.SEVERE, "Failed to load NPCs!");
+			log(e);
+		}
+		try {
+			rf = new RedstoneFile();
+		} catch (Exception e) {
+			log(Level.SEVERE, "Failed to load timed levers!");
+			log(e);
+		}
+		try {
+			sf = new ShelfFile();
+		} catch (Exception e) {
+			log(Level.SEVERE, "Failed to load shelf writing!");
+			log(e);
+		}
+		try {
+			ccc = new ChatChannelController();
+		} catch (Exception e) {
+			log(Level.SEVERE, "Failed to load chat channels!");
+			log(e);
+		}
+		try {
+			ic = new Invisibility();
+		} catch (Exception e) {
+			log(Level.SEVERE, "Failed to load invisibility controller!");
+			log(e);
+		}
+		try {
+			kits = new KitList();
+		} catch (Exception e) {
+			log(Level.SEVERE, "Failed to load kits!");
+			log(e);
+		}
+		try {
+			disp = new DispChest();
+			unl = new UnlimitedDisp();
+		} catch (Exception e) {
+			log(Level.SEVERE, "Failed to load unlimited dispensers and disposal chests!");
+			log(e);
+		}
+		try {
+			lots = new LotFile();
+			areas = new SPAreaFile();
+		} catch (Exception e) {
+			log(Level.SEVERE, "Failed to load lots/areas!");
+			log(e);
+		}
+		try {
+			prices = new PriceFile();
+		} catch (Exception e) {
+			log(Level.SEVERE, "Failed to load market manager!");
+			log(e);
+		}
+		try {
+			pro = new ProtectFile();
+		} catch (Exception e) {
+			log(Level.SEVERE, "Failed to load protections!");
+			log(e);
+		}
+		try {
+			reports = new ReportFile();
+		} catch (Exception e) {
+			log(Level.SEVERE, "Failed to load reports!");
+			log(e);
+		}
+		try {
+			wb = new WeatherBinding();
+		} catch (Exception e) {
+			log(Level.SEVERE, "Failed to load strike bind controller!");
+			log(e);
+		}
+		try {
+			fd = new FlyDetect();
+		} catch (Exception e) {
+			log(Level.SEVERE, "Failed to load flymod detection!");
+			log(e);
+		}
+		if (Bukkit.getPluginManager().isPluginEnabled("Spout")) {
+			try {
+				spout = new SpoutConnector();
+			} catch (Exception e) {
+				log(Level.SEVERE, "Failed to load spout connection manager!");
+				log(e);
+			}
+		}
+		try {
+			itemAlias = new PluginProperties(propDir + "items.txt");
+		} catch (Exception e) {
+			log(Level.SEVERE, "Failed to load item aliases!");
+			log(e);
+		}
+		try {
+			usage = new PluginProperties(propDir + "usage.db");
+		} catch (Exception e) {
+			log(Level.SEVERE, "Failed to load anonymous usage stats!");
+			log(e);
+		}
+		time = new TimeManager();
 	}
 
 	protected static void unloadAll(boolean save) {
@@ -332,13 +438,14 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 		main = null;
 		itemAlias = null;
 		usage = null;
+		time = null;
 	}
 
 	// END STATIC FILE METHODS
 
 	public final static boolean				debug			= false;
-	public final static int					buildId			= 33;
-	public final static int					cbbuild			= 1317;
+	public final static int					buildId			= 34;
+	public final static int					cbbuild			= 1337;
 	public final static String				verLoc			= "http://cloud.github.com/downloads/BenCmd/BenCmd/version.txt";
 	public static String					devLoc			= "";
 	public static String					stableLoc		= "";
@@ -348,9 +455,6 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 	public final String[]					files			= { "action.db", "bank.db", "channels.db", "chest.db", "usage.db", "disp.db", "groups.db", "homes.db", "itembw.db", "items.txt", "kits.db", "lever.db", "lots.db", "main.properties", "npc.db", "portals.db", "prices.db", "protection.db", "shelves.db", "sparea.db", "tickets.db", "users.db", "warps.db" };
 
 	// TODO Move into own classes
-	public boolean							timeRunning		= true;
-	public long								lastTime		= 0;
-	public long								timeFrozenAt	= 0;
 	public List<Location>					canSpread		= new ArrayList<Location>();
 	public List<Grave>						graves			= new ArrayList<Grave>();
 	public HashMap<Player, List<ItemStack>>	returns			= new HashMap<Player, List<ItemStack>>();
@@ -836,29 +940,11 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 	public class TimeFreeze implements Runnable {
 		@Override
 		public void run() {
-			// TODO Make multi-world compatible
 			if (Calendar.getInstance().get(Calendar.DAY_OF_MONTH) != clog.get(Calendar.DAY_OF_MONTH)) {
 				rotateLogFile();
 			}
 			BenCmd.getRedstoneFile().timeTick();
-			if (!timeRunning) {
-				for (World world : getServer().getWorlds()) {
-					world.setTime(timeFrozenAt);
-				}
-			} else {
-				if (lastTime == 0) {
-					lastTime = getServer().getWorlds().get(0).getFullTime();
-					return;
-				}
-				for (World world : getServer().getWorlds()) {
-					if (world.getTime() >= 0 && world.getTime() < 12000) {
-						world.setFullTime(lastTime + BenCmd.getMainProperties().getInteger("daySpeed", 100));
-					} else {
-						world.setFullTime(lastTime + BenCmd.getMainProperties().getInteger("nightSpeed", 100));
-					}
-				}
-				lastTime = getServer().getWorlds().get(0).getFullTime();
-			}
+			time.tick();
 		}
 	}
 
