@@ -157,7 +157,7 @@ public class NPC {
 	}
 
 	public static void faceLocation(EntityNPC enpc, Vec3D loc2) {
-		Location loc = enpc.getBukkitEntity().getLocation();
+		Location loc = new Location(enpc.world.getWorld(), enpc.locX, enpc.locY, enpc.locZ);
 		double xDiff = loc2.a - loc.getX();
 		double yDiff = loc2.b - loc.getY();
 		double zDiff = loc2.c - loc.getZ();
@@ -168,6 +168,8 @@ public class NPC {
 		if (zDiff < 0.0) {
 			yaw = yaw + (Math.abs(180 - yaw) * 2);
 		}
-		enpc.setLocation(loc.getX(), loc.getY(), loc.getZ(), (float) yaw - 90, (float) pitch);
+		yaw -= 90;
+		enpc.yaw = (float) yaw;
+		enpc.pitch = (float) pitch;
 	}
 }

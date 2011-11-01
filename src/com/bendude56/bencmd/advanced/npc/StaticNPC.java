@@ -38,10 +38,6 @@ public class StaticNPC extends NPC implements Skinnable {
 		}
 	}
 
-	public void tick() {
-		this.faceNearest();
-	}
-
 	public String getValue() {
 		Location l = super.getLocation();
 		return "n|" + l.getWorld().getName() + "," + l.getX() + "," + l.getY() + "," + l.getZ() + "," + l.getYaw() + "," + l.getPitch() + "|" + skin + "|" + super.getName() + "|" + getHeldItem().getTypeId() + ":" + getHeldItem().getDurability();

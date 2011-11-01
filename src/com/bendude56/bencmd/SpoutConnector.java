@@ -241,7 +241,6 @@ public class SpoutConnector {
 		infoscr.cancel = cancelbutton;
 
 		// Show pop-up
-		infoscr.setBgVisible(true);
 		mainscr.attachPopupScreen(infoscr);
 	}
 
