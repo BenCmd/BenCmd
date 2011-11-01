@@ -41,11 +41,7 @@ public class ActionFile extends BenCmdFile {
 				BenCmd.log(Level.WARNING, "In the actions file, an entry must contain exactly 2 slashes! (Entry: " + key + ")");
 				continue;
 			}
-			PermissionUser user = PermissionUser.matchUser(value[0]);
-			if (user == null) {
-				BenCmd.log(Level.WARNING, "In the actions file, " + value[0] + " is not a valid user! (Entry: " + key + ")");
-				continue;
-			}
+			String user = value[0];
 			ActionType action;
 			if (value[1].equals("j")) {
 				action = ActionType.JAIL;
@@ -116,14 +112,14 @@ public class ActionFile extends BenCmdFile {
 	private List<Action> ofUser(PermissionUser user) {
 		List<Action> actions = new ArrayList<Action>();
 		for (Action action : this.actions.values()) {
-			if (action.getUser().getName().equals(user.getName())) {
+			if (action.getUser().equals(user.getName())) {
 				actions.add(action);
 			}
 		}
 		return actions;
 	}
 
-	public void addAction(PermissionUser user, ActionType action, long duration) {
+	public void addAction(String user, ActionType action, long duration) {
 		if (duration == -1) {
 			this.updateAction(new Action(this.nextId(), user, action, -1), true);
 		} else {
@@ -138,7 +134,7 @@ public class ActionFile extends BenCmdFile {
 	}
 
 	public void updateAction(Action action, boolean saveFile) {
-		getFile().put(String.valueOf(action.getId()), action.getUser().getName() + "/" + action.getActionLetter() + "/" + String.valueOf(action.getExpiry()));
+		getFile().put(String.valueOf(action.getId()), action.getUser() + "/" + action.getActionLetter() + "/" + String.valueOf(action.getExpiry()));
 		actions.put(action.getId(), action);
 		if (saveFile)
 			saveFile();
@@ -160,22 +156,22 @@ public class ActionFile extends BenCmdFile {
 			for (Action action : ac) {
 				if (action.isExpired()) {
 					if (action.getActionType() == ActionType.JAIL) {
-						BenCmd.getPermissionManager().getActionLog().log(new ActionLogEntry(ActionLogType.UNJAIL_AUTO, action.getUser().getName(), "N/A"));
+						BenCmd.getPermissionManager().getActionLog().log(new ActionLogEntry(ActionLogType.UNJAIL_AUTO, action.getUser(), "N/A"));
 						User user2;
-						if ((user2 = User.matchUser(action.getUser().getName())) == null) {
+						if ((user2 = User.matchUser(action.getUser())) == null) {
 							addAction(action.getUser(), ActionType.LEAVEJAIL, -1);
 						} else {
 							user2.spawn();
 							user2.sendMessage(ChatColor.GREEN + "You've been unjailed!");
 						}
 					} else if (action.getActionType() == ActionType.ALLMUTE) {
-						BenCmd.getPermissionManager().getActionLog().log(new ActionLogEntry(ActionLogType.UNMUTE_AUTO, action.getUser().getName(), "N/A"));
+						BenCmd.getPermissionManager().getActionLog().log(new ActionLogEntry(ActionLogType.UNMUTE_AUTO, action.getUser(), "N/A"));
 						User user2;
-						if ((user2 = User.matchUser(action.getUser().getName())) != null) {
+						if ((user2 = User.matchUser(action.getUser())) != null) {
 							user2.sendMessage(ChatColor.GREEN + "You've been unmuted!");
 						}
 					} else if (action.getActionType() == ActionType.BAN) {
-						BenCmd.getPermissionManager().getActionLog().log(new ActionLogEntry(ActionLogType.UNBAN_AUTO, action.getUser().getName(), "N/A"));
+						BenCmd.getPermissionManager().getActionLog().log(new ActionLogEntry(ActionLogType.UNBAN_AUTO, action.getUser(), "N/A"));
 					}
 					removeAction(action);
 				}

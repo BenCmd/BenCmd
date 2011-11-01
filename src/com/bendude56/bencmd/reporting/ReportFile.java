@@ -11,7 +11,6 @@ import org.bukkit.ChatColor;
 import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.BenCmdFile;
 import com.bendude56.bencmd.User;
-import com.bendude56.bencmd.permissions.PermissionUser;
 import com.bendude56.bencmd.reporting.Report.ReportStatus;
 
 public class ReportFile extends BenCmdFile {
@@ -59,8 +58,8 @@ public class ReportFile extends BenCmdFile {
 			}
 			try {
 				Integer id = Integer.parseInt((String) getFile().keySet().toArray()[i]);
-				PermissionUser sender = PermissionUser.matchUserIgnoreCase(((String) getFile().values().toArray()[i]).split("/")[0]);
-				PermissionUser accused = PermissionUser.matchUserIgnoreCase(((String) getFile().values().toArray()[i]).split("/")[1]);
+				String sender = ((String) getFile().values().toArray()[i]).split("/")[0];
+				String accused = ((String) getFile().values().toArray()[i]).split("/")[1];
 				String reason = ((String) getFile().values().toArray()[i]).split("/")[2];
 				Integer timesReopened = Integer.parseInt(((String) getFile().values().toArray()[i]).split("/")[3]);
 				String finalRemark = ((String) getFile().values().toArray()[i]).split("/")[4];
@@ -118,7 +117,7 @@ public class ReportFile extends BenCmdFile {
 		new Thread() {
 			public void run() {
 				for (Report r : getOpen()) {
-					if (r.getSender().getName().equals(toPurge)) {
+					if (r.getSender().equals(toPurge)) {
 						r.closeTicket("Ticket purged by admin");
 					}
 				}
@@ -132,7 +131,7 @@ public class ReportFile extends BenCmdFile {
 		new Thread() {
 			public void run() {
 				for (Report r : getOpen()) {
-					if (r.getAccused().getName().equals(toPurge)) {
+					if (r.getAccused().equals(toPurge)) {
 						r.closeTicket("Ticket purged by admin");
 					}
 				}
@@ -151,7 +150,7 @@ public class ReportFile extends BenCmdFile {
 				} else if (user.hasPerm("bencmd.ticket.readown")) {
 					results = new ArrayList<Report>();
 					for (Report ticket : getOpen()) {
-						if (ticket.getAccused().getName().equalsIgnoreCase(user.getName()) || ticket.getSender().getName().equalsIgnoreCase(user.getName())) {
+						if (ticket.getAccused().equalsIgnoreCase(user.getName()) || ticket.getSender().equalsIgnoreCase(user.getName())) {
 							results.add(ticket);
 						}
 					}
@@ -184,7 +183,7 @@ public class ReportFile extends BenCmdFile {
 				} else if (user.hasPerm("bencmd.ticket.readown")) {
 					results = new ArrayList<Report>();
 					for (Report ticket : getReports()) {
-						if (ticket.getAccused().getName().equalsIgnoreCase(user.getName()) || ticket.getSender().getName().equalsIgnoreCase(user.getName())) {
+						if (ticket.getAccused().equalsIgnoreCase(user.getName()) || ticket.getSender().equalsIgnoreCase(user.getName())) {
 							results.add(ticket);
 						}
 					}
@@ -240,35 +239,35 @@ public class ReportFile extends BenCmdFile {
 		for (Report r : pages.get(page)) {
 			switch (r.getStatus()) {
 				case UNREAD:
-					if (user.getName().equals(r.getAccused().getName()) && !user.hasPerm("bencmd.ticket.readall")) {
+					if (user.getName().equals(r.getAccused()) && !user.hasPerm("bencmd.ticket.readall")) {
 						user.sendMessage(ChatColor.RED + r.readShorthandAnon());
 					} else {
 						user.sendMessage(ChatColor.RED + r.readShorthand());
 					}
 					break;
 				case READ:
-					if (user.getName().equals(r.getAccused().getName()) && !user.hasPerm("bencmd.ticket.readall")) {
+					if (user.getName().equals(r.getAccused()) && !user.hasPerm("bencmd.ticket.readall")) {
 						user.sendMessage(ChatColor.YELLOW + r.readShorthandAnon());
 					} else {
 						user.sendMessage(ChatColor.YELLOW + r.readShorthand());
 					}
 					break;
 				case INVESTIGATING:
-					if (user.getName().equals(r.getAccused().getName()) && !user.hasPerm("bencmd.ticket.readall")) {
+					if (user.getName().equals(r.getAccused()) && !user.hasPerm("bencmd.ticket.readall")) {
 						user.sendMessage(ChatColor.GREEN + r.readShorthandAnon());
 					} else {
 						user.sendMessage(ChatColor.GREEN + r.readShorthand());
 					}
 					break;
 				case CLOSED:
-					if (user.getName().equals(r.getAccused().getName()) && !user.hasPerm("bencmd.ticket.readall")) {
+					if (user.getName().equals(r.getAccused()) && !user.hasPerm("bencmd.ticket.readall")) {
 						user.sendMessage(ChatColor.GRAY + r.readShorthandAnon());
 					} else {
 						user.sendMessage(ChatColor.GRAY + r.readShorthand());
 					}
 					break;
 				case LOCKED:
-					if (user.getName().equals(r.getAccused().getName()) && !user.hasPerm("bencmd.ticket.readall")) {
+					if (user.getName().equals(r.getAccused()) && !user.hasPerm("bencmd.ticket.readall")) {
 						user.sendMessage(ChatColor.DARK_GRAY + r.readShorthandAnon());
 					} else {
 						user.sendMessage(ChatColor.DARK_GRAY + r.readShorthand());
@@ -280,8 +279,8 @@ public class ReportFile extends BenCmdFile {
 
 	public void saveTicket(Report ticket, boolean saveFile) {
 		String key = ticket.getId().toString();
-		String value = ticket.getSender().getName() + "/";
-		value += ticket.getAccused().getName() + "/";
+		String value = ticket.getSender() + "/";
+		value += ticket.getAccused() + "/";
 		value += ticket.getReason() + "/";
 		value += ticket.getTimesReopened().toString() + "/";
 		value += ticket.getRemark() + "/";
@@ -333,7 +332,7 @@ public class ReportFile extends BenCmdFile {
 			public void run() {
 				List<Report> results = new ArrayList<Report>();
 				for (Report ticket : getOpen()) {
-					if (ticket.getAccused().getName().equalsIgnoreCase(search) || ticket.getSender().getName().equalsIgnoreCase(search)) {
+					if (ticket.getAccused().equalsIgnoreCase(search) || ticket.getSender().equalsIgnoreCase(search)) {
 						results.add(ticket);
 					}
 				}
@@ -357,7 +356,7 @@ public class ReportFile extends BenCmdFile {
 			public void run() {
 				List<Report> results = new ArrayList<Report>();
 				for (Report ticket : getReports()) {
-					if (ticket.getAccused().getName().equalsIgnoreCase(search) || ticket.getSender().getName().equalsIgnoreCase(search)) {
+					if (ticket.getAccused().equalsIgnoreCase(search) || ticket.getSender().equalsIgnoreCase(search)) {
 						results.add(ticket);
 					}
 				}

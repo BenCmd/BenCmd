@@ -440,12 +440,12 @@ public class BenCmdPlayerListener extends PlayerListener {
 		if ((id = BenCmd.getProtections().getProtection(event.getClickedBlock().getLocation())) != -1) {
 			block = BenCmd.getProtections().getProtection(id);
 			User user = User.getUser(event.getPlayer());
-			if (!block.canUse(user) && !user.hasPerm("bencmd.lock.peek")) {
+			if (!block.canUse(user.getName()) && !user.hasPerm("bencmd.lock.peek")) {
 				event.setCancelled(true);
 				user.sendMessage(ChatColor.RED + "That block is locked! Use /protect info for more information...");
 			} else {
-				if (!user.getName().equalsIgnoreCase(block.getOwner().getName())) {
-					BenCmd.log(user.getDisplayName() + " has accessed " + block.getOwner().getName() + "'s protected block. (" + block.GetId() + ")");
+				if (!user.getName().equalsIgnoreCase(block.getOwner())) {
+					BenCmd.log(user.getDisplayName() + " has accessed " + block.getOwner() + "'s protected block. (" + block.GetId() + ")");
 				}
 			}
 		}

@@ -4,15 +4,13 @@ import java.util.List;
 
 import org.bukkit.Location;
 
-import com.bendude56.bencmd.permissions.PermissionUser;
-
 public class PublicBlock extends ProtectedBlock {
 
-	public PublicBlock(int id, PermissionUser owner, List<PermissionUser> guests, Location loc) {
+	public PublicBlock(int id, String owner, List<String> guests, Location loc) {
 		super(id, owner, guests, loc);
 	}
 
-	public boolean canUse(PermissionUser user) {
+	public boolean canUse(String user) {
 		return true;
 	}
 }

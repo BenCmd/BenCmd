@@ -5,15 +5,14 @@ import java.util.List;
 import org.bukkit.Location;
 
 import com.bendude56.bencmd.BenCmd;
-import com.bendude56.bencmd.permissions.PermissionUser;
 
 public class ProtectedBlock {
 	private int						idNumber;
-	private PermissionUser			blockOwner;
-	private List<PermissionUser>	blockGuests;
+	private String					blockOwner;
+	private List<String>			blockGuests;
 	private Location				blockLocation;
 
-	public ProtectedBlock(int id, PermissionUser owner, List<PermissionUser> guests, Location loc) {
+	public ProtectedBlock(int id, String owner, List<String> guests, Location loc) {
 		idNumber = id;
 		blockGuests = guests;
 		blockOwner = owner;
@@ -24,11 +23,11 @@ public class ProtectedBlock {
 		return idNumber;
 	}
 
-	public PermissionUser getOwner() {
+	public String getOwner() {
 		return blockOwner;
 	}
 
-	public List<PermissionUser> getGuests() {
+	public List<String> getGuests() {
 		return blockGuests;
 	}
 
@@ -36,25 +35,25 @@ public class ProtectedBlock {
 		return blockLocation;
 	}
 
-	public boolean canUse(PermissionUser user) {
-		return (blockOwner.getName().equalsIgnoreCase(user.getName()) || isGuest(user) != -1);
+	public boolean canUse(String user) {
+		return (blockOwner.equalsIgnoreCase(user) || isGuest(user) != -1);
 	}
 
-	public boolean canChange(PermissionUser user) {
-		if (blockOwner.getName().equalsIgnoreCase(user.getName())) {
+	public boolean canChange(String user) {
+		if (blockOwner.equalsIgnoreCase(user)) {
 			return true;
 		} else {
 			return false;
 		}
 	}
 
-	public boolean setOwner(PermissionUser user) {
+	public boolean setOwner(String user) {
 		blockOwner = user;
 		BenCmd.getProtections().updateValue(this, false, true);
 		return true;
 	}
 
-	public boolean addGuest(PermissionUser guest) {
+	public boolean addGuest(String guest) {
 		if (isGuest(guest) == -1) {
 			blockGuests.add(guest);
 			BenCmd.getProtections().updateValue(this, false, true);
@@ -64,17 +63,17 @@ public class ProtectedBlock {
 		}
 	}
 
-	public int isGuest(PermissionUser user) {
+	public int isGuest(String user) {
 		for (int i = 0; i < blockGuests.size(); i++) {
-			PermissionUser guest = blockGuests.get(i);
-			if (guest.getName().equalsIgnoreCase(user.getName())) {
+			String guest = blockGuests.get(i);
+			if (guest.equalsIgnoreCase(user)) {
 				return i;
 			}
 		}
 		return -1;
 	}
 
-	public boolean removeGuest(PermissionUser guest) {
+	public boolean removeGuest(String guest) {
 		int id;
 		if ((id = isGuest(guest)) != -1) {
 			blockGuests.remove(id);

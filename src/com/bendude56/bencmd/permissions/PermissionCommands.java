@@ -388,7 +388,7 @@ public class PermissionCommands implements Commands {
 		boolean muted = puser2.isMuted() != null;
 		boolean reported = false;
 		for (Report ticket : BenCmd.getReports().getReports()) {
-			if (ticket.getAccused().getName().equalsIgnoreCase(puser2.getName()) && ticket.getStatus() != ReportStatus.CLOSED && ticket.getStatus() != ReportStatus.LOCKED) {
+			if (ticket.getAccused().equalsIgnoreCase(puser2.getName()) && ticket.getStatus() != ReportStatus.CLOSED && ticket.getStatus() != ReportStatus.LOCKED) {
 				reported = true;
 				break;
 			}
@@ -546,7 +546,7 @@ public class PermissionCommands implements Commands {
 		} else {
 			BenCmd.getPermissionManager().getActionLog().log(new ActionLogEntry(ActionLogType.MUTE_TEMP, puser2.getName(), user.getName(), duration));
 		}
-		BenCmd.getPermissionManager().getActionFile().addAction(puser2, ActionType.ALLMUTE, duration);
+		BenCmd.getPermissionManager().getActionFile().addAction(puser2.getName(), ActionType.ALLMUTE, duration);
 		User user2;
 		if ((user2 = User.matchUser(args[0])) != null) {
 			user2.sendMessage(ChatColor.RED + "You've been muted!");
@@ -625,7 +625,7 @@ public class PermissionCommands implements Commands {
 		} else {
 			BenCmd.getPermissionManager().getActionLog().log(new ActionLogEntry(ActionLogType.JAIL_TEMP, puser2.getName(), user.getName(), duration));
 		}
-		BenCmd.getPermissionManager().getActionFile().addAction(puser2, ActionType.JAIL, duration);
+		BenCmd.getPermissionManager().getActionFile().addAction(puser2.getName(), ActionType.JAIL, duration);
 		User user2;
 		if ((user2 = User.matchUser(args[0])) != null) {
 			user2.warpTo(BenCmd.getPermissionManager().getJailWarp());
@@ -655,7 +655,7 @@ public class PermissionCommands implements Commands {
 			user2.sendMessage(ChatColor.GREEN + "You've been unjailed!");
 			user2.spawn();
 		} else {
-			BenCmd.getPermissionManager().getActionFile().addAction(puser2, ActionType.LEAVEJAIL, -1);
+			BenCmd.getPermissionManager().getActionFile().addAction(puser2.getName(), ActionType.LEAVEJAIL, -1);
 		}
 		user.sendMessage(ChatColor.GREEN + "That user has been unjailed!");
 	}
@@ -708,7 +708,7 @@ public class PermissionCommands implements Commands {
 		} else {
 			BenCmd.getPermissionManager().getActionLog().log(new ActionLogEntry(ActionLogType.BAN_TEMP, puser2.getName(), user.getName(), duration));
 		}
-		BenCmd.getPermissionManager().getActionFile().addAction(puser2, ActionType.BAN, duration);
+		BenCmd.getPermissionManager().getActionFile().addAction(puser2.getName(), ActionType.BAN, duration);
 		User user2;
 		if ((user2 = User.matchUser(args[0])) != null) {
 			user2.kick("You've been banned!");

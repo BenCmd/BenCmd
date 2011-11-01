@@ -9,15 +9,15 @@ import com.bendude56.bencmd.permissions.PermissionUser;
 
 public class Report implements Comparable<Report> {
 	private Integer			idNumber;
-	private PermissionUser	sender;
-	private PermissionUser	accused;
+	private String			sender;
+	private String			accused;
 	private String			finalRemark;
 	private ReportStatus	status;
 	private String			reason;
 	private Integer			timesReopened;
 	private List<String>	addedInfo;
 
-	public Report(Integer ID, PermissionUser sender, PermissionUser accused, ReportStatus status, String reason, String finalRemark, Integer timesReopened, List<String> addedInfo) {
+	public Report(Integer ID, String sender, String accused, ReportStatus status, String reason, String finalRemark, Integer timesReopened, List<String> addedInfo) {
 		this.idNumber = ID;
 		this.sender = sender;
 		this.accused = accused;
@@ -28,11 +28,11 @@ public class Report implements Comparable<Report> {
 		this.addedInfo = addedInfo;
 	}
 
-	public PermissionUser getAccused() {
+	public String getAccused() {
 		return this.accused;
 	}
 
-	public PermissionUser getSender() {
+	public String getSender() {
 		return this.sender;
 	}
 
@@ -81,9 +81,9 @@ public class Report implements Comparable<Report> {
 		String message = "";
 		message += ChatColor.GRAY + "(" + this.status.toString() + ") " + this.idNumber.toString() + "\n";
 		if (isAnon) {
-			message += ChatColor.GRAY + "ANONYMOUS reported " + this.accused.getName() + "!\n";
+			message += ChatColor.GRAY + "ANONYMOUS reported " + this.accused + "!\n";
 		} else {
-			message += ChatColor.GRAY + this.sender.getName() + " reported " + this.accused.getName() + "!\n";
+			message += ChatColor.GRAY + this.sender + " reported " + this.accused + "!\n";
 		}
 		message += ChatColor.GRAY + "Reasoning: " + this.reason;
 		if (!this.addedInfo.isEmpty() && !this.addedInfo.get(0).isEmpty()) {
@@ -100,13 +100,13 @@ public class Report implements Comparable<Report> {
 
 	public String readShorthand() {
 		String message = "";
-		message = "(" + this.status.toString() + ") " + this.idNumber.toString() + " : " + this.sender.getName() + " -> " + this.accused.getName();
+		message = "(" + this.status.toString() + ") " + this.idNumber.toString() + " : " + this.sender + " -> " + this.accused;
 		return message;
 	}
 
 	public String readShorthandAnon() {
 		String message = "";
-		message = "(" + this.status.toString() + ") " + this.idNumber.toString() + " : ? -> " + this.accused.getName();
+		message = "(" + this.status.toString() + ") " + this.idNumber.toString() + " : ? -> " + this.accused;
 		return message;
 	}
 
@@ -148,11 +148,11 @@ public class Report implements Comparable<Report> {
 	}
 
 	public boolean canRead(PermissionUser user) {
-		return (user.getName().equalsIgnoreCase(accused.getName()) && user.hasPerm("bencmd.ticket.readown")) || (user.getName().equalsIgnoreCase(sender.getName()) && user.hasPerm("bencmd.ticket.readown")) || user.hasPerm("bencmd.ticket.readall");
+		return (user.getName().equalsIgnoreCase(accused) && user.hasPerm("bencmd.ticket.readown")) || (user.getName().equalsIgnoreCase(sender) && user.hasPerm("bencmd.ticket.readown")) || user.hasPerm("bencmd.ticket.readall");
 	}
 
 	public boolean canBasicChange(PermissionUser user) {
-		return (user.getName().equalsIgnoreCase(sender.getName()) && user.hasPerm("bencmd.ticket.editown")) || user.hasPerm("bencmd.ticket.editall");
+		return (user.getName().equalsIgnoreCase(sender) && user.hasPerm("bencmd.ticket.editown")) || user.hasPerm("bencmd.ticket.editall");
 	}
 
 	public enum ReportStatus {

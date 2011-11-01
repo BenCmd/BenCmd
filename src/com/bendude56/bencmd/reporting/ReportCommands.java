@@ -56,7 +56,7 @@ public class ReportCommands implements Commands {
 			}
 		}
 		Integer id = BenCmd.getReports().nextId();
-		BenCmd.getReports().addTicket(new Report(id, user, reported, Report.ReportStatus.UNREAD, reason, "", 0, new ArrayList<String>()));
+		BenCmd.getReports().addTicket(new Report(id, user.getName(), reported.getName(), Report.ReportStatus.UNREAD, reason, "", 0, new ArrayList<String>()));
 		BenCmd.log(user.getDisplayName() + " opened ticket #" + id.toString() + "!");
 		user.sendMessage(ChatColor.GREEN + "Thank you for your report");
 		user.sendMessage(ChatColor.GREEN + "You can check the status of your report using /ticket " + id + ".");
@@ -182,7 +182,7 @@ public class ReportCommands implements Commands {
 				return;
 			}
 			if (args.length == 1) {
-				for (String s : report.readReport(user.hasPerm("bencmd.ticket.editall"), user.getName().equals(report.getAccused().getName()) && !user.hasPerm("bencmd.ticket.readall")).split("\n")) {
+				for (String s : report.readReport(user.hasPerm("bencmd.ticket.editall"), user.getName().equals(report.getAccused()) && !user.hasPerm("bencmd.ticket.readall")).split("\n")) {
 					user.sendMessage(s);
 				}
 			} else if (args[1].equalsIgnoreCase("close")) {

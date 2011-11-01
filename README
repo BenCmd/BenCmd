@@ -178,3 +178,5 @@ CHANGELOG (STARTING FROM v1.2.2):
     -Fixed an annoying NPC bug
     -Added some TODO tags to mark where improvement is required
     -Made time control multi-world compatible
+  1.3.2:
+    -Emergency patch for game-wrecking bug

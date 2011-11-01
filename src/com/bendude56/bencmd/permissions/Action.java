@@ -4,19 +4,19 @@ import java.util.Date;
 
 public class Action {
 
-	private PermissionUser	user;
+	private String			user;
 	private ActionType		action;
 	private long			endTime;
 	private int				id;
 
-	public Action(int id, PermissionUser user, ActionType action, long endTime) {
+	public Action(int id, String user, ActionType action, long endTime) {
 		this.id = id;
 		this.action = action;
 		this.user = user;
 		this.endTime = endTime;
 	}
 
-	public PermissionUser getUser() {
+	public String getUser() {
 		return user;
 	}
 

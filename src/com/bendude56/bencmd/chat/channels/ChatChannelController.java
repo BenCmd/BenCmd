@@ -6,7 +6,6 @@ import org.bukkit.ChatColor;
 import com.bendude56.bencmd.BenCmdFile;
 import com.bendude56.bencmd.User;
 import com.bendude56.bencmd.chat.channels.ChatChannel.ChatLevel;
-import com.bendude56.bencmd.permissions.PermissionUser;
 
 public class ChatChannelController extends BenCmdFile {
 	private List<ChatChannel>	channels	= new ArrayList<ChatChannel>();
@@ -77,7 +76,7 @@ public class ChatChannelController extends BenCmdFile {
 
 	protected void addChannel(String name, User owner) {
 		ChatChannel channel;
-		channels.add(channel = new ChatChannel(this, name, owner, new ArrayList<PermissionUser>(), new ArrayList<PermissionUser>(), new ArrayList<PermissionUser>(), new ArrayList<PermissionUser>(), ChatLevel.DEFAULT, "Change this using /channel motd <message>", name));
+		channels.add(channel = new ChatChannel(this, name, owner.getName(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), ChatLevel.DEFAULT, "Change this using /channel motd <message>", name));
 		saveChannel(channel);
 		owner.joinChannel(channel);
 	}

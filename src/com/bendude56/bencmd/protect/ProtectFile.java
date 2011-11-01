@@ -9,7 +9,6 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.BenCmdFile;
-import com.bendude56.bencmd.permissions.PermissionUser;
 
 public class ProtectFile extends BenCmdFile {
 	private List<ProtectedBlock>	protectedBlocks;
@@ -41,20 +40,13 @@ public class ProtectFile extends BenCmdFile {
 				BenCmd.log(Level.WARNING, "Entry " + key + " in protection.db is invalid and was ignored!");
 				continue;
 			}
-			PermissionUser owner;
-			if ((owner = PermissionUser.matchUser(slashsplit[2])) == null) {
-				BenCmd.log(Level.WARNING, "Entry " + key + " in protection.db is invalid and was ignored!");
-				continue;
-			}
-			List<PermissionUser> guests = new ArrayList<PermissionUser>();
+			String owner;
+			owner = slashsplit[2];
+			List<String> guests = new ArrayList<String>();
 			try {
 				if (!slashsplit[1].isEmpty()) {
 					for (String guest : slashsplit[1].split(",")) {
-						PermissionUser newGuest;
-						if ((newGuest = PermissionUser.matchUser(guest)) == null) {
-							throw new NullPointerException();
-						}
-						guests.add(newGuest);
+						guests.add(guest);
 					}
 				}
 			} catch (NullPointerException e) {
@@ -117,15 +109,15 @@ public class ProtectFile extends BenCmdFile {
 			value = "";
 			value += "c/";
 			boolean init = false;
-			for (PermissionUser guest : block.getGuests()) {
+			for (String guest : block.getGuests()) {
 				if (init) {
 					value += ",";
 				} else {
 					init = true;
 				}
-				value += guest.getName();
+				value += guest;
 			}
-			value += "/" + block.getOwner().getName();
+			value += "/" + block.getOwner();
 			Location blockLoc = block.getLocation();
 			value += "/" + blockLoc.getWorld().getName() + "," + String.valueOf(blockLoc.getBlockX()) + "," + String.valueOf(blockLoc.getBlockY()) + "," + String.valueOf(blockLoc.getBlockZ());
 			getFile().put(key, value);
@@ -136,15 +128,15 @@ public class ProtectFile extends BenCmdFile {
 			value = "";
 			value += "d/";
 			boolean init = false;
-			for (PermissionUser guest : block.getGuests()) {
+			for (String guest : block.getGuests()) {
 				if (init) {
 					value += ",";
 				} else {
 					init = true;
 				}
-				value += guest.getName();
+				value += guest;
 			}
-			value += "/" + block.getOwner().getName();
+			value += "/" + block.getOwner();
 			Location blockLoc = block.getLocation();
 			value += "/" + blockLoc.getWorld().getName() + "," + String.valueOf(blockLoc.getBlockX()) + "," + String.valueOf(blockLoc.getBlockY()) + "," + String.valueOf(blockLoc.getBlockZ());
 			getFile().put(key, value);
@@ -155,15 +147,15 @@ public class ProtectFile extends BenCmdFile {
 			value = "";
 			value += "f/";
 			boolean init = false;
-			for (PermissionUser guest : block.getGuests()) {
+			for (String guest : block.getGuests()) {
 				if (init) {
 					value += ",";
 				} else {
 					init = true;
 				}
-				value += guest.getName();
+				value += guest;
 			}
-			value += "/" + block.getOwner().getName();
+			value += "/" + block.getOwner();
 			Location blockLoc = block.getLocation();
 			value += "/" + blockLoc.getWorld().getName() + "," + String.valueOf(blockLoc.getBlockX()) + "," + String.valueOf(blockLoc.getBlockY()) + "," + String.valueOf(blockLoc.getBlockZ());
 			getFile().put(key, value);
@@ -174,15 +166,15 @@ public class ProtectFile extends BenCmdFile {
 			value = "";
 			value += "di/";
 			boolean init = false;
-			for (PermissionUser guest : block.getGuests()) {
+			for (String guest : block.getGuests()) {
 				if (init) {
 					value += ",";
 				} else {
 					init = true;
 				}
-				value += guest.getName();
+				value += guest;
 			}
-			value += "/" + block.getOwner().getName();
+			value += "/" + block.getOwner();
 			Location blockLoc = block.getLocation();
 			value += "/" + blockLoc.getWorld().getName() + "," + String.valueOf(blockLoc.getBlockX()) + "," + String.valueOf(blockLoc.getBlockY()) + "," + String.valueOf(blockLoc.getBlockZ());
 			getFile().put(key, value);
@@ -193,15 +185,15 @@ public class ProtectFile extends BenCmdFile {
 			value = "";
 			value += "g/";
 			boolean init = false;
-			for (PermissionUser guest : block.getGuests()) {
+			for (String guest : block.getGuests()) {
 				if (init) {
 					value += ",";
 				} else {
 					init = true;
 				}
-				value += guest.getName();
+				value += guest;
 			}
-			value += "/" + block.getOwner().getName();
+			value += "/" + block.getOwner();
 			Location blockLoc = block.getLocation();
 			value += "/" + blockLoc.getWorld().getName() + "," + String.valueOf(blockLoc.getBlockX()) + "," + String.valueOf(blockLoc.getBlockY()) + "," + String.valueOf(blockLoc.getBlockZ());
 			getFile().put(key, value);
@@ -212,15 +204,15 @@ public class ProtectFile extends BenCmdFile {
 			value = "";
 			value += "pc/";
 			boolean init = false;
-			for (PermissionUser guest : block.getGuests()) {
+			for (String guest : block.getGuests()) {
 				if (init) {
 					value += ",";
 				} else {
 					init = true;
 				}
-				value += guest.getName();
+				value += guest;
 			}
-			value += "/" + block.getOwner().getName();
+			value += "/" + block.getOwner();
 			Location blockLoc = block.getLocation();
 			value += "/" + blockLoc.getWorld().getName() + "," + String.valueOf(blockLoc.getBlockX()) + "," + String.valueOf(blockLoc.getBlockY()) + "," + String.valueOf(blockLoc.getBlockZ());
 			getFile().put(key, value);
@@ -231,15 +223,15 @@ public class ProtectFile extends BenCmdFile {
 			value = "";
 			value += "pd/";
 			boolean init = false;
-			for (PermissionUser guest : block.getGuests()) {
+			for (String guest : block.getGuests()) {
 				if (init) {
 					value += ",";
 				} else {
 					init = true;
 				}
-				value += guest.getName();
+				value += guest;
 			}
-			value += "/" + block.getOwner().getName();
+			value += "/" + block.getOwner();
 			Location blockLoc = block.getLocation();
 			value += "/" + blockLoc.getWorld().getName() + "," + String.valueOf(blockLoc.getBlockX()) + "," + String.valueOf(blockLoc.getBlockY()) + "," + String.valueOf(blockLoc.getBlockZ());
 			getFile().put(key, value);
@@ -250,15 +242,15 @@ public class ProtectFile extends BenCmdFile {
 			value = "";
 			value += "pf/";
 			boolean init = false;
-			for (PermissionUser guest : block.getGuests()) {
+			for (String guest : block.getGuests()) {
 				if (init) {
 					value += ",";
 				} else {
 					init = true;
 				}
-				value += guest.getName();
+				value += guest;
 			}
-			value += "/" + block.getOwner().getName();
+			value += "/" + block.getOwner();
 			Location blockLoc = block.getLocation();
 			value += "/" + blockLoc.getWorld().getName() + "," + String.valueOf(blockLoc.getBlockX()) + "," + String.valueOf(blockLoc.getBlockY()) + "," + String.valueOf(blockLoc.getBlockZ());
 			getFile().put(key, value);
@@ -269,15 +261,15 @@ public class ProtectFile extends BenCmdFile {
 			value = "";
 			value += "pdi/";
 			boolean init = false;
-			for (PermissionUser guest : block.getGuests()) {
+			for (String guest : block.getGuests()) {
 				if (init) {
 					value += ",";
 				} else {
 					init = true;
 				}
-				value += guest.getName();
+				value += guest;
 			}
-			value += "/" + block.getOwner().getName();
+			value += "/" + block.getOwner();
 			Location blockLoc = block.getLocation();
 			value += "/" + blockLoc.getWorld().getName() + "," + String.valueOf(blockLoc.getBlockX()) + "," + String.valueOf(blockLoc.getBlockY()) + "," + String.valueOf(blockLoc.getBlockZ());
 			getFile().put(key, value);
@@ -288,15 +280,15 @@ public class ProtectFile extends BenCmdFile {
 			value = "";
 			value += "pg/";
 			boolean init = false;
-			for (PermissionUser guest : block.getGuests()) {
+			for (String guest : block.getGuests()) {
 				if (init) {
 					value += ",";
 				} else {
 					init = true;
 				}
-				value += guest.getName();
+				value += guest;
 			}
-			value += "/" + block.getOwner().getName();
+			value += "/" + block.getOwner();
 			Location blockLoc = block.getLocation();
 			value += "/" + blockLoc.getWorld().getName() + "," + String.valueOf(blockLoc.getBlockX()) + "," + String.valueOf(blockLoc.getBlockY()) + "," + String.valueOf(blockLoc.getBlockZ());
 			getFile().put(key, value);
@@ -404,39 +396,39 @@ public class ProtectFile extends BenCmdFile {
 		}
 	}
 
-	public int addProtection(PermissionUser owner, Location loc, ProtectionType type) {
+	public int addProtection(String owner, Location loc, ProtectionType type) {
 		int id = getNextId();
 		ProtectedBlock protect = null;
 		switch (type) {
 			case Chest:
-				protectedBlocks.add(protect = new ProtectedChest(id, owner, new ArrayList<PermissionUser>(), loc));
+				protectedBlocks.add(protect = new ProtectedChest(id, owner, new ArrayList<String>(), loc));
 				break;
 			case Door:
-				protectedBlocks.add(protect = new ProtectedDoor(id, owner, new ArrayList<PermissionUser>(), loc));
+				protectedBlocks.add(protect = new ProtectedDoor(id, owner, new ArrayList<String>(), loc));
 				break;
 			case Furnace:
-				protectedBlocks.add(protect = new ProtectedFurnace(id, owner, new ArrayList<PermissionUser>(), loc));
+				protectedBlocks.add(protect = new ProtectedFurnace(id, owner, new ArrayList<String>(), loc));
 				break;
 			case Dispenser:
-				protectedBlocks.add(protect = new ProtectedDispenser(id, owner, new ArrayList<PermissionUser>(), loc));
+				protectedBlocks.add(protect = new ProtectedDispenser(id, owner, new ArrayList<String>(), loc));
 				break;
 			case Gate:
-				protectedBlocks.add(protect = new ProtectedGate(id, owner, new ArrayList<PermissionUser>(), loc));
+				protectedBlocks.add(protect = new ProtectedGate(id, owner, new ArrayList<String>(), loc));
 				break;
 			case PDoor:
-				protectedBlocks.add(protect = new PublicDoor(id, owner, new ArrayList<PermissionUser>(), loc));
+				protectedBlocks.add(protect = new PublicDoor(id, owner, new ArrayList<String>(), loc));
 				break;
 			case PChest:
-				protectedBlocks.add(protect = new PublicChest(id, owner, new ArrayList<PermissionUser>(), loc));
+				protectedBlocks.add(protect = new PublicChest(id, owner, new ArrayList<String>(), loc));
 				break;
 			case PFurnace:
-				protectedBlocks.add(protect = new PublicFurnace(id, owner, new ArrayList<PermissionUser>(), loc));
+				protectedBlocks.add(protect = new PublicFurnace(id, owner, new ArrayList<String>(), loc));
 				break;
 			case PDispenser:
-				protectedBlocks.add(protect = new PublicDispenser(id, owner, new ArrayList<PermissionUser>(), loc));
+				protectedBlocks.add(protect = new PublicDispenser(id, owner, new ArrayList<String>(), loc));
 				break;
 			case PGate:
-				protectedBlocks.add(protect = new PublicGate(id, owner, new ArrayList<PermissionUser>(), loc));
+				protectedBlocks.add(protect = new PublicGate(id, owner, new ArrayList<String>(), loc));
 				break;
 		}
 		updateValue(protect, false, true);
@@ -475,7 +467,7 @@ public class ProtectFile extends BenCmdFile {
 		}
 	}
 
-	public void changeOwner(int id, PermissionUser newOwner) {
+	public void changeOwner(int id, String newOwner) {
 		int ind;
 		ind = getProtectionIndex(id);
 		if (ind == -1) {
@@ -487,7 +479,7 @@ public class ProtectFile extends BenCmdFile {
 		// protectedBlocks.add(ind, pb);
 	}
 
-	public void addGuest(int id, PermissionUser newGuest) {
+	public void addGuest(int id, String newGuest) {
 		int ind;
 		ind = getProtectionIndex(id);
 		if (ind == -1) {
@@ -499,7 +491,7 @@ public class ProtectFile extends BenCmdFile {
 		// protectedBlocks.add(ind, pb);
 	}
 
-	public void removeGuest(int id, PermissionUser oldGuest) {
+	public void removeGuest(int id, String oldGuest) {
 		int ind;
 		ind = getProtectionIndex(id);
 		if (ind == -1) {

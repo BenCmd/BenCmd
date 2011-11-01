@@ -18,16 +18,16 @@ public class ChatChannel {
 
 	// General properties
 	private String					name;
-	private PermissionUser			owner;
+	private String					owner;
 	private ChatLevel				defLevel;
 	private String					motd;
 	private String					displayName;
 
 	// Loaded allow/deny lists
-	private List<PermissionUser>	mods;
-	private List<PermissionUser>	guests;
-	private List<PermissionUser>	banned;
-	private List<PermissionUser>	muted;
+	private List<String>			mods;
+	private List<String>			guests;
+	private List<String>			banned;
+	private List<String>			muted;
 
 	// Memory-only variables
 	private ChatChannelController	control;
@@ -43,58 +43,29 @@ public class ChatChannel {
 			BenCmd.log(Level.SEVERE, "Invalid number of entries.");
 			return null;
 		}
-		PermissionUser owner = PermissionUser.matchUser(value.split("/")[0]);
-		if (owner == null) {
-			BenCmd.log(Level.SEVERE, "ChatChannel " + key + " encountered a fatal error while loading and has been disabled:");
-			BenCmd.log(Level.SEVERE, "Owner \"" + value.split("/")[0] + "\" doesn't exist in users.db.");
-			return null;
-		}
-		List<PermissionUser> mods = new ArrayList<PermissionUser>();
+		String owner = value.split("/")[0];
+		List<String> mods = new ArrayList<String>();
 		if (!value.split("/")[1].isEmpty()) {
 			for (String player : value.split("/")[1].split(",")) {
-				PermissionUser mod = PermissionUser.matchUser(player);
-				if (mod == null) {
-					BenCmd.log(Level.SEVERE, "ChatChannel " + key + " encountered a fatal error while loading and has been disabled:");
-					BenCmd.log(Level.SEVERE, "Mod \"" + player + "\" doesn't exist in users.db.");
-					return null;
-				}
-				mods.add(mod);
+				mods.add(player);
 			}
 		}
-		List<PermissionUser> guests = new ArrayList<PermissionUser>();
+		List<String> guests = new ArrayList<String>();
 		if (!value.split("/")[2].isEmpty()) {
 			for (String player : value.split("/")[2].split(",")) {
-				PermissionUser guest = PermissionUser.matchUser(player);
-				if (guest == null) {
-					BenCmd.log(Level.SEVERE, "ChatChannel " + key + " encountered a fatal error while loading and has been disabled:");
-					BenCmd.log(Level.SEVERE, "Guest \"" + player + "\" doesn't exist in users.db.");
-					return null;
-				}
-				guests.add(guest);
+				guests.add(player);
 			}
 		}
-		List<PermissionUser> banned = new ArrayList<PermissionUser>();
+		List<String> banned = new ArrayList<String>();
 		if (!value.split("/")[3].isEmpty()) {
 			for (String player : value.split("/")[3].split(",")) {
-				PermissionUser ban = PermissionUser.matchUser(player);
-				if (ban == null) {
-					BenCmd.log(Level.SEVERE, "ChatChannel " + key + " encountered a fatal error while loading and has been disabled:");
-					BenCmd.log(Level.SEVERE, "Banned player \"" + player + "\" doesn't exist in users.db.");
-					return null;
-				}
-				banned.add(ban);
+				banned.add(player);
 			}
 		}
-		List<PermissionUser> muted = new ArrayList<PermissionUser>();
+		List<String> muted = new ArrayList<String>();
 		if (!value.split("/")[4].isEmpty()) {
 			for (String player : value.split("/")[4].split(",")) {
-				PermissionUser mute = PermissionUser.matchUser(player);
-				if (mute == null) {
-					BenCmd.log(Level.SEVERE, "ChatChannel " + key + " encountered a fatal error while loading and has been disabled:");
-					BenCmd.log(Level.SEVERE, "Muted player \"" + player + "\" doesn't exist in users.db.");
-					return null;
-				}
-				muted.add(mute);
+				muted.add(player);
 			}
 		}
 		String motd = value.split("/")[5].replace("`", "/");
@@ -114,7 +85,7 @@ public class ChatChannel {
 		return new ChatChannel(control, key, owner, mods, guests, banned, muted, joinType, motd, displayname);
 	}
 
-	protected ChatChannel(ChatChannelController control, String name, PermissionUser owner, List<PermissionUser> mods, List<PermissionUser> guests, List<PermissionUser> banned, List<PermissionUser> muted, ChatLevel defaultLevel, String motd, String displayName) {
+	protected ChatChannel(ChatChannelController control, String name, String owner, List<String> mods, List<String> guests, List<String> banned, List<String> muted, ChatLevel defaultLevel, String motd, String displayName) {
 		this.control = control;
 		this.name = name;
 		this.owner = owner;
@@ -133,33 +104,33 @@ public class ChatChannel {
 
 	// Value-retrieving functions
 	protected String getValue() {
-		String value = owner.getName() + "/";
+		String value = owner + "/";
 		for (int i = 0; i < mods.size(); i++) {
 			if (i != 0) {
 				value += ",";
 			}
-			value += mods.get(i).getName();
+			value += mods.get(i);
 		}
 		value += "/";
 		for (int i = 0; i < guests.size(); i++) {
 			if (i != 0) {
 				value += ",";
 			}
-			value += guests.get(i).getName();
+			value += guests.get(i);
 		}
 		value += "/";
 		for (int i = 0; i < banned.size(); i++) {
 			if (i != 0) {
 				value += ",";
 			}
-			value += banned.get(i).getName();
+			value += banned.get(i);
 		}
 		value += "/";
 		for (int i = 0; i < muted.size(); i++) {
 			if (i != 0) {
 				value += ",";
 			}
-			value += muted.get(i).getName();
+			value += muted.get(i);
 		}
 		value += "/" + motd.replace("/", "`") + "/" + displayName.replace("/", "`") + "/";
 		switch (defLevel) {
@@ -198,40 +169,40 @@ public class ChatChannel {
 		return defLevel;
 	}
 
-	public boolean isOwner(PermissionUser user) {
-		return owner.getName().equals(user.getName());
+	public boolean isOwner(String user) {
+		return owner.equals(user);
 	}
 
-	public boolean isMod(PermissionUser user) {
-		for (PermissionUser mod : mods) {
-			if (mod.getName().equals(user.getName())) {
+	public boolean isMod(String user) {
+		for (String mod : mods) {
+			if (mod.equals(user)) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	public boolean isBanned(PermissionUser user) {
-		for (PermissionUser ban : banned) {
-			if (ban.getName().equals(user.getName())) {
+	public boolean isBanned(String user) {
+		for (String ban : banned) {
+			if (ban.equals(user)) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	public boolean isMuted(PermissionUser user) {
-		for (PermissionUser mute : muted) {
-			if (mute.getName().equals(user.getName())) {
+	public boolean isMuted(String user) {
+		for (String mute : muted) {
+			if (mute.equals(user)) {
 				return true;
 			}
 		}
 		return false;
 	}
 
-	public boolean isGuested(PermissionUser user) {
-		for (PermissionUser guest : guests) {
-			if (guest.getName().equals(user.getName())) {
+	public boolean isGuested(String user) {
+		for (String guest : guests) {
+			if (guest.equals(user)) {
 				return true;
 			}
 		}
@@ -239,22 +210,22 @@ public class ChatChannel {
 	}
 
 	public ChatLevel getLevel(PermissionUser user) {
-		if (isOwner(user)) {
+		if (isOwner(user.getName())) {
 			return ChatLevel.OWNER;
 		}
-		if (isMod(user)) {
+		if (isMod(user.getName())) {
 			return ChatLevel.MOD;
 		}
-		if (isGuested(user)) {
+		if (isGuested(user.getName())) {
 			return ChatLevel.DEFAULT;
 		}
 		if (user.hasPerm("bencmd.chat.universalmod")) {
 			return ChatLevel.DEFAULT;
 		}
-		if (isBanned(user)) {
+		if (isBanned(user.getName())) {
 			return ChatLevel.BANNED;
 		}
-		if (isMuted(user)) {
+		if (isMuted(user.getName())) {
 			return ChatLevel.MUTED;
 		}
 		return defLevel;
@@ -302,9 +273,9 @@ public class ChatChannel {
 	private void forceJoin(User user) {
 		if (user.isDev()) {
 			broadcastMessage(ChatColor.DARK_GREEN + "*" + user.getColor() + user.getDisplayName() + ChatColor.WHITE + " has joined the chat");
-		} else if (isOwner(user)) {
+		} else if (isOwner(user.getName())) {
 			broadcastMessage(ChatColor.GOLD + "*" + user.getColor() + user.getDisplayName() + ChatColor.WHITE + " has joined the chat");
-		} else if (isMod(user)) {
+		} else if (isMod(user.getName())) {
 			broadcastMessage(ChatColor.GRAY + "*" + user.getColor() + user.getDisplayName() + ChatColor.WHITE + " has joined the chat");
 		} else {
 			broadcastMessage(user.getColor() + user.getDisplayName() + ChatColor.WHITE + " has joined the chat");
@@ -336,8 +307,8 @@ public class ChatChannel {
 				if (this.isPaused()) {
 					user.sendMessage(ChatColor.GRAY + "Please note that pause mode is enabled. Only mods can talk.");
 				}
-				if (user.hasPerm("bencmd.chat.universalmod") && !isMod(user) && !isOwner(user)) {
-					Mod(user);
+				if (user.hasPerm("bencmd.chat.universalmod") && !isMod(user.getName()) && !isOwner(user.getName())) {
+					Mod(user.getName());
 				}
 				forceJoin(user);
 				break;
@@ -351,9 +322,9 @@ public class ChatChannel {
 				inChannel.remove(i);
 				if (user.isDev()) {
 					broadcastMessage(ChatColor.DARK_GREEN + "*" + user.getColor() + user.getDisplayName() + ChatColor.WHITE + " has left the chat");
-				} else if (isOwner(user)) {
+				} else if (isOwner(user.getName())) {
 					broadcastMessage(ChatColor.GOLD + "*" + user.getColor() + user.getDisplayName() + ChatColor.WHITE + " has left the chat");
-				} else if (isMod(user)) {
+				} else if (isMod(user.getName())) {
 					broadcastMessage(ChatColor.GRAY + "*" + user.getColor() + user.getDisplayName() + ChatColor.WHITE + " has left the chat");
 				} else {
 					broadcastMessage(user.getColor() + user.getDisplayName() + ChatColor.WHITE + " has left the chat");
@@ -365,13 +336,13 @@ public class ChatChannel {
 	}
 
 	public boolean Kick(User user) {
-		if (isOwner(user)) {
+		if (isOwner(user.getName())) {
 			return false;
 		}
-		if (isMod(user)) {
+		if (isMod(user.getName())) {
 			return false;
 		}
-		if (isOnline(user) != null) {
+		if (isOnline(user.getName()) != null) {
 			user.leaveChannel();
 			user.sendMessage(ChatColor.RED + "You have been kicked from your active chat channel.");
 			return true;
@@ -381,7 +352,7 @@ public class ChatChannel {
 	}
 
 	private void KillKick(User user) {
-		if (isOnline(user) != null) {
+		if (isOnline(user.getName()) != null) {
 			user.leaveChannel();
 			user.sendMessage(ChatColor.RED + "Your active chat channel was shut down.");
 		}
@@ -401,9 +372,9 @@ public class ChatChannel {
 		}
 	}
 
-	public User isOnline(PermissionUser user) {
+	public User isOnline(String user) {
 		for (User online : inChannel) {
-			if (online.getName().equals(user.getName())) {
+			if (online.getName().equals(user)) {
 				return online;
 			}
 		}
@@ -411,8 +382,8 @@ public class ChatChannel {
 	}
 
 	public boolean Spy(User user) {
-		if (isMod(user) || isOwner(user)) {
-			if (isOnline(user) != null) {
+		if (isMod(user.getName()) || isOwner(user.getName())) {
+			if (isOnline(user.getName()) != null) {
 				user.sendMessage(ChatColor.RED + "You can't spy on a channel that you're already in!");
 				return false;
 			}
@@ -440,7 +411,7 @@ public class ChatChannel {
 	}
 
 	public boolean Unspy(User user) {
-		if (isMod(user) || isOwner(user)) {
+		if (isMod(user.getName()) || isOwner(user.getName())) {
 			if (!isSpying(user)) {
 				user.sendMessage(ChatColor.RED + "You're not spying on that channel!");
 				return false;
@@ -460,7 +431,7 @@ public class ChatChannel {
 
 	// Messaging methods
 	public void sendChat(User user, String message) {
-		if (!isOwner(user) && !isMod(user) && paused) {
+		if (!isOwner(user.getName()) && !isMod(user.getName()) && paused) {
 			user.sendMessage(ChatColor.GRAY + "You can't talk while pause mode is enabled.");
 			return;
 		}
@@ -468,7 +439,7 @@ public class ChatChannel {
 			user.sendMessage(ChatColor.GRAY + BenCmd.getMainProperties().getString("muteMessage", "You are muted..."));
 			return;
 		}
-		if (isMuted(user)) {
+		if (isMuted(user.getName())) {
 			user.sendMessage(ChatColor.GRAY + BenCmd.getMainProperties().getString("muteMessage", "You are muted..."));
 			return;
 		}
@@ -478,7 +449,7 @@ public class ChatChannel {
 			return;
 		}
 		long slowTimeLeft = slow.playerBlocked(user.getName());
-		if (!(isMod(user) || isOwner(user)) && slow.isEnabled()) {
+		if (!(isMod(user.getName()) || isOwner(user.getName())) && slow.isEnabled()) {
 			if (slowTimeLeft > 0) {
 				user.sendMessage(ChatColor.GRAY + "Slow mode is enabled! You must wait " + (int) Math.ceil(slowTimeLeft / 1000) + " more second(s) before you can talk again.");
 				return;
@@ -516,9 +487,9 @@ public class ChatChannel {
 		String username = user.getColor() + user.getDisplayName();
 		if (user.isDev()) {
 			username = ChatColor.DARK_GREEN + "*" + username;
-		} else if (isOwner(user)) {
+		} else if (isOwner(user.getName())) {
 			username = ChatColor.GOLD + "*" + username;
-		} else if (isMod(user)) {
+		} else if (isMod(user.getName())) {
 			username = ChatColor.GRAY + "*" + username;
 		}
 		String prefix;
@@ -532,7 +503,7 @@ public class ChatChannel {
 	}
 
 	public void Me(User user, String message) {
-		if (!isOwner(user) && !isMod(user) && paused) {
+		if (!isOwner(user.getName()) && !isMod(user.getName()) && paused) {
 			user.sendMessage(ChatColor.GRAY + "You can't talk while pause mode is enabled.");
 			return;
 		}
@@ -540,7 +511,7 @@ public class ChatChannel {
 			user.sendMessage(ChatColor.GRAY + BenCmd.getMainProperties().getString("muteMessage", "You are muted..."));
 			return;
 		}
-		if (isMuted(user)) {
+		if (isMuted(user.getName())) {
 			user.sendMessage(ChatColor.GRAY + BenCmd.getMainProperties().getString("muteMessage", "You are muted..."));
 			return;
 		}
@@ -550,7 +521,7 @@ public class ChatChannel {
 			return;
 		}
 		long slowTimeLeft = slow.playerBlocked(user.getName());
-		if (!(isMod(user) || isOwner(user)) && slow.isEnabled()) {
+		if (!(isMod(user.getName()) || isOwner(user.getName())) && slow.isEnabled()) {
 			if (slowTimeLeft > 0) {
 				user.sendMessage(ChatColor.GRAY + "Slow mode is enabled! You must wait " + (int) Math.ceil(slowTimeLeft / 1000) + " more second(s) before you can talk again.");
 				return;
@@ -588,9 +559,9 @@ public class ChatChannel {
 		String username = user.getColor() + user.getDisplayName();
 		if (user.isDev()) {
 			username = ChatColor.DARK_GREEN + "*" + username;
-		} else if (isOwner(user)) {
+		} else if (isOwner(user.getName())) {
 			username = ChatColor.GOLD + "*" + username;
-		} else if (isMod(user)) {
+		} else if (isMod(user.getName())) {
 			username = ChatColor.GRAY + "*" + username;
 		}
 		String prefix;
@@ -627,8 +598,8 @@ public class ChatChannel {
 	}
 
 	// Permission-changing functions
-	protected void changeOwner(PermissionUser user) {
-		PermissionUser oldowner = owner;
+	protected void changeOwner(String user) {
+		String oldowner = owner;
 		if (isMod(user)) {
 			Unmod(user);
 		}
@@ -651,13 +622,13 @@ public class ChatChannel {
 		control.saveChannel(this);
 	}
 
-	private boolean Unmod(PermissionUser user) {
+	private boolean Unmod(String user) {
 		User online;
 		if ((online = isOnline(user)) != null && isSpying(online)) {
 			online.unspyChannel(this);
 		}
 		for (int i = 0; i < mods.size(); i++) {
-			if (mods.get(i).getName().equalsIgnoreCase(user.getName())) {
+			if (mods.get(i).equalsIgnoreCase(user)) {
 				mods.remove(i);
 				return true;
 			}
@@ -665,7 +636,7 @@ public class ChatChannel {
 		return false;
 	}
 
-	public boolean Mod(PermissionUser user) {
+	public boolean Mod(String user) {
 		if (isOwner(user)) {
 			return false;
 		}
@@ -690,9 +661,9 @@ public class ChatChannel {
 		return true;
 	}
 
-	private boolean Unguest(PermissionUser user) {
+	private boolean Unguest(String user) {
 		for (int i = 0; i < guests.size(); i++) {
-			if (guests.get(i).getName().equalsIgnoreCase(user.getName())) {
+			if (guests.get(i).equalsIgnoreCase(user)) {
 				guests.remove(i);
 				return true;
 			}
@@ -700,7 +671,7 @@ public class ChatChannel {
 		return false;
 	}
 
-	public boolean Guest(PermissionUser user) {
+	public boolean Guest(String user) {
 		if (isOwner(user)) {
 			return false;
 		}
@@ -725,9 +696,9 @@ public class ChatChannel {
 		return true;
 	}
 
-	private boolean Unmute(PermissionUser user) {
+	private boolean Unmute(String user) {
 		for (int i = 0; i < muted.size(); i++) {
-			if (muted.get(i).getName().equalsIgnoreCase(user.getName())) {
+			if (muted.get(i).equalsIgnoreCase(user)) {
 				muted.remove(i);
 				return true;
 			}
@@ -735,7 +706,7 @@ public class ChatChannel {
 		return false;
 	}
 
-	public boolean Mute(PermissionUser user) {
+	public boolean Mute(String user) {
 		if (isOwner(user)) {
 			return false;
 		}
@@ -760,12 +731,12 @@ public class ChatChannel {
 		return true;
 	}
 
-	private boolean Unban(PermissionUser user) {
+	private boolean Unban(String user) {
 		if (isOwner(user)) {
 			return false;
 		}
 		for (int i = 0; i < banned.size(); i++) {
-			if (banned.get(i).getName().equalsIgnoreCase(user.getName())) {
+			if (banned.get(i).equalsIgnoreCase(user)) {
 				banned.remove(i);
 				return true;
 			}
@@ -773,7 +744,7 @@ public class ChatChannel {
 		return false;
 	}
 
-	public boolean Ban(PermissionUser user) {
+	public boolean Ban(String user) {
 		if (isOwner(user)) {
 			return false;
 		}

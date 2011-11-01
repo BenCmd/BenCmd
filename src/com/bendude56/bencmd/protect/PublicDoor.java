@@ -6,13 +6,11 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 
-import com.bendude56.bencmd.permissions.PermissionUser;
-
 public class PublicDoor extends PublicBlock {
 
 	private Location	blockLocation;
 
-	public PublicDoor(int id, PermissionUser owner, List<PermissionUser> guests, Location loc) {
+	public PublicDoor(int id, String owner, List<String> guests, Location loc) {
 		super(id, owner, guests, loc);
 		blockLocation = loc;
 	}

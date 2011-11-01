@@ -123,7 +123,7 @@ public class FlyDetect {
 				if (user.isJailed() != null) {
 					BenCmd.log(Level.WARNING, "Cannot jail " + user.getName() + " for flying, because they're already jailed!");
 				} else {
-					BenCmd.getPermissionManager().getActionFile().addAction(user, ActionType.JAIL, 3600000L);
+					BenCmd.getPermissionManager().getActionFile().addAction(user.getName(), ActionType.JAIL, 3600000L);
 					User.getUser(player).warpTo(BenCmd.getPermissionManager().getJailWarp());
 					player.sendMessage(ChatColor.RED + "You have been jailed for 1 hour for flying!");
 					lastL.put(player, player.getLocation());
@@ -132,7 +132,7 @@ public class FlyDetect {
 				break;
 			case BAN:
 				User u = User.getUser(player);
-				BenCmd.getPermissionManager().getActionFile().addAction(u, ActionType.BAN, 3600000L);
+				BenCmd.getPermissionManager().getActionFile().addAction(u.getName(), ActionType.BAN, 3600000L);
 				u.kick("You have been banned for 1 hour for flying!");
 				BenCmd.log(player.getName() + " was banned (1hr) for flying!");
 				break;

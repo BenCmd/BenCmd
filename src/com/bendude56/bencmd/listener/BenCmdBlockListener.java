@@ -238,7 +238,7 @@ public class BenCmdBlockListener extends BlockListener {
 		if ((id = BenCmd.getProtections().getProtection(event.getBlock().getLocation())) != -1) {
 			block = BenCmd.getProtections().getProtection(id);
 			User user = User.getUser(event.getPlayer());
-			if (!block.canChange(user)) {
+			if (!block.canChange(user.getName())) {
 				event.setCancelled(true);
 				user.sendMessage(ChatColor.RED + "That block is protected from use!  Use /protect info for more information...");
 			} else {
@@ -248,7 +248,7 @@ public class BenCmdBlockListener extends BlockListener {
 				String x = String.valueOf(loc.getX());
 				String y = String.valueOf(loc.getY());
 				String z = String.valueOf(loc.getZ());
-				BenCmd.log(user.getDisplayName() + " removed " + block.getOwner().getName() + "'s protected chest (id: " + String.valueOf(block.GetId()) + ") at position (" + w + "," + x + "," + y + "," + z + ")");
+				BenCmd.log(user.getDisplayName() + " removed " + block.getOwner() + "'s protected chest (id: " + String.valueOf(block.GetId()) + ") at position (" + w + "," + x + "," + y + "," + z + ")");
 				user.sendMessage(ChatColor.GREEN + "The protection on that block was removed.");
 			}
 		}
