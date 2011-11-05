@@ -645,87 +645,131 @@ public class LotCommands implements Commands {
 		 */
 
 		// TODO Fix to work with new BenCmdFile interface
-
-		/*
-		 * if (args[0].equalsIgnoreCase("list")) {
-		 * 
-		 * if (!user.hasPerm("bencmd.lot.info")) {
-		 * user.sendMessage(ChatColor.RED + "You cannot do that!"); return; }
-		 * 
-		 * if (args.length == 1) { int size = 0; for (String key :
-		 * BenCmd.getLots().lot.keySet()) {
-		 * BenCmd.getLots().sortSubs(key.split(",")[0]); if
-		 * (key.split(",")[1].equalsIgnoreCase("0")) size++; } int[] Lot = new
-		 * int[size]; int total = BenCmd.getLots().size(); int i = 0; for
-		 * (String key : BenCmd.getLots().keySet()) { if
-		 * (key.split(",")[1].equalsIgnoreCase("0")) { Lot[i] =
-		 * Integer.parseInt((String) key.split(",")[0]); i++; } }
-		 * BenCmd.getLots().selectionSort(Lot); String list = ""; i = 0; int r =
-		 * 0; user.sendMessage(ChatColor.GRAY + "Registered lots:  " + size +
-		 * "   Total Parts:  " + total); for (int key : Lot) { String
-		 * LotIDString = String.valueOf(key); list += LotIDString; i++; r++; if
-		 * (r < Lot.length) list += ",  "; else list += "."; if (i >= 12) {
-		 * user.sendMessage(ChatColor.GRAY + list); i = 0; list = ""; } } if
-		 * (!list.equalsIgnoreCase("")) { user.sendMessage(ChatColor.GRAY +
-		 * list); } return; }
-		 * 
-		 * // Only passes if args.length >= 2
-		 * 
-		 * // Lists lots by USER'S LOCATION
-		 * 
-		 * if (args[1].equalsIgnoreCase("location") ||
-		 * args[1].equalsIgnoreCase("here")) {
-		 * 
-		 * Player player = user.getHandle(); Location location =
-		 * player.getLocation(); int total = 0;
-		 * 
-		 * if (BenCmd.getLots().isInLot(location).equalsIgnoreCase("-1")) {
-		 * user.sendMessage(ChatColor.RED +
-		 * "You are not standing inside a lot"); return; } else {
-		 * 
-		 * for (String LotID : BenCmd.getLots().lot.keySet()) { if
-		 * (BenCmd.getLots().getLot(LotID).withinLot(location)) { total++; } }
-		 * 
-		 * user.sendMessage(ChatColor.YELLOW +
-		 * "You are standing in the following lots: (" + total + ")"); }
-		 * 
-		 * String list = ""; int i = 0, r = 0; List<String> usedIDs = new
-		 * ArrayList<String>(); for (String LotID :
-		 * BenCmd.getLots().lot.keySet()) { if
-		 * (!BenCmd.getLots().getLot(LotID).withinLot(location)) { continue; }
-		 * LotID = LotID.split(",")[0]; if (!usedIDs.contains(LotID)) {
-		 * usedIDs.add(LotID); list += LotID; i++; r++; if (r < total) list +=
-		 * ",  "; else list += "."; if (i >= 3) {
-		 * user.sendMessage(ChatColor.GRAY + list); i = 0; list = ""; } } } if
-		 * (!list.equalsIgnoreCase("")) { user.sendMessage(ChatColor.YELLOW +
-		 * list); } return; }
-		 * 
-		 * // Lists Lots by SPECIFIED PLAYER'S OWNERSHIP
-		 * 
-		 * if (args[1].equalsIgnoreCase("owner")) {
-		 * 
-		 * if (args.length == 2) { user.sendMessage(ChatColor.YELLOW +
-		 * "Correct Usage: /lot list owner <name>"); return; } String owner =
-		 * args[2]; int total = 0; List<String> usedIDs = new
-		 * ArrayList<String>();
-		 * 
-		 * for (String LotID : BenCmd.getLots().lot.keySet()) { if
-		 * (BenCmd.getLots().getLot(LotID).getOwner() .equalsIgnoreCase(owner)
-		 * && !usedIDs.contains(LotID.split(",")[0])) {
-		 * usedIDs.add(LotID.split(",")[0]); } }
-		 * 
-		 * user.sendMessage(ChatColor.GRAY + owner +
-		 * " owns the following lots: (" + usedIDs.size() + ")");
-		 * 
-		 * String list = ""; int i = 0, r = 0; for (String LotID : usedIDs) {
-		 * list += LotID; i++; r++; if (r < total) list += ",  "; else list +=
-		 * "."; if (i >= 3) { user.sendMessage(ChatColor.GRAY + list); i = 0;
-		 * list = ""; } } if (!list.equalsIgnoreCase("")) {
-		 * user.sendMessage(ChatColor.GRAY + list); } return; }
-		 * 
-		 * return; }
-		 */
-
+		
+		if (args[0].equalsIgnoreCase("list")) {
+			if (!user.hasPerm("bencmd.lot.info")) {
+				user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
+				return;
+			}
+			if (args.length == 1) {
+				List<Lot> list = BenCmd.getLots().getLots(false);
+				user.sendMessage(ChatColor.GRAY + "Registered lots: (" + list.size() + ", " +
+						BenCmd.getLots().getLots(true).size() + " total)");
+				int items = 0;
+				String message = "";
+				
+				for (Lot l : list) {
+					if (message != "") {
+						message += ", ";
+					}
+					message += l.getLotID();
+					items++;
+					if (items == 10) {
+						user.sendMessage(ChatColor.GRAY + message);
+						items = 0;
+						message = "";
+					}
+				}
+			} else if (args.length >= 2) {
+				if (args[1].equalsIgnoreCase("here")) {
+					List<Lot> list = BenCmd.getLots().getLots(Bukkit.getPlayerExact(user.getName()).getLocation(), false);
+					user.sendMessage(ChatColor.GRAY + "Lots at this location: (" + list.size() + ", " +
+							BenCmd.getLots().getLots(true).size() + " total)");
+					int items = 0;
+					String message = "";
+					
+					for (Lot l : list) {
+						if (message != "") {
+							message += ", ";
+						}
+						message += l.getLotID();
+						items++;
+						if (items == 10) {
+							user.sendMessage(ChatColor.GRAY + message);
+							items = 0;
+							message = "";
+						}
+					}
+				} else if (args[1].equalsIgnoreCase("owner")) {
+					String owner;
+					if (args.length == 2) {
+						owner = user.getName();
+					} else {
+						owner = args[2];
+					}
+					List<Lot> list = BenCmd.getLots().getLotsByOwner(owner);
+					user.sendMessage(ChatColor.GRAY + "Lots owned by " + owner + ": (" + list.size() + ")");
+					int items = 0;
+					String message = "";
+					
+					for (Lot l : list) {
+						if (message != "") {
+							message += ", ";
+						}
+						message += l.getLotID();
+						items++;
+						if (items == 10) {
+							user.sendMessage(ChatColor.GRAY + message);
+							items = 0;
+							message = "";
+						}
+					}
+				} else if (args[1].equalsIgnoreCase("guest")) {
+					String guest;
+					if (args.length == 2) {
+						guest = user.getName();
+					} else {
+						guest = args[2];
+					}
+					List<Lot> list = BenCmd.getLots().getLotsByGuest(guest);
+					user.sendMessage(ChatColor.GRAY + "Lots with guest" + guest + ": (" + list.size() + ")");
+					int items = 0;
+					String message = "";
+					
+					for (Lot l : list) {
+						if (message != "") {
+							message += ", ";
+						}
+						message += l.getLotID();
+						items++;
+						if (items == 10) {
+							user.sendMessage(ChatColor.GRAY + message);
+							items = 0;
+							message = "";
+						}
+					}
+				} else if (args[1].equalsIgnoreCase("permission")
+						|| args[1].equalsIgnoreCase("build")
+						|| args[1].equalsIgnoreCase("canbuild")) {
+					String player;
+					if (args.length == 2) {
+						player = user.getName();
+					} else {
+						player = args[2];
+					}
+					List<Lot> list = BenCmd.getLots().getLotsByPermission(player);
+					user.sendMessage(ChatColor.GRAY + player + " can build in the following lots: (" + list.size() + ")");
+					int items = 0;
+					String message = "";
+					
+					for (Lot l : list) {
+						if (message != "") {
+							message += ", ";
+						}
+						message += l.getLotID();
+						items++;
+						if (items == 10) {
+							user.sendMessage(ChatColor.GRAY + message);
+							items = 0;
+							message = "";
+						}
+					}
+				} else {
+					user.sendMessage(ChatColor.RED + "Unknown query. User here, owner, guest, or build.");
+				}
+			}
+		}
+		
 		/*
 		 * LOT GROUP
 		 * 

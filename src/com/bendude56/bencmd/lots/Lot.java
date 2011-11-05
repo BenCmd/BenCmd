@@ -141,6 +141,21 @@ public class Lot {
 		} else
 			return false;
 	}
+	
+	public boolean canBuild(String p) {
+		Player player = Bukkit.getPlayerExact(p);
+		User user = User.getUser(player);
+		String group;
+		if (!SubID.equalsIgnoreCase("0")) {
+			group = BenCmd.getLots().getLot(LotID).getGroup();
+		} else {
+			group = getGroup();
+		}
+		if (isOwner(player) || isGuest(player.getName()) || user.hasPerm("bencmd.lot.buildall") || user.inGroup(BenCmd.getPermissionManager().getGroupFile().getGroup(group))) {
+			return true;
+		} else
+			return false;
+	}
 
 	public void addGuest(String guest) {
 		if (SubID.equalsIgnoreCase("0")) {

@@ -1,5 +1,6 @@
 package com.bendude56.bencmd.lots;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
@@ -281,8 +282,12 @@ public class LotFile extends BenCmdFile {
 		for (i = 0; i <= max; i++) {
 			if (lotExists((LotID + "," + i))) {
 				if (sort > 0) {
-					// TODO Clean this up!
-					this.addLot((LotID + "," + (i - sort)), this.getLot(LotID + "," + i).getCorner1(), this.getLot(LotID + "," + i).getCorner2(), this.getLot(LotID + "," + i).getOwner(), this.getLot(LotID + "," + i).getGroup());
+					Lot l = this.getLot(LotID + "," + i);
+					this.addLot((LotID + "," + (i - sort)),
+							l.getCorner1(),
+							l.getCorner2(),
+							l.getOwner(),
+							l.getGroup());
 					this.lots.remove(LotID + "," + i);
 				}
 			} else {
@@ -336,5 +341,55 @@ public class LotFile extends BenCmdFile {
 		} else {
 			return "noLot";
 		}
+	}
+	
+	public List<Lot> getLots(boolean subs) {
+		List<Lot> list = new ArrayList<Lot>();
+		for (String l : lots.keySet()) {
+			if (getLot(l).getSubID().equalsIgnoreCase("0") || subs) {
+				list.add(getLot(l));
+			}
+		}
+		return list;
+	}
+	
+	public List<Lot> getLots(Location loc, boolean subs) {
+		List<Lot> list = new ArrayList<Lot>();
+		for (String l : lots.keySet()) {
+			if ((getLot(l).getSubID().equalsIgnoreCase("0") || subs) && getLot(l).withinLot(loc)) {
+				list.add(getLot(l));
+			}
+		}
+		return list;
+	}
+	
+	public List<Lot> getLotsByOwner(String player) {
+		List<Lot> list = new ArrayList<Lot>();
+		for (String l : lots.keySet()) {
+			if (getLot(l).getSubID().equalsIgnoreCase("0") && getLot(l).getOwner().equalsIgnoreCase(player)) {
+				list.add(getLot(l));
+			}
+		}
+		return list;
+	}
+	
+	public List<Lot> getLotsByGuest(String player) {
+		List<Lot> list = new ArrayList<Lot>();
+		for (String l : lots.keySet()) {
+			if (getLot(l).getSubID().equalsIgnoreCase("0") && getLot(l).isGuest(player)) {
+				list.add(getLot(l));
+			}
+		}
+		return list;
+	}
+	
+	public List<Lot> getLotsByPermission(String player) {
+		List<Lot> list = new ArrayList<Lot>();
+		for (String l : lots.keySet()) {
+			if (getLot(l).getSubID().equalsIgnoreCase("0") && getLot(l).canBuild(player)) {
+				list.add(getLot(l));
+			}
+		}
+		return list;
 	}
 }
