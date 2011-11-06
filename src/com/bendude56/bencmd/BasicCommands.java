@@ -18,15 +18,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
 
 public class BasicCommands implements Commands {
-	
-	private static final long TIME_SUNRISE = 22500;
-	private static final long TIME_DAWN = 23000;
-	private static final long TIME_DAY = 0;
-	private static final long TIME_NOON = 6000;
-	private static final long TIME_SUNSET = 12000;
-	private static final long TIME_DUSK = 13000;
-	private static final long TIME_NIGHT = 15000;
-	private static final long TIME_MIDNIGHT = 18000;
+
+	private static final long	TIME_SUNRISE	= 22500;
+	private static final long	TIME_DAWN		= 23000;
+	private static final long	TIME_DAY		= 0;
+	private static final long	TIME_NOON		= 6000;
+	private static final long	TIME_SUNSET		= 12000;
+	private static final long	TIME_DUSK		= 13000;
+	private static final long	TIME_NIGHT		= 15000;
+	private static final long	TIME_MIDNIGHT	= 18000;
 
 	public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
 		User user;

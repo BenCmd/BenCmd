@@ -1,5 +1,7 @@
 package com.bendude56.bencmd.listener;
 
+import java.util.Date;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -24,6 +26,8 @@ import com.bendude56.bencmd.advanced.Shelf;
 import com.bendude56.bencmd.invtools.InventoryBackend;
 import com.bendude56.bencmd.multiworld.Portal;
 import com.bendude56.bencmd.protect.ProtectedBlock;
+import com.bendude56.bencmd.recording.RecordEntry.BlockBreakEntry;
+import com.bendude56.bencmd.recording.RecordEntry.BlockPlaceEntry;
 import com.bendude56.bencmd.warps.Warp;
 
 public class BenCmdBlockListener extends BlockListener {
@@ -254,6 +258,20 @@ public class BenCmdBlockListener extends BlockListener {
 		}
 	}
 
+	private void logBlockPlace(BlockPlaceEvent event) {
+		if (!event.isCancelled()) {
+			BlockPlaceEntry e = new BlockPlaceEntry(event.getPlayer().getName(), event.getBlock().getLocation(), new Date().getTime(), event.getBlock().getType());
+			BenCmd.getRecordingFile().logEvent(e);
+		}
+	}
+
+	private void logBlockBreak(BlockBreakEvent event) {
+		if (!event.isCancelled()) {
+			BlockBreakEntry e = new BlockBreakEntry(event.getPlayer().getName(), event.getBlock().getLocation(), new Date().getTime(), event.getBlock().getType());
+			BenCmd.getRecordingFile().logEvent(e);
+		}
+	}
+
 	// Split-off events
 
 	public void onBlockBreak(BlockBreakEvent event) {
@@ -261,11 +279,13 @@ public class BenCmdBlockListener extends BlockListener {
 		bookshelfBreak(event);
 		dcudDestroy(event);
 		lockDestroyCheck(event);
+		logBlockBreak(event);
 	}
 
 	public void onBlockPlace(BlockPlaceEvent event) {
 		lotPlaceCheck(event);
 		newPortalCheck(event);
+		logBlockPlace(event);
 	}
 
 	public void onBlockIgnite(BlockIgniteEvent event) {

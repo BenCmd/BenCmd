@@ -59,6 +59,8 @@ import com.bendude56.bencmd.permissions.PermissionUser;
 import com.bendude56.bencmd.permissions.MaxPlayers.JoinType;
 import com.bendude56.bencmd.protect.ProtectFile;
 import com.bendude56.bencmd.protect.ProtectedCommands;
+import com.bendude56.bencmd.recording.RecordCommands;
+import com.bendude56.bencmd.recording.RecordingFile;
 import com.bendude56.bencmd.reporting.ReportCommands;
 import com.bendude56.bencmd.reporting.ReportFile;
 import com.bendude56.bencmd.warps.HomeWarps;
@@ -116,7 +118,8 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 	private static PluginProperties			main;
 	private static PluginProperties			itemAlias;
 	private static PluginProperties			usage;
-	private static TimeManager              time;
+	private static TimeManager				time;
+	private static RecordingFile			record;
 
 	public static MainPermissions getPermissionManager() {
 		return pManager;
@@ -232,9 +235,13 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 	public static PluginProperties getUsageFile() {
 		return usage;
 	}
-	
+
 	public static TimeManager getTimeManager() {
 		return time;
+	}
+
+	public static RecordingFile getRecordingFile() {
+		return record;
 	}
 
 	public static void log(Exception e) {
@@ -389,6 +396,12 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 			log(Level.SEVERE, "Failed to load anonymous usage stats!");
 			log(e);
 		}
+		try {
+			record = new RecordingFile();
+		} catch (Exception e) {
+			log(Level.SEVERE, "Failed to load recordings!");
+			log(e);
+		}
 		time = new TimeManager();
 	}
 
@@ -439,12 +452,13 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 		itemAlias = null;
 		usage = null;
 		time = null;
+		record = null;
 	}
 
 	// END STATIC FILE METHODS
 
 	public final static boolean				debug			= false;
-	public final static int					buildId			= 35;
+	public final static int					buildId			= 36;
 	public final static int					cbbuild			= 1337;
 	public final static String				verLoc			= "http://cloud.github.com/downloads/BenCmd/BenCmd/version.txt";
 	public static String					devLoc			= "";
@@ -888,6 +902,8 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 		} else if (new NPCCommands().onCommand(sender, command, commandLabel, args)) {
 			return true;
 		} else if (new RedstoneCommands().onCommand(sender, command, commandLabel, args)) {
+			return true;
+		} else if (new RecordCommands().onCommand(sender, command, commandLabel, args)) {
 			return true;
 		} else {
 			User user;

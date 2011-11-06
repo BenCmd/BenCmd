@@ -283,11 +283,7 @@ public class LotFile extends BenCmdFile {
 			if (lotExists((LotID + "," + i))) {
 				if (sort > 0) {
 					Lot l = this.getLot(LotID + "," + i);
-					this.addLot((LotID + "," + (i - sort)),
-							l.getCorner1(),
-							l.getCorner2(),
-							l.getOwner(),
-							l.getGroup());
+					this.addLot((LotID + "," + (i - sort)), l.getCorner1(), l.getCorner2(), l.getOwner(), l.getGroup());
 					this.lots.remove(LotID + "," + i);
 				}
 			} else {
@@ -342,7 +338,7 @@ public class LotFile extends BenCmdFile {
 			return "noLot";
 		}
 	}
-	
+
 	public List<Lot> getLots(boolean subs) {
 		List<Lot> list = new ArrayList<Lot>();
 		for (String l : lots.keySet()) {
@@ -352,7 +348,7 @@ public class LotFile extends BenCmdFile {
 		}
 		return list;
 	}
-	
+
 	public List<Lot> getLots(Location loc, boolean subs) {
 		List<Lot> list = new ArrayList<Lot>();
 		for (String l : lots.keySet()) {
@@ -362,7 +358,7 @@ public class LotFile extends BenCmdFile {
 		}
 		return list;
 	}
-	
+
 	public List<Lot> getLotsByOwner(String player) {
 		List<Lot> list = new ArrayList<Lot>();
 		for (String l : lots.keySet()) {
@@ -372,7 +368,7 @@ public class LotFile extends BenCmdFile {
 		}
 		return list;
 	}
-	
+
 	public List<Lot> getLotsByGuest(String player) {
 		List<Lot> list = new ArrayList<Lot>();
 		for (String l : lots.keySet()) {
@@ -382,7 +378,7 @@ public class LotFile extends BenCmdFile {
 		}
 		return list;
 	}
-	
+
 	public List<Lot> getLotsByPermission(String player) {
 		List<Lot> list = new ArrayList<Lot>();
 		for (String l : lots.keySet()) {

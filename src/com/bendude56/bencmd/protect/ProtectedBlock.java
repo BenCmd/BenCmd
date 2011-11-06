@@ -7,10 +7,10 @@ import org.bukkit.Location;
 import com.bendude56.bencmd.BenCmd;
 
 public class ProtectedBlock {
-	private int						idNumber;
-	private String					blockOwner;
-	private List<String>			blockGuests;
-	private Location				blockLocation;
+	private int				idNumber;
+	private String			blockOwner;
+	private List<String>	blockGuests;
+	private Location		blockLocation;
 
 	public ProtectedBlock(int id, String owner, List<String> guests, Location loc) {
 		idNumber = id;

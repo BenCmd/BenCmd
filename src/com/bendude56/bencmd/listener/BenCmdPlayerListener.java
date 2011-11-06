@@ -1,6 +1,7 @@
 package com.bendude56.bencmd.listener;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
@@ -60,6 +61,7 @@ import com.bendude56.bencmd.multiworld.HomePortal;
 import com.bendude56.bencmd.multiworld.Portal;
 import com.bendude56.bencmd.permissions.PermissionUser;
 import com.bendude56.bencmd.protect.ProtectedBlock;
+import com.bendude56.bencmd.recording.RecordEntry.ChestOpenEntry;
 import com.bendude56.bencmd.warps.Warp;
 
 public class BenCmdPlayerListener extends PlayerListener {
@@ -800,6 +802,20 @@ public class BenCmdPlayerListener extends PlayerListener {
 		}
 	}
 
+	private void logWand(PlayerInteractEvent event) {
+		if (!event.isCancelled() && event.getItem() != null && event.getItem().getType() == Material.STICK && BenCmd.getRecordingFile().wandEnabled(event.getPlayer().getName())) {
+			Bukkit.dispatchCommand(event.getPlayer(), "log block");
+			event.setCancelled(true);
+		}
+	}
+
+	private void chestOpenLog(PlayerInteractEvent event) {
+		if (!event.isCancelled() && event.getClickedBlock().getType() == Material.CHEST && event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+			ChestOpenEntry e = new ChestOpenEntry(event.getPlayer().getName(), event.getClickedBlock().getLocation(), new Date().getTime());
+			BenCmd.getRecordingFile().logEvent(e);
+		}
+	}
+
 	// Split-off events
 
 	public void onPlayerChat(PlayerChatEvent event) {
@@ -819,11 +835,16 @@ public class BenCmdPlayerListener extends PlayerListener {
 	}
 
 	public void onPlayerInteract(PlayerInteractEvent event) {
+		logWand(event);
+		if (event.isCancelled()) {
+			return;
+		}
 		bookshelfInteract(event);
 		lockInteract(event);
 		disposalChestInteract(event);
 		strikeBind(event);
 		lotSelectInteract(event);
+		chestOpenLog(event);
 	}
 
 	public void onPlayerBucketEmpty(PlayerBucketEmptyEvent event) {

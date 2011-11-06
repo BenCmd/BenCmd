@@ -6,10 +6,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 
 public class TimeManager {
-	
-	private HashMap<World, Boolean> timeRunning;
-	private HashMap<World, Long> lastTime;
-	
+
+	private HashMap<World, Boolean>	timeRunning;
+	private HashMap<World, Long>	lastTime;
+
 	public TimeManager() {
 		timeRunning = new HashMap<World, Boolean>();
 		lastTime = new HashMap<World, Long>();
@@ -18,7 +18,7 @@ public class TimeManager {
 			lastTime.put(w, w.getFullTime());
 		}
 	}
-	
+
 	protected void tick() {
 		for (World w : Bukkit.getWorlds()) {
 			if (!timeRunning.containsKey(w)) {
@@ -38,15 +38,15 @@ public class TimeManager {
 			}
 		}
 	}
-	
+
 	public void setFrozen(World w, boolean frozen) {
 		timeRunning.put(w, !frozen);
 	}
-	
+
 	public boolean isFrozen(World w) {
 		return !timeRunning.get(w);
 	}
-	
+
 	public void syncLastTime(World w) {
 		lastTime.put(w, w.getFullTime());
 	}

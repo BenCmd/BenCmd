@@ -4,10 +4,10 @@ import java.util.Date;
 
 public class Action {
 
-	private String			user;
-	private ActionType		action;
-	private long			endTime;
-	private int				id;
+	private String		user;
+	private ActionType	action;
+	private long		endTime;
+	private int			id;
 
 	public Action(int id, String user, ActionType action, long endTime) {
 		this.id = id;

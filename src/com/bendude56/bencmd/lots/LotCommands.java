@@ -645,7 +645,7 @@ public class LotCommands implements Commands {
 		 */
 
 		// TODO Fix to work with new BenCmdFile interface
-		
+
 		if (args[0].equalsIgnoreCase("list")) {
 			if (!user.hasPerm("bencmd.lot.info")) {
 				user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
@@ -653,11 +653,10 @@ public class LotCommands implements Commands {
 			}
 			if (args.length == 1) {
 				List<Lot> list = BenCmd.getLots().getLots(false);
-				user.sendMessage(ChatColor.GRAY + "Registered lots: (" + list.size() + ", " +
-						BenCmd.getLots().getLots(true).size() + " total)");
+				user.sendMessage(ChatColor.GRAY + "Registered lots: (" + list.size() + ", " + BenCmd.getLots().getLots(true).size() + " total)");
 				int items = 0;
 				String message = "";
-				
+
 				for (Lot l : list) {
 					if (message != "") {
 						message += ", ";
@@ -673,11 +672,10 @@ public class LotCommands implements Commands {
 			} else if (args.length >= 2) {
 				if (args[1].equalsIgnoreCase("here")) {
 					List<Lot> list = BenCmd.getLots().getLots(Bukkit.getPlayerExact(user.getName()).getLocation(), false);
-					user.sendMessage(ChatColor.GRAY + "Lots at this location: (" + list.size() + ", " +
-							BenCmd.getLots().getLots(true).size() + " total)");
+					user.sendMessage(ChatColor.GRAY + "Lots at this location: (" + list.size() + ", " + BenCmd.getLots().getLots(true).size() + " total)");
 					int items = 0;
 					String message = "";
-					
+
 					for (Lot l : list) {
 						if (message != "") {
 							message += ", ";
@@ -701,7 +699,7 @@ public class LotCommands implements Commands {
 					user.sendMessage(ChatColor.GRAY + "Lots owned by " + owner + ": (" + list.size() + ")");
 					int items = 0;
 					String message = "";
-					
+
 					for (Lot l : list) {
 						if (message != "") {
 							message += ", ";
@@ -725,7 +723,7 @@ public class LotCommands implements Commands {
 					user.sendMessage(ChatColor.GRAY + "Lots with guest" + guest + ": (" + list.size() + ")");
 					int items = 0;
 					String message = "";
-					
+
 					for (Lot l : list) {
 						if (message != "") {
 							message += ", ";
@@ -738,9 +736,7 @@ public class LotCommands implements Commands {
 							message = "";
 						}
 					}
-				} else if (args[1].equalsIgnoreCase("permission")
-						|| args[1].equalsIgnoreCase("build")
-						|| args[1].equalsIgnoreCase("canbuild")) {
+				} else if (args[1].equalsIgnoreCase("permission") || args[1].equalsIgnoreCase("build") || args[1].equalsIgnoreCase("canbuild")) {
 					String player;
 					if (args.length == 2) {
 						player = user.getName();
@@ -751,7 +747,7 @@ public class LotCommands implements Commands {
 					user.sendMessage(ChatColor.GRAY + player + " can build in the following lots: (" + list.size() + ")");
 					int items = 0;
 					String message = "";
-					
+
 					for (Lot l : list) {
 						if (message != "") {
 							message += ", ";
@@ -769,7 +765,7 @@ public class LotCommands implements Commands {
 				}
 			}
 		}
-		
+
 		/*
 		 * LOT GROUP
 		 * 

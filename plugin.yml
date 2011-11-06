@@ -287,3 +287,6 @@ commands:
     cr:
         usage:
         description: Enters or leaves creative mode
+    log:
+        usage:
+        description:

@@ -141,7 +141,7 @@ public class Lot {
 		} else
 			return false;
 	}
-	
+
 	public boolean canBuild(String p) {
 		Player player = Bukkit.getPlayerExact(p);
 		User user = User.getUser(player);
