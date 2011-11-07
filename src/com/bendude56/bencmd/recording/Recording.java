@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.bendude56.bencmd.BenCmd;
@@ -66,20 +67,28 @@ public class Recording implements Cloneable {
 		return t;
 	}
 
-	protected void checkTempTime() {
-		for (RecordEntry e : entries) {
-			if (new Date().getTime() - e.getTime() > 60000) {
-				entries.remove(e);
-			}
-		}
-	}
-
 	public void addEntry(RecordEntry e) {
 		entries.add(e);
 	}
 
 	public CopyOnWriteArrayList<RecordEntry> getEntries() {
 		return entries;
+	}
+	
+	public void trimToUsers(List<String> user) {
+		for (RecordEntry e : entries) {
+			if (!user.contains(e.getUser())) {
+				entries.remove(e);
+			}
+		}
+	}
+	
+	public void trimToLastHour() {
+		for (RecordEntry e : entries) {
+			if (new Date().getTime() - e.getTime() > 60000) {
+				entries.remove(e);
+			}
+		}
 	}
 
 	public Object clone() {

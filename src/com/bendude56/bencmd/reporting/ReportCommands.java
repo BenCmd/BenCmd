@@ -1,6 +1,7 @@
 package com.bendude56.bencmd.reporting;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -13,6 +14,7 @@ import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.Commands;
 import com.bendude56.bencmd.User;
 import com.bendude56.bencmd.permissions.PermissionUser;
+import com.bendude56.bencmd.recording.Recording;
 
 public class ReportCommands implements Commands {
 
@@ -70,6 +72,19 @@ public class ReportCommands implements Commands {
 					onlineUser.sendMessage(ChatColor.RED + "A new report has been filed! Use /ticket " + id + " to see details!");
 				}
 			}
+		}
+		try {
+			BenCmd.getRecordingFile().copy(BenCmd.getRecordingFile().getTemporaryRecording(), "ticket" + id);
+			BenCmd.getRecordingFile().turnPermanent(BenCmd.getRecordingFile().getRecording("ticket" + id));
+			Recording r = BenCmd.getRecordingFile().getRecording("ticket" + id);
+			List<String> l = new ArrayList<String>();
+			l.add(user.getName());
+			l.add(reported.getName());
+			r.trimToUsers(l);
+			r.trimToLastHour();
+			r.save();
+		} catch (Exception e) {
+			user.sendMessage(ChatColor.RED + "Failed to attach recording to ticket!");
 		}
 	}
 

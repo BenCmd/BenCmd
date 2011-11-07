@@ -19,7 +19,7 @@ public class ChatChannelCommands implements Commands {
 		} catch (ClassCastException e) {
 			user = User.getUser();
 		}
-		if (!BenCmd.getMainProperties().getBoolean("channelsEnabled", false)) {
+		if (!BenCmd.getMainProperties().getBoolean("channelsEnabled", true)) {
 			return false;
 		}
 		if (commandLabel.equalsIgnoreCase("channel")) {

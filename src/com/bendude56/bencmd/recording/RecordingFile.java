@@ -48,6 +48,21 @@ public class RecordingFile extends BenCmdFile {
 		loadFile();
 		loadAll();
 	}
+	
+	public Recording getRecording(String recording) throws IOException, ClassCastException, ClassNotFoundException {
+		for (Recording r : this.recording) {
+			if (r.getFileName(false).equals(recording)) {
+				return r;
+			}
+		}
+		if (getFile().containsKey(recording)) {
+			return new Recording(recording, false);
+		} else if (getFile().containsKey("~" + recording)) {
+			return new Recording(recording, true);
+		} else {
+			return null;
+		}
+	}
 
 	public boolean wandEnabled(String user) {
 		return wand.contains(user);
@@ -216,10 +231,6 @@ public class RecordingFile extends BenCmdFile {
 		return temp;
 	}
 
-	public void tick() {
-		temp.checkTempTime();
-	}
-
 	public void newRecording(String r) throws IOException {
 		Recording rec = new Recording(true);
 		rec.saveAs(r);
@@ -233,7 +244,7 @@ public class RecordingFile extends BenCmdFile {
 		for (RecordEntry r : entries) {
 			if (pages.containsKey(cpage)) {
 				pages.get(cpage).add(r);
-				if (pages.get(cpage).size() == 10) {
+				if (pages.get(cpage).size() == 7) {
 					cpage++;
 				}
 			} else {
@@ -287,6 +298,21 @@ public class RecordingFile extends BenCmdFile {
 				List<RecordEntry> results = new ArrayList<RecordEntry>();
 				for (RecordEntry r : getLoaded(user.getName()).getEntries()) {
 					if (r.getSuspicionLevel().getLevel() >= level.getLevel()) {
+						results.add(r);
+					}
+				}
+				showRecords(user, results, true, true, page);
+			}
+		}.start();
+	}
+	
+	public void listPlayer(final User user, final String user2, final int page) {
+		user.sendMessage(ChatColor.YELLOW + "Please wait... The logs are being queried...");
+		new Thread() {
+			public void run() {
+				List<RecordEntry> results = new ArrayList<RecordEntry>();
+				for (RecordEntry r : getLoaded(user.getName()).getEntries()) {
+					if (r.getUser().equals(user2)) {
 						results.add(r);
 					}
 				}

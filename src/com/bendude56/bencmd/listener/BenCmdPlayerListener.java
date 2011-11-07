@@ -61,6 +61,7 @@ import com.bendude56.bencmd.multiworld.HomePortal;
 import com.bendude56.bencmd.multiworld.Portal;
 import com.bendude56.bencmd.permissions.PermissionUser;
 import com.bendude56.bencmd.protect.ProtectedBlock;
+import com.bendude56.bencmd.recording.RecordEntry.BlockPlaceEntry;
 import com.bendude56.bencmd.recording.RecordEntry.ChestOpenEntry;
 import com.bendude56.bencmd.warps.Warp;
 
@@ -815,6 +816,18 @@ public class BenCmdPlayerListener extends PlayerListener {
 			BenCmd.getRecordingFile().logEvent(e);
 		}
 	}
+	
+	private void logBucket(PlayerBucketEmptyEvent event) {
+		if (!event.isCancelled()) {
+			if (event.getBucket() == Material.LAVA_BUCKET) {
+				BlockPlaceEntry e = new BlockPlaceEntry(event.getPlayer().getName(), event.getBlockClicked().getLocation(), new Date().getTime(), Material.LAVA);
+				BenCmd.getRecordingFile().logEvent(e);
+			} else if (event.getBucket() == Material.WATER_BUCKET) {
+				BlockPlaceEntry e = new BlockPlaceEntry(event.getPlayer().getName(), event.getBlockClicked().getLocation(), new Date().getTime(), Material.WATER);
+				BenCmd.getRecordingFile().logEvent(e);
+			}
+		}
+	}
 
 	// Split-off events
 
@@ -849,6 +862,7 @@ public class BenCmdPlayerListener extends PlayerListener {
 
 	public void onPlayerBucketEmpty(PlayerBucketEmptyEvent event) {
 		lotBucketEmpty(event);
+		logBucket(event);
 	}
 
 	public void onPlayerBucketFill(PlayerBucketFillEvent event) {

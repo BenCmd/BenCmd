@@ -17,7 +17,7 @@ import com.bendude56.bencmd.listener.BenCmdPlayerListener;
 public class ChatCommands implements Commands {
 
 	public boolean channelsEnabled() {
-		return BenCmd.getMainProperties().getBoolean("channelsEnabled", false);
+		return BenCmd.getMainProperties().getBoolean("channelsEnabled", true);
 	}
 
 	public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {

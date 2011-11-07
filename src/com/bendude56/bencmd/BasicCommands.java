@@ -186,6 +186,11 @@ public class BasicCommands implements Commands {
 				String dGroup = BenCmd.getMainProperties().getString("defaultGroup", "default");
 				user.sendMessage(ChatColor.GRAY + "Default group: " + ((BenCmd.getPermissionManager().getGroupFile().groupExists(dGroup)) ? ChatColor.GREEN : ChatColor.RED) + dGroup);
 				user.sendMessage(ChatColor.GRAY + "Spout connected: " + ((BenCmd.isSpoutConnected()) ? (ChatColor.GREEN + "YES") : (ChatColor.YELLOW + "NO")));
+				if (BenCmd.getMainProperties().getBoolean("channelsEnabled", true)) {
+					user.sendMessage(ChatColor.GRAY + "General channel: " + ((BenCmd.getChatChannels().getChannel("General") != null) ? (ChatColor.GREEN + "Correctly configured") : (ChatColor.RED + "Doesn't exist")));
+				} else {
+					user.sendMessage(ChatColor.GRAY + "General channel: " + ChatColor.RED + "Channels disabled");
+				}
 			} else {
 				user.sendMessage(ChatColor.GRAY + "Invalid debug command");
 			}

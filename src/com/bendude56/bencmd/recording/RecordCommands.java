@@ -83,6 +83,28 @@ public class RecordCommands implements Commands {
 				}
 			}
 			BenCmd.getRecordingFile().listLevel(user, SuspicionLevel.EXTREME, page);
+		} else if (args[0].equalsIgnoreCase("high")) {
+			int page = 1;
+			if (args.length > 1) {
+				try {
+					page = Integer.parseInt(args[1]);
+				} catch (NumberFormatException e) {
+					user.sendMessage(ChatColor.RED + "'" + args[1] + "' isn't a valid page number!");
+					return;
+				}
+			}
+			BenCmd.getRecordingFile().listLevel(user, SuspicionLevel.HIGH, page);
+		} else if (args[0].equalsIgnoreCase("mid")) {
+			int page = 1;
+			if (args.length > 1) {
+				try {
+					page = Integer.parseInt(args[1]);
+				} catch (NumberFormatException e) {
+					user.sendMessage(ChatColor.RED + "'" + args[1] + "' isn't a valid page number!");
+					return;
+				}
+			}
+			BenCmd.getRecordingFile().listLevel(user, SuspicionLevel.MID, page);
 		} else if (args[0].equalsIgnoreCase("load")) {
 			if (args.length == 1) {
 				user.sendMessage(ChatColor.RED + "Not enough arguments!");
@@ -181,6 +203,17 @@ public class RecordCommands implements Commands {
 			}
 		} else if (args[0].equalsIgnoreCase("list")) {
 			BenCmd.getRecordingFile().listRecordings(user);
+		} else if (args[0].equalsIgnoreCase("player")) {
+			int page = 1;
+			if (args.length > 2) {
+				try {
+					page = Integer.parseInt(args[2]);
+				} catch (NumberFormatException e) {
+					user.sendMessage(ChatColor.RED + "'" + args[2] + "' isn't a valid page number!");
+					return;
+				}
+			}
+			BenCmd.getRecordingFile().listPlayer(user, args[1], page);
 		}
 	}
 
