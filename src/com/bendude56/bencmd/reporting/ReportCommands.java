@@ -13,6 +13,9 @@ import org.bukkit.entity.Player;
 import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.Commands;
 import com.bendude56.bencmd.User;
+import com.bendude56.bencmd.event.report.ReportCloseEvent;
+import com.bendude56.bencmd.event.report.ReportCreateEvent;
+import com.bendude56.bencmd.event.report.ReportLockEvent;
 import com.bendude56.bencmd.permissions.PermissionUser;
 import com.bendude56.bencmd.recording.Recording;
 
@@ -58,7 +61,14 @@ public class ReportCommands implements Commands {
 			}
 		}
 		Integer id = BenCmd.getReports().nextId();
-		BenCmd.getReports().addTicket(new Report(id, user.getName(), reported.getName(), Report.ReportStatus.UNREAD, reason, "", 0, new ArrayList<String>()));
+		Report r = new Report(id, user.getName(), reported.getName(), Report.ReportStatus.UNREAD, reason, "", 0, new ArrayList<String>());
+		ReportCreateEvent e;
+		Bukkit.getPluginManager().callEvent(e = new ReportCreateEvent(r, user));
+		if (e.isCancelled()) {
+			return;
+		}
+		r = e.getReport();
+		BenCmd.getReports().addTicket(r);
 		BenCmd.log(user.getDisplayName() + " opened ticket #" + id.toString() + "!");
 		user.sendMessage(ChatColor.GREEN + "Thank you for your report");
 		user.sendMessage(ChatColor.GREEN + "You can check the status of your report using /ticket " + id + ".");
@@ -76,14 +86,14 @@ public class ReportCommands implements Commands {
 		try {
 			BenCmd.getRecordingFile().copy(BenCmd.getRecordingFile().getTemporaryRecording(), "ticket" + id);
 			BenCmd.getRecordingFile().turnPermanent(BenCmd.getRecordingFile().getRecording("ticket" + id));
-			Recording r = BenCmd.getRecordingFile().getRecording("ticket" + id);
+			Recording rec = BenCmd.getRecordingFile().getRecording("ticket" + id);
 			List<String> l = new ArrayList<String>();
 			l.add(user.getName());
 			l.add(reported.getName());
-			r.trimToUsers(l);
-			r.trimToLastHour();
-			r.save();
-		} catch (Exception e) {
+			rec.trimToUsers(l);
+			rec.trimToLastHour();
+			rec.save();
+		} catch (Exception ex) {
 			user.sendMessage(ChatColor.RED + "Failed to attach recording to ticket!");
 		}
 	}
@@ -210,6 +220,11 @@ public class ReportCommands implements Commands {
 						user.sendMessage(ChatColor.RED + "That ticket is already closed!");
 						return;
 					}
+					ReportCloseEvent e;
+					Bukkit.getPluginManager().callEvent(e = new ReportCloseEvent(report, user));
+					if (e.isCancelled()) {
+						return;
+					}
 					if (args.length == 2) {
 						report.closeTicket("Ticket closed by admin");
 						BenCmd.log(user.getDisplayName() + " closed ticket #" + id.toString() + "!");
@@ -235,6 +250,11 @@ public class ReportCommands implements Commands {
 						}
 						if (report.getStatus() == Report.ReportStatus.CLOSED) {
 							user.sendMessage(ChatColor.RED + "That ticket is already closed!");
+							return;
+						}
+						ReportCloseEvent e;
+						Bukkit.getPluginManager().callEvent(e = new ReportCloseEvent(report, user));
+						if (e.isCancelled()) {
 							return;
 						}
 						report.closeTicket("Ticket closed by user");
@@ -282,6 +302,7 @@ public class ReportCommands implements Commands {
 						user.sendMessage(ChatColor.RED + "That ticket is locked!");
 						return;
 					}
+					Bukkit.getPluginManager().callEvent(new ReportLockEvent(report, user));
 					if (args.length > 2) {
 						String reason = "";
 						for (int i = 2; i < args.length; i++) {

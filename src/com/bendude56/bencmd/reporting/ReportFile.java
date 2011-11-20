@@ -7,10 +7,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.BenCmdFile;
 import com.bendude56.bencmd.User;
+import com.bendude56.bencmd.event.report.ReportCloseEvent;
 import com.bendude56.bencmd.reporting.Report.ReportStatus;
 
 public class ReportFile extends BenCmdFile {
@@ -105,7 +107,11 @@ public class ReportFile extends BenCmdFile {
 		new Thread() {
 			public void run() {
 				for (Report r : getOpen()) {
-					r.closeTicket("Ticket purged by admin");
+					ReportCloseEvent e;
+					Bukkit.getPluginManager().callEvent(e = new ReportCloseEvent(r, user));
+					if (!e.isCancelled()) {
+						r.closeTicket("Ticket purged by admin");
+					}
 				}
 				user.sendMessage(ChatColor.GREEN + "All tickets purged successfully!");
 			}
@@ -118,7 +124,11 @@ public class ReportFile extends BenCmdFile {
 			public void run() {
 				for (Report r : getOpen()) {
 					if (r.getSender().equals(toPurge)) {
-						r.closeTicket("Ticket purged by admin");
+						ReportCloseEvent e;
+						Bukkit.getPluginManager().callEvent(e = new ReportCloseEvent(r, user));
+						if (!e.isCancelled()) {
+							r.closeTicket("Ticket purged by admin");
+						}
 					}
 				}
 				user.sendMessage(ChatColor.GREEN + "All tickets from " + toPurge + " purged successfully!");
@@ -131,7 +141,9 @@ public class ReportFile extends BenCmdFile {
 		new Thread() {
 			public void run() {
 				for (Report r : getOpen()) {
-					if (r.getAccused().equals(toPurge)) {
+					ReportCloseEvent e;
+					Bukkit.getPluginManager().callEvent(e = new ReportCloseEvent(r, user));
+					if (!e.isCancelled()) {
 						r.closeTicket("Ticket purged by admin");
 					}
 				}
