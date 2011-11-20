@@ -71,11 +71,13 @@ public class SpoutConnector {
 			s.removeWidget(s.item);
 			s.item.setTypeId(0);
 			s.item.setData((short) 0);
+			s.item.setVisible(s.item.getTypeId() != 0);
 			s.attachWidget(BenCmd.getPlugin(), s.item);
 		} else {
 			s.removeWidget(s.item);
 			s.item.setTypeId(valid.get(valid.lastIndexOf(id) + 1));
 			s.item.setData((short) 0);
+			s.item.setVisible(s.item.getTypeId() != 0);
 			s.attachWidget(BenCmd.getPlugin(), s.item);
 		}
 	}
@@ -90,11 +92,13 @@ public class SpoutConnector {
 			s.removeWidget(s.item);
 			s.item.setTypeId(2257);
 			s.item.setData((short) 0);
+			s.item.setVisible(s.item.getTypeId() != 0);
 			s.attachWidget(BenCmd.getPlugin(), s.item);
 		} else {
 			s.removeWidget(s.item);
 			s.item.setTypeId(valid.get(valid.lastIndexOf(id) - 1));
 			s.item.setData((short) 0);
+			s.item.setVisible(s.item.getTypeId() != 0);
 			s.attachWidget(BenCmd.getPlugin(), s.item);
 		}
 	}
@@ -202,8 +206,9 @@ public class SpoutConnector {
 
 		// itemimage
 		GenericItemWidget itemimage = new GenericItemWidget();
-		itemimage.setTypeId(n.getHeldItem().getTypeId()).setDepth(16).setData(n.getHeldItem().getDurability()).setX(65).setY(100).setWidth(16).setHeight(16);
+		itemimage.setTypeId(n.getHeldItem().getTypeId()).setDepth(10).setData(n.getHeldItem().getDurability()).setX(65).setY(100).setWidth(10).setHeight(10);
 		infoscr.attachWidget(BenCmd.getPlugin(), itemimage);
+		itemimage.setVisible(n.getHeldItem().getTypeId() != 0);
 		infoscr.item = itemimage;
 
 		// idownbutton
