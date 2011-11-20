@@ -26,12 +26,12 @@ public class TileEntityBankChest extends TileEntityChest {
 	}
 
 	@Override
-	public void t_() {
+	public void g() {
 		this.h -= 1;
 	}
 
 	@Override
-	public void e() {
+	public void f() {
 		this.h += 1;
 	}
 

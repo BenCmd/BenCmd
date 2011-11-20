@@ -36,7 +36,7 @@ public class EntityNPC extends EntityPlayer {
 			lastBounceTick = System.currentTimeMillis();
 		}
 		lastBounceId = entity.id;
-		super.b(entity);
+		super.a_(entity);
 	}
 
 	public void applyGravity() {
@@ -50,7 +50,7 @@ public class EntityNPC extends EntityPlayer {
 	}
 
 	public float checkYawDiff(float diff) {
-		for (this.aA = this.aE; diff < -180.0F; diff += 360.0F) {}
+		for (this.aC = this.aI; diff < -180.0F; diff += 360.0F) {}
 		while (diff >= 180.0F) {
 			diff -= 360.0F;
 		}
@@ -58,7 +58,7 @@ public class EntityNPC extends EntityPlayer {
 	}
 
 	public void forward() {
-		this.a(this.az, this.aA);
+		this.a(this.aB, this.aC);
 	}
 
 	public Random getRandom() {
@@ -66,6 +66,6 @@ public class EntityNPC extends EntityPlayer {
 	}
 
 	private boolean chunkLoaded() {
-		return this.bukkitEntity.getWorld().isChunkLoaded(this.E.x, this.E.z);
+		return this.bukkitEntity.getWorld().isChunkLoaded(this.F.x, this.F.z);
 	}
 }
