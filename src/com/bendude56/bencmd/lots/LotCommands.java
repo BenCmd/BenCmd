@@ -644,8 +644,6 @@ public class LotCommands implements Commands {
 		 * Returns all the lots in the lots database
 		 */
 
-		// TODO Fix to work with new BenCmdFile interface
-
 		if (args[0].equalsIgnoreCase("list")) {
 			if (!user.hasPerm("bencmd.lot.info")) {
 				user.sendMessage(ChatColor.RED + "You don't have permission to do that!");

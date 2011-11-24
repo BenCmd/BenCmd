@@ -1,6 +1,7 @@
 package com.bendude56.bencmd.advanced;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -13,6 +14,10 @@ import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.User;
 
 public class Grave {
+	public static List<Grave>						graves			= new ArrayList<Grave>();
+	public static HashMap<Player, List<ItemStack>>	returns			= new HashMap<Player, List<ItemStack>>();
+	
+	
 	private Block			g;
 	private Player			p;
 	private List<ItemStack>	i;
@@ -46,7 +51,7 @@ public class Grave {
 		if (t == 0) {
 			delete();
 			p.sendMessage(ChatColor.RED + "Your grave has crumbled into dust, taking your items along with it...");
-			BenCmd.getPlugin().graves.remove(this);
+			Grave.graves.remove(this);
 		} else if (t % 60 == 0) {
 			if (t == 60) {
 				p.sendMessage(ChatColor.RED + "Your grave will crumble in 1 minute...");
@@ -73,14 +78,14 @@ public class Grave {
 				p.getInventory().addItem(i);
 			}
 			delete();
-			BenCmd.getPlugin().graves.remove(this);
+			Grave.graves.remove(this);
 			p.sendMessage(ChatColor.GREEN + "You've reached your grave in time and your items are safe!");
 			return true;
 		} else {
 			User user = User.getUser(player);
 			if (user.hasPerm("bencmd.grave.destroy")) {
 				delete();
-				BenCmd.getPlugin().graves.remove(this);
+				Grave.graves.remove(this);
 				p.sendMessage(ChatColor.RED + "Your grave has been crushed by an admin, taking your items along with it...");
 				return true;
 			} else {

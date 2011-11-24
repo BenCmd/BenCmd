@@ -112,16 +112,16 @@ public class BenCmdEntityListener extends EntityListener {
 					toReturn.add(item);
 				}
 			}
-			BenCmd.getPlugin().returns.put(((Player) user.getHandle()), toReturn);
+			Grave.returns.put(((Player) user.getHandle()), toReturn);
 			return;
 		}
 		if (BenCmd.getMainProperties().getBoolean("gravesEnabled", true)) {
-			for (int i = 0; i < BenCmd.getPlugin().graves.size(); i++) {
-				Grave g = BenCmd.getPlugin().graves.get(i);
+			for (int i = 0; i < Grave.graves.size(); i++) {
+				Grave g = Grave.graves.get(i);
 				if (g.getPlayer().equals((Player) event.getEntity())) {
 					if (BenCmd.getMainProperties().getBoolean("newerGraveOverwrites", false)) {
 						g.delete();
-						BenCmd.getPlugin().graves.remove(i);
+						Grave.graves.remove(i);
 					} else {
 						return;
 					}
@@ -141,7 +141,7 @@ public class BenCmdEntityListener extends EntityListener {
 			graveSign.setLine(1, "R.I.P.");
 			graveSign.setLine(2, user.getDisplayName());
 			graveSign.update();
-			BenCmd.getPlugin().graves.add(new Grave(grave, (Player) event.getEntity(), event.getDrops(), BenCmd.getMainProperties().getInteger("graveDuration", 180)));
+			Grave.graves.add(new Grave(grave, (Player) event.getEntity(), event.getDrops(), BenCmd.getMainProperties().getInteger("graveDuration", 180)));
 			((Player) event.getEntity()).sendMessage(ChatColor.RED + "You have died... You can retrieve your items by breaking your gravestone...");
 			event.getDrops().clear();
 		}

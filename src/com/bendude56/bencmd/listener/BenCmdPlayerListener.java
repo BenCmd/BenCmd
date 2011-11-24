@@ -294,15 +294,15 @@ public class BenCmdPlayerListener extends PlayerListener {
 	private void quitFinalize(PlayerQuitEvent event) {
 
 		// Remove any of their graves, if applicable
-		for (int i = 0; i < BenCmd.getPlugin().graves.size(); i++) {
-			Grave g = BenCmd.getPlugin().graves.get(i);
+		for (int i = 0; i < Grave.graves.size(); i++) {
+			Grave g = Grave.graves.get(i);
 			if (g.getPlayer().equals(event.getPlayer())) {
 				g.delete();
-				BenCmd.getPlugin().graves.remove(i);
+				Grave.graves.remove(i);
 			}
 		}
-		if (BenCmd.getPlugin().returns.containsKey(event.getPlayer())) {
-			BenCmd.getPlugin().returns.remove(event.getPlayer());
+		if (Grave.returns.containsKey(event.getPlayer())) {
+			Grave.returns.remove(event.getPlayer());
 		}
 		User user = User.getUser(event.getPlayer());
 
@@ -342,15 +342,15 @@ public class BenCmdPlayerListener extends PlayerListener {
 	private void kickFinalize(PlayerKickEvent event) {
 
 		// Remove any of their graves, if applicable
-		for (int i = 0; i < BenCmd.getPlugin().graves.size(); i++) {
-			Grave g = BenCmd.getPlugin().graves.get(i);
+		for (int i = 0; i < Grave.graves.size(); i++) {
+			Grave g = Grave.graves.get(i);
 			if (g.getPlayer().equals(event.getPlayer())) {
 				g.delete();
-				BenCmd.getPlugin().graves.remove(i);
+				Grave.graves.remove(i);
 			}
 		}
-		if (BenCmd.getPlugin().returns.containsKey(event.getPlayer())) {
-			BenCmd.getPlugin().returns.remove(event.getPlayer());
+		if (Grave.returns.containsKey(event.getPlayer())) {
+			Grave.returns.remove(event.getPlayer());
 		}
 		User user = User.getUser(event.getPlayer());
 
@@ -505,11 +505,11 @@ public class BenCmdPlayerListener extends PlayerListener {
 	}
 
 	private void pvpRespawn(PlayerRespawnEvent event) {
-		if (BenCmd.getPlugin().returns.containsKey(event.getPlayer())) {
-			for (ItemStack i : BenCmd.getPlugin().returns.get(event.getPlayer())) {
+		if (Grave.returns.containsKey(event.getPlayer())) {
+			for (ItemStack i : Grave.returns.get(event.getPlayer())) {
 				event.getPlayer().getInventory().addItem(i);
 			}
-			BenCmd.getPlugin().returns.remove(event.getPlayer());
+			Grave.returns.remove(event.getPlayer());
 		}
 	}
 

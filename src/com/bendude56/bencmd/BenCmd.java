@@ -12,7 +12,6 @@ import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
@@ -79,7 +78,6 @@ import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -457,24 +455,22 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 
 	// END STATIC FILE METHODS
 
-	public final static boolean				debug			= false;
-	public final static int					buildId			= 38;
-	public final static int					cbbuild			= 1337;
-	public final static String				verLoc			= "http://cloud.github.com/downloads/BenCmd/BenCmd/version.txt";
-	public static String					devLoc			= "";
-	public static String					stableLoc		= "";
-	public static boolean					updateAvailable	= false;
-	public static String[]					devs;
-	public final static String				propDir			= "plugins/BenCmd/";
-	public final String[]					files			= { "action.db", "bank.db", "channels.db", "chest.db", "usage.db", "disp.db", "groups.db", "homes.db", "itembw.db", "items.txt", "kits.db", "lever.db", "lots.db", "main.properties", "npc.db", "portals.db", "prices.db", "protection.db", "shelves.db", "sparea.db", "tickets.db", "users.db", "warps.db" };
+	public final static boolean	debug			= false;
+	public final static int		buildId			= 39;
+	public final static int		cbbuild			= 1493;
+	public final static String	verLoc			= "http://cloud.github.com/downloads/BenCmd/BenCmd/version.txt";
+	public static String		devLoc			= "";
+	public static String		stableLoc		= "";
+	public static boolean		updateAvailable	= false;
+	public static String[]		devs;
+	public final static String	propDir			= "plugins/BenCmd/";
+	public final String[]		files			= { "action.db", "bank.db", "channels.db", "chest.db", "usage.db", "disp.db", "groups.db", "homes.db", "itembw.db", "items.txt", "kits.db", "lever.db", "lots.db", "main.properties", "npc.db", "portals.db", "prices.db", "protection.db", "shelves.db", "sparea.db", "tickets.db", "users.db", "warps.db" };
 
 	// TODO Move into own classes
-	public List<Location>					canSpread		= new ArrayList<Location>();
-	public List<Grave>						graves			= new ArrayList<Grave>();
-	public HashMap<Player, List<ItemStack>>	returns			= new HashMap<Player, List<ItemStack>>();
-	private Logger							bLog			= Logger.getLogger("Minecraft.BenCmd");
-	public FileHandler						fh;
-	public Calendar							clog;
+	public List<Location>		canSpread		= new ArrayList<Location>();
+	private Logger				bLog			= Logger.getLogger("Minecraft.BenCmd");
+	public FileHandler			fh;
+	public Calendar				clog;
 
 	public void logPermFail() {
 		incStat("permFail");
@@ -517,10 +513,10 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 	public void onDisable() {
 		bLog.info("BenCmd is shutting down...");
 		getServer().getScheduler().cancelTasks(this);
-		for (Grave g : graves) {
+		for (Grave g : Grave.graves) {
 			g.delete();
 		}
-		graves.clear();
+		Grave.graves.clear();
 		BenCmd.unloadAll(true);
 		BenCmdBlockListener.destroyInstance();
 		BenCmdPlayerListener.destroyInstance();

@@ -22,6 +22,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
 import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.User;
+import com.bendude56.bencmd.advanced.Grave;
 import com.bendude56.bencmd.advanced.Shelf;
 import com.bendude56.bencmd.invtools.InventoryBackend;
 import com.bendude56.bencmd.multiworld.Portal;
@@ -59,10 +60,10 @@ public class BenCmdBlockListener extends BlockListener {
 	}
 
 	private void bookshelfBreak(BlockBreakEvent event) {
-		for (int i = 0; i < BenCmd.getPlugin().graves.size(); i++) {
-			if (BenCmd.getPlugin().graves.get(i).getBlock().getLocation().equals(event.getBlock().getLocation())) {
+		for (int i = 0; i < Grave.graves.size(); i++) {
+			if (Grave.graves.get(i).getBlock().getLocation().equals(event.getBlock().getLocation())) {
 				event.setCancelled(true);
-				BenCmd.getPlugin().graves.get(i).destroyBy(event.getPlayer());
+				Grave.graves.get(i).destroyBy(event.getPlayer());
 				return;
 			}
 		}
