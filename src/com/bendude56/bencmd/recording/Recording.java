@@ -85,7 +85,7 @@ public class Recording implements Cloneable {
 	
 	public void trimToLastHour() {
 		for (RecordEntry e : entries) {
-			if (new Date().getTime() - e.getTime() > 60000) {
+			if (new Date().getTime() - e.getTime() > 3600000) {
 				entries.remove(e);
 			}
 		}
