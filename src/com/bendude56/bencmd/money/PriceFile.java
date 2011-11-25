@@ -61,7 +61,7 @@ public class PriceFile extends BenCmdFile {
 		items.clear();
 		for (int i = 0; i < getFile().values().size(); i++) {
 			int itemid;
-			int damage;
+			short damage;
 			double price;
 			int supply;
 			int supplydemand;
@@ -84,7 +84,7 @@ public class PriceFile extends BenCmdFile {
 				continue;
 			}
 			try {
-				damage = Integer.parseInt(((String) getFile().keySet().toArray()[i]).split(",")[1]);
+				damage = Short.parseShort(((String) getFile().keySet().toArray()[i]).split(",")[1]);
 			} catch (NumberFormatException e) {
 				BenCmd.log(Level.SEVERE, "A value in the price file couldn't be loaded (" + getFile().keySet().toArray()[i] + "): Damage is NaN");
 				continue;
@@ -126,9 +126,9 @@ public class PriceFile extends BenCmdFile {
 				continue;
 			}
 			if (isCurrency) {
-				items.put(itemid + "," + damage, new Currency(itemid, damage, price, supply, supplydemand, this));
+				items.put(itemid + "," + damage, new Currency(itemid, damage, price, supply, supplydemand));
 			} else {
-				items.put(itemid + "," + damage, new BuyableItem(itemid, damage, price, supply, supplydemand, this));
+				items.put(itemid + "," + damage, new BuyableItem(itemid, damage, price, supply, supplydemand));
 			}
 		}
 		if (nextUpdate == 0) {

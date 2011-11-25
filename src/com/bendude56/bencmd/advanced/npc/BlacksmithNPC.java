@@ -1,5 +1,6 @@
 package com.bendude56.bencmd.advanced.npc;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.bukkit.ChatColor;
@@ -389,8 +390,8 @@ public class BlacksmithNPC extends NPC implements Clickable {
 				p.sendMessage(ChatColor.RED + "This blacksmith can't repair that item!");
 			} else if (p.getItemInHand().getDurability() == 0) {
 				p.sendMessage(ChatColor.RED + "That item cannot be repaired further!");
-			} else if (BuyableItem.hasMoney(User.getUser(p), getRepairPrice(id))) {
-				BuyableItem.remMoney(User.getUser(p), getRepairPrice(id));
+			} else if (BuyableItem.hasMoney(User.getUser(p), getRepairPrice(id), new ArrayList<Material>())) {
+				BuyableItem.remMoney(User.getUser(p), getRepairPrice(id), new ArrayList<Material>());
 				p.getItemInHand().setDurability((short) 0);
 				p.sendMessage(ChatColor.GREEN + "That item has been repaired!");
 			} else {

@@ -521,10 +521,12 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 		BenCmdBlockListener.destroyInstance();
 		BenCmdPlayerListener.destroyInstance();
 		BenCmdEntityListener.destroyInstance();
-		BenCmdScreenListener.destroyInstance();
-		BenCmdSpoutListener.destroyInstance();
+		if (BenCmd.isSpoutConnected()) {
+			BenCmdScreenListener.destroyInstance();
+			BenCmdSpoutListener.destroyInstance();
+			BenCmdInventoryListener.destroyInstance();
+		}
 		BenCmdWorldListener.destroyInstance();
-		BenCmdInventoryListener.destroyInstance();
 		InventoryBackend.destroyInstance();
 		PluginDescriptionFile pdfFile = this.getDescription();
 		BenCmd.log(pdfFile.getName() + " v" + pdfFile.getVersion() + " has been disabled!");

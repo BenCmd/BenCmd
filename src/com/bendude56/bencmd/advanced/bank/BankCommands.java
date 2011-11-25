@@ -1,9 +1,11 @@
 package com.bendude56.bencmd.advanced.bank;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -52,8 +54,8 @@ public class BankCommands implements Commands {
 						BenCmd.getBankController().upgradeBank(user.getName());
 						user.sendMessage(ChatColor.GREEN + "Enjoy the extra bank space!");
 					} else {
-						if (BuyableItem.hasMoney(user, BenCmd.getMainProperties().getDouble("bankUpgradeCost", 4096))) {
-							BuyableItem.remMoney(user, BenCmd.getMainProperties().getDouble("bankUpgradeCost", 4096));
+						if (BuyableItem.hasMoney(user, BenCmd.getMainProperties().getDouble("bankUpgradeCost", 4096), new ArrayList<Material>())) {
+							BuyableItem.remMoney(user, BenCmd.getMainProperties().getDouble("bankUpgradeCost", 4096), new ArrayList<Material>());
 							BenCmd.getBankController().upgradeBank(user.getName());
 							BenCmd.log(user.getName() + " has upgraded their bank!");
 							user.sendMessage(ChatColor.GREEN + "Enjoy the extra bank space!");

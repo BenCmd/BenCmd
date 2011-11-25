@@ -1,5 +1,7 @@
 package com.bendude56.bencmd.advanced.npc;
 
+import java.util.ArrayList;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -34,8 +36,8 @@ public class BankManagerNPC extends NPC implements Clickable {
 		if (BenCmd.getBankController().getBank(p.getName()).isUpgraded()) {
 			p.sendMessage(ChatColor.RED + "Your bank has already been upgraded!");
 		} else {
-			if (BuyableItem.hasMoney(User.getUser(p), BenCmd.getMainProperties().getDouble("bankUpgradeCost", 4096))) {
-				BuyableItem.remMoney(User.getUser(p), BenCmd.getMainProperties().getDouble("bankUpgradeCost", 4096));
+			if (BuyableItem.hasMoney(User.getUser(p), BenCmd.getMainProperties().getDouble("bankUpgradeCost", 4096), new ArrayList<Material>())) {
+				BuyableItem.remMoney(User.getUser(p), BenCmd.getMainProperties().getDouble("bankUpgradeCost", 4096), new ArrayList<Material>());
 				BenCmd.getBankController().upgradeBank(p.getName());
 				BenCmd.log(p.getName() + " has upgraded their bank!");
 				p.sendMessage(ChatColor.GREEN + "Enjoy the extra bank space!");

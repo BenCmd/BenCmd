@@ -191,63 +191,6 @@ public class MoneyCommands implements Commands {
 			BenCmd.getMainProperties().setProperty("marketOpen", "true");
 			BenCmd.getMainProperties().saveFile("-BenCmd Main Config-");
 			Bukkit.broadcastMessage(ChatColor.GREEN + "The market is now open!");
-		} else if (args[0].equalsIgnoreCase("multiple")) {
-			if (!user.hasPerm("bencmd.market.properties")) {
-				user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
-				BenCmd.getPlugin().logPermFail();
-				return;
-			}
-			if (args.length != 2) {
-				user.sendMessage(ChatColor.YELLOW + "Proper use is /market multiple <multiple>");
-				return;
-			}
-			Double multiple;
-			try {
-				multiple = Double.parseDouble(args[1]);
-			} catch (NumberFormatException e) {
-				user.sendMessage(ChatColor.YELLOW + "Proper use is /market multiple <multiple>");
-				return;
-			}
-			BenCmd.getMainProperties().setProperty("marketMultiple", multiple.toString());
-			BenCmd.getMainProperties().saveFile("-BenCmd Main Config-");
-		} else if (args[0].equalsIgnoreCase("max")) {
-			if (!user.hasPerm("bencmd.market.properties")) {
-				user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
-				BenCmd.getPlugin().logPermFail();
-				return;
-			}
-			if (args.length != 2) {
-				user.sendMessage(ChatColor.YELLOW + "Proper use is /market max <max>");
-				return;
-			}
-			Double max;
-			try {
-				max = Double.parseDouble(args[1]);
-			} catch (NumberFormatException e) {
-				user.sendMessage(ChatColor.YELLOW + "Proper use is /market max <max>");
-				return;
-			}
-			BenCmd.getMainProperties().setProperty("marketMaxChange", max.toString());
-			BenCmd.getMainProperties().saveFile("-BenCmd Main Config-");
-		} else if (args[0].equalsIgnoreCase("min")) {
-			if (!user.hasPerm("bencmd.market.properties")) {
-				user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
-				BenCmd.getPlugin().logPermFail();
-				return;
-			}
-			if (args.length != 2) {
-				user.sendMessage(ChatColor.YELLOW + "Proper use is /market min <min>");
-				return;
-			}
-			Double min;
-			try {
-				min = Double.parseDouble(args[1]);
-			} catch (NumberFormatException e) {
-				user.sendMessage(ChatColor.YELLOW + "Proper use is /market min <min>");
-				return;
-			}
-			BenCmd.getMainProperties().setProperty("marketMin", min.toString());
-			BenCmd.getMainProperties().saveFile("-BenCmd Main Config-");
 		}
 	}
 
@@ -311,7 +254,7 @@ public class MoneyCommands implements Commands {
 				if (price == 0) {
 					user.sendMessage(ChatColor.RED + "That currency doesn't exist!");
 				} else {
-					Currency currency = new Currency(bitem.getItemId(), bitem.getDurability(), price, -1, 0, BenCmd.getMarketController());
+					Currency currency = new Currency(bitem.getItemId(), bitem.getDurability(), price, -1, 0);
 					BenCmd.getMarketController().remPrice(bitem);
 					BenCmd.getMarketController().savePrice(currency, true);
 					BenCmd.log(user.getDisplayName() + " has converted an item into a currency (ID: " + bitem.getItemId() + "," + bitem.getDurability() + ") with a price of " + price);
@@ -319,7 +262,7 @@ public class MoneyCommands implements Commands {
 				}
 			}
 		} else {
-			Currency currency = new Currency(item.getMaterial().getId(), item.getDamage(), price, -1, 0, BenCmd.getMarketController());
+			Currency currency = new Currency(item.getMaterial().getId(), (short) item.getDamage(), price, -1, 0);
 			BenCmd.getMarketController().savePrice(currency, true);
 			BenCmd.log(user.getDisplayName() + " has created a currency (ID: " + currency.getItemId() + "," + currency.getDurability() + ") with a price of " + price);
 			user.sendMessage(ChatColor.GREEN + "That currency was successfully created!");
@@ -349,7 +292,7 @@ public class MoneyCommands implements Commands {
 				if (price == 0) {
 					user.sendMessage(ChatColor.RED + "That item doesn't exist!");
 				} else {
-					BuyableItem newitem = new BuyableItem(bitem.getItemId(), bitem.getDurability(), price, -1, 0, BenCmd.getMarketController());
+					BuyableItem newitem = new BuyableItem(bitem.getItemId(), bitem.getDurability(), price, -1, 0);
 					BenCmd.getMarketController().remPrice(bitem);
 					BenCmd.getMarketController().savePrice(newitem, true);
 					BenCmd.log(user.getDisplayName() + " has converted an currency into an item (ID: " + bitem.getItemId() + "," + bitem.getDurability() + ") with a price of " + price);
@@ -368,7 +311,7 @@ public class MoneyCommands implements Commands {
 				}
 			}
 		} else {
-			BuyableItem newItem = new BuyableItem(item.getMaterial().getId(), item.getDamage(), price, 0, 0, BenCmd.getMarketController());
+			BuyableItem newItem = new BuyableItem(item.getMaterial().getId(), (short) item.getDamage(), price, 0, 0);
 			BenCmd.getMarketController().savePrice(newItem, true);
 			BenCmd.log(user.getDisplayName() + " has created a currency (ID: " + newItem.getItemId() + "," + newItem.getDurability() + ") with a price of " + price);
 			user.sendMessage(ChatColor.GREEN + "That item was successfully created!");
