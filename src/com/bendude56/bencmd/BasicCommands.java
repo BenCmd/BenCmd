@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+import net.minecraft.server.Block;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
@@ -12,6 +14,8 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.craftbukkit.block.CraftCreatureSpawner;
+import org.bukkit.craftbukkit.entity.CraftCreeper;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -105,6 +109,9 @@ public class BasicCommands implements Commands {
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("mob") && user.hasPerm("bencmd.spawnmob")) {
 			SpawnMob(args, user);
+			return true;
+		} else if (commandLabel.equalsIgnoreCase("spawner") && user.hasPerm("bencmd.spawnmob")) {
+			Spawner(args, user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("killall") && user.hasPerm("bencmd.spawnmob")) {
 			KillEntities(args, user);
@@ -580,6 +587,7 @@ public class BasicCommands implements Commands {
 		// Prepare for passengers
 		String[] passengers = args[0].split(",");
 		LivingEntity vehicle = null, passenger, mob;
+		Boolean charged = false;
 		String mobName;
 
 		// Spawn the mob(s)
@@ -587,9 +595,20 @@ public class BasicCommands implements Commands {
 			vehicle = null;
 			for (int p = 0; p < passengers.length; p++) {
 				mobName = getMobAlias(passengers[p]);
+				if (mobName.split(",").length == 2) {
+					if (mobName.split(",")[1].equalsIgnoreCase("1")) {
+						charged = true;
+					} else {
+						charged = false;
+					}
+				}
 				if (mobName != null) {
 					mob = ((Player) user.getHandle()).getWorld().spawnCreature(((Player) user.getHandle()).getLocation(), CreatureType.fromName(mobName));
-
+					
+					if (charged) {
+						((CraftCreeper) mob).setPowered(true);
+					}
+					
 					// Add up the passengers
 					if (vehicle == null && mob != null) {
 						vehicle = mob;
@@ -605,6 +624,32 @@ public class BasicCommands implements Commands {
 			}
 		}
 		user.sendMessage(ChatColor.GREEN + "" + mobCounter + " mobs spawned!");
+	}
+
+	public void Spawner(String args[], User user) {
+		if (user.isServer()) {
+			user.sendMessage("You can't do that from the console!");
+			return;
+		}
+		Player player = Bukkit.getPlayerExact(user.getName());
+		if (player.getTargetBlock(null, 4) instanceof CraftCreatureSpawner) {
+			if (args.length!= 1) {
+				user.sendMessage(ChatColor.RED + "Proper use is /spawner <creature>");
+				return;
+			}
+			String mob = getMobAlias(args[0]);
+			if (mob == null) {
+				user.sendMessage(ChatColor.RED + "Invalid mob type!");
+				return;
+			}
+			mob = mob.split(",")[0];
+			((CraftCreatureSpawner) player.getTargetBlock(null, 4)).setCreatureType(CreatureType.fromName(mob));
+			user.sendMessage(ChatColor.GREEN + "This spawner now spawns " + mob + "s.");
+			return; 
+		} else {
+			user.sendMessage(ChatColor.RED + "That is not a spawner! Make sure nothing is in the way!");
+			return;
+		}
 	}
 
 	public void KillEntities(String args[], User user) {
@@ -714,7 +759,9 @@ public class BasicCommands implements Commands {
 
 	private String getCraftMobAlias(String alias) {
 		if (alias.equalsIgnoreCase("creeper") || alias.equalsIgnoreCase("creepers") || alias.equalsIgnoreCase("craftcreeper") || alias.equalsIgnoreCase("craftcreepers")) {
-			alias = "CraftCreeper";
+			alias = "CraftCreeper,0";
+		} else if (alias.equalsIgnoreCase("chargedcreeper") || alias.equalsIgnoreCase("supercreeper") || alias.equalsIgnoreCase("poweredcreeper")) {
+			alias = "CraftCreeper,1";
 		} else if (alias.equalsIgnoreCase("zombie") || alias.equalsIgnoreCase("zombies") || alias.equalsIgnoreCase("craftzombie") || alias.equalsIgnoreCase("craftzombies")) {
 			alias = "CraftZombie";
 		} else if (alias.equalsIgnoreCase("skeleton") || alias.equalsIgnoreCase("skele") || alias.equalsIgnoreCase("skeletons") || alias.equalsIgnoreCase("skeles") || alias.equalsIgnoreCase("craftskeleton") || alias.equalsIgnoreCase("craftskeletons")) {

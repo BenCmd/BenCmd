@@ -98,6 +98,7 @@ public class InventoryCommands implements Commands {
 			return;
 		}
 		int Amount = 1;
+		
 		if (args.length >= 2) {
 			try {
 				Amount = Integer.parseInt(args[1]);

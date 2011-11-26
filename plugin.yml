@@ -188,6 +188,9 @@ commands:
     killall:
         usage:
         description: Kills entities
+    spawner:
+        usage:
+        description: Changes a spawner's mob
     status:
         usage:
         description: Gets someone's status (muted, jailed, reported)
