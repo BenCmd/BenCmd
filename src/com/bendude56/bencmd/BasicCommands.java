@@ -85,6 +85,9 @@ public class BasicCommands implements Commands {
 		} else if (commandLabel.equalsIgnoreCase("feed") && user.hasPerm("bencmd.feed.self")) {
 			Feed(args, user);
 			return true;
+		} else if (commandLabel.equalsIgnoreCase("level") && user.hasPerm("bencmd.level.self")) {
+			Level(args, user);
+			return true;
 		} else if (commandLabel.equalsIgnoreCase("bencmd")) {
 			BenCmd(args, user);
 			return true;
@@ -446,6 +449,43 @@ public class BasicCommands implements Commands {
 			} else {
 				user.sendMessage(ChatColor.RED + args[0] + " doens't exist or is not online.");
 			}
+		}
+	}
+	
+	public void Level(String[] args, User user) {
+		if (args.length == 0) {
+			user.sendMessage(ChatColor.YELLOW + "Proper use is /level <integer> [player]");
+			return;
+		}
+		if (args.length == 1) {
+			if (user.isServer()) {
+				user.sendMessage("You cannot set the server's experience level!");
+				return;
+			}
+			try {
+				Bukkit.getPlayerExact(user.getName()).setTotalExperience(Integer.parseInt(args[0]));
+				user.sendMessage(ChatColor.GREEN + "Your experience level has been set to " + args[0]);
+				return;
+			} catch (NumberFormatException e) {
+				user.sendMessage(ChatColor.RED + args[0] + " is not an integer!");
+				return;
+			}
+		} else if (user.hasPerm("bencmd.experience.other")) {
+			if (Bukkit.getPlayer(args[1]) == null) {
+				user.sendMessage(ChatColor.RED + args[1] + " does not exist!");
+				return;
+			}
+			try {
+				Bukkit.getPlayerExact(args[1]).setTotalExperience(Integer.parseInt(args[0]));
+				user.sendMessage(ChatColor.GREEN + args[1] + "'s experience has been set to " + args[1]);
+				return;
+			} catch (NumberFormatException e) {
+				user.sendMessage(ChatColor.RED + args[0] + " is not an integer!");
+				return;
+			}
+		} else {
+			user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
+			return;
 		}
 	}
 

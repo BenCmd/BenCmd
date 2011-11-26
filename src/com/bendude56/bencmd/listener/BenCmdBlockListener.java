@@ -190,6 +190,10 @@ public class BenCmdBlockListener extends BlockListener {
 		try {
 			User user = User.getUser(event.getPlayer());
 			Material material = ((Player) user.getHandle()).getWorld().getBlockAt(event.getBlock().getX(), event.getBlock().getY() - 1, event.getBlock().getZ()).getType();
+			if (user.isJailed() != null) {
+				event.setCancelled(true);
+				return;
+			}
 			if (event.getBlock().getLocation().getBlockY() <= 0) {
 				event.setCancelled(true);
 				return;
@@ -272,6 +276,24 @@ public class BenCmdBlockListener extends BlockListener {
 			BenCmd.getRecordingFile().logEvent(e);
 		}
 	}
+	
+	private void jailedDestroyCheck(BlockBreakEvent event) {
+		if (event.isCancelled()) {
+			return;
+		}
+		if (User.getUser(event.getPlayer()).isJailed() != null) {
+			event.setCancelled(true);
+		}
+	}
+	
+	private void jailedPlaceCheck(BlockPlaceEvent event) {
+		if (event.isCancelled()) {
+			return;
+		}
+		if (User.getUser(event.getPlayer()).isJailed() != null) {
+			event.setCancelled(true);
+		}
+	}
 
 	// Split-off events
 
@@ -281,12 +303,14 @@ public class BenCmdBlockListener extends BlockListener {
 		dcudDestroy(event);
 		lockDestroyCheck(event);
 		logBlockBreak(event);
+		jailedDestroyCheck(event);
 	}
 
 	public void onBlockPlace(BlockPlaceEvent event) {
 		lotPlaceCheck(event);
 		newPortalCheck(event);
 		logBlockPlace(event);
+		jailedPlaceCheck(event);
 	}
 
 	public void onBlockIgnite(BlockIgniteEvent event) {

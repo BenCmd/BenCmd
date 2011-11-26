@@ -172,6 +172,7 @@ public class ActionFile extends BenCmdFile {
 						}
 					} else if (action.getActionType() == ActionType.BAN) {
 						BenCmd.getPermissionManager().getActionLog().log(new ActionLogEntry(ActionLogType.UNBAN_AUTO, action.getUser(), "N/A"));
+						Bukkit.getPlayerExact(action.getUser()).setBanned(false);
 					}
 					removeAction(action);
 				}

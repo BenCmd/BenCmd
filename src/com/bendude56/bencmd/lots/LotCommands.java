@@ -667,10 +667,13 @@ public class LotCommands implements Commands {
 						message = "";
 					}
 				}
+				if (message != "") {
+					user.sendMessage(ChatColor.GRAY + message);
+				}
 			} else if (args.length >= 2) {
 				if (args[1].equalsIgnoreCase("here")) {
 					List<Lot> list = BenCmd.getLots().getLots(Bukkit.getPlayerExact(user.getName()).getLocation(), false);
-					user.sendMessage(ChatColor.GRAY + "Lots at this location: (" + list.size() + ", " + BenCmd.getLots().getLots(true).size() + " total)");
+					user.sendMessage(ChatColor.GRAY + "Lots at this location: (" + list.size() + ")");
 					int items = 0;
 					String message = "";
 
@@ -685,6 +688,9 @@ public class LotCommands implements Commands {
 							items = 0;
 							message = "";
 						}
+					}
+					if (message != "") {
+						user.sendMessage(ChatColor.GRAY + message);
 					}
 				} else if (args[1].equalsIgnoreCase("owner")) {
 					String owner;
@@ -710,6 +716,9 @@ public class LotCommands implements Commands {
 							message = "";
 						}
 					}
+					if (message != "") {
+						user.sendMessage(ChatColor.GRAY + message);
+					}
 				} else if (args[1].equalsIgnoreCase("guest")) {
 					String guest;
 					if (args.length == 2) {
@@ -734,6 +743,9 @@ public class LotCommands implements Commands {
 							message = "";
 						}
 					}
+					if (message != "") {
+						user.sendMessage(ChatColor.GRAY + message);
+					}
 				} else if (args[1].equalsIgnoreCase("permission") || args[1].equalsIgnoreCase("build") || args[1].equalsIgnoreCase("canbuild")) {
 					String player;
 					if (args.length == 2) {
@@ -757,6 +769,9 @@ public class LotCommands implements Commands {
 							items = 0;
 							message = "";
 						}
+					}
+					if (message != "") {
+						user.sendMessage(ChatColor.GRAY + message);
 					}
 				} else {
 					user.sendMessage(ChatColor.RED + "Unknown query. User here, owner, guest, or build.");

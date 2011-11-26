@@ -352,8 +352,14 @@ public class LotFile extends BenCmdFile {
 	public List<Lot> getLots(Location loc, boolean subs) {
 		List<Lot> list = new ArrayList<Lot>();
 		for (String l : lots.keySet()) {
-			if ((getLot(l).getSubID().equalsIgnoreCase("0") || subs) && getLot(l).withinLot(loc)) {
-				list.add(getLot(l));
+			if (getLot(l).withinLot(loc)) {
+				if (!subs){
+					if (!list.contains(getLot(getLot(l).getLotID()))) {
+						list.add(getLot(getLot(l).getLotID()));
+					}
+				} else {
+					list.add(getLot(l));
+				}
 			}
 		}
 		return list;

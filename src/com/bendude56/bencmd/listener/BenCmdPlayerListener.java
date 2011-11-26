@@ -504,6 +504,22 @@ public class BenCmdPlayerListener extends PlayerListener {
 		}
 	}
 
+	private void jailBucketEmpty(PlayerBucketEmptyEvent event) {
+		Player player = event.getPlayer();
+		
+		if (BenCmd.getPermissionManager().getUserFile().getUser(player.getName()).isJailed() != null) {
+			event.setCancelled(true);
+		}
+	}
+	
+	private void jailBucketFill(PlayerBucketFillEvent event) {
+		Player player = event.getPlayer();
+		
+		if (BenCmd.getPermissionManager().getUserFile().getUser(player.getName()).isJailed() != null) {
+			event.setCancelled(true);
+		}
+	}
+	
 	private void pvpRespawn(PlayerRespawnEvent event) {
 		if (Grave.returns.containsKey(event.getPlayer())) {
 			for (ItemStack i : Grave.returns.get(event.getPlayer())) {
@@ -862,11 +878,13 @@ public class BenCmdPlayerListener extends PlayerListener {
 
 	public void onPlayerBucketEmpty(PlayerBucketEmptyEvent event) {
 		lotBucketEmpty(event);
+		jailBucketEmpty(event);
 		logBucket(event);
 	}
 
 	public void onPlayerBucketFill(PlayerBucketFillEvent event) {
 		lotBucketFill(event);
+		jailBucketFill(event);
 	}
 
 	public void onPlayerRespawn(PlayerRespawnEvent event) {
