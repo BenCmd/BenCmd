@@ -626,10 +626,10 @@ public class BasicCommands implements Commands {
 
 	public void Spawner(String args[], User user) {
 		if (user.isServer()) {
-			user.sendMessage("You can't do that from the console!");
+			user.sendMessage(ChatColor.RED + "The server cannot do that!");
 			return;
 		}
-		Player player = Bukkit.getPlayerExact(user.getName());
+		Player player = ((Player) user.getHandle());
 		if (player.getTargetBlock(null, 4) instanceof CraftCreatureSpawner) {
 			if (args.length!= 1) {
 				user.sendMessage(ChatColor.RED + "Proper use is /spawner <creature>");
@@ -665,7 +665,7 @@ public class BasicCommands implements Commands {
 			range = -1;
 		}
 		for (int i = 0; i < args.length; i++) {
-			mobToKill = getCraftMobAlias(args[i]);
+			mobToKill = "Craft" + getMobAlias(args[i]);
 			if (mobToKill != null) {
 				for (int ii = 0; ii < ((Player) user.getHandle()).getWorld().getEntities().size(); ii++) {
 					String entity = ((Player) user.getHandle()).getWorld().getEntities().get(ii).toString();
@@ -680,7 +680,7 @@ public class BasicCommands implements Commands {
 				}
 			}
 		}
-		user.sendMessage(ChatColor.GREEN + "" + mobCounter + " mobs were killed!");
+		user.sendMessage(ChatColor.GREEN + String.valueOf(mobCounter) + " mobs were killed!");
 	}
 
 	private double getDistance(Location loc1, Location loc2, boolean checkY) {
@@ -749,63 +749,6 @@ public class BasicCommands implements Commands {
 			alias = "Villager";
 		} else if (alias.equalsIgnoreCase("dragon") || alias.equalsIgnoreCase("enderdragon") || alias.equalsIgnoreCase("dragons") || alias.equalsIgnoreCase("blackdragon")) {
 			alias = "EnderDragon";
-		} else {
-			alias = null;
-		}
-		return alias;
-	}
-
-	private String getCraftMobAlias(String alias) {
-		if (alias.equalsIgnoreCase("creeper") || alias.equalsIgnoreCase("creepers") || alias.equalsIgnoreCase("craftcreeper") || alias.equalsIgnoreCase("craftcreepers")) {
-			alias = "CraftCreeper,0";
-		} else if (alias.equalsIgnoreCase("chargedcreeper") || alias.equalsIgnoreCase("supercreeper") || alias.equalsIgnoreCase("poweredcreeper")) {
-			alias = "CraftCreeper,1";
-		} else if (alias.equalsIgnoreCase("zombie") || alias.equalsIgnoreCase("zombies") || alias.equalsIgnoreCase("craftzombie") || alias.equalsIgnoreCase("craftzombies")) {
-			alias = "CraftZombie";
-		} else if (alias.equalsIgnoreCase("skeleton") || alias.equalsIgnoreCase("skele") || alias.equalsIgnoreCase("skeletons") || alias.equalsIgnoreCase("skeles") || alias.equalsIgnoreCase("craftskeleton") || alias.equalsIgnoreCase("craftskeletons")) {
-			alias = "CraftSkeleton";
-		} else if (alias.equalsIgnoreCase("spider") || alias.equalsIgnoreCase("spiders") || alias.equalsIgnoreCase("craftspider") || alias.equalsIgnoreCase("craftspiders")) {
-			alias = "CraftSpider";
-		} else if (alias.equalsIgnoreCase("pig") || alias.equalsIgnoreCase("piggy") || alias.equalsIgnoreCase("pigs") || alias.equalsIgnoreCase("craftpig") || alias.equalsIgnoreCase("craftpigs")) {
-			alias = "CraftPig";
-		} else if (alias.equalsIgnoreCase("chicken") || alias.equalsIgnoreCase("chickens") || alias.equalsIgnoreCase("craftchicken") || alias.equalsIgnoreCase("craftchickens")) {
-			alias = "CraftChicken";
-		} else if (alias.equalsIgnoreCase("cow") || alias.equalsIgnoreCase("cows") || alias.equalsIgnoreCase("craftcow") || alias.equalsIgnoreCase("craftcows")) {
-			alias = "CraftCow";
-		} else if (alias.equalsIgnoreCase("sheep") || alias.equalsIgnoreCase("sheeps") || alias.equalsIgnoreCase("craftsheep") || alias.equalsIgnoreCase("craftsheeps")) {
-			alias = "CraftSheep";
-		} else if (alias.equalsIgnoreCase("wolf") || alias.equalsIgnoreCase("wolves") || alias.equalsIgnoreCase("craftwolf") || alias.equalsIgnoreCase("craftwolves")) {
-			alias = "CraftWolf";
-		} else if (alias.equalsIgnoreCase("squid") || alias.equalsIgnoreCase("squids") || alias.equalsIgnoreCase("craftsquid") || alias.equalsIgnoreCase("craftsquids")) {
-			alias = "CraftSquid";
-		} else if (alias.equalsIgnoreCase("slime") || alias.equalsIgnoreCase("slimes") || alias.equalsIgnoreCase("craftslime") || alias.equalsIgnoreCase("craftslimes")) {
-			alias = "CraftSlime";
-		} else if (alias.equalsIgnoreCase("ghast") || alias.equalsIgnoreCase("ghasts") || alias.equalsIgnoreCase("craftghast") || alias.equalsIgnoreCase("craftghasts")) {
-			alias = "CraftGhast";
-		} else if (alias.equalsIgnoreCase("pigzombie") || alias.equalsIgnoreCase("zombiepigman") || alias.equalsIgnoreCase("zombiepig") || alias.equalsIgnoreCase("pigzombies") || alias.equalsIgnoreCase("zombiepigmen") || alias.equalsIgnoreCase("zombiepigs") || alias.equalsIgnoreCase("craftpigzombies") || alias.equalsIgnoreCase("craftpigzombie")) {
-			alias = "CraftPigZombie";
-		} else if (alias.equalsIgnoreCase("giant") || alias.equalsIgnoreCase("bigzombie") || alias.equalsIgnoreCase("giantzombie") || alias.equalsIgnoreCase("craftgiant") || alias.equalsIgnoreCase("craftgiants")) {
-			alias = "CraftGiant";
-		} else if (alias.equalsIgnoreCase("monster") || alias.equalsIgnoreCase("human") || alias.equalsIgnoreCase("steve") || alias.equalsIgnoreCase("craftmonster") || alias.equalsIgnoreCase("craftmonsters")) {
-			alias = "CraftMonster";
-		} else if (alias.equalsIgnoreCase("enderman") || alias.equalsIgnoreCase("eman") || alias.equalsIgnoreCase("endman") || alias.equalsIgnoreCase("endermen") || alias.equalsIgnoreCase("emen") || alias.equalsIgnoreCase("endmen")) {
-			alias = "CraftEnderman";
-		} else if (alias.equalsIgnoreCase("bluespider") || alias.equalsIgnoreCase("cavespider") || alias.equalsIgnoreCase("smallspider") || alias.equalsIgnoreCase("bluespiders") || alias.equalsIgnoreCase("cavespiders") || alias.equalsIgnoreCase("smallspiders")) {
-			alias = "CraftCaveSpider";
-		} else if (alias.equalsIgnoreCase("silverfish") || alias.equalsIgnoreCase("sliverfish") || alias.equalsIgnoreCase("caterpillar") || alias.equalsIgnoreCase("caterpillars")) {
-			alias = "CraftSilverfish";
-		} else if (alias.equalsIgnoreCase("mooshroom") || alias.equalsIgnoreCase("redcow") || alias.equalsIgnoreCase("mooshrooms") || alias.equalsIgnoreCase("redcows")) {
-			alias = "CraftMushroomCow";
-		} else if (alias.equalsIgnoreCase("snowman") || alias.equalsIgnoreCase("snowgolem")) {
-			alias = "CraftSnowman";
-		} else if (alias.equalsIgnoreCase("blaze") || alias.equalsIgnoreCase("blazes")) {
-			alias = "CraftBlaze";
-		} else if (alias.equalsIgnoreCase("magmacube") || alias.equalsIgnoreCase("lavaslime") || alias.equalsIgnoreCase("magmacubes") || alias.equalsIgnoreCase("lavaslimes")) {
-			alias = "CraftLavaSlime";
-		} else if (alias.equalsIgnoreCase("npc") || alias.equalsIgnoreCase("testificate") || alias.equalsIgnoreCase("npcs") || alias.equalsIgnoreCase("villager") || alias.equalsIgnoreCase("villagers")) {
-			alias = "CraftVillager";
-		} else if (alias.equalsIgnoreCase("dragon") || alias.equalsIgnoreCase("enderdragon") || alias.equalsIgnoreCase("dragons") || alias.equalsIgnoreCase("blackdragon")) {
-			alias = "CraftEnderDragon";
 		} else {
 			alias = null;
 		}

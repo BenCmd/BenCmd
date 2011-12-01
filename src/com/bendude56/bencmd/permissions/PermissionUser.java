@@ -155,11 +155,11 @@ public class PermissionUser {
 
 	public String listPermissions() {
 		String list = "";
-		for (String s : user.getPermissions(true)) {
+		for (String s : user.getPermissions(true, false)) {
 			if (s.isEmpty()) {
 				continue;
 			}
-			if (user.getPermissions(false).contains(s)) {
+			if (user.getPermissions(false, false).contains(s)) {
 				s = ChatColor.GREEN + s + ChatColor.GRAY;
 			} else {
 				s = ChatColor.GRAY + s;

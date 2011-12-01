@@ -952,6 +952,8 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 	}
 
 	public class TimeFreeze implements Runnable {
+		int t;
+		
 		@Override
 		public void run() {
 			if (Calendar.getInstance().get(Calendar.DAY_OF_MONTH) != clog.get(Calendar.DAY_OF_MONTH)) {
@@ -960,6 +962,14 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 			BenCmd.getRedstoneFile().timeTick();
 			time.tick();
 			record.getTemporaryRecording().trimToLastHour();
+			if (t == 20) {
+				for (Grave g : Grave.graves) {
+					g.tick();
+				}
+				t = 0;
+			} else {
+				t++;
+			}
 		}
 	}
 

@@ -30,12 +30,6 @@ public class Grave {
 		i = new ArrayList<ItemStack>();
 		i.addAll(items);
 		t = secondsToPickUp;
-		// TODO Have all graves tick on the same task
-		d = Bukkit.getServer().getScheduler().scheduleAsyncRepeatingTask(BenCmd.getPlugin(), new Runnable() {
-			public void run() {
-				tick();
-			}
-		}, 20, 20);
 	}
 
 	public Block getBlock() {
@@ -65,7 +59,7 @@ public class Grave {
 		} else if (t == 5) {
 			p.sendMessage(ChatColor.RED + "Your grave will crumble in 5...");
 		} else if (t < 5) {
-			p.sendMessage(ChatColor.RED + "" + t + "...");
+			p.sendMessage(ChatColor.RED + String.valueOf(t) + "...");
 		}
 	}
 

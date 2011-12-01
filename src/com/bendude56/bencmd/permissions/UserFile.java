@@ -34,7 +34,7 @@ public class UserFile extends BenCmdFile {
 
 	public void updateUser(InternalUser user, boolean saveFile) {
 		String value = "";
-		for (String perm : user.getPermissions(false)) {
+		for (String perm : user.getPermissions(false, true)) {
 			if (value.isEmpty()) {
 				value += perm;
 			} else {

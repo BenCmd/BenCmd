@@ -26,7 +26,7 @@ public class GroupFile extends BenCmdFile {
 	public void updateGroup(InternalGroup group, boolean saveFile) {
 		groups.put(group.getName(), group);
 		String permissions = "";
-		for (String permission : group.getPermissions(false)) {
+		for (String permission : group.getPermissions(false, true)) {
 			if (permissions.isEmpty()) {
 				permissions += permission;
 			} else {
@@ -143,10 +143,10 @@ public class GroupFile extends BenCmdFile {
 
 	public List<PermissionGroup> getAllUserGroups(InternalUser user) {
 		List<PermissionGroup> groups = new ArrayList<PermissionGroup>();
-		List<PermissionGroup> toCheck = getUserGroups(user);
+		List<InternalGroup> toCheck = getUserGroups(user);
 		while (!toCheck.isEmpty()) {
 			toCheck.addAll(getGroupGroups(toCheck.get(0)));
-			groups.add(toCheck.get(0));
+			groups.add(new PermissionGroup(toCheck.get(0)));
 			toCheck.remove(0);
 		}
 		return groups;
@@ -162,11 +162,11 @@ public class GroupFile extends BenCmdFile {
 		return groups;
 	}
 
-	public List<PermissionGroup> getUserGroups(InternalUser user) {
-		List<PermissionGroup> groups = new ArrayList<PermissionGroup>();
+	public List<InternalGroup> getUserGroups(InternalUser user) {
+		List<InternalGroup> groups = new ArrayList<InternalGroup>();
 		for (InternalGroup internal : this.groups.values()) {
 			if (internal.userInGroup(new PermissionUser(user))) {
-				groups.add(new PermissionGroup(internal));
+				groups.add(internal);
 			}
 		}
 		return groups;

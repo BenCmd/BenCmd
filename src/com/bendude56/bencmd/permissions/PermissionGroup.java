@@ -127,11 +127,11 @@ public class PermissionGroup {
 
 	public String listPermissions() {
 		String list = "";
-		for (String s : group.getPermissions(true)) {
+		for (String s : group.getPermissions(true, false)) {
 			if (s.isEmpty()) {
 				continue;
 			}
-			if (group.getPermissions(false).contains(s)) {
+			if (group.getPermissions(false, false).contains(s)) {
 				s = ChatColor.GREEN + s + ChatColor.GRAY;
 			} else {
 				s = ChatColor.GRAY + s;

@@ -2,7 +2,6 @@ package com.bendude56.bencmd.permissions;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -50,9 +49,6 @@ public class PermissionCommands implements Commands {
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("unjail") && user.hasPerm("bencmd.action.unjail")) {
 			Unjail(args, user);
-			return true;
-		} else if (commandLabel.equalsIgnoreCase("setjail") && user.hasPerm("bencmd.action.setjail")) {
-			SetJail(args, user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("ban") && (user.hasPerm("bencmd.action.ban") || Bukkit.getPlayerExact(user.getName()).isOp())) {
 			Ban(args, user);
@@ -664,17 +660,6 @@ public class PermissionCommands implements Commands {
 		}
 		user.sendMessage(ChatColor.GREEN + "That user has been unjailed!");
 	}
-	
-	public void SetJail(String[] args, User user) {
-		if (user.isServer()) {
-			user.sendMessage(ChatColor.RED + "You can't do that from the console!");
-			return;
-		}
-		BenCmd.getPermissionManager().setJailWarp(Bukkit.getPlayerExact(user.getName()).getLocation());
-		user.sendMessage(ChatColor.GREEN + "New jail location has been set!");
-		BenCmd.log(Level.INFO, user.getName() + " has changed the jail location.");
-		return;
-	}
 
 	public void Ban(String[] args, User user) {
 		if (args.length < 1 || args.length > 2) {
@@ -682,11 +667,11 @@ public class PermissionCommands implements Commands {
 			return;
 		}
 		PermissionUser puser2;
-		if ((puser2 = PermissionUser.matchUser(args[0])) == null && !Bukkit.getPlayerExact(args[0]).isBanned()) {
+		if ((puser2 = PermissionUser.matchUser(args[0])) == null) {
 			user.sendMessage(ChatColor.RED + "That user could not be found!");
 			return;
 		}
-		if (puser2.isBanned() != null || Bukkit.getPlayerExact(puser2.getName()).isBanned()) {
+		if (puser2.isBanned() != null) {
 			user.sendMessage(ChatColor.RED + "That user is already banned!");
 			return;
 		}
@@ -714,7 +699,7 @@ public class PermissionCommands implements Commands {
 			}
 			duration *= getValue(durationType);
 		}
-		if (duration == -1 && !user.hasPerm("bencmd.action.permaban") && !Bukkit.getPlayerExact(user.getName()).isOp()) {
+		if (duration == -1 && !user.hasPerm("bencmd.action.permaban")) {
 			user.sendMessage(ChatColor.RED + "You cannot permanently ban somebody! Specify a time limit!");
 			BenCmd.getPlugin().logPermFail();
 			return;
@@ -730,7 +715,6 @@ public class PermissionCommands implements Commands {
 			user2.kick("You've been banned!");
 		}
 		user.sendMessage(ChatColor.RED + "That user has been banned!");
-		Bukkit.getPlayerExact(puser2.getName()).setBanned(true);
 	}
 
 	public void Unban(String[] args, User user) {
@@ -751,7 +735,6 @@ public class PermissionCommands implements Commands {
 			BenCmd.getPermissionManager().getActionLog().log(new ActionLogEntry(ActionLogType.UNBAN_MAN, puser2.getName(), user.getName()));
 			BenCmd.getPermissionManager().getActionFile().removeAction(puser2.isBanned());
 		}
-		Bukkit.getPlayerExact(args[0]).setBanned(false);
 		user.sendMessage(ChatColor.GREEN + "That user has been unbanned!");
 	}
 

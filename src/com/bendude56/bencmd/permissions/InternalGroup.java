@@ -1,7 +1,10 @@
 package com.bendude56.bencmd.permissions;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.bukkit.ChatColor;
 
@@ -17,7 +20,7 @@ class InternalGroup {
 	private Integer			color;
 	private Integer			level;
 
-	static InternalGroup highestLevel(List<InternalGroup> groups) {
+	static InternalGroup highestLevel(Iterable<InternalGroup> groups) {
 		InternalGroup highest = null;
 		for (InternalGroup group : groups) {
 			if (highest == null || group.getLevel() > highest.getLevel()) {
@@ -75,12 +78,20 @@ class InternalGroup {
 		return false;
 	}
 
-	public List<String> getPermissions(boolean testGroup) {
+	public List<String> getPermissions(boolean testGroup, boolean includeVars) {
 		List<String> perms = new ArrayList<String>();
-		perms.addAll(permissions);
+		if (includeVars) {
+			perms.addAll(permissions);
+		} else {
+			for (String p : permissions) {
+				if (!p.contains("=")) {
+					perms.add(p);
+				}
+			}
+		}
 		if (testGroup) {
 			for (InternalGroup group : BenCmd.getPermissionManager().getGroupFile().getGroupGroups(this)) {
-				perms.addAll(group.getPermissions(true));
+				perms.addAll(group.getPermissions(true, includeVars));
 			}
 		}
 		return perms;
@@ -92,7 +103,7 @@ class InternalGroup {
 		} else if (!perm.contains(".") && !perm.equals("*")) {
 			throw new InvalidPermissionError(perm, "Permissions in the root namespace are not allowed!");
 		}
-		List<String> perms = getPermissions(testGroup);
+		List<String> perms = getPermissions(testGroup, true);
 		List<String> possibleStars = new ArrayList<String>();
 		String currentNamespace = "";
 		for (String splt : perm.split("\\.")) {
@@ -120,12 +131,21 @@ class InternalGroup {
 		} else if (!variable.contains(".")) {
 			throw new InvalidPermissionError(variable, "Variables in the root namespace are not allowed!");
 		}
-		for (String perm : getPermissions(false)) {
+		for (String perm : getPermissions(false, true)) {
 			if (perm.startsWith(variable + "=")) {
 				return perm.split("=", 2)[1];
 			}
 		}
-		if (def == null) {
+		HashMap<InternalGroup, String> s = new HashMap<InternalGroup, String>();
+		for (InternalGroup i : BenCmd.getPermissionManager().getGroupFile().getGroupGroups(this)) {
+			String v = i.getVar(variable, null);
+			if (v != null) {
+				s.put(i, v);
+			}
+		}
+		if (!s.isEmpty()) {
+			return s.get(highestLevel(s.keySet()));
+		} else if (def == null) {
 			return null;
 		} else {
 			addPerm(variable + "=" + def);
@@ -142,6 +162,7 @@ class InternalGroup {
 		if (getVar(variable) != null) {
 			remVar(variable);
 		}
+		addPerm(variable + "=" + value);
 	}
 
 	protected List<String> getGroups() {
