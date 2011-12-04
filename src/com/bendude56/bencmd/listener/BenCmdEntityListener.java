@@ -58,8 +58,11 @@ public class BenCmdEntityListener extends EntityListener {
 	}
 
 	public static void destroyInstance() {
+		instance.enabled = false;
 		instance = null;
 	}
+	
+	private boolean enabled = true;
 
 	private BenCmdEntityListener() {
 		PluginManager pm = Bukkit.getPluginManager();
@@ -359,6 +362,9 @@ public class BenCmdEntityListener extends EntityListener {
 	}
 
 	public void onEntityDeath(EntityDeathEvent event) {
+		if (!enabled) {
+			return;
+		}
 		pvpDie(event);
 		playerDie(event);
 		mobDrop(event);
@@ -366,19 +372,31 @@ public class BenCmdEntityListener extends EntityListener {
 	}
 
 	public void onEntityTarget(EntityTargetEvent event) {
+		if (!enabled) {
+			return;
+		}
 		endermanPassive(event);
 		creeperPassive(event);
 	}
 
 	public void onExplosionPrime(ExplosionPrimeEvent event) {
+		if (!enabled) {
+			return;
+		}
 		tntExplode(event);
 	}
 
 	public void onEndermanPickup(EndermanPickupEvent event) {
+		if (!enabled) {
+			return;
+		}
 		endermanGriefTake(event);
 	}
 
 	public void onEndermanPlace(EndermanPlaceEvent event) {
+		if (!enabled) {
+			return;
+		}
 		endermanGriefPlace(event);
 	}
 }

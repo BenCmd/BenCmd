@@ -26,8 +26,11 @@ public class BenCmdInventoryListener extends InventoryListener {
 	}
 
 	public static void destroyInstance() {
+		instance.enabled = false;
 		instance = null;
 	}
+	
+	private boolean enabled = true;
 
 	private BenCmdInventoryListener() {
 		PluginManager pm = Bukkit.getPluginManager();
@@ -35,6 +38,9 @@ public class BenCmdInventoryListener extends InventoryListener {
 	}
 
 	public void onInventoryCraft(InventoryCraftEvent event) {
+		if (!enabled) {
+			return;
+		}
 		User user = User.getUser(event.getPlayer());
 		Material m = event.getResult().getType();
 		if (user.hasPerm("bencmd.inv.craft.disallow." + m.getId(), false) && !user.hasPerm("bencmd.inv.craft.override")) {

@@ -80,8 +80,11 @@ public class BenCmdPlayerListener extends PlayerListener {
 	}
 
 	public static void destroyInstance() {
+		instance.enabled = false;
 		instance = null;
 	}
+	
+	private boolean enabled;
 
 	public HashMap<String, Corner>			corner	= new HashMap<String, Corner>();
 	private HashMap<Player, List<SPArea>>	areas	= new HashMap<Player, List<SPArea>>();
@@ -848,22 +851,37 @@ public class BenCmdPlayerListener extends PlayerListener {
 	// Split-off events
 
 	public void onPlayerChat(PlayerChatEvent event) {
+		if (!enabled) {
+			return;
+		}
 		chat(event);
 	}
 
 	public void onPlayerJoin(PlayerJoinEvent event) {
+		if (!enabled) {
+			return;
+		}
 		userInit(event);
 	}
 
 	public void onPlayerQuit(PlayerQuitEvent event) {
+		if (!enabled) {
+			return;
+		}
 		quitFinalize(event);
 	}
 
 	public void onPlayerKick(PlayerKickEvent event) {
+		if (!enabled) {
+			return;
+		}
 		kickFinalize(event);
 	}
 
 	public void onPlayerInteract(PlayerInteractEvent event) {
+		if (!enabled) {
+			return;
+		}
 		logWand(event);
 		if (event.isCancelled()) {
 			return;
@@ -877,48 +895,78 @@ public class BenCmdPlayerListener extends PlayerListener {
 	}
 
 	public void onPlayerBucketEmpty(PlayerBucketEmptyEvent event) {
+		if (!enabled) {
+			return;
+		}
 		lotBucketEmpty(event);
 		jailBucketEmpty(event);
 		logBucket(event);
 	}
 
 	public void onPlayerBucketFill(PlayerBucketFillEvent event) {
+		if (!enabled) {
+			return;
+		}
 		lotBucketFill(event);
 		jailBucketFill(event);
 	}
 
 	public void onPlayerRespawn(PlayerRespawnEvent event) {
+		if (!enabled) {
+			return;
+		}
 		pvpRespawn(event);
 	}
 
 	public void onPlayerMove(PlayerMoveEvent event) {
+		if (!enabled) {
+			return;
+		}
 		sendSkins(event.getPlayer(), event.getTo());
 		areaMoveCheck(event);
 	}
 
 	public void onPlayerPortal(PlayerPortalEvent event) {
+		if (!enabled) {
+			return;
+		}
 		checkPortal(event);
 		flyPortal(event);
 	}
 
 	public void onPlayerTeleport(PlayerTeleportEvent event) {
+		if (!enabled) {
+			return;
+		}
 		sendSkins(event.getPlayer(), event.getTo());
 		flyTeleport(event);
 	}
 
 	public void onPlayerLogin(PlayerLoginEvent event) {
+		if (!enabled) {
+			return;
+		}
 		loginCheck(event);
 	}
 
 	public void onPlayerPickupItem(PlayerPickupItemEvent event) {
+		if (!enabled) {
+			return;
+		}
 		jailPickupCheck(event);
 	}
 
 	public void onPlayerDropItem(PlayerDropItemEvent event) {
+		if (!enabled) {
+			return;
+		}
 		jailDropCheck(event);
 	}
 
 	public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
+		if (!enabled) {
+			return;
+		}
 		npcInteractEntity(event);
 	}
 

@@ -26,8 +26,11 @@ public class BenCmdScreenListener extends ScreenListener {
 	}
 
 	public static void destroyInstance() {
+		instance.enabled = false;
 		instance = null;
 	}
+	
+	private boolean enabled = true;
 
 	private BenCmdScreenListener() {
 		PluginManager pm = Bukkit.getPluginManager();
@@ -75,6 +78,9 @@ public class BenCmdScreenListener extends ScreenListener {
 	// Split-off events
 
 	public void onButtonClick(ButtonClickEvent event) {
+		if (!enabled) {
+			return;
+		}
 		buttonNPC(event);
 		buttonStatus(event);
 	}

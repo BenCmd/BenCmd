@@ -27,8 +27,11 @@ public class BenCmdWorldListener extends WorldListener {
 	}
 
 	public static void destroyInstance() {
+		instance.enabled = false;
 		instance = null;
 	}
+	
+	private boolean enabled = true;
 
 	private BenCmdWorldListener() {
 		PluginManager pm = Bukkit.getPluginManager();
@@ -39,20 +42,32 @@ public class BenCmdWorldListener extends WorldListener {
 	}
 
 	public void onWorldLoad(WorldLoadEvent event) {
+		if (!enabled) {
+			return;
+		}
 		BenCmd.getNPCFile().reloadNPCs();
 	}
 
 	public void onWorldUnload(WorldUnloadEvent event) {
+		if (!enabled) {
+			return;
+		}
 		BenCmd.getNPCFile().reloadNPCs();
 	}
 
 	public void onChunkLoad(ChunkLoadEvent event) {
+		if (!enabled) {
+			return;
+		}
 		for (NPC npc : BenCmd.getNPCFile().inChunk(event.getChunk())) {
 			npc.spawn();
 		}
 	}
 
 	public void onChunkUnload(ChunkUnloadEvent event) {
+		if (!enabled) {
+			return;
+		}
 		if (event.isCancelled()) {
 			return;
 		}

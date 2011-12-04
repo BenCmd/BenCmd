@@ -46,8 +46,11 @@ public class BenCmdBlockListener extends BlockListener {
 	}
 
 	public static void destroyInstance() {
+		instance.enabled = false;
 		instance = null;
 	}
+	
+	private boolean enabled = true;
 
 	private BenCmdBlockListener() {
 		PluginManager pm = Bukkit.getPluginManager();
@@ -298,6 +301,9 @@ public class BenCmdBlockListener extends BlockListener {
 	// Split-off events
 
 	public void onBlockBreak(BlockBreakEvent event) {
+		if (!enabled) {
+			return;
+		}
 		lotBreakCheck(event);
 		bookshelfBreak(event);
 		dcudDestroy(event);
@@ -307,6 +313,9 @@ public class BenCmdBlockListener extends BlockListener {
 	}
 
 	public void onBlockPlace(BlockPlaceEvent event) {
+		if (!enabled) {
+			return;
+		}
 		lotPlaceCheck(event);
 		newPortalCheck(event);
 		logBlockPlace(event);
@@ -314,18 +323,30 @@ public class BenCmdBlockListener extends BlockListener {
 	}
 
 	public void onBlockIgnite(BlockIgniteEvent event) {
+		if (!enabled) {
+			return;
+		}
 		igniteCheck(event);
 	}
 
 	public void onBlockBurn(BlockBurnEvent event) {
+		if (!enabled) {
+			return;
+		}
 		burnCheck(event);
 	}
 
 	public void onSignChange(SignChangeEvent event) {
+		if (!enabled) {
+			return;
+		}
 		signLog(event);
 	}
 
 	public void onBlockRedstoneChange(BlockRedstoneEvent event) {
+		if (!enabled) {
+			return;
+		}
 		unlDispRedstone(event);
 	}
 

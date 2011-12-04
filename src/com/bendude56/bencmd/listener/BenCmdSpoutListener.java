@@ -27,8 +27,11 @@ public class BenCmdSpoutListener extends SpoutListener {
 	}
 
 	public static void destroyInstance() {
+		instance.enabled = false;
 		instance = null;
 	}
+	
+	private boolean enabled = true;
 
 	private BenCmdSpoutListener() {
 		PluginManager pm = Bukkit.getPluginManager();
@@ -37,6 +40,9 @@ public class BenCmdSpoutListener extends SpoutListener {
 
 	@Override
 	public void onSpoutCraftEnable(SpoutCraftEnableEvent event) {
+		if (!enabled) {
+			return;
+		}
 		SpoutPlayer p = SpoutManager.getPlayer(event.getPlayer());
 		if (p.isSpoutCraftEnabled()) {
 			for (NPC n : BenCmd.getNPCFile().allNPCs()) {
