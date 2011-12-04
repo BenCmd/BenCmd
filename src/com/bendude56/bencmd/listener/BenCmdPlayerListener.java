@@ -84,7 +84,7 @@ public class BenCmdPlayerListener extends PlayerListener {
 		instance = null;
 	}
 	
-	private boolean enabled;
+	private boolean enabled = true;
 
 	public HashMap<String, Corner>			corner	= new HashMap<String, Corner>();
 	private HashMap<Player, List<SPArea>>	areas	= new HashMap<Player, List<SPArea>>();
