@@ -48,6 +48,9 @@ public class UserFile extends BenCmdFile {
 	}
 
 	public void removeUser(PermissionUser user) {
+		for (PermissionGroup g : BenCmd.getPermissionManager().getGroupFile().getUserGroups(user)) {
+			g.removeUser(user);
+		}
 		getFile().remove(user.getName());
 		users.remove(user.getName());
 		saveFile();
