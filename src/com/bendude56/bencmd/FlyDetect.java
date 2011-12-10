@@ -263,7 +263,7 @@ public class FlyDetect {
 			try {
 				for (Player player : Bukkit.getOnlinePlayers()) {
 					if (User.getUser(player).hasPerm("bencmd.allowfly")) {
-						return;
+						continue;
 					}
 					Location loc = player.getLocation();
 					if (!lastL.containsKey(player)) {
