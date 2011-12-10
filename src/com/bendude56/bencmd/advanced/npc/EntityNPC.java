@@ -2,6 +2,9 @@ package com.bendude56.bencmd.advanced.npc;
 
 import java.util.Random;
 
+import org.bukkit.Bukkit;
+import org.bukkit.craftbukkit.CraftServer;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import net.minecraft.server.EntityHuman;
@@ -68,4 +71,11 @@ public class EntityNPC extends EntityPlayer {
 	private boolean chunkLoaded() {
 		return this.bukkitEntity.getWorld().isChunkLoaded(this.F.x, this.F.z);
 	}
+
+	@Override
+	public Entity getBukkitEntity() {
+		return new CraftNPC((CraftServer) Bukkit.getServer(), this);
+	}
+	
+	
 }
