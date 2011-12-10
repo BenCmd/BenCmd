@@ -63,7 +63,7 @@ public class PathableNPC extends NPC {
 	}
 
 	public boolean inLiquid() {
-		return enpc.fireTicks > 0 || enpc.airTicks < 20;
+		return enpc.fireTicks > 0;
 	}
 
 	public void jump() {

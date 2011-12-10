@@ -199,6 +199,13 @@ public class BasicCommands implements Commands {
 				} else {
 					user.sendMessage(ChatColor.GRAY + "General channel: " + ChatColor.RED + "Channels disabled");
 				}
+				/*if (BenCmd.getMainServer() != null) {
+					user.sendMessage(ChatColor.GRAY + "Main server connection: " + ChatColor.GREEN + "Connected");
+				} else if (BenCmd.getMainProperties().getBoolean("connectMainServer", true)) {
+					user.sendMessage(ChatColor.GRAY + "Main server connection: " + ChatColor.YELLOW + "Disabled");
+				} else {
+					user.sendMessage(ChatColor.GRAY + "Main server connection: " + ChatColor.RED + "Not connected");
+				}*/
 			} else {
 				user.sendMessage(ChatColor.GRAY + "Invalid debug command");
 			}

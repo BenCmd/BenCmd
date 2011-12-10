@@ -13,25 +13,25 @@ public class BCMap {
 	}
 
 	public void zoomIn() {
-		if (map.e != 0) {
-			map.e -= 1;
+		if (map.scale != 0) {
+			map.scale -= 1;
 		}
-		for (int i = 0; i < map.f.length; i++) {
-			map.f[i] = 0x00;
+		for (int i = 0; i < map.colors.length; i++) {
+			map.colors[i] = 0x00;
 		}
 	}
 
 	public void zoomOut() {
-		if (map.e != 4) {
-			map.e += 1;
+		if (map.scale != 4) {
+			map.scale += 1;
 		}
-		for (int i = 0; i < map.f.length; i++) {
-			map.f[i] = 0x00;
+		for (int i = 0; i < map.colors.length; i++) {
+			map.colors[i] = 0x00;
 		}
 	}
 
 	public void setCenter(int x, int z) {
-		map.b = x;
-		map.c = z;
+		map.centerX = x;
+		map.centerZ = z;
 	}
 }

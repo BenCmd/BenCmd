@@ -30,6 +30,7 @@ import com.bendude56.bencmd.advanced.redstone.RedstoneFile;
 import com.bendude56.bencmd.chat.ChatCommands;
 import com.bendude56.bencmd.chat.channels.ChatChannelCommands;
 import com.bendude56.bencmd.chat.channels.ChatChannelController;
+// import com.bendude56.bencmd.comms.MainServer;
 import com.bendude56.bencmd.invisible.Invisibility;
 import com.bendude56.bencmd.invisible.InvisibleCommands;
 import com.bendude56.bencmd.invtools.DispChest;
@@ -118,6 +119,7 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 	private static PluginProperties			usage;
 	private static TimeManager				time;
 	private static RecordingFile			record;
+	// private static MainServer				mains;
 
 	public static MainPermissions getPermissionManager() {
 		return pManager;
@@ -241,6 +243,17 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 	public static RecordingFile getRecordingFile() {
 		return record;
 	}
+	
+	/*public static MainServer getMainServer() {
+		return mains;
+	}
+	
+	public static void disconnectMainServer() {
+		try {
+			mains.close();
+		} catch (IOException e) { }
+		mains = null;
+	}*/
 
 	public static void log(Exception e) {
 		Logger.getLogger("Minecraft").log(Level.SEVERE, e.getMessage(), e);
@@ -401,6 +414,21 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 			log(e);
 		}
 		time = new TimeManager();
+		/*if (BenCmd.getMainProperties().getBoolean("connectMainServer", true)) {
+			try {
+				mains = new MainServer();
+			} catch (Exception e) {
+				if (e.getCause() != null && e.getCause().getMessage().equals("Connection refused")) {
+					log(Level.WARNING, "BenCmd main server is not running on the provided IP! Some functions may no longer work...");
+					log(Level.WARNING, "To retry the connection later, use /bencmd connect");
+				} else {
+					log(Level.SEVERE, "Unknown error connecting to BenCmd main server!");
+					log(e);
+				}
+			}
+		} else {
+			log(Level.INFO, "Skipping connection to BenCmd server...");
+		}*/
 	}
 
 	protected static void unloadAll(boolean save) {
@@ -424,6 +452,11 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 		bc = null;
 		warps = null;
 		homes = null;
+		if (npcs != null) {
+			for (NPC n : npcs.allNPCs()) {
+				n.despawn();
+			}
+		}
 		npcs = null;
 		portals = null;
 		rf = null;
@@ -451,6 +484,12 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 		usage = null;
 		time = null;
 		record = null;
+		/*if (mains != null) {
+			try {
+				mains.close();
+			} catch (IOException e) { }
+		}
+		mains = null;*/
 	}
 
 	// END STATIC FILE METHODS

@@ -5,9 +5,9 @@ import org.bukkit.craftbukkit.entity.CraftPlayer;
 import net.minecraft.server.ContainerPlayer;
 import net.minecraft.server.EntityHuman;
 import net.minecraft.server.EntityPlayer;
-import net.minecraft.server.InventoryPlayer;
+import net.minecraft.server.PlayerInventory;
 
-public class ViewableInventory extends InventoryPlayer {
+public class ViewableInventory extends PlayerInventory {
 
 	public static void replInv(CraftPlayer player) {
 		EntityPlayer entityplayer = player.getHandle();
@@ -17,7 +17,7 @@ public class ViewableInventory extends InventoryPlayer {
 		player.setHandle(entityplayer);
 	}
 
-	public ViewableInventory(InventoryPlayer inv) {
+	public ViewableInventory(PlayerInventory inv) {
 		super(inv.d);
 		this.armor = inv.armor;
 		this.items = inv.items;
