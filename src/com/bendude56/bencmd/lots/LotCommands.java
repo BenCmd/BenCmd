@@ -20,6 +20,7 @@ import com.bendude56.bencmd.listener.BenCmdPlayerListener;
 import com.bendude56.bencmd.lots.sparea.DamageArea;
 import com.bendude56.bencmd.lots.sparea.DropInfo;
 import com.bendude56.bencmd.lots.sparea.DropTable;
+import com.bendude56.bencmd.lots.sparea.GroupArea;
 import com.bendude56.bencmd.lots.sparea.HealArea;
 import com.bendude56.bencmd.lots.sparea.MsgArea;
 import com.bendude56.bencmd.lots.sparea.PVPArea;
@@ -1644,8 +1645,74 @@ public class LotCommands implements Commands {
 				}
 				BenCmd.getAreas().addArea(new TRArea(BenCmd.getAreas().nextId(), c1, c2, time));
 				user.sendMessage(ChatColor.GREEN + "That area is now dedicated as a time-lock Area!");
+			} else if (args[1].equalsIgnoreCase("group")) {
+				if (!user.hasPerm("bencmd.area.create.group")) {
+					user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
+					BenCmd.getPlugin().logPermFail();
+					return;
+				}
+				int up, down;
+				String group;
+				Location c1 = l.corner.get(user.getName()).corner1, c2 = l.corner.get(user.getName()).corner2;
+				if (args.length == 3) {
+					group = args[2];
+					up = 0;
+					down = 0;
+				} else if (args.length == 5) {
+					try {
+						group = args[2];
+						up = Integer.parseInt(args[3]);
+						down = Integer.parseInt(args[4]);
+					} catch (NumberFormatException e) {
+						user.sendMessage(ChatColor.YELLOW + "Proper usage: /area new group <group> [<ext up> <ext down>] ");
+						return;
+					}
+				} else {
+					user.sendMessage(ChatColor.YELLOW + "Proper usage: /area new group <group> [<ext up> <ext down>] ");
+					return;
+				}
+				if (up != 0) {
+					if (c1.getBlockY() > c2.getBlockY()) {
+						if (up == -1) {
+							c1.setY(128);
+						} else if (c1.getBlockX() + up > 128) {
+							c1.setY(128);
+						} else {
+							c1.setY(c1.getBlockX() + up);
+						}
+					} else {
+						if (up == -1) {
+							c2.setY(128);
+						} else if (c2.getBlockX() + up > 128) {
+							c2.setY(128);
+						} else {
+							c2.setY(c2.getBlockX() + up);
+						}
+					}
+				}
+				if (down != 0) {
+					if (c1.getBlockY() > c2.getBlockY()) {
+						if (down == -1) {
+							c2.setY(0);
+						} else if (c2.getBlockX() - down < 0) {
+							c2.setY(0);
+						} else {
+							c2.setY(c1.getBlockX() - down);
+						}
+					} else {
+						if (down == -1) {
+							c1.setY(0);
+						} else if (c1.getBlockX() - down < 0) {
+							c1.setY(0);
+						} else {
+							c1.setY(c1.getBlockX() - down);
+						}
+					}
+				}
+				BenCmd.getAreas().addArea(new GroupArea(BenCmd.getAreas().nextId(), c1, c2, group));
+				user.sendMessage(ChatColor.GREEN + "That area is now dedicated as a group-locked area!");
 			} else {
-				user.sendMessage(ChatColor.YELLOW + "Proper usage: /area new {pvp|msg|heal|dmg|time} [options]");
+				user.sendMessage(ChatColor.YELLOW + "Proper usage: /area new {pvp|msg|heal|dmg|time|group} [options]");
 				return;
 			}
 		} else if (args[0].equalsIgnoreCase("delete")) {
@@ -1912,6 +1979,29 @@ public class LotCommands implements Commands {
 				e.setMinTime(time);
 			} else {
 				user.sendMessage(ChatColor.YELLOW + "Proper usage: /area mtime <seconds>");
+				return;
+			}
+		} else if (args[0].equalsIgnoreCase("group")) {
+			if (!user.hasPerm("bencmd.area.create.group")) {
+				user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
+				BenCmd.getPlugin().logPermFail();
+				return;
+			}
+			if (args.length == 2) {
+				GroupArea e = null;
+				for (SPArea a : BenCmd.getAreas().listAreas()) {
+					if (a instanceof GroupArea && a.insideArea(((Player) user.getHandle()).getLocation())) {
+						e = (GroupArea) a;
+						break;
+					}
+				}
+				if (e == null) {
+					user.sendMessage(ChatColor.RED + "You aren't standing inside a group-locked area...");
+					return;
+				}
+				e.setGroup(args[1]);
+			} else {
+				user.sendMessage(ChatColor.YELLOW + "Proper usage: /area group <group>");
 				return;
 			}
 		} else {

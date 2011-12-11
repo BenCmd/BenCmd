@@ -52,6 +52,7 @@ import com.bendude56.bencmd.chat.ChatChecker;
 import com.bendude56.bencmd.chat.SlowMode;
 import com.bendude56.bencmd.invtools.InventoryBackend;
 import com.bendude56.bencmd.lots.Corner;
+import com.bendude56.bencmd.lots.sparea.GroupArea;
 import com.bendude56.bencmd.lots.sparea.MsgArea;
 import com.bendude56.bencmd.lots.sparea.PVPArea;
 import com.bendude56.bencmd.lots.sparea.SPArea;
@@ -676,6 +677,61 @@ public class BenCmdPlayerListener extends PlayerListener {
 						}
 						p.sendMessage(((MsgArea) a).getLeaveMessage());
 						areas.get(p).remove(a);
+					}
+				}
+			}
+			if (a instanceof GroupArea) {
+				if (a.insideArea(p.getLocation()) && !((GroupArea) a).canEnter(User.getUser(p))) {
+					ignore.add(p);
+					p.sendMessage(ChatColor.RED + "You do not have permission to enter this area!");
+					int c = 1;
+					while (true) {
+						Location f = p.getLocation();
+						f.setX(f.getX() + c);
+						if (!a.insideArea(f) && f.getBlock().getType() == Material.AIR) {
+							event.setTo(f);
+							event.setCancelled(false);
+							ignore.remove(p);
+							return;
+						}
+						f.setX(f.getX() - (c * 2));
+						if (!a.insideArea(f) && f.getBlock().getType() == Material.AIR) {
+							event.setTo(f);
+							event.setCancelled(false);
+							ignore.remove(p);
+							return;
+						}
+						f.setX(f.getX() + c);
+						f.setZ(f.getZ() + c);
+						if (!a.insideArea(f) && f.getBlock().getType() == Material.AIR) {
+							event.setTo(f);
+							event.setCancelled(false);
+							ignore.remove(p);
+							return;
+						}
+						f.setZ(f.getZ() - (c * 2));
+						if (!a.insideArea(f) && f.getBlock().getType() == Material.AIR) {
+							event.setTo(f);
+							event.setCancelled(false);
+							ignore.remove(p);
+							return;
+						}
+						f.setZ(f.getZ() + c);
+						f.setY(f.getY() + c);
+						if (!a.insideArea(f) && f.getBlock().getType() == Material.AIR) {
+							event.setTo(f);
+							event.setCancelled(false);
+							ignore.remove(p);
+							return;
+						}
+						f.setY(f.getY() - (c * 2));
+						if (!a.insideArea(f) && f.getBlock().getType() == Material.AIR) {
+							event.setTo(f);
+							event.setCancelled(false);
+							ignore.remove(p);
+							return;
+						}
+						c += 1;
 					}
 				}
 			}

@@ -49,6 +49,8 @@ public class SPAreaFile extends BenCmdFile {
 					areas.put(id, new DamageArea(key, value));
 				} else if (type.equals("tr")) {
 					areas.put(id, new TRArea(key, value));
+				} else if (type.equals("grp")) {
+					areas.put(id, new GroupArea(key, value));
 				} else {
 					BenCmd.log(Level.WARNING, "SPArea " + key + " is invalid and was ignored.");
 					continue;
