@@ -33,7 +33,7 @@ public class GroupArea extends SPArea {
 	}
 	
 	public boolean canEnter(User u) {
-		return !BenCmd.getPermissionManager().getGroupFile().groupExists(group) || BenCmd.getPermissionManager().getGroupFile().getGroup(group).userInGroup(u);
+		return !BenCmd.getPermissionManager().getGroupFile().groupExists(group) || u.inGroup(BenCmd.getPermissionManager().getGroupFile().getGroup(group));
 	}
 
 }
