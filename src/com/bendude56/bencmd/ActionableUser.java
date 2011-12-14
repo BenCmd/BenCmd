@@ -143,6 +143,7 @@ public class ActionableUser extends WarpableUser {
 			throw new UnsupportedOperationException();
 		}
 		((Player) getHandle()).setFoodLevel(20);
+		((Player) getHandle()).setSaturation(1.0F);
 	}
 
 	public void makeGod() {

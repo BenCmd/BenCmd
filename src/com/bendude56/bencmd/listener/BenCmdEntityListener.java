@@ -208,7 +208,7 @@ public class BenCmdEntityListener extends EntityListener {
 			return;
 		} else if (event.getEntity() instanceof Enderman) {
 			Enderman ender = (Enderman) event.getEntity();
-			if (ender.getCarriedMaterial() != null) {
+			if (ender.getCarriedMaterial().getItemType() != Material.AIR) {
 				ItemStack block = new org.bukkit.inventory.ItemStack(ender.getCarriedMaterial().getItemType(), 1);
 				event.getDrops().add(block);
 			}

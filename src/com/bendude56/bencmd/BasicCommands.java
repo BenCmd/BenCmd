@@ -181,7 +181,7 @@ public class BasicCommands implements Commands {
 				user.sendMessage(ChatColor.GRAY + "Supported CraftBukkit version: " + BenCmd.cbbuild);
 				int cb;
 				try {
-					cb = Integer.parseInt(Bukkit.getVersion().split("-")[5].split(" ")[0].replace("b", "").replace("jnks", ""));
+					cb = Integer.parseInt(Bukkit.getVersion().split("-")[4].split(" ")[0].replace("b", "").replace("jnks", ""));
 				} catch (NumberFormatException e) {
 					cb = -1;
 				}

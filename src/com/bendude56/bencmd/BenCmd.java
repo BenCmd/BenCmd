@@ -843,7 +843,7 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 		checkForUpdates();
 		Integer v = null;
 		try {
-			v = Integer.parseInt(getServer().getVersion().split("-")[5].split(" ")[0].replace("b", "").replace("jnks", ""));
+			v = Integer.parseInt(getServer().getVersion().split("-")[4].split(" ")[0].replace("b", "").replace("jnks", ""));
 		} catch (IndexOutOfBoundsException e) {
 			BenCmd.log(Level.WARNING, "Cannot determine CraftBukkit build... Version check will be skipped...");
 		} catch (NumberFormatException e) {
