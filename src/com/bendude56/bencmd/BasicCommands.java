@@ -544,26 +544,32 @@ public class BasicCommands implements Commands {
 			try {
 				pageToShow = Integer.parseInt(args[0]);
 			} catch (NumberFormatException e) {
-				user.sendMessage(ChatColor.RED + args[0] + " is an invalid page number!");
+				Help.ShowHelp(args[0], user);
 				return;
 			}
 		}
 		List<BCommand> commands = getCommands(user);
 		int max;
 		if (pageToShow > (max = (int) Math.ceil((commands.size() - 1) / 6) + 1)) {
-			user.sendMessage(ChatColor.RED + "There are only " + max + " pages!");
+			user.sendMessage(ChatColor.RED + "There are only " + max
+					+ " pages!");
 			return;
 		} else if (pageToShow <= 0) {
-			user.sendMessage(ChatColor.RED + "There are no negative pages.");
+			user.sendMessage(ChatColor.RED
+					+ "There are no negative pages.");
 			return;
 		}
 		int i = (pageToShow - 1) * 6;
-		user.sendMessage(ChatColor.YELLOW + "Displaying help page " + ChatColor.RED + pageToShow + ChatColor.YELLOW + " of " + ChatColor.RED + max + ChatColor.YELLOW + ":");
+		user.sendMessage(ChatColor.YELLOW + "Displaying help page "
+				+ ChatColor.RED + pageToShow + ChatColor.YELLOW + " of "
+				+ ChatColor.RED + max + ChatColor.YELLOW + ":");
 		while (i < (pageToShow - 1) * 6 + 6) {
 			if (i >= commands.size()) {
 				break;
 			}
-			user.sendMessage(ChatColor.GREEN + commands.get(i).getName() + ChatColor.WHITE + " - " + ChatColor.GRAY + commands.get(i).getDescription());
+			user.sendMessage(ChatColor.GREEN + commands.get(i).getName()
+					+ ChatColor.WHITE + " - " + ChatColor.GRAY
+					+ commands.get(i).getDescription());
 			i++;
 		}
 	}
