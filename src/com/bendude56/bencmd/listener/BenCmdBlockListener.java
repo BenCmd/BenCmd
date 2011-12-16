@@ -147,7 +147,7 @@ public class BenCmdBlockListener extends BlockListener {
 
 		if (!BenCmd.getLots().canBuildHere(player, event.getBlock().getLocation())) {
 			event.setCancelled(true);
-			player.sendMessage("You cannot build here.");
+			player.sendMessage(ChatColor.RED + "You cannot build here.");
 		}
 	}
 
@@ -156,7 +156,7 @@ public class BenCmdBlockListener extends BlockListener {
 
 		if (!BenCmd.getLots().canBuildHere(player, event.getBlock().getLocation())) {
 			event.setCancelled(true);
-			player.sendMessage("You cannot build here.");
+			player.sendMessage(ChatColor.RED + "You cannot build here.");
 		}
 	}
 

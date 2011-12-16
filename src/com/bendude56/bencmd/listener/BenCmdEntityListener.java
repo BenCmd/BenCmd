@@ -30,6 +30,9 @@ import org.bukkit.event.entity.EntityListener;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.painting.PaintingBreakByEntityEvent;
+import org.bukkit.event.painting.PaintingBreakEvent;
+import org.bukkit.event.painting.PaintingPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
 
@@ -72,6 +75,8 @@ public class BenCmdEntityListener extends EntityListener {
 		pm.registerEvent(Event.Type.EXPLOSION_PRIME, this, Event.Priority.Highest, BenCmd.getPlugin());
 		pm.registerEvent(Event.Type.ENDERMAN_PICKUP, this, Event.Priority.Highest, BenCmd.getPlugin());
 		pm.registerEvent(Event.Type.ENDERMAN_PLACE, this, Event.Priority.Highest, BenCmd.getPlugin());
+		pm.registerEvent(Event.Type.PAINTING_BREAK, this, Event.Priority.Lowest, BenCmd.getPlugin());
+		pm.registerEvent(Event.Type.PAINTING_PLACE, this, Event.Priority.Lowest, BenCmd.getPlugin());
 	}
 
 	private void pvpHit(EntityDamageEvent e) {
@@ -353,6 +358,25 @@ public class BenCmdEntityListener extends EntityListener {
 		}
 		return null;
 	}
+	
+	private void paintingPlaceCheck(PaintingPlaceEvent event) {
+		Player player = event.getPlayer();
+
+		if (!BenCmd.getLots().canBuildHere(player, event.getBlock().getLocation())) {
+			event.setCancelled(true);
+			player.sendMessage(ChatColor.RED + "You cannot build here.");
+		}
+	}
+	
+	private void paintingBreakCheck(PaintingBreakEvent event) {
+		if (event instanceof PaintingBreakByEntityEvent && ((PaintingBreakByEntityEvent)event).getRemover() instanceof Player) {
+			Player player = (Player) ((PaintingBreakByEntityEvent)event).getRemover();
+			if (!BenCmd.getLots().canBuildHere(player, event.getPainting().getLocation())) {
+				event.setCancelled(true);
+				player.sendMessage(ChatColor.RED + "You cannot build here.");
+			}
+		}
+	}
 
 	// Split-off events
 
@@ -398,5 +422,19 @@ public class BenCmdEntityListener extends EntityListener {
 			return;
 		}
 		endermanGriefPlace(event);
+	}
+
+	public void onPaintingBreak(PaintingBreakEvent event) {
+		if (!enabled) {
+			return;
+		}
+		paintingBreakCheck(event);
+	}
+
+	public void onPaintingPlace(PaintingPlaceEvent event) {
+		if (!enabled) {
+			return;
+		}
+		paintingPlaceCheck(event);
 	}
 }
