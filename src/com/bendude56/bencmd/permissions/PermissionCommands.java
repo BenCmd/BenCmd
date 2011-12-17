@@ -68,42 +68,50 @@ public class PermissionCommands implements Commands {
 
 	public void User(String[] args, User user) {
 		if (args.length == 0 || args[0].equalsIgnoreCase("help")) {
-			user.sendMessage(ChatColor.YELLOW + "Proper use is: /user <name> {add|remove|info|+-<permissions>}");
-			user.sendMessage(ChatColor.YELLOW + "   -<name> is the name of the user.");
-			user.sendMessage(ChatColor.YELLOW + "   -Use add to add a user, and remove to delete one.");
-			user.sendMessage(ChatColor.YELLOW + "   -Use info to see info on that user.");
-			user.sendMessage(ChatColor.YELLOW + "   -Otherwise, type +<permission> or -<permission> to add/remove permissions.");
+			user.sendMessage(ChatColor.YELLOW + "Proper use is: /user <name> {add|delete|info|perms|+-<permissions>}");
+			user.sendMessage(ChatColor.YELLOW + "   - <name> is the name of the user.");
+			user.sendMessage(ChatColor.YELLOW + "   - Use add to add a user, and remove to delete one.");
+			user.sendMessage(ChatColor.YELLOW + "   - Use info to see info on that user.");
+			user.sendMessage(ChatColor.YELLOW + "   - Use perms to list that user's permissions.");
+			user.sendMessage(ChatColor.YELLOW + "   - Otherwise, type +<permission> or -<permission> to add/remove permissions.");
 			return;
 		}
 		PermissionUser user2 = BenCmd.getPermissionManager().getUserFile().getUser(args[0]);
-		if (args[1].equalsIgnoreCase("remove")) {
+		if (args[1].equalsIgnoreCase("remove") || args[1].equalsIgnoreCase("delete")) {
 			if (user2 == null) {
 				user.sendMessage(ChatColor.RED + "That user doesn't exist!");
 			} else {
+				user.sendMessage(ChatColor.GREEN + "User " + user2.getColor() + user2.getName() + ChatColor.GREEN + " was successfully deleted!");
+				BenCmd.log(user2.getName() + " was deleted from the BenCmd database!");
 				BenCmd.getPermissionManager().getUserFile().removeUser(user2);
-				user.sendMessage(ChatColor.GREEN + "User " + args[0] + " was successfully removed!");
-				BenCmd.log("User " + args[0] + " has been removed!");
 			}
-		} else if (args[1].equalsIgnoreCase("add")) {
+		} else if (args[1].equalsIgnoreCase("add") || args[1].equalsIgnoreCase("create")) {
 			if (user2 != null) {
-				user.sendMessage(ChatColor.RED + "That user already exists!");
+				user.sendMessage(user2.getColor() + user2.getName() + ChatColor.RED + " already exists in the database!");
 			} else {
-				BenCmd.getPermissionManager().getUserFile().addUser(new PermissionUser(args[0], new ArrayList<String>()));
-				user.sendMessage(ChatColor.GREEN + "User " + args[0] + " was successfully created!");
-				BenCmd.log("User " + args[0] + " has been created!");
+				user2 = new PermissionUser(args[0], new ArrayList<String>());
+				BenCmd.getPermissionManager().getUserFile().addUser(user2);
+				user.sendMessage(ChatColor.GREEN + "User " + user2.getColor() + user2.getName() + " was successfully created!");
+				BenCmd.log(user2.getName() + " has been added to the BenCmd database!");
 			}
 		} else if (args[1].equalsIgnoreCase("info")) {
 			if (user2 == null) {
 				user.sendMessage(ChatColor.RED + "That user doesn't exist!");
 			} else {
-				user.sendMessage(ChatColor.GRAY + "Information for user \"" + user2.getName() + "\":");
-				user.sendMessage(ChatColor.GRAY + "Permissions: " + user2.listPermissions());
+				user.sendMessage(ChatColor.YELLOW + "Information for user " + user2.getColor() + user2.getName());
 				user.sendMessage(ChatColor.GRAY + "Groups: " + user2.listGroups());
+					user.sendMessage(ChatColor.GRAY + "Groups with a * are inherited from other groups.");
 				if (user2.getPrefix().isEmpty()) {
-					user.sendMessage(ChatColor.GRAY + "Prefix: " + user2.getColor() + "(None)");
+					user.sendMessage(ChatColor.GRAY + "Prefix: (None)");
 				} else {
 					user.sendMessage(ChatColor.GRAY + "Prefix: " + user2.getColor() + user2.getPrefix());
 				}
+			}
+		} else if (args[1].equalsIgnoreCase("perms") || args[1].equalsIgnoreCase("permissions")) {
+			if (user2 == null) {
+				user.sendMessage(ChatColor.RED + "That user doesn't exist!");
+			} else {
+				user.sendMessage(ChatColor.YELLOW + "Permissions for " + user2.getColor() + user2.getName());
 			}
 		} else if (args[1].startsWith("+")) {
 			args[1] = args[1].replaceFirst("\\+", "");
@@ -147,25 +155,20 @@ public class PermissionCommands implements Commands {
 		}
 		if (args.length == 1 && args[0].equalsIgnoreCase("list")) {
 			List<String> groups = BenCmd.getPermissionManager().getGroupFile().listGroups();
-			if (groups == null) {
+			if (groups == null || groups.size() == 0) {
 				user.sendMessage(ChatColor.RED + "There are no groups! Add some with /group <name> add");
 				return;
 			}
 			String list = "";
-			for (int i = 0; i < groups.size(); i++) {
-				if (i >= 1) {
-					if (i <= groups.size() - 1) {
-						list += ",";
-					} else if (i == groups.size() - 1) {
-						list += ".";
-						user.sendMessage(ChatColor.GREEN + "The following groups exist: (" + groups.size());
-						user.sendMessage(list);
-						return;
-					}
-					list += " ";
+			for (String g : groups) {
+				if (list != "") {
+					list += ", ";
+				list += g;
 				}
-				list += (BenCmd.getPermissionManager().getGroupFile().getGroup(groups.get(i)).getColor() + BenCmd.getPermissionManager().getGroupFile().getGroup(groups.get(i)).getName());
 			}
+			user.sendMessage(ChatColor.GREEN + "The following groups exist: (" + groups.size() + ")");
+			user.sendMessage(list);
+			return;
 		}
 		PermissionGroup group = BenCmd.getPermissionManager().getGroupFile().getGroup(args[0]);
 		if (args[1].equalsIgnoreCase("remove")) {
@@ -189,7 +192,6 @@ public class PermissionCommands implements Commands {
 				user.sendMessage(ChatColor.RED + "That group doesn't exist!");
 			} else {
 				user.sendMessage(ChatColor.GRAY + "Information for group \"" + group.getName() + "\":");
-				user.sendMessage(ChatColor.GRAY + "Permissions: " + group.listPermissions());
 				user.sendMessage(ChatColor.GRAY + "Users: " + group.listUsers());
 				user.sendMessage(ChatColor.GRAY + "Groups: " + group.listGroups());
 				if (group.getPrefix().isEmpty()) {
@@ -287,7 +289,7 @@ public class PermissionCommands implements Commands {
 				user.sendMessage(ChatColor.RED + "That group doesn't exist!");
 			} else {
 				group.setPrefix(args[1].replaceFirst("p:", "").replace("_", " "));
-				user.sendMessage(ChatColor.GREEN + "The prefix was successfully updated!");
+				user.sendMessage(ChatColor.GREEN + "Prefix of " + group.getName() + " was changed to " + args[1].replaceFirst("p:", "").replace("_", " "));
 				BenCmd.log("The prefix of group " + args[0] + " was changed to " + args[1].replaceFirst("p:", "").replace("_", " "));
 			}
 		} else if (args[1].startsWith("c:")) {
@@ -296,7 +298,7 @@ public class PermissionCommands implements Commands {
 			} else {
 				try {
 					group.setColor(Integer.parseInt(args[1].replaceFirst("c:", ""), 16));
-					user.sendMessage(ChatColor.GREEN + "The color was successfully updated!");
+					user.sendMessage(ChatColor.GREEN + "The color of " + group.getName() + " was changed to " + ChatColor.getByCode(Integer.parseInt(args[1].replaceFirst("c:", ""), 16)) + args[1].replaceFirst("c:", ""));
 					BenCmd.log("The color of group " + args[0] + " was changed to " + args[1].replaceFirst("c:", ""));
 				} catch (NumberFormatException e) {
 					user.sendMessage(ChatColor.RED + "Are you sure that's a hex number?");
@@ -308,7 +310,7 @@ public class PermissionCommands implements Commands {
 			} else {
 				try {
 					group.setLevel(Integer.parseInt(args[1].replaceFirst("l:", "")));
-					user.sendMessage(ChatColor.GREEN + "The level was successfully updated!");
+					user.sendMessage(ChatColor.GREEN + "The level of " + group.getName() + " successfully changed to " + args[1]);
 					BenCmd.log("The level of group " + args[0] + " was changed to " + args[1].replaceFirst("l:", ""));
 				} catch (NumberFormatException e) {
 					user.sendMessage(ChatColor.RED + "Are you sure that's a number?");
@@ -348,7 +350,7 @@ public class PermissionCommands implements Commands {
 				return;
 			}
 		} else {
-			user.sendMessage(ChatColor.RED + "Proper use is: /group <name> {add|remove|c:<color>|p:<prefix>|<permissions>|plist}");
+			user.sendMessage(ChatColor.RED + "Proper use is: /group <name> {add|remove|info|plist|c:<color>|p:<prefix>|l:<level>|+/-<permissions>}");
 			return;
 		}
 	}
