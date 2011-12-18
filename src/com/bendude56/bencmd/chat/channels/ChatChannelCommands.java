@@ -157,7 +157,7 @@ public class ChatChannelCommands implements Commands {
 				} else {
 					user.sendMessage(ChatColor.RED + "You're not in a channel!");
 				}
-			} else if (args[0].equalsIgnoreCase("remove")) {
+			} else if (args[0].equalsIgnoreCase("remove") || args[0].equalsIgnoreCase("delete")) {
 				if (user.inChannel()) {
 					if (user.getActiveChannel().isOwner(user.getName())) {
 						BenCmd.getChatChannels().removeChannel(user.getActiveChannel());
