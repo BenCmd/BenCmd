@@ -160,14 +160,14 @@ public class PermissionUser {
 				continue;
 			}
 			if (user.getPermissions(false, false).contains(s)) {
-				s = ChatColor.GREEN + s + ChatColor.GRAY;
+				s = ChatColor.AQUA + s + ChatColor.GRAY;
 			} else {
 				s = ChatColor.GRAY + s;
 			}
 			if (list.isEmpty()) {
 				list = s;
 			} else {
-				list += ", " + s;
+				list += ",  " + s;
 			}
 		}
 		if (list.isEmpty()) {
@@ -195,7 +195,7 @@ public class PermissionUser {
 			if (direct) {
 				gname = ChatColor.GREEN + gname + ChatColor.GRAY;
 			} else {
-				gname = ChatColor.GRAY + gname;
+				gname = ChatColor.GRAY + "*" + gname;
 			}
 			if (groups.isEmpty()) {
 				groups = gname;

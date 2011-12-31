@@ -267,17 +267,21 @@ public class BenCmdPlayerListener extends PlayerListener {
 
 		// Send chat status notifications
 		if (user.isMuted() != null) {
-			user.sendMessage(ChatColor.RED + "Please note that you are currently muted and cannot speak.");
+			user.sendMessage(ChatColor.RED + "You are currently muted and cannot speak.");
 		} else if (slow.isEnabled()) {
-			user.sendMessage(ChatColor.RED + "Please note that slow mode is currently enabled. You must wait " + (slow.getDefTime() / 1000) + " seconds between each chat message.");
+			user.sendMessage(ChatColor.RED + "Slow mode is currently enabled. You must wait " + (slow.getDefTime() / 1000) + " seconds between each chat message.");
 		}
 		if (user.hasPerm("bencmd.ticket.readall") && BenCmd.getReports().unreadTickets()) {
 			user.sendMessage(ChatColor.RED + "There are unread reports! Use /ticket list to see them!");
 		}
 
 		// Join general channel
-		Bukkit.dispatchCommand(user.getHandle(), "channel join general");
-		event.setJoinMessage(user.getColor() + user.getDisplayName() + ChatColor.WHITE + " has joined the game...");
+		if (BenCmd.getChatChannels().getChannel("general") != null &&
+			!BenCmd.getChatChannels().getChannel("general").isBanned(user.getName())) {
+			user.setActiveChannel(BenCmd.getChatChannels().getChannel("general"));
+			user.pushActive();
+		}
+		event.setJoinMessage(user.getColor() + user.getDisplayName() + ChatColor.YELLOW + " has joined the game.");
 
 		// Check for jailing/unjailing
 		if (BenCmd.getPermissionManager().getActionFile().isUnjailed(user) != null) {
@@ -315,7 +319,7 @@ public class BenCmdPlayerListener extends PlayerListener {
 			user.goOnlineNoMsg();
 			event.setQuitMessage(null);
 		} else {
-			event.setQuitMessage(user.getColor() + user.getDisplayName() + ChatColor.WHITE + " has left the game...");
+			event.setQuitMessage(user.getColor() + user.getDisplayName() + ChatColor.YELLOW + " has left the game.");
 		}
 
 		// Remove them from the maximum players lists
@@ -363,7 +367,7 @@ public class BenCmdPlayerListener extends PlayerListener {
 			user.goOnlineNoMsg();
 			event.setLeaveMessage(null);
 		} else {
-			event.setLeaveMessage(user.getColor() + user.getDisplayName() + ChatColor.WHITE + " has left the game...");
+			event.setLeaveMessage(user.getColor() + user.getDisplayName() + ChatColor.YELLOW + " has left the game.");
 		}
 
 		// Remove them from the maximum players lists

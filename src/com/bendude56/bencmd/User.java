@@ -75,9 +75,9 @@ public class User extends ActionableUser {
 	private User(CommandSender s) throws NullPointerException {
 		super(s);
 		if (User.activeChannels.containsKey(s.getName())) {
-			activeChannel = User.activeChannels.get(s.getName());
+			setActiveChannel(User.activeChannels.get(s.getName()));
 		} else {
-			activeChannel = null;
+			setActiveChannel(null);
 		}
 		if (User.spyingChannels.containsKey(s.getName())) {
 			spying = User.spyingChannels.get(s.getName());
@@ -98,11 +98,11 @@ public class User extends ActionableUser {
 	}
 
 	public boolean inChannel() {
-		return (activeChannel != null);
+		return (getActiveChannel() != null);
 	}
 
-	private void pushActive() {
-		User.activeChannels.put(getHandle().getName(), activeChannel);
+	public void pushActive() {
+		User.activeChannels.put(getHandle().getName(), getActiveChannel());
 	}
 
 	private void pushSpying() {
@@ -114,7 +114,7 @@ public class User extends ActionableUser {
 			getActiveChannel().leaveChannel(this);
 		}
 		if (channel.joinChannel(this) != ChatLevel.BANNED) {
-			activeChannel = channel;
+			setActiveChannel(channel);
 			pushActive();
 			return true;
 		} else {
@@ -124,7 +124,7 @@ public class User extends ActionableUser {
 
 	public void leaveChannel() {
 		getActiveChannel().leaveChannel(this);
-		activeChannel = null;
+		setActiveChannel(null);
 		pushActive();
 	}
 
@@ -156,5 +156,9 @@ public class User extends ActionableUser {
 		for (ChatChannel channel : spying) {
 			unspyChannel(channel);
 		}
+	}
+
+	public void setActiveChannel(ChatChannel activeChannel) {
+		this.activeChannel = activeChannel;
 	}
 }

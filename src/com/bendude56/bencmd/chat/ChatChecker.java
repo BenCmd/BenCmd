@@ -18,7 +18,7 @@ public class ChatChecker {
 		List<String> splitString = splitBy(splitChars, message);
 		for (String messagePart : splitString) {
 			for (String blockedWord : BenCmd.getMainProperties().getString("blockedWords", "").split(",")) {
-				if (messagePart.equalsIgnoreCase(blockedWord)) {
+				if (messagePart.equalsIgnoreCase(blockedWord) && !messagePart.equalsIgnoreCase("")) {
 					return true;
 				}
 			}
