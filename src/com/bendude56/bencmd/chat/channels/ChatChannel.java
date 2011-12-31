@@ -318,18 +318,20 @@ public class ChatChannel {
 		return level;
 	}
 
-	public void leaveChannel(User user) {
+	public void leaveChannel(User user, boolean announce) {
 		for (int i = 0; i < inChannel.size(); i++) {
 			if (inChannel.get(i).getName().equalsIgnoreCase(user.getName())) {
 				inChannel.remove(i);
-				if (user.isDev()) {
-					broadcastMessage(ChatColor.DARK_GREEN + "*" + user.getColor() + user.getDisplayName() + ChatColor.WHITE + " has left the chat");
-				} else if (isOwner(user.getName())) {
-					broadcastMessage(ChatColor.GOLD + "*" + user.getColor() + user.getDisplayName() + ChatColor.WHITE + " has left the chat");
-				} else if (isMod(user.getName())) {
-					broadcastMessage(ChatColor.GRAY + "*" + user.getColor() + user.getDisplayName() + ChatColor.WHITE + " has left the chat");
-				} else {
-					broadcastMessage(user.getColor() + user.getDisplayName() + ChatColor.WHITE + " has left the chat");
+				if (announce) {
+					if (user.isDev()) {
+						broadcastMessage(ChatColor.DARK_GREEN + "*" + user.getColor() + user.getDisplayName() + ChatColor.WHITE + " has left the chat");
+					} else if (isOwner(user.getName())) {
+						broadcastMessage(ChatColor.GOLD + "*" + user.getColor() + user.getDisplayName() + ChatColor.WHITE + " has left the chat");
+					} else if (isMod(user.getName())) {
+						broadcastMessage(ChatColor.GRAY + "*" + user.getColor() + user.getDisplayName() + ChatColor.WHITE + " has left the chat");
+					} else {
+						broadcastMessage(user.getColor() + user.getDisplayName() + ChatColor.WHITE + " has left the chat");
+					}
 				}
 				user.sendMessage(ChatColor.GRAY + "You successfully left the chat channel: " + name);
 				return;
@@ -345,7 +347,7 @@ public class ChatChannel {
 			return false;
 		}
 		if (isOnline(user.getName()) != null) {
-			user.leaveChannel();
+			user.leaveChannel(true);
 			user.sendMessage(ChatColor.RED + "You have been kicked from your active chat channel.");
 			return true;
 		} else {
@@ -355,7 +357,7 @@ public class ChatChannel {
 
 	private void KillKick(User user) {
 		if (isOnline(user.getName()) != null) {
-			user.leaveChannel();
+			user.leaveChannel(false);
 			user.sendMessage(ChatColor.RED + "Your active chat channel was shut down.");
 		}
 	}

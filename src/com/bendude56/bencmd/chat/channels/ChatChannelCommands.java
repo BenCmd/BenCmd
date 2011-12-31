@@ -76,7 +76,7 @@ public class ChatChannelCommands implements Commands {
 				if (!user.inChannel()) {
 					user.sendMessage(ChatColor.RED + "You aren't in a channel!");
 				} else {
-					user.leaveChannel();
+					user.leaveChannel(true);
 				}
 			} else if (args[0].equalsIgnoreCase("list")) {
 				if (!user.inChannel()) {

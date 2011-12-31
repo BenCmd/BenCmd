@@ -334,7 +334,7 @@ public class BenCmdPlayerListener extends PlayerListener {
 			user.unAllPoof();
 		}
 		if (user.inChannel()) {
-			user.leaveChannel();
+			user.leaveChannel(false);
 		}
 		if (user.isGod()) {
 			user.makeNonGod();
@@ -383,7 +383,7 @@ public class BenCmdPlayerListener extends PlayerListener {
 			user.unAllPoof();
 		}
 		if (user.inChannel()) {
-			user.leaveChannel();
+			user.leaveChannel(false);
 		}
 		if (user.isGod()) {
 			user.makeNonGod();

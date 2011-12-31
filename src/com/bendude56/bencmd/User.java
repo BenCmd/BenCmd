@@ -111,7 +111,7 @@ public class User extends ActionableUser {
 
 	public boolean joinChannel(ChatChannel channel, boolean announce) {
 		if (inChannel()) {
-			getActiveChannel().leaveChannel(this);
+			getActiveChannel().leaveChannel(this, true);
 		}
 		if (channel.joinChannel(this, announce) != ChatLevel.BANNED) {
 			setActiveChannel(channel);
@@ -122,8 +122,8 @@ public class User extends ActionableUser {
 		}
 	}
 
-	public void leaveChannel() {
-		getActiveChannel().leaveChannel(this);
+	public void leaveChannel(boolean announce) {
+		getActiveChannel().leaveChannel(this, announce);
 		setActiveChannel(null);
 		pushActive();
 	}
