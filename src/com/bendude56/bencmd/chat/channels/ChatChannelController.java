@@ -78,7 +78,7 @@ public class ChatChannelController extends BenCmdFile {
 		ChatChannel channel;
 		channels.add(channel = new ChatChannel(this, name, owner.getName(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), ChatLevel.DEFAULT, "Change this using /channel motd <message>", name));
 		saveChannel(channel);
-		owner.joinChannel(channel);
+		owner.joinChannel(channel, true);
 	}
 
 	protected void removeChannel(ChatChannel channel) {

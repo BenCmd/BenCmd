@@ -328,7 +328,7 @@ public class ChatChannelCommands implements Commands {
 				}
 				ChatChannel channel = BenCmd.getChatChannels().getChannel(args[1]);
 				if (channel != null) {
-					user.joinChannel(channel);
+					user.joinChannel(channel, true);
 				} else {
 					user.sendMessage(ChatColor.RED + "That channel couldn't be found!");
 				}

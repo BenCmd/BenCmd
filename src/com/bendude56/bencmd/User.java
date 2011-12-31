@@ -109,11 +109,11 @@ public class User extends ActionableUser {
 		User.spyingChannels.put(getHandle().getName(), spying);
 	}
 
-	public boolean joinChannel(ChatChannel channel) {
+	public boolean joinChannel(ChatChannel channel, boolean announce) {
 		if (inChannel()) {
 			getActiveChannel().leaveChannel(this);
 		}
-		if (channel.joinChannel(this) != ChatLevel.BANNED) {
+		if (channel.joinChannel(this, announce) != ChatLevel.BANNED) {
 			setActiveChannel(channel);
 			pushActive();
 			return true;

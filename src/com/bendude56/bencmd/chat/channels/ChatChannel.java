@@ -270,20 +270,22 @@ public class ChatChannel {
 	}
 
 	// Online-status functions and methods
-	private void forceJoin(User user) {
-		if (user.isDev()) {
-			broadcastMessage(ChatColor.DARK_GREEN + "*" + user.getColor() + user.getDisplayName() + ChatColor.WHITE + " has joined the chat");
-		} else if (isOwner(user.getName())) {
-			broadcastMessage(ChatColor.GOLD + "*" + user.getColor() + user.getDisplayName() + ChatColor.WHITE + " has joined the chat");
-		} else if (isMod(user.getName())) {
-			broadcastMessage(ChatColor.GRAY + "*" + user.getColor() + user.getDisplayName() + ChatColor.WHITE + " has joined the chat");
-		} else {
-			broadcastMessage(user.getColor() + user.getDisplayName() + ChatColor.WHITE + " has joined the chat");
+	private void forceJoin(User user, boolean announce) {
+		if (announce) {
+			if (user.isDev()) {
+				broadcastMessage(ChatColor.DARK_GREEN + "*" + user.getColor() + user.getDisplayName() + ChatColor.WHITE + " has joined the chat");
+			} else if (isOwner(user.getName())) {
+				broadcastMessage(ChatColor.GOLD + "*" + user.getColor() + user.getDisplayName() + ChatColor.WHITE + " has joined the chat");
+			} else if (isMod(user.getName())) {
+				broadcastMessage(ChatColor.GRAY + "*" + user.getColor() + user.getDisplayName() + ChatColor.WHITE + " has joined the chat");
+			} else {
+				broadcastMessage(user.getColor() + user.getDisplayName() + ChatColor.WHITE + " has joined the chat");
+			}
 		}
 		inChannel.add(user);
 	}
 
-	public ChatLevel joinChannel(User user) {
+	public ChatLevel joinChannel(User user, boolean announce) {
 		if (isSpying(user)) {
 			Unspy(user);
 		}
@@ -299,7 +301,7 @@ public class ChatChannel {
 				if (this.isPaused()) {
 					user.sendMessage(ChatColor.GRAY + "Please note that pause mode is enabled. Only mods can talk.");
 				}
-				forceJoin(user);
+				forceJoin(user, announce);
 				break;
 			default:
 				user.sendMessage(ChatColor.WHITE + "You have joined " + ChatColor.GREEN + this.displayName);
@@ -310,7 +312,7 @@ public class ChatChannel {
 				if (user.hasPerm("bencmd.chat.universalmod") && !isMod(user.getName()) && !isOwner(user.getName())) {
 					Mod(user.getName());
 				}
-				forceJoin(user);
+				forceJoin(user, announce);
 				break;
 		}
 		return level;
