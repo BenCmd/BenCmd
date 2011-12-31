@@ -179,6 +179,9 @@ commands:
     removeguest:
         usage:
         description: removes a guest from a lot
+    remguest:
+        usage:
+        description: shortened version of removeguest
     spawnmob:
         usage:
         description: Spawns mobs

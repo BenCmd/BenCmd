@@ -129,8 +129,10 @@ public class LotFile extends BenCmdFile {
 		LotID = LotID.split(",")[0];
 		if (SubID.equalsIgnoreCase("-1")) {
 			try {
-				for (Lot l : getLot(LotID).getSubs())
+				for (Lot l : getLot(LotID).getSubs()) {
 					deleteLot(l.getFullID());
+				}
+				saveFile();
 			} catch (Exception e) {
 				return false; // An unknown error was encountered!
 			}

@@ -56,7 +56,8 @@ public class LotCommands implements Commands {
 			}
 			return true;
 		}
-		if (commandLabel.equalsIgnoreCase("removeguest")) {
+		if (commandLabel.equalsIgnoreCase("removeguest")
+				|| commandLabel.equalsIgnoreCase("remguest")) {
 			if (args.length == 1) {
 				Bukkit.dispatchCommand(sender, "lot guest -" + args[0]);
 			} else if (args.length >= 2) {
@@ -671,6 +672,7 @@ public class LotCommands implements Commands {
 				if (message != "") {
 					user.sendMessage(ChatColor.GRAY + message);
 				}
+				return;
 			} else if (args.length >= 2) {
 				if (args[1].equalsIgnoreCase("here")) {
 					List<Lot> list = BenCmd.getLots().getLots(Bukkit.getPlayerExact(user.getName()).getLocation(), false);
@@ -693,6 +695,7 @@ public class LotCommands implements Commands {
 					if (message != "") {
 						user.sendMessage(ChatColor.GRAY + message);
 					}
+					return;
 				} else if (args[1].equalsIgnoreCase("owner")) {
 					String owner;
 					if (args.length == 2) {
@@ -720,6 +723,7 @@ public class LotCommands implements Commands {
 					if (message != "") {
 						user.sendMessage(ChatColor.GRAY + message);
 					}
+					return;
 				} else if (args[1].equalsIgnoreCase("guest")) {
 					String guest;
 					if (args.length == 2) {
@@ -728,7 +732,7 @@ public class LotCommands implements Commands {
 						guest = args[2];
 					}
 					List<Lot> list = BenCmd.getLots().getLotsByGuest(guest);
-					user.sendMessage(ChatColor.GRAY + "Lots with guest" + guest + ": (" + list.size() + ")");
+					user.sendMessage(ChatColor.GRAY + "Lots with guest " + guest + ": (" + list.size() + ")");
 					int items = 0;
 					String message = "";
 
@@ -747,6 +751,7 @@ public class LotCommands implements Commands {
 					if (message != "") {
 						user.sendMessage(ChatColor.GRAY + message);
 					}
+					return;
 				} else if (args[1].equalsIgnoreCase("permission") || args[1].equalsIgnoreCase("build") || args[1].equalsIgnoreCase("canbuild")) {
 					String player;
 					if (args.length == 2) {
@@ -774,10 +779,12 @@ public class LotCommands implements Commands {
 					if (message != "") {
 						user.sendMessage(ChatColor.GRAY + message);
 					}
+					return;
 				} else {
 					user.sendMessage(ChatColor.RED + "Unknown query. User here, owner, guest, or build.");
 				}
 			}
+			return;
 		}
 
 		/*
