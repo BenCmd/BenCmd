@@ -342,6 +342,7 @@ public class BenCmdPlayerListener extends PlayerListener {
 			user.makeNonGod();
 		}
 		user.unspyAll();
+		BenCmd.getMonitorController().disconnect(event.getPlayer());
 
 		// Destroy their user instance
 		User.finalizeUser(user);
@@ -390,6 +391,7 @@ public class BenCmdPlayerListener extends PlayerListener {
 			user.makeNonGod();
 		}
 		user.unspyAll();
+		BenCmd.getMonitorController().disconnect(event.getPlayer());
 
 		// Destroy their user instance
 		User.finalizeUser(user);
@@ -984,6 +986,7 @@ public class BenCmdPlayerListener extends PlayerListener {
 		}
 		sendSkins(event.getPlayer(), event.getTo());
 		areaMoveCheck(event);
+		BenCmd.getMonitorController().playerMove(event.getPlayer());
 	}
 
 	public void onPlayerPortal(PlayerPortalEvent event) {

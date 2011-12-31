@@ -1,10 +1,12 @@
 package com.bendude56.bencmd.invisible;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.Commands;
 import com.bendude56.bencmd.User;
 
@@ -32,6 +34,9 @@ public class InvisibleCommands implements Commands {
 		} else if (commandLabel.equalsIgnoreCase("online") && user.hasPerm("bencmd.poof.offline")) {
 			Online(user);
 			return true;
+		} else if (commandLabel.equalsIgnoreCase("monitor") && user.hasPerm("bencmd.poof.monitor")) {
+			Monitor(args, user);
+			return true;
 		}
 		return false;
 	}
@@ -44,6 +49,8 @@ public class InvisibleCommands implements Commands {
 			if (user.isOffline()) {
 				user.sendMessage(ChatColor.RED + "You cannot unpoof while offline!");
 				return;
+			} else if (BenCmd.getMonitorController().isMonitoring((Player) user.getHandle())) {
+				user.sendMessage(ChatColor.RED + "You cannot unpoof while monitoring a player!");
 			} else if (user.isAllPoofed()) {
 				user.unAllPoof();
 				user.unPoof();
@@ -96,6 +103,21 @@ public class InvisibleCommands implements Commands {
 			user.sendMessage(ChatColor.RED + "You are already online!");
 		} else {
 			user.goOnline();
+		}
+	}
+	
+	public void Monitor(String[] args, User user) {
+		if (args.length == 0) {
+			user.sendMessage(ChatColor.YELLOW + "Proper usage is: /monitor {<player>|none}");
+		} else if (args[0].equalsIgnoreCase("none")) {
+			BenCmd.getMonitorController().cancelMonitor((Player) user.getHandle());
+		} else {
+			Player p2 = Bukkit.getPlayer(args[0]);
+			if (p2 == null) {
+				user.sendMessage(ChatColor.RED + "'" + args[0] + "' isn't online!");
+				return;
+			}
+			BenCmd.getMonitorController().setMonitor((Player) user.getHandle(), p2);
 		}
 	}
 }

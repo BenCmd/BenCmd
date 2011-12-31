@@ -1,5 +1,5 @@
 name: BenCmd
-version: 1.3.3
+version: 1.3.4
 main: com.bendude56.bencmd.BenCmd
 website: github.com/BenCmd/BenCmd
 authors: ['ben_dude56', 'Deaboy']
@@ -294,5 +294,8 @@ commands:
         usage:
         description: Enters or leaves creative mode
     log:
+        usage:
+        description:
+    monitor:
         usage:
         description:

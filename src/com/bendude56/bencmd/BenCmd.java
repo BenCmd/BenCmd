@@ -33,6 +33,7 @@ import com.bendude56.bencmd.chat.channels.ChatChannelController;
 // import com.bendude56.bencmd.comms.MainServer;
 import com.bendude56.bencmd.invisible.Invisibility;
 import com.bendude56.bencmd.invisible.InvisibleCommands;
+import com.bendude56.bencmd.invisible.MonitorController;
 import com.bendude56.bencmd.invtools.DispChest;
 import com.bendude56.bencmd.invtools.InventoryBackend;
 import com.bendude56.bencmd.invtools.InventoryCommands;
@@ -119,7 +120,7 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 	private static PluginProperties			usage;
 	private static TimeManager				time;
 	private static RecordingFile			record;
-	// private static MainServer				mains;
+	private static MonitorController		monitor;
 
 	public static MainPermissions getPermissionManager() {
 		return pManager;
@@ -244,16 +245,9 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 		return record;
 	}
 	
-	/*public static MainServer getMainServer() {
-		return mains;
+	public static MonitorController getMonitorController() {
+		return monitor;
 	}
-	
-	public static void disconnectMainServer() {
-		try {
-			mains.close();
-		} catch (IOException e) { }
-		mains = null;
-	}*/
 
 	public static void log(Exception e) {
 		Logger.getLogger("Minecraft").log(Level.SEVERE, e.getMessage(), e);
@@ -414,21 +408,7 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 			log(e);
 		}
 		time = new TimeManager();
-		/*if (BenCmd.getMainProperties().getBoolean("connectMainServer", true)) {
-			try {
-				mains = new MainServer();
-			} catch (Exception e) {
-				if (e.getCause() != null && e.getCause().getMessage().equals("Connection refused")) {
-					log(Level.WARNING, "BenCmd main server is not running on the provided IP! Some functions may no longer work...");
-					log(Level.WARNING, "To retry the connection later, use /bencmd connect");
-				} else {
-					log(Level.SEVERE, "Unknown error connecting to BenCmd main server!");
-					log(e);
-				}
-			}
-		} else {
-			log(Level.INFO, "Skipping connection to BenCmd server...");
-		}*/
+		monitor = new MonitorController();
 	}
 
 	protected static void unloadAll(boolean save) {
@@ -484,18 +464,13 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 		usage = null;
 		time = null;
 		record = null;
-		/*if (mains != null) {
-			try {
-				mains.close();
-			} catch (IOException e) { }
-		}
-		mains = null;*/
+		monitor = null;
 	}
 
 	// END STATIC FILE METHODS
 
 	public final static boolean	debug			= false;
-	public final static int		buildId			= 42;
+	public final static int		buildId			= 43;
 	public final static int		cbbuild			= 1597;
 	public final static String	verLoc			= "http://cloud.github.com/downloads/BenCmd/BenCmd/version.txt";
 	public static String		devLoc			= "";
