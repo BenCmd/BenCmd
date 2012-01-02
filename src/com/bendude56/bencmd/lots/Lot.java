@@ -25,7 +25,7 @@ public class Lot {
 	org.bukkit.World	World;
 	
 	boolean				DISABLED;
-	String				originalWorld;
+	String				originalWorld = "world";
 	boolean				GLOBALLOT;
 
 	public Lot(String key, String value) throws NumberFormatException {
@@ -110,7 +110,7 @@ public class Lot {
 		if (this.DISABLED) {
 			return false;
 		}
-		if (this.GLOBALLOT) {
+		if (this.GLOBALLOT && loc.getWorld() == World) {
 			return true;
 		}
 		if (this.getWorld() != loc.getWorld()) {

@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.util.FileUtil;
 
@@ -129,7 +130,9 @@ public class WarpList {
 					if (str.split(":").length == 4) {
 						group = str.split(":")[3];
 					}
-					warps.put(name, new Warp(x, y, z, yaw, pitch, world, name, group));
+					if (Bukkit.getWorld(world)!=null) {
+						warps.put(name, new Warp(x, y, z, yaw, pitch, world, name, group));
+					}
 				} catch (IndexOutOfBoundsException e) {
 					BenCmd.log(Level.WARNING, "Couldn't load one of the warps!");
 					BenCmd.log(e);

@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.bukkit.Bukkit;
 import org.bukkit.util.FileUtil;
 
 import com.bendude56.bencmd.BenCmd;
@@ -148,7 +149,9 @@ public class HomeList {
 					if (str.split(":").length == 4) {
 						group = str.split(":")[3];
 					}
-					warps.put(name, new Warp(x, y, z, yaw, pitch, world, name, group));
+					if (Bukkit.getWorld(world) != null) {
+						warps.put(name, new Warp(x, y, z, yaw, pitch, world, name, group));
+					}
 				} catch (IndexOutOfBoundsException e) {
 					BenCmd.log(Level.WARNING, "Couldn't load one of the homes!");
 					BenCmd.log(e);
