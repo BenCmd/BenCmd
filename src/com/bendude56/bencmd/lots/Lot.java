@@ -23,14 +23,26 @@ public class Lot {
 	String				SubID;
 	String				FullID;
 	org.bukkit.World	World;
+	
+	boolean				DISABLED;
+	String				originalWorld;
+	boolean				GLOBALLOT;
 
 	public Lot(String key, String value) throws NumberFormatException {
+		World = Bukkit.getWorld(value.split(",")[3]);
+		if (World == null) {
+			DISABLED = true;
+			originalWorld = value.split(",")[3];
+			World = Bukkit.getWorlds().get(0);
+		}
 		LotID = key.split(",")[0];
 		SubID = key.split(",")[1];
 		FullID = key;
-		corner1 = new Location(Bukkit.getWorld(value.split(",")[3]), Integer.parseInt(value.split(",")[0]), Integer.parseInt(value.split(",")[1]), Integer.parseInt(value.split(",")[2]));
-		corner2 = new Location(Bukkit.getWorld(value.split(",")[7]), Integer.parseInt(value.split(",")[4]), Integer.parseInt(value.split(",")[5]), Integer.parseInt(value.split(",")[6]));
-		World = corner1.getWorld();
+		corner1 = new Location(World, Double.parseDouble(value.split(",")[0]), Integer.parseInt(value.split(",")[1]), Integer.parseInt(value.split(",")[2]));
+		corner2 = new Location(World, Integer.parseInt(value.split(",")[4]), Integer.parseInt(value.split(",")[5]), Integer.parseInt(value.split(",")[6]));
+		if (corner1.getX() == 1.1) {
+			GLOBALLOT = true;
+		}
 		if (SubID.equalsIgnoreCase("0")) {
 			owner = value.split(",")[8];
 			group = value.split(",")[9];
@@ -95,6 +107,12 @@ public class Lot {
 	}
 
 	public boolean withinLot(Location loc) {
+		if (this.DISABLED) {
+			return false;
+		}
+		if (this.GLOBALLOT) {
+			return true;
+		}
 		if (this.getWorld() != loc.getWorld()) {
 			return false;
 		}

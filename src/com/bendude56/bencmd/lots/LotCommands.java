@@ -390,6 +390,39 @@ public class LotCommands implements Commands {
 			}
 			return;
 		}
+		
+		/*
+		 * GLOBAL LOT SET
+		 * 
+		 * Allows a user to set a lot over an entire WORLD!
+		 * 
+		 */
+		
+		if (args[0].equalsIgnoreCase("setgloballot")) {
+			if (user.isServer()) {
+				user.sendMessage(ChatColor.RED + "The server cannot do that!");
+				return;
+			}
+			if (!user.hasPerm("bencmd.lot.create")) {
+				user.sendMessage(ChatColor.RED + "You don't have permission to modify lots!");
+				BenCmd.getPlugin().logPermFail();
+				return;
+			}
+			for (Lot lot : BenCmd.getLots().getLots(false)) {
+				if (lot.GLOBALLOT && lot.getWorld() == ((Player) user.getHandle()).getWorld()) {
+					user.sendMessage(ChatColor.RED + "A global lot already exists with ID " + lot.getLotID());
+					return;
+				}
+			}
+			String LotID = BenCmd.getLots().getNextID();
+			Location c1 = ((Player) user.getHandle()).getLocation();
+			Location c2 = ((Player) user.getHandle()).getLocation();
+			c1.setX(1.1);
+			String group = BenCmd.getMainProperties().getString("AdminGroup", "admin");
+			BenCmd.getLots().addLot(LotID, c1, c2, user.getName(), group);
+			user.sendMessage(ChatColor.GREEN + "A Global lot has been set!");
+			return;
+		}
 
 		/*
 		 * LOT ADVANCED SET

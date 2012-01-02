@@ -50,14 +50,22 @@ public class LotFile extends BenCmdFile {
 
 		String LotID = lot.getFullID();
 		String value = "";
-		value += corner1.getBlockX() + ",";
-		value += corner1.getBlockY() + ",";
-		value += corner1.getBlockZ() + ",";
-		value += corner1.getWorld().getName() + ",";
-		value += corner2.getBlockX() + ",";
-		value += corner2.getBlockY() + ",";
-		value += corner2.getBlockZ() + ",";
-		value += corner2.getWorld().getName();
+		value += corner1.getX() + ",";
+		value += corner1.getY() + ",";
+		value += corner1.getZ() + ",";
+		if (lot.DISABLED) {
+			value += lot.originalWorld + ",";
+		} else {
+			value += lot.World.getName() + ",";
+		}
+		value += corner2.getX() + ",";
+		value += corner2.getY() + ",";
+		value += corner2.getZ() + ",";
+		if (lot.DISABLED) {
+			value += lot.originalWorld + ",";
+		} else {
+			value += lot.World.getName() + ",";
+		}
 		if (lot.getSubID().equalsIgnoreCase("0")) {
 			String owner = lot.getOwner();
 			String group = lot.getLotGroup();
@@ -90,13 +98,13 @@ public class LotFile extends BenCmdFile {
 		try {
 			// TODO Make a Lot constructor that doesn't require this!
 			String value = "";
-			value += corner1.getBlockX() + ",";
-			value += corner1.getBlockY() + ",";
-			value += corner1.getBlockZ() + ",";
+			value += corner1.getX() + ",";
+			value += corner1.getY() + ",";
+			value += corner1.getZ() + ",";
 			value += corner1.getWorld().getName() + ",";
-			value += corner2.getBlockX() + ",";
-			value += corner2.getBlockY() + ",";
-			value += corner2.getBlockZ() + ",";
+			value += corner2.getX() + ",";
+			value += corner2.getY() + ",";
+			value += corner2.getZ() + ",";
 			value += corner2.getWorld().getName();
 			if (LotID.split(",")[1].equalsIgnoreCase("0")) {
 				value += "," + owner + ",";
@@ -356,8 +364,8 @@ public class LotFile extends BenCmdFile {
 		for (String l : lots.keySet()) {
 			if (getLot(l).withinLot(loc)) {
 				if (!subs){
-					if (!list.contains(getLot(getLot(l).getLotID()))) {
-						list.add(getLot(getLot(l).getLotID()));
+					if (!list.contains(getLot(getLot(l).getLotID() + ",0"))) {
+						list.add(getLot(getLot(l).getLotID() + ",0"));
 					}
 				} else {
 					list.add(getLot(l));
