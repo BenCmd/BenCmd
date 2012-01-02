@@ -18,12 +18,7 @@ public class RecordCommands implements Commands {
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
-		User user;
-		try {
-			user = User.getUser((Player) sender);
-		} catch (ClassCastException e) {
-			user = User.getUser();
-		}
+		User user = User.getUser(sender);
 		if (commandLabel.equalsIgnoreCase("log") && user.hasPerm("bencmd.log.view")) {
 			Log(args, user);
 			return true;

@@ -4,7 +4,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.Commands;
@@ -13,12 +12,7 @@ import com.bendude56.bencmd.permissions.PermissionUser;
 
 public class ChatChannelCommands implements Commands {
 	public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
-		User user;
-		try {
-			user = User.getUser((Player) sender);
-		} catch (ClassCastException e) {
-			user = User.getUser();
-		}
+		User user = User.getUser(sender);
 		if (!BenCmd.getMainProperties().getBoolean("channelsEnabled", true)) {
 			return false;
 		}

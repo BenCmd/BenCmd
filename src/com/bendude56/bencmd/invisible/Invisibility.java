@@ -7,8 +7,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
-import com.bendude56.bencmd.ActionableUser;
 import com.bendude56.bencmd.BenCmd;
+import com.bendude56.bencmd.User;
 
 import net.minecraft.server.Packet20NamedEntitySpawn;
 import net.minecraft.server.Packet29DestroyEntity;
@@ -18,7 +18,7 @@ public class Invisibility {
 	private final List<Player>			invisible		= new ArrayList<Player>();
 	private final List<Player>			noinvisible		= new ArrayList<Player>();
 	private final List<Player>			allinvisible	= new ArrayList<Player>();
-	private final List<ActionableUser>	offline			= new ArrayList<ActionableUser>();
+	private final List<User>			offline			= new ArrayList<User>();
 
 	public Invisibility() {
 		Bukkit.getServer().getScheduler().scheduleAsyncRepeatingTask(BenCmd.getPlugin(), new InvTime(), 2, 2);
@@ -96,15 +96,15 @@ public class Invisibility {
 		return allinvisible.contains(player);
 	}
 
-	public boolean isOffline(ActionableUser user) {
+	public boolean isOffline(User user) {
 		return offline.contains(user);
 	}
 
-	public void goOffline(ActionableUser user) {
+	public void goOffline(User user) {
 		offline.add(user);
 	}
 
-	public void goOnline(ActionableUser user) {
+	public void goOnline(User user) {
 		offline.remove(user);
 	}
 

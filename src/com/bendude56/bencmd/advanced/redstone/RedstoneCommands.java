@@ -12,12 +12,7 @@ public class RedstoneCommands implements Commands {
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
-		User user;
-		try {
-			user = User.getUser((Player) sender);
-		} catch (ClassCastException e) {
-			user = User.getUser();
-		}
+		User user = User.getUser(sender);
 		if (commandLabel.equalsIgnoreCase("lever") && user.hasPerm("bencmd.lever")) {
 			Lever(args, user);
 			return true;

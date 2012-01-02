@@ -918,12 +918,7 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 		} else if (new RecordCommands().onCommand(sender, command, commandLabel, args)) {
 			return true;
 		} else {
-			User user;
-			try {
-				user = User.getUser((Player) sender);
-			} catch (ClassCastException e) {
-				user = User.getUser();
-			}
+			User user = User.getUser(sender);
 			user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
 			this.logPermFail();
 			return true;

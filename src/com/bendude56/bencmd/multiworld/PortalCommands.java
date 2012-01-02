@@ -17,12 +17,7 @@ import com.bendude56.bencmd.warps.Warp;
 public class PortalCommands implements Commands {
 
 	public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
-		User user;
-		try {
-			user = User.getUser((Player) sender);
-		} catch (ClassCastException e) {
-			user = User.getUser();
-		}
+		User user = User.getUser(sender);
 		if (commandLabel.equalsIgnoreCase("setportal") && user.hasPerm("bencmd.portal.set")) {
 			SetPortal(args, user);
 			return true;

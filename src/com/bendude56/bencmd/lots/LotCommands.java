@@ -31,12 +31,7 @@ import com.bendude56.bencmd.permissions.PermissionGroup;
 
 public class LotCommands implements Commands {
 	public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
-		User user;
-		try {
-			user = User.getUser((Player) sender);
-		} catch (ClassCastException e) {
-			user = User.getUser();
-		}
+		User user = User.getUser(sender);
 		if (commandLabel.equalsIgnoreCase("lot")) {
 			Lot(args, user);
 			return true;

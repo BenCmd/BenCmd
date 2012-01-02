@@ -20,12 +20,7 @@ import com.bendude56.bencmd.reporting.Report.ReportStatus;
 public class PermissionCommands implements Commands {
 
 	public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
-		User user;
-		try {
-			user = User.getUser((Player) sender);
-		} catch (ClassCastException e) {
-			user = User.getUser();
-		}
+		User user = User.getUser(sender);
 		if (commandLabel.equalsIgnoreCase("user") && user.hasPerm("bencmd.editpermissions")) {
 			User(args, user);
 			return true;

@@ -16,12 +16,7 @@ import com.bendude56.bencmd.permissions.PermissionUser;
 public class WarpCommands implements Commands {
 
 	public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
-		User user;
-		try {
-			user = User.getUser((Player) sender);
-		} catch (ClassCastException e) {
-			user = User.getUser();
-		}
+		User user = User.getUser(sender);
 		if (commandLabel.equalsIgnoreCase("warp") && user.hasPerm("bencmd.warp.self")) {
 			Warp(args, user);
 			return true;

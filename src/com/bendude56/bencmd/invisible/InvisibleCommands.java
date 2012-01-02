@@ -13,12 +13,7 @@ import com.bendude56.bencmd.User;
 public class InvisibleCommands implements Commands {
 
 	public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
-		User user;
-		try {
-			user = User.getUser((Player) sender);
-		} catch (ClassCastException e) {
-			user = User.getUser();
-		}
+		User user = User.getUser(sender);
 		if (commandLabel.equalsIgnoreCase("poof") && user.hasPerm("bencmd.poof.poof")) {
 			Poof(user);
 			return true;

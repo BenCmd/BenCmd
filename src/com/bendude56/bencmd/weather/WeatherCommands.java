@@ -17,12 +17,7 @@ public class WeatherCommands implements Commands {
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
-		User user;
-		try {
-			user = User.getUser((Player) sender);
-		} catch (ClassCastException e) {
-			user = User.getUser();
-		}
+		User user = User.getUser(sender);
 		if (commandLabel.equalsIgnoreCase("storm") && user.hasPerm("bencmd.storm.control")) {
 			Storm(args, user);
 			return true;

@@ -31,12 +31,7 @@ public class BasicCommands implements Commands {
 	private static final long	TIME_MIDNIGHT	= 18000;
 
 	public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
-		User user;
-		try {
-			user = User.getUser((Player) sender);
-		} catch (ClassCastException e) {
-			user = User.getUser();
-		}
+		User user = User.getUser(sender);
 		if (commandLabel.equalsIgnoreCase("time") && (user.hasPerm("bencmd.time.set") || user.hasPerm("bencmd.time.lock"))) {
 			Time(args, user);
 			return true;

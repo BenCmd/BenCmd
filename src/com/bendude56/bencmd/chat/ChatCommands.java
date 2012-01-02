@@ -21,12 +21,7 @@ public class ChatCommands implements Commands {
 	}
 
 	public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
-		User user;
-		try {
-			user = User.getUser((Player) sender);
-		} catch (ClassCastException e) {
-			user = User.getUser();
-		}
+		User user = User.getUser(sender);
 		if (commandLabel.equalsIgnoreCase("tell")) {
 			tell(args, user);
 			return true;
@@ -130,7 +125,7 @@ public class ChatCommands implements Commands {
 		}
 		message = ChatColor.WHITE + "*" + user.getColor() + user.getName() + " " + ChatColor.WHITE + message;
 		Bukkit.broadcastMessage(message);
-		User.getUser().sendMessage(message);
+		BenCmd.log(message);
 	}
 
 	public void tell(String[] args, User user) {

@@ -20,7 +20,7 @@ public class PreWarp {
 	public boolean returnPreWarp(Player player) {
 		String name = player.getName() + "_check";
 		if (prewarps.containsKey(name)) {
-			prewarps.get(name).WarpHere(new WarpableUser(player));
+			prewarps.get(name).warpHere(User.getUser(player));
 			return true;
 		} else {
 			return false;

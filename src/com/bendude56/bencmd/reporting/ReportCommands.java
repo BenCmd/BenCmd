@@ -22,12 +22,7 @@ import com.bendude56.bencmd.recording.Recording;
 public class ReportCommands implements Commands {
 
 	public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
-		User user;
-		try {
-			user = User.getUser((Player) sender);
-		} catch (ClassCastException e) {
-			user = User.getUser();
-		}
+		User user = User.getUser(sender);
 		if (commandLabel.equalsIgnoreCase("report") && user.hasPerm("bencmd.ticket.send")) {
 			Report(args, user);
 			return true;

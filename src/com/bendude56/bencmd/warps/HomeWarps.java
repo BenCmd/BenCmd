@@ -41,7 +41,7 @@ public class HomeWarps {
 		if (HomeNumber <= maxHomes && HomeNumber > 0) {
 			String name = player.getName() + HomeNumber.toString();
 			if (homes.warps.containsKey(name)) {
-				homes.getHome(name).WarpHere(new WarpableUser(player));
+				homes.getHome(name).warpHere(User.getUser(player));
 			} else {
 				player.sendMessage(ChatColor.RED + "You must set that home first!");
 			}
@@ -55,7 +55,7 @@ public class HomeWarps {
 		if (HomeNumber <= maxHomes && HomeNumber > 0) {
 			String name = otherPlayer + HomeNumber.toString();
 			if (homes.warps.containsKey(name)) {
-				homes.getHome(name).WarpHere(new WarpableUser(player));
+				homes.getHome(name).warpHere(User.getUser(player));
 			} else {
 				player.sendMessage(ChatColor.RED + otherPlayer + " doesn't have a home #" + HomeNumber.toString() + "!");
 			}

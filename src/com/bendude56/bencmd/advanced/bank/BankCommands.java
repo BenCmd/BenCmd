@@ -24,12 +24,7 @@ public class BankCommands implements Commands {
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
-		User user;
-		try {
-			user = User.getUser((Player) sender);
-		} catch (ClassCastException e) {
-			user = User.getUser();
-		}
+		User user = User.getUser(sender);
 		if (commandLabel.equalsIgnoreCase("bank") && (user.hasPerm("bencmd.bank.admin") || user.hasPerm("bencmd.bank.remote"))) {
 			Bank(args, user);
 			return true;

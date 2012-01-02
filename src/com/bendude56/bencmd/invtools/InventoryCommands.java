@@ -16,12 +16,7 @@ import com.bendude56.bencmd.invtools.kits.*;
 
 public class InventoryCommands implements Commands {
 	public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
-		User user;
-		try {
-			user = User.getUser((Player) sender);
-		} catch (ClassCastException e) {
-			user = User.getUser();
-		}
+		User user = User.getUser(sender);
 		if ((commandLabel.equalsIgnoreCase("item") || commandLabel.equalsIgnoreCase("i")) && user.hasPerm("bencmd.inv.spawn")) {
 			Item(args, user);
 			return true;

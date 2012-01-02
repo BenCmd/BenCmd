@@ -5,19 +5,19 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 import com.bendude56.bencmd.chat.channels.ChatChannel;
 import com.bendude56.bencmd.chat.channels.ChatChannel.ChatLevel;
+import com.bendude56.bencmd.permissions.PermissionUser;
+import com.bendude56.bencmd.warps.Warp;
 
-public class User extends ActionableUser {
-	private static HashMap<String, ChatChannel>			activeChannels	= new HashMap<String, ChatChannel>();
-	private static HashMap<String, List<ChatChannel>>	spyingChannels	= new HashMap<String, List<ChatChannel>>();
-	private static HashMap<String, User>				activeUsers		= new HashMap<String, User>();
-	private ChatChannel									activeChannel;
-	private List<ChatChannel>							spying;
+public class User extends PermissionUser {
+	private static HashMap<String, User>	activeUsers	= new HashMap<String, User>();
 
 	public static User matchUser(String name) {
 		for (Player online : Bukkit.getOnlinePlayers()) {
@@ -48,65 +48,32 @@ public class User extends ActionableUser {
 	}
 
 	public static User getUser(CommandSender s) {
-		if (s instanceof ConsoleCommandSender) {
-			return getUser();
+		if (User.activeUsers.containsKey(s.getName())) {
+			return User.activeUsers.get(s.getName());
 		} else {
-			if (User.activeUsers.containsKey(s.getName())) {
-				return User.activeUsers.get(s.getName());
-			} else {
-				return new User(s);
-			}
+			return new User(s);
 		}
 	}
 
-	public static User getUser() {
-		return new User();
-	}
+	private CommandSender		sender;
+	private boolean				isConsole;
+	private boolean				god;
+	private ChatChannel			activeChannel;
+	private List<ChatChannel>	spying;
 
-	/**
-	 * Creates a User corresponding to a player entity.
-	 * 
-	 * @param instance
-	 *            The BenCmd Plugin reference to point to
-	 * @param entity
-	 *            The player entity that this ActionableUser should point to.
-	 * @throws NullPointerException
-	 */
 	private User(CommandSender s) throws NullPointerException {
-		super(s);
-		if (User.activeChannels.containsKey(s.getName())) {
-			setActiveChannel(User.activeChannels.get(s.getName()));
-		} else {
+		super((s instanceof ConsoleCommandSender) ? "*" : s.getName(), new ArrayList<String>());
+		sender = s;
+		isConsole = s instanceof ConsoleCommandSender;
+		if (!(s instanceof ConsoleCommandSender)) {
 			setActiveChannel(null);
-		}
-		if (User.spyingChannels.containsKey(s.getName())) {
-			spying = User.spyingChannels.get(s.getName());
-		} else {
 			spying = new ArrayList<ChatChannel>();
 		}
 		User.activeUsers.put(s.getName(), this);
 	}
 
-	/**
-	 * Creates an ActionableUser corresponding to the console.
-	 * 
-	 * @param instance
-	 *            The BenCmd Plugin reference to point to
-	 */
-	private User() {
-		super();
-	}
-
 	public boolean inChannel() {
 		return (getActiveChannel() != null);
-	}
-
-	public void pushActive() {
-		User.activeChannels.put(getHandle().getName(), getActiveChannel());
-	}
-
-	private void pushSpying() {
-		User.spyingChannels.put(getHandle().getName(), spying);
 	}
 
 	public boolean joinChannel(ChatChannel channel, boolean announce) {
@@ -115,7 +82,6 @@ public class User extends ActionableUser {
 		}
 		if (channel.joinChannel(this, announce) != ChatLevel.BANNED) {
 			setActiveChannel(channel);
-			pushActive();
 			return true;
 		} else {
 			return false;
@@ -125,7 +91,6 @@ public class User extends ActionableUser {
 	public void leaveChannel(boolean announce) {
 		getActiveChannel().leaveChannel(this, announce);
 		setActiveChannel(null);
-		pushActive();
 	}
 
 	public ChatChannel getActiveChannel() {
@@ -135,7 +100,6 @@ public class User extends ActionableUser {
 	public boolean spyChannel(ChatChannel channel) {
 		if (channel.Spy(this)) {
 			spying.add(channel);
-			pushSpying();
 			return true;
 		} else {
 			return false;
@@ -145,7 +109,6 @@ public class User extends ActionableUser {
 	public boolean unspyChannel(ChatChannel channel) {
 		if (channel.Unspy(this)) {
 			spying.remove(channel);
-			pushSpying();
 			return true;
 		} else {
 			return false;
@@ -160,5 +123,310 @@ public class User extends ActionableUser {
 
 	public void setActiveChannel(ChatChannel activeChannel) {
 		this.activeChannel = activeChannel;
+	}
+
+	public void poof() {
+		if (isServer()) {
+			throw new UnsupportedOperationException();
+		}
+		BenCmd.getPoofController().addInv((Player) getHandle());
+	}
+
+	public void unPoof() {
+		if (isServer()) {
+			throw new UnsupportedOperationException();
+		}
+		BenCmd.getPoofController().remInv((Player) getHandle());
+	}
+
+	public void noPoof() {
+		if (isServer()) {
+			throw new UnsupportedOperationException();
+		}
+		BenCmd.getPoofController().addNoInv((Player) getHandle());
+	}
+
+	public void unNoPoof() {
+		if (isServer()) {
+			throw new UnsupportedOperationException();
+		}
+		BenCmd.getPoofController().remNoInv((Player) getHandle());
+	}
+
+	public void allPoof() {
+		if (isServer()) {
+			throw new UnsupportedOperationException();
+		}
+		BenCmd.getPoofController().addAInv((Player) getHandle());
+	}
+
+	public void unAllPoof() {
+		if (isServer()) {
+			throw new UnsupportedOperationException();
+		}
+		BenCmd.getPoofController().remAInv((Player) getHandle());
+	}
+
+	public boolean isPoofed() {
+		if (isServer()) {
+			return false;
+		} else {
+			return BenCmd.getPoofController().isInv((Player) getHandle());
+		}
+	}
+
+	public boolean isNoPoofed() {
+		if (isServer()) {
+			return false;
+		} else {
+			return BenCmd.getPoofController().isNoInv((Player) getHandle());
+		}
+	}
+
+	public boolean isAllPoofed() {
+		if (isServer()) {
+			return false;
+		} else {
+			return BenCmd.getPoofController().isAInv((Player) getHandle());
+		}
+	}
+
+	public void kick(String reason, User sender) {
+		if (isServer()) {
+			throw new UnsupportedOperationException();
+		}
+		BenCmd.getPermissionManager().getKickTracker().addUser(this);
+		((Player) getHandle()).kickPlayer("You have been kicked by user: " + sender.getDisplayName() + ". Reason: " + reason + ".");
+	}
+
+	public void kick(String reason) {
+		if (isServer()) {
+			throw new UnsupportedOperationException();
+		}
+		BenCmd.getPermissionManager().getKickTracker().addUser(this);
+		((Player) getHandle()).kickPlayer("You have been kicked. Reason: " + reason + ".");
+	}
+
+	public void kick(User sender) {
+		if (isServer()) {
+			throw new UnsupportedOperationException();
+		}
+		BenCmd.getPermissionManager().getKickTracker().addUser(this);
+		((Player) getHandle()).kickPlayer("You have been kicked by user: " + sender.getDisplayName() + ".");
+	}
+
+	public void kick() {
+		if (isServer()) {
+			throw new UnsupportedOperationException();
+		}
+		BenCmd.getPermissionManager().getKickTracker().addUser(this);
+		((Player) getHandle()).kickPlayer("You have been kicked.");
+	}
+
+	public boolean kill() {
+		if (isServer()) {
+			throw new UnsupportedOperationException();
+		}
+		if (god) {
+			return false;
+		} else {
+			((Player) getHandle()).setHealth(1);
+			((Player) getHandle()).damage(1);
+			return true;
+		}
+	}
+
+	public void heal() {
+		if (isServer()) {
+			throw new UnsupportedOperationException();
+		}
+		((Player) getHandle()).setHealth(20);
+	}
+
+	public void feed() {
+		if (isServer()) {
+			throw new UnsupportedOperationException();
+		}
+		((Player) getHandle()).setFoodLevel(20);
+		((Player) getHandle()).setSaturation(1.0F);
+	}
+
+	public void makeGod() {
+		if (isServer()) {
+			throw new UnsupportedOperationException();
+		}
+		god = true;
+	}
+
+	public void makeNonGod() {
+		if (isServer()) {
+			throw new UnsupportedOperationException();
+		}
+		god = false;
+	}
+
+	public boolean isGod() {
+		if (isServer()) {
+			return true;
+		}
+		return god;
+	}
+
+	public boolean isOffline() {
+		return BenCmd.getPoofController().isOffline(this);
+	}
+
+	public void goOffline() {
+		if (isServer()) {
+			throw new UnsupportedOperationException();
+		}
+		Bukkit.broadcastMessage(this.getColor() + this.getDisplayName() + ChatColor.WHITE + " has left the game...");
+		BenCmd.getPoofController().goOffline(this);
+	}
+
+	public void goOnline() {
+		if (isServer()) {
+			throw new UnsupportedOperationException();
+		}
+		Bukkit.broadcastMessage(this.getColor() + this.getDisplayName() + ChatColor.WHITE + " has joined the game...");
+		BenCmd.getPoofController().goOnline(this);
+	}
+
+	public void goOnlineNoMsg() {
+		if (isServer()) {
+			throw new UnsupportedOperationException();
+		}
+		BenCmd.getPoofController().goOnline(this);
+	}
+
+	public String getDisplayName() {
+		if (isServer()) {
+			if (getPermissionUser().getName().equals("*")) {
+				return "Server";
+			} else {
+				return getHandle().getName();
+			}
+		}
+		return ((Player) getHandle()).getDisplayName();
+	}
+
+	public boolean canWarpTo(String warpName) {
+		if (isServer()) {
+			throw new UnsupportedOperationException();
+		}
+		return BenCmd.getWarps().getWarp(warpName).canWarpHere(this);
+	}
+
+	public void warpTo(String warpName) {
+		if (isServer()) {
+			throw new UnsupportedOperationException();
+		}
+		BenCmd.getWarps().getWarp(warpName).warpHere(this);
+	}
+
+	public void warpTo(String warpName, User sender) {
+		if (isServer()) {
+			throw new UnsupportedOperationException();
+		}
+		BenCmd.getWarps().getWarp(warpName).warpHere(this, sender);
+	}
+
+	public List<Warp> listWarps() {
+		if (isServer()) {
+			return BenCmd.getWarps().listAllWarps();
+		} else {
+			return BenCmd.getWarps().listWarps((Player) sender);
+		}
+	}
+
+	public void warpTo(Warp warp) {
+		if (isServer()) {
+			throw new UnsupportedOperationException();
+		}
+		warp.warpHere(this);
+	}
+
+	public void warpTo(Warp warp, User sender) {
+		if (isServer()) {
+			throw new UnsupportedOperationException();
+		}
+		warp.warpHere(this, sender);
+	}
+
+	public void homeWarp(Integer homeNumber) {
+		if (isServer()) {
+			throw new UnsupportedOperationException();
+		}
+		BenCmd.getHomes().WarpOwnHome((Player) sender, homeNumber);
+	}
+
+	public void homeWarp(Integer homeNumber, PermissionUser homeOf) {
+		if (isServer() || homeOf.getName().equalsIgnoreCase("*")) {
+			throw new UnsupportedOperationException();
+		}
+		BenCmd.getHomes().WarpOtherHome((Player) sender, homeOf.getName(), homeNumber);
+	}
+
+	public boolean lastCheck() {
+		if (isServer()) {
+			throw new UnsupportedOperationException();
+		}
+		return BenCmd.getWarpCheckpoints().returnPreWarp((Player) sender);
+	}
+
+	public void setHome(Integer homeNumber) {
+		if (isServer()) {
+			throw new UnsupportedOperationException();
+		}
+		BenCmd.getHomes().SetOwnHome((Player) sender, homeNumber);
+	}
+
+	public void setHome(Integer homeNumber, PermissionUser homeOf) {
+		if (isServer() || homeOf.getName().equalsIgnoreCase("*")) {
+			throw new UnsupportedOperationException();
+		}
+		BenCmd.getHomes().SetOtherHome((Player) sender, homeOf.getName(), homeNumber);
+	}
+
+	public void spawn() {
+		if (isServer()) {
+			throw new UnsupportedOperationException();
+		}
+		if (!BenCmd.getMainProperties().getBoolean("perWorldSpawn", false)) {
+			spawn(BenCmd.getMainProperties().getString("defaultWorld", "world"));
+		} else {
+			spawn(((Player) sender).getWorld().getName());
+		}
+	}
+
+	public void spawn(String world) {
+		if (isServer()) {
+			throw new UnsupportedOperationException();
+		}
+		Location spawn;
+		try {
+			spawn = Bukkit.getWorld(world).getSpawnLocation();
+		} catch (NullPointerException e) {
+			spawn();
+			return;
+		}
+		// Get the spawn location
+
+		new Warp(spawn.getX(), spawn.getY(), spawn.getZ(), spawn.getYaw(), spawn.getPitch(), spawn.getWorld().getName(), spawn.getWorld().getName() + "-spawn", "").warpHere(this);
+	}
+
+	public void sendMessage(String message) {
+		sender.sendMessage(message);
+	}
+
+	public boolean isServer() {
+		return !(sender instanceof Player);
+	}
+
+	public CommandSender getHandle() {
+		if (isConsole) {
+			return null;
+		}
+		return sender;
 	}
 }
