@@ -7,16 +7,40 @@ import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
+import org.bukkit.DyeColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.CreatureSpawner;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.block.CraftCreatureSpawner;
-import org.bukkit.craftbukkit.entity.CraftCreeper;
+import org.bukkit.entity.Blaze;
+import org.bukkit.entity.CaveSpider;
+import org.bukkit.entity.Chicken;
+import org.bukkit.entity.Cow;
 import org.bukkit.entity.CreatureType;
+import org.bukkit.entity.Creeper;
+import org.bukkit.entity.EnderDragon;
+import org.bukkit.entity.Enderman;
+import org.bukkit.entity.Ghast;
+import org.bukkit.entity.Giant;
+import org.bukkit.entity.MagmaCube;
+import org.bukkit.entity.MushroomCow;
+import org.bukkit.entity.Pig;
+import org.bukkit.entity.PigZombie;
+import org.bukkit.entity.Silverfish;
+import org.bukkit.entity.Skeleton;
+import org.bukkit.entity.Slime;
+import org.bukkit.entity.Sheep;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Snowman;
+import org.bukkit.entity.Spider;
+import org.bukkit.entity.Squid;
+import org.bukkit.entity.Villager;
+import org.bukkit.entity.Wolf;
+import org.bukkit.entity.Zombie;
 import org.bukkit.plugin.PluginDescriptionFile;
 
 public class BasicCommands implements Commands {
@@ -475,7 +499,7 @@ public class BasicCommands implements Commands {
 				return;
 			}
 			try {
-				Bukkit.getPlayerExact(user.getName()).setTotalExperience(Integer.parseInt(args[0]));
+				((Player) user.getHandle()).setTotalExperience(Integer.parseInt(args[0]));
 				user.sendMessage(ChatColor.GREEN + "Your experience level has been set to " + args[0]);
 				return;
 			} catch (NumberFormatException e) {
@@ -592,27 +616,72 @@ public class BasicCommands implements Commands {
 		// Prepare for passengers
 		String[] passengers = args[0].split(",");
 		LivingEntity vehicle = null, passenger, mob;
-		Boolean charged = false;
-		String mobName;
+		CreatureType mobType;
 
 		// Spawn the mob(s)
 		for (int i = 0; i < amount; i++) {
 			vehicle = null;
 			for (int p = 0; p < passengers.length; p++) {
-				mobName = getMobAlias(passengers[p]);
-				if (mobName.split(",").length == 2) {
-					if (mobName.split(",")[1].equalsIgnoreCase("1")) {
-						charged = true;
-					} else {
-						charged = false;
+				mobType = getMobType(passengers[p].split(":")[0]);
+				
+				if (mobType != null) {
+					mob = ((Player) user.getHandle()).getWorld().spawnCreature(((Player) user.getHandle()).getLocation(), mobType);
+					if (mobType == CreatureType.CREEPER) {
+						if (passengers[p].equalsIgnoreCase("supercreeper") || passengers[p].equalsIgnoreCase("chargedcreeper")) {
+							((Creeper) mob).setPowered(true);
+						}
+					} else if (mobType == CreatureType.SLIME) {
+						if (passengers[p].split(":").length > 1) {
+							try {
+								((Slime) mob).setSize(Integer.parseInt(passengers[p].split(":")[1]));
+							} catch (NumberFormatException e) { }
+						}
+					} else if (mobType == CreatureType.MAGMA_CUBE) {
+						if (passengers[p].split(":").length > 1) {
+							try {
+								((MagmaCube) mob).setSize(Integer.parseInt(passengers[p].split(":")[1]));
+							} catch (NumberFormatException e) { }
+						}
+					} else if (mobType == CreatureType.SHEEP) {
+						if (passengers[p].split(":").length > 1) {
+							if (passengers[p].split(":")[1].equalsIgnoreCase("red")) {
+								((Sheep) mob).setColor(DyeColor.RED);
+							} else if (passengers[p].split(":")[1].equalsIgnoreCase("pink")) {
+								((Sheep) mob).setColor(DyeColor.PINK);
+							} else if (passengers[p].split(":")[1].equalsIgnoreCase("orange")) {
+								((Sheep) mob).setColor(DyeColor.ORANGE);
+							} else if (passengers[p].split(":")[1].equalsIgnoreCase("yellow")) {
+								((Sheep) mob).setColor(DyeColor.YELLOW);
+							} else if (passengers[p].split(":")[1].equalsIgnoreCase("lime") || passengers[p].split(":")[1].equalsIgnoreCase("lightgreen")) {
+								((Sheep) mob).setColor(DyeColor.LIME);
+							} else if (passengers[p].split(":")[1].equalsIgnoreCase("green") || passengers[p].split(":")[1].equalsIgnoreCase("darkgreen")) {
+								((Sheep) mob).setColor(DyeColor.GREEN);
+							} else if (passengers[p].split(":")[1].equalsIgnoreCase("aqua") || passengers[p].split(":")[1].equalsIgnoreCase("cyan")) {
+								((Sheep) mob).setColor(DyeColor.CYAN);
+							} else if (passengers[p].split(":")[1].equalsIgnoreCase("lightblue")) {
+								((Sheep) mob).setColor(DyeColor.LIGHT_BLUE);
+							} else if (passengers[p].split(":")[1].equalsIgnoreCase("blue")) {
+								((Sheep) mob).setColor(DyeColor.BLUE);
+							} else if (passengers[p].split(":")[1].equalsIgnoreCase("yellow")) {
+								((Sheep) mob).setColor(DyeColor.YELLOW);
+							} else if (passengers[p].split(":")[1].equalsIgnoreCase("purple")) {
+								((Sheep) mob).setColor(DyeColor.PURPLE);
+							} else if (passengers[p].split(":")[1].equalsIgnoreCase("magenta")) {
+								((Sheep) mob).setColor(DyeColor.MAGENTA);
+							} else if (passengers[p].split(":")[1].equalsIgnoreCase("brown")) {
+								((Sheep) mob).setColor(DyeColor.BROWN);
+							} else if (passengers[p].split(":")[1].equalsIgnoreCase("black")) {
+								((Sheep) mob).setColor(DyeColor.BLACK);
+							} else if (passengers[p].split(":")[1].equalsIgnoreCase("grey") || passengers[p].split(":")[1].equalsIgnoreCase("gray")) {
+								((Sheep) mob).setColor(DyeColor.GRAY);
+							} else if (passengers[p].split(":")[1].equalsIgnoreCase("lightgray") || passengers[p].split(":")[1].equalsIgnoreCase("lightgrey")) {
+								((Sheep) mob).setColor(DyeColor.SILVER);
+							} else if (passengers[p].split(":")[1].equalsIgnoreCase("white")) {
+								((Sheep) mob).setColor(DyeColor.WHITE);
+							}
+						}
 					}
-				}
-				if (mobName != null) {
-					mob = ((Player) user.getHandle()).getWorld().spawnCreature(((Player) user.getHandle()).getLocation(), CreatureType.fromName(mobName));
 					
-					if (charged) {
-						((CraftCreeper) mob).setPowered(true);
-					}
 					
 					// Add up the passengers
 					if (vehicle == null && mob != null) {
@@ -637,19 +706,18 @@ public class BasicCommands implements Commands {
 			return;
 		}
 		Player player = ((Player) user.getHandle());
-		if (player.getTargetBlock(null, 4) instanceof CraftCreatureSpawner) {
+		if (player.getTargetBlock(null, 4).getType() == Material.MOB_SPAWNER) {
 			if (args.length!= 1) {
 				user.sendMessage(ChatColor.RED + "Proper use is /spawner <creature>");
 				return;
 			}
-			String mob = getMobAlias(args[0]);
+			CreatureType mob = getMobType(args[0]);
 			if (mob == null) {
 				user.sendMessage(ChatColor.RED + "Invalid mob type!");
 				return;
 			}
-			mob = mob.split(",")[0];
-			((CraftCreatureSpawner) player.getTargetBlock(null, 4)).setCreatureType(CreatureType.fromName(mob));
-			user.sendMessage(ChatColor.GREEN + "This spawner now spawns " + mob + "s.");
+			((CreatureSpawner) player.getTargetBlock(null, 4)).setCreatureType(mob);
+			user.sendMessage(ChatColor.GREEN + "This spawner now spawns " + mob.name() + "s.");
 			return; 
 		} else {
 			user.sendMessage(ChatColor.RED + "That is not a spawner! Make sure nothing is in the way!");
@@ -663,7 +731,6 @@ public class BasicCommands implements Commands {
 			return;
 		}
 		// Tally up the mobs
-		String mobToKill;
 		int mobCounter = 0;
 		int range = -1;
 		try {
@@ -672,13 +739,34 @@ public class BasicCommands implements Commands {
 			range = -1;
 		}
 		for (int i = 0; i < args.length; i++) {
-			mobToKill = "Craft" + getMobAlias(args[i]);
+			CreatureType mobToKill = getMobType(args[i]);
 			if (mobToKill != null) {
-				for (int ii = 0; ii < ((Player) user.getHandle()).getWorld().getEntities().size(); ii++) {
-					String entity = ((Player) user.getHandle()).getWorld().getEntities().get(ii).toString();
+				for (int ii = 0; ii < ((Player) user.getHandle()).getWorld().getLivingEntities().size(); ii++) {
+					LivingEntity entity = ((Player) user.getHandle()).getWorld().getLivingEntities().get(ii);
 					{
-						if (entity == mobToKill) {
-							if (range == -1 || getDistance(((Player) user.getHandle()).getLocation(), ((Player) user.getHandle()).getWorld().getEntities().get(ii).getLocation(), false) <= range) {
+						if (	   (entity instanceof Creeper && mobToKill == CreatureType.CREEPER)
+								|| (entity instanceof Zombie && mobToKill == CreatureType.ZOMBIE)
+								|| (entity instanceof Skeleton && mobToKill == CreatureType.SKELETON)
+								|| (entity instanceof Spider && mobToKill == CreatureType.SPIDER)
+								|| (entity instanceof Slime && mobToKill == CreatureType.SLIME)
+								|| (entity instanceof CaveSpider && mobToKill == CreatureType.CAVE_SPIDER)
+								|| (entity instanceof Enderman && mobToKill == CreatureType.ENDERMAN)
+								|| (entity instanceof Silverfish && mobToKill == CreatureType.SILVERFISH)
+								|| (entity instanceof PigZombie && mobToKill == CreatureType.PIG_ZOMBIE)
+								|| (entity instanceof Ghast && mobToKill == CreatureType.GHAST)
+								|| (entity instanceof MagmaCube && mobToKill == CreatureType.MAGMA_CUBE)
+								|| (entity instanceof Blaze && mobToKill == CreatureType.BLAZE)
+								|| (entity instanceof Pig && mobToKill == CreatureType.PIG)
+								|| (entity instanceof Cow && mobToKill == CreatureType.COW)
+								|| (entity instanceof Chicken && mobToKill == CreatureType.CHICKEN)
+								|| (entity instanceof MushroomCow && mobToKill == CreatureType.MUSHROOM_COW)
+								|| (entity instanceof Squid && mobToKill == CreatureType.SQUID)
+								|| (entity instanceof Villager && mobToKill == CreatureType.VILLAGER)
+								|| (entity instanceof Wolf && mobToKill == CreatureType.WOLF)
+								|| (entity instanceof Snowman && mobToKill == CreatureType.SNOWMAN)
+								|| (entity instanceof EnderDragon && mobToKill == CreatureType.ENDER_DRAGON)
+								|| (entity instanceof Giant && mobToKill == CreatureType.GIANT)) {
+							if (range == -1 || getDistance(((Player) user.getHandle()).getLocation(), ((Player) user.getHandle()).getWorld().getLivingEntities().get(ii).getLocation(), false) <= range) {
 								((Player) user.getHandle()).getWorld().getEntities().get(ii).remove();
 								mobCounter++;
 							}
@@ -687,7 +775,11 @@ public class BasicCommands implements Commands {
 				}
 			}
 		}
-		user.sendMessage(ChatColor.GREEN + String.valueOf(mobCounter) + " mobs were killed!");
+		if (mobCounter == 0) {
+			user.sendMessage(ChatColor.RED + "No mobs were killed.");
+		} else {
+			user.sendMessage(ChatColor.GREEN + "" + mobCounter + " mobs were killed!");
+		}
 	}
 
 	private double getDistance(Location loc1, Location loc2, boolean checkY) {
@@ -707,59 +799,57 @@ public class BasicCommands implements Commands {
 		return distance;
 	}
 
-	private String getMobAlias(String alias) {
-		if (alias.equalsIgnoreCase("creeper") || alias.equalsIgnoreCase("creepers")) {
-			alias = "Creeper";
+	private CreatureType getMobType(String alias) {
+		if (alias.equalsIgnoreCase("creeper") || alias.equalsIgnoreCase("creepers")
+				|| alias.equalsIgnoreCase("supercreeper") || alias.equalsIgnoreCase("chargedcreeper")) {
+			return CreatureType.CREEPER;
 		} else if (alias.equalsIgnoreCase("zombie") || alias.equalsIgnoreCase("zombies")) {
-			alias = "Zombie";
+			return CreatureType.ZOMBIE;
 		} else if (alias.equalsIgnoreCase("skeleton") || alias.equalsIgnoreCase("skele") || alias.equalsIgnoreCase("skeletons") || alias.equalsIgnoreCase("skeles")) {
-			alias = "Skeleton";
+			return CreatureType.SKELETON;
 		} else if (alias.equalsIgnoreCase("spider") || alias.equalsIgnoreCase("spiders")) {
-			alias = "Spider";
-		} else if (alias.equalsIgnoreCase("pig") || alias.equalsIgnoreCase("piggy") || alias.equalsIgnoreCase("pigs")) {
-			alias = "Pig";
-		} else if (alias.equalsIgnoreCase("chicken") || alias.equalsIgnoreCase("chickens")) {
-			alias = "Chicken";
-		} else if (alias.equalsIgnoreCase("cow") || alias.equalsIgnoreCase("cows")) {
-			alias = "Cow";
-		} else if (alias.equalsIgnoreCase("sheep") || alias.equalsIgnoreCase("sheeps")) {
-			alias = "Sheep";
+			return CreatureType.SPIDER;
+		} else if (alias.equalsIgnoreCase("pig") || alias.equalsIgnoreCase("piggy") || alias.equalsIgnoreCase("pigs") || alias.equalsIgnoreCase("babypig") || alias.equalsIgnoreCase("piglette")) {
+			return CreatureType.PIG;
+		} else if (alias.equalsIgnoreCase("chicken") || alias.equalsIgnoreCase("chickens") || alias.equalsIgnoreCase("babychicken") || alias.equalsIgnoreCase("chick")) {
+			return CreatureType.CHICKEN;
+		} else if (alias.equalsIgnoreCase("cow") || alias.equalsIgnoreCase("cows") || alias.equalsIgnoreCase("calf") || alias.equalsIgnoreCase("babycow")) {
+			return CreatureType.COW;
+		} else if (alias.equalsIgnoreCase("sheep") || alias.equalsIgnoreCase("sheeps") || alias.equalsIgnoreCase("babysheep") || alias.equalsIgnoreCase("lamb")) {
+			return CreatureType.SHEEP;
 		} else if (alias.equalsIgnoreCase("wolf") || alias.equalsIgnoreCase("wolves")) {
-			alias = "Wolf";
+			return CreatureType.WOLF;
 		} else if (alias.equalsIgnoreCase("squid") || alias.equalsIgnoreCase("squids")) {
-			alias = "Squid";
+			return CreatureType.SQUID;
 		} else if (alias.equalsIgnoreCase("slime") || alias.equalsIgnoreCase("slimes")) {
-			alias = "Slime";
+			return CreatureType.SLIME;
 		} else if (alias.equalsIgnoreCase("ghast") || alias.equalsIgnoreCase("ghasts")) {
-			alias = "Ghast";
+			return CreatureType.GHAST;
 		} else if (alias.equalsIgnoreCase("pigzombie") || alias.equalsIgnoreCase("zombiepigman") || alias.equalsIgnoreCase("zombiepig")) {
-			alias = "PigZombie";
+			return CreatureType.PIG_ZOMBIE;
 		} else if (alias.equalsIgnoreCase("giant") || alias.equalsIgnoreCase("bigzombie") || alias.equalsIgnoreCase("giantzombie")) {
-			alias = "Giant";
-		} else if (alias.equalsIgnoreCase("monster") || alias.equalsIgnoreCase("human") || alias.equalsIgnoreCase("steve")) {
-			alias = "Monster";
+			return CreatureType.GIANT;
 		} else if (alias.equalsIgnoreCase("enderman") || alias.equalsIgnoreCase("eman") || alias.equalsIgnoreCase("endman") || alias.equalsIgnoreCase("endermen") || alias.equalsIgnoreCase("emen") || alias.equalsIgnoreCase("endmen")) {
-			alias = "Enderman";
+			return CreatureType.ENDERMAN;
 		} else if (alias.equalsIgnoreCase("bluespider") || alias.equalsIgnoreCase("cavespider") || alias.equalsIgnoreCase("smallspider") || alias.equalsIgnoreCase("poisonspider") || alias.equalsIgnoreCase("cavespiders") || alias.equalsIgnoreCase("bluespiders")) {
-			alias = "CaveSpider";
+			return CreatureType.CAVE_SPIDER;
 		} else if (alias.equalsIgnoreCase("silverfish") || alias.equalsIgnoreCase("sliverfish") || alias.equalsIgnoreCase("caterpillar") || alias.equalsIgnoreCase("caterpillars")) {
-			alias = "Silverfish";
+			return CreatureType.SILVERFISH;
 		} else if (alias.equalsIgnoreCase("mooshroom") || alias.equalsIgnoreCase("redcow") || alias.equalsIgnoreCase("mooshrooms") || alias.equalsIgnoreCase("redcows")) {
-			alias = "Mooshroom";
+			return CreatureType.MUSHROOM_COW;
 		} else if (alias.equalsIgnoreCase("snowman") || alias.equalsIgnoreCase("snowgolem")) {
-			alias = "Snowman";
+			return CreatureType.SNOWMAN;
 		} else if (alias.equalsIgnoreCase("blaze") || alias.equalsIgnoreCase("blazes")) {
-			alias = "Blaze";
+			return CreatureType.BLAZE;
 		} else if (alias.equalsIgnoreCase("magmacube") || alias.equalsIgnoreCase("lavaslime") || alias.equalsIgnoreCase("magmacubes") || alias.equalsIgnoreCase("lavaslimes")) {
-			alias = "LavaSlime";
+			return CreatureType.MAGMA_CUBE;
 		} else if (alias.equalsIgnoreCase("npc") || alias.equalsIgnoreCase("testificate") || alias.equalsIgnoreCase("npcs") || alias.equalsIgnoreCase("villager") || alias.equalsIgnoreCase("villagers")) {
-			alias = "Villager";
+			return CreatureType.VILLAGER;
 		} else if (alias.equalsIgnoreCase("dragon") || alias.equalsIgnoreCase("enderdragon") || alias.equalsIgnoreCase("dragons") || alias.equalsIgnoreCase("blackdragon")) {
-			alias = "EnderDragon";
+			return CreatureType.ENDER_DRAGON;
 		} else {
-			alias = null;
+			return null;
 		}
-		return alias;
 	}
 
 	public void Cr(String[] args, User user) {
