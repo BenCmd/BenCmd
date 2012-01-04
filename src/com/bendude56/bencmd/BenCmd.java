@@ -662,8 +662,8 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 					}
 				}
 			}
-			if (BenCmd.getMainProperties().getBoolean("channelsEnabled", true)) {
-				getServer().dispatchCommand(player, "channel join general");
+			if (BenCmd.getChatChannels().getChannel(user.getVar("bencmd.chat.defaultchannel", "general")) != null) {
+				user.joinChannel(BenCmd.getChatChannels().getChannel(user.getVar("bencmd.chat.defaultchannel", "general")), false);
 			}
 		}
 		if (!BenCmd.getMainProperties().getBoolean("channelsEnabled", true)) {

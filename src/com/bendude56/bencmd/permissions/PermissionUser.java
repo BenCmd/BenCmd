@@ -155,11 +155,11 @@ public class PermissionUser {
 
 	public String listPermissions() {
 		String list = "";
-		for (String s : user.getPermissions(true, false)) {
+		for (String s : user.getPermissions(false, true)) {
 			if (s.isEmpty()) {
 				continue;
 			}
-			if (user.getPermissions(false, false).contains(s)) {
+			if (user.getPermissions(true, false).contains(s)) {
 				s = ChatColor.AQUA + s + ChatColor.GRAY;
 			} else {
 				s = ChatColor.GRAY + s;
@@ -208,5 +208,21 @@ public class PermissionUser {
 		} else {
 			return groups;
 		}
+	}
+	
+	public String getVar(String variable) {
+		return user.getVar(variable);
+	}
+	
+	public String getVar(String variable, String def) {
+		return user.getVar(variable, def);
+	}
+	
+	public void remVar(String variable) {
+		user.remVar(variable);
+	}
+	
+	public void setVar(String variable, String value) {
+		user.setVar(variable, value);
 	}
 }

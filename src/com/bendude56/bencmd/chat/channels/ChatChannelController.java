@@ -19,7 +19,7 @@ public class ChatChannelController extends BenCmdFile {
 	public void loadAll() {
 		channels.clear();
 		for (int i = 0; i < getFile().size(); i++) {
-			ChatChannel channel = ChatChannel.getChannel(this, (String) getFile().keySet().toArray()[i], (String) getFile().values().toArray()[i]);
+			ChatChannel channel = ChatChannel.loadChannel((String) getFile().keySet().toArray()[i], (String) getFile().values().toArray()[i]);
 			if (channel != null) {
 				channels.add(channel);
 			}
@@ -27,13 +27,13 @@ public class ChatChannelController extends BenCmdFile {
 	}
 
 	protected void saveChannel(ChatChannel channel) {
-		getFile().put(channel.getName(), channel.getValue());
+		getFile().put(channel.getName(), channel.getSaveValue());
 		saveFile();
 	}
 
 	public void saveAll() {
 		for (ChatChannel channel : channels) {
-			getFile().put(channel.getName(), channel.getValue());
+			getFile().put(channel.getName(), channel.getSaveValue());
 		}
 		saveFile();
 	}
@@ -52,17 +52,9 @@ public class ChatChannelController extends BenCmdFile {
 		for (ChatChannel channel : channels) {
 			if (channel.getLevel(user) != ChatLevel.BANNED) {
 				if (value.isEmpty()) {
-					if (channel.hasDisplayName()) {
-						value += channel.getName() + " (" + channel.getDisplayName() + ")";
-					} else {
-						value += channel.getName();
-					}
+					value += channel.getName();
 				} else {
-					if (channel.hasDisplayName()) {
-						value += ", " + channel.getName() + " (" + channel.getDisplayName() + ")";
-					} else {
-						value += ", " + channel.getName();
-					}
+					value += ", " + channel.getName();
 				}
 			}
 		}
@@ -74,17 +66,33 @@ public class ChatChannelController extends BenCmdFile {
 		}
 	}
 
-	protected void addChannel(String name, User owner) {
+	public void addChannel(String name, User owner) {
 		ChatChannel channel;
-		channels.add(channel = new ChatChannel(this, name, owner.getName(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), ChatLevel.DEFAULT, "Change this using /channel motd <message>", name));
+		channels.add(channel = ChatChannel.createChannel(name, owner.getName()));
 		saveChannel(channel);
 		owner.joinChannel(channel, true);
 	}
+	
+	public void addChannel(ChatChannel channel) {
+		channels.add(channel);
+		saveChannel(channel);
+	}
 
-	protected void removeChannel(ChatChannel channel) {
-		channel.prepDelete();
+	public void removeChannel(ChatChannel channel, boolean prepDelete) {
+		if (prepDelete) {
+			channel.prepDelete();
+		}
 		channels.remove(channel);
 		getFile().remove(channel.getName());
 		saveFile();
+	}
+	
+	public boolean channelExists(String name) {
+		for (ChatChannel c : channels) {
+			if (c.getName().equalsIgnoreCase(name)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

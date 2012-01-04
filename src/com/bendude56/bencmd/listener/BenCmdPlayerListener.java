@@ -276,8 +276,8 @@ public class BenCmdPlayerListener extends PlayerListener {
 		}
 
 		// Join general channel
-		if (BenCmd.getChatChannels().getChannel("general") != null) {
-			user.joinChannel(BenCmd.getChatChannels().getChannel("general"), false);
+		if (BenCmd.getChatChannels().getChannel(user.getVar("bencmd.chat.defaultchannel", "general")) != null) {
+			user.joinChannel(BenCmd.getChatChannels().getChannel(user.getVar("bencmd.chat.defaultchannel", "general")), false);
 		}
 		event.setJoinMessage(user.getColor() + user.getDisplayName() + ChatColor.YELLOW + " has joined the game.");
 

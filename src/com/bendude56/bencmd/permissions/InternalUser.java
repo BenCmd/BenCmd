@@ -38,7 +38,7 @@ public class InternalUser {
 			perms.addAll(permissions);
 		} else {
 			for (String p : permissions) {
-				if (!p.contains("=")) {
+				if (!p.contains("=") || includeVars) {
 					perms.add(p);
 				}
 			}
@@ -69,7 +69,7 @@ public class InternalUser {
 		} else if (!perm.contains(".") && !perm.equals("*")) {
 			throw new InvalidPermissionError(perm, "Permissions in the root namespace are not allowed!");
 		}
-		if (isServer() || isDev()) {
+		if ((isServer() || isDev()) && testGroup) {
 			return testStar;
 		}
 		boolean isStarred = false;

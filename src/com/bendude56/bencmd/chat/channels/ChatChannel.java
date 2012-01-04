@@ -1,10 +1,9 @@
 package com.bendude56.bencmd.chat.channels;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.Random;
-import java.util.logging.Level;
+import java.util.Map;
 
 import org.bukkit.ChatColor;
 
@@ -16,763 +15,451 @@ import com.bendude56.bencmd.permissions.PermissionUser;
 
 public class ChatChannel {
 
-	// General properties
-	private String					name;
-	private String					owner;
-	private ChatLevel				defLevel;
-	private String					motd;
-	private String					displayName;
+	private static final String	defaultMotd	= "Change this message using /channel motd <message>";
 
-	// Loaded allow/deny lists
-	private List<String>			mods;
-	private List<String>			guests;
-	private List<String>			banned;
-	private List<String>			muted;
-
-	// Memory-only variables
-	private ChatChannelController	control;
-	private List<User>				inChannel;
-	private List<User>				spies;
-	private SlowMode				slow;
-	private boolean					paused;
-
-	// Constructors
-	protected static ChatChannel getChannel(ChatChannelController control, String key, String value) {
-		if (value.split("/").length != 8) {
-			BenCmd.log(Level.SEVERE, "ChatChannel " + key + " encountered a fatal error while loading and has been disabled:");
-			BenCmd.log(Level.SEVERE, "Invalid number of entries.");
-			return null;
+	public static ChatChannel loadChannel(String name, String data) {
+		String motd = data.split("\\|")[0];
+		HashMap<String, ChatLevel> users = loadUsers(data.split("\\|")[1]);
+		ChatLevel defaultLevel = ChatLevel.fromEntry(data.split("\\|")[2]);
+		int slowDelay;
+		try {
+			slowDelay = Integer.parseInt(data.split("\\|")[3]);
+		} catch (NumberFormatException e) {
+			slowDelay = BenCmd.getMainProperties().getInteger("slowTime", 1000);
 		}
-		String owner = value.split("/")[0];
-		List<String> mods = new ArrayList<String>();
-		if (!value.split("/")[1].isEmpty()) {
-			for (String player : value.split("/")[1].split(",")) {
-				mods.add(player);
-			}
-		}
-		List<String> guests = new ArrayList<String>();
-		if (!value.split("/")[2].isEmpty()) {
-			for (String player : value.split("/")[2].split(",")) {
-				guests.add(player);
-			}
-		}
-		List<String> banned = new ArrayList<String>();
-		if (!value.split("/")[3].isEmpty()) {
-			for (String player : value.split("/")[3].split(",")) {
-				banned.add(player);
-			}
-		}
-		List<String> muted = new ArrayList<String>();
-		if (!value.split("/")[4].isEmpty()) {
-			for (String player : value.split("/")[4].split(",")) {
-				muted.add(player);
-			}
-		}
-		String motd = value.split("/")[5].replace("`", "/");
-		String displayname = value.split("/")[6].replace("`", "/");
-		ChatLevel joinType;
-		if (value.split("/")[7].equalsIgnoreCase("b")) {
-			joinType = ChatLevel.BANNED;
-		} else if (value.split("/")[7].equalsIgnoreCase("m")) {
-			joinType = ChatLevel.MUTED;
-		} else if (value.split("/")[7].equalsIgnoreCase("d")) {
-			joinType = ChatLevel.DEFAULT;
-		} else {
-			BenCmd.log(Level.WARNING, "ChatChannel " + key + " encountered a minor error while loading:");
-			BenCmd.log(Level.WARNING, "\"" + value.split("/")[7] + "\" is not a valid value for Default Join Type. Assumed \"d\".");
-			joinType = ChatLevel.DEFAULT;
-		}
-		return new ChatChannel(control, key, owner, mods, guests, banned, muted, joinType, motd, displayname);
+		boolean slow = data.split("\\|")[4] == "true";
+		return new ChatChannel(name, defaultLevel, motd, users, slowDelay, slow);
 	}
 
-	protected ChatChannel(ChatChannelController control, String name, String owner, List<String> mods, List<String> guests, List<String> banned, List<String> muted, ChatLevel defaultLevel, String motd, String displayName) {
-		this.control = control;
+	public static ChatChannel createChannel(String name, String owner) {
+		HashMap<String, ChatLevel> users = new HashMap<String, ChatLevel>();
+		users.put(owner, ChatLevel.OWNER);
+		return new ChatChannel(name, ChatLevel.NORMAL, defaultMotd, users, BenCmd.getMainProperties().getInteger("slowTime", 1000), false);
+	}
+
+	private static HashMap<String, ChatLevel> loadUsers(String users) {
+		HashMap<String, ChatLevel> userLevels = new HashMap<String, ChatLevel>();
+		for (String e : users.split(",")) {
+			try {
+				String name = e.split(":")[0];
+				ChatLevel level = ChatLevel.fromEntry(e.split(":")[1]);
+				userLevels.put(name, level);
+			} catch (Exception ex) {}
+		}
+		return userLevels;
+	}
+
+	// Saved variables
+	private String						name;
+	private ChatLevel					defaultLevel;
+	private String						motd;
+	private HashMap<String, ChatLevel>	users;
+	private int							defaultSlowDelay;
+	private boolean						defaultSlowEnabled;
+
+	// Temporary variables
+	private List<User>					inChannel;
+	private List<User>					spies;
+	private SlowMode					slow;
+	private boolean						paused;
+	private long						delDanger;
+
+	public ChatChannel(String name, ChatLevel defaultLevel, String motd, HashMap<String, ChatLevel> users, int defaultSlowDelay, boolean defaultSlowEnabled) {
+		// Copy provided variables
 		this.name = name;
-		this.owner = owner;
-		this.mods = mods;
-		this.guests = guests;
-		this.banned = banned;
-		this.muted = muted;
-		this.defLevel = defaultLevel;
+		this.defaultLevel = defaultLevel;
 		this.motd = motd;
-		this.inChannel = new ArrayList<User>();
-		this.spies = new ArrayList<User>();
-		this.slow = SlowMode.newUnhandledInstance();
-		this.paused = false;
-		this.displayName = displayName;
+		this.users = users;
+		this.defaultSlowDelay = defaultSlowDelay;
+		this.defaultSlowEnabled = defaultSlowEnabled;
+
+		// Initialize temporary variables
+		inChannel = new ArrayList<User>();
+		spies = new ArrayList<User>();
+		slow = SlowMode.newUnhandledInstance();
+		if (defaultSlowEnabled) {
+			slow.EnableSlow(defaultSlowDelay);
+		}
+		paused = false;
+		delDanger = 0;
 	}
 
-	// Value-retrieving functions
-	protected String getValue() {
-		String value = owner + "/";
-		for (int i = 0; i < mods.size(); i++) {
-			if (i != 0) {
-				value += ",";
-			}
-			value += mods.get(i);
+	public ChatLevel getLevel(PermissionUser user) {
+		if (user.hasPerm("bencmd.chat.owner")) {
+			return ChatLevel.OWNER;
 		}
-		value += "/";
-		for (int i = 0; i < guests.size(); i++) {
-			if (i != 0) {
-				value += ",";
+		if (users.containsKey(user.getName())) {
+			if (user.hasPerm("bencmd.chat.mod") && users.get(user.getName()).getLevel() < ChatLevel.MOD.getLevel()) {
+				return ChatLevel.MOD;
 			}
-			value += guests.get(i);
-		}
-		value += "/";
-		for (int i = 0; i < banned.size(); i++) {
-			if (i != 0) {
-				value += ",";
+			return users.get(user.getName());
+		} else {
+			if (user.hasPerm("bencmd.chat.mod") && defaultLevel.getLevel() < ChatLevel.MOD.getLevel()) {
+				return ChatLevel.MOD;
 			}
-			value += banned.get(i);
+			return defaultLevel;
 		}
-		value += "/";
-		for (int i = 0; i < muted.size(); i++) {
-			if (i != 0) {
-				value += ",";
+	}
+
+	public boolean attemptJoin(User user, boolean announce) {
+		if (spies.contains(user)) {
+			spies.remove(user);
+		}
+		ChatLevel lvl = getLevel(user);
+		if (lvl == ChatLevel.BANNED) {
+			if (users.containsKey(user.getName())) {
+				user.sendMessage(ChatColor.RED + "You are banned from this channel!");
+			} else {
+				user.sendMessage(ChatColor.RED + "You do not have permission to enter this channel!");
 			}
-			value += muted.get(i);
+			return false;
 		}
-		value += "/" + motd.replace("/", "`") + "/" + displayName.replace("/", "`") + "/";
-		switch (defLevel) {
-			case BANNED:
-				value += "b";
-				break;
-			case MUTED:
-				value += "m";
-				break;
+		sendJoinMsg(user);
+		if (announce) {
+			broadcastMessage(getSpecialPrefix(user) + user.getColor() + user.getName() + ChatColor.YELLOW + " has joined the chat");
+		}
+		inChannel.add(user);
+		return true;
+	}
+
+	public boolean attemptSpy(User user) {
+		if (inChannel.contains(user)) {
+			leaveChannel(user, true);
+		}
+		if (getLevel(user).getLevel() < ChatLevel.MOD.getLevel()) {
+			user.sendMessage(ChatColor.RED + "You aren't allowed to spy on this channel!");
+			return false;
+		}
+		user.sendMessage(ChatColor.YELLOW + "You are now spying on " + ChatColor.GREEN + name);
+		user.sendMessage(ChatColor.YELLOW + "MOTD: " + motd);
+		spies.add(user);
+		return true;
+	}
+
+	private void sendJoinMsg(User user) {
+		ChatLevel lvl = getLevel(user);
+		user.sendMessage(ChatColor.YELLOW + "You have joined " + ChatColor.GREEN + name);
+		user.sendMessage(ChatColor.YELLOW + "MOTD: " + motd);
+		if (lvl == ChatLevel.MUTED) {
+			user.sendMessage(ChatColor.RED + "NOTE: You are muted in this channel");
+		} else if (paused && lvl.getLevel() < ChatLevel.VIP.getLevel()) {
+			user.sendMessage(ChatColor.RED + "NOTE: This channel is currently paused");
+		} else if (slow.isEnabled() && lvl.getLevel() < ChatLevel.VIP.getLevel()) {
+			user.sendMessage(ChatColor.RED + "NOTE: This channel is in slow mode");
+		}
+	}
+
+	public void leaveChannel(User user, boolean announce) {
+		if (!inChannel.contains(user)) {
+			throw new UnsupportedOperationException("Player not in channel!");
+		}
+		user.sendMessage(ChatColor.YELLOW + "You have left " + ChatColor.GREEN + name);
+		inChannel.remove(user);
+		if (announce) {
+			broadcastMessage(getSpecialPrefix(user) + user.getColor() + user.getName() + ChatColor.YELLOW + " has left the chat");
+		}
+	}
+
+	private String getSpecialPrefix(User user) {
+		if (user.isDev()) {
+			return ChatColor.DARK_GREEN + "*";
+		}
+		switch (getLevel(user)) {
+			case OWNER:
+			case COOWNER:
+				return ChatColor.GOLD + "*";
+			case MOD:
+				return ChatColor.GRAY + "*";
+			case VIP:
+				return ChatColor.DARK_RED + "*";
 			default:
-				value += "d";
-				break;
+				return "";
 		}
-		return value;
+	}
+
+	public void broadcastMessage(String message) {
+		for (User u : inChannel) {
+			u.sendMessage(message);
+		}
+		for (User u : spies) {
+			u.sendMessage(ChatColor.GRAY + name + ": " + message);
+		}
+	}
+
+	public void sendChat(User u, String msg) {
+		ChatLevel lvl = getLevel(u);
+
+		// Pre-send checks
+		if (lvl == ChatLevel.MUTED) {
+			u.sendMessage(ChatColor.RED + "You cannot speak in this channel!");
+			return;
+		} else if (paused && lvl.getLevel() < ChatLevel.VIP.getLevel()) {
+			u.sendMessage(ChatColor.RED + "You cannot speak while this channel is paused!");
+			return;
+		} else if (slow.isEnabled() && slow.playerBlocked(u.getName()) != 0) {
+			u.sendMessage(ChatColor.RED + "You must wait " + (slow.playerBlocked(u.getName()) / 1000) + " seconds before you can send another message!");
+			return;
+		} else if (ChatChecker.checkBlocked(msg)) {
+			u.sendMessage(ChatColor.RED + "You used a banned word!");
+			return;
+		} else if (ChatChecker.isAllCaps(msg) && lvl.getLevel() < ChatLevel.VIP.getLevel()) {
+			u.sendMessage(ChatColor.RED + "You cannot send messages in all-caps!");
+			return;
+		}
+
+		// If slow is enabled, add the user
+		if (slow.isEnabled() && lvl.getLevel() < ChatLevel.VIP.getLevel()) {
+			slow.playerAdd(u.getName());
+		}
+
+		// Format + send the message
+		String prefix = (u.getPrefix().isEmpty()) ? (getSpecialPrefix(u) + u.getColor()) : (u.getColor() + "[" + u.getPrefix() + "] " + getSpecialPrefix(u) + u.getColor());
+		broadcastMessage(prefix + u.getName() + ": " + ChatColor.WHITE + msg);
+	}
+
+	public void sendMe(User u, String msg) {
+		ChatLevel lvl = getLevel(u);
+
+		// Pre-send checks
+		if (lvl == ChatLevel.MUTED) {
+			u.sendMessage(ChatColor.RED + "You cannot speak in this channel!");
+			return;
+		} else if (paused && lvl.getLevel() < ChatLevel.VIP.getLevel()) {
+			u.sendMessage(ChatColor.RED + "You cannot speak while this channel is paused!");
+			return;
+		} else if (slow.isEnabled() && slow.playerBlocked(u.getName()) != 0) {
+			u.sendMessage(ChatColor.RED + "You must wait " + (slow.playerBlocked(u.getName()) / 1000) + " seconds before you can send another message!");
+			return;
+		} else if (ChatChecker.checkBlocked(msg)) {
+			u.sendMessage(ChatColor.RED + "You used a banned word!");
+			return;
+		} else if (ChatChecker.isAllCaps(msg) && lvl.getLevel() < ChatLevel.VIP.getLevel()) {
+			u.sendMessage(ChatColor.RED + "You cannot send messages in all-caps!");
+			return;
+		}
+
+		// If slow is enabled, add the user
+		if (slow.isEnabled() && lvl.getLevel() < ChatLevel.VIP.getLevel()) {
+			slow.playerAdd(u.getName());
+		}
+
+		// Format + send the message
+		String prefix = getSpecialPrefix(u) + u.getColor();
+		broadcastMessage(prefix + u.getName() + ChatColor.WHITE + " " + msg);
+	}
+
+	public String getSaveValue() {
+		StringBuilder result = new StringBuilder();
+		result.append(motd + "|");
+		boolean prepend = false;
+		for (Map.Entry<String, ChatLevel> user : users.entrySet()) {
+			if (prepend) {
+				result.append("," + user.getKey() + ":" + user.getValue().getEntry());
+			} else {
+				prepend = true;
+				result.append(user.getKey() + ":" + user.getValue().getEntry());
+			}
+		}
+		result.append("|" + defaultLevel.getEntry() + "|" + defaultSlowDelay + "|" + ((defaultSlowEnabled) ? "true" : "false"));
+		return result.toString();
 	}
 
 	public String getName() {
 		return name;
 	}
 
-	public String getDisplayName() {
-		return displayName;
+	public void setName(String name) {
+		BenCmd.getChatChannels().removeChannel(this, false);
+		this.name = name;
+		BenCmd.getChatChannels().addChannel(this);
 	}
 
-	public void setDisplayName(String displayName) {
-		this.displayName = displayName;
-		control.saveChannel(this);
+	public boolean userInside(String user) {
+		User u = User.matchUser(user);
+		return inChannel.contains(u);
 	}
 
-	public boolean hasDisplayName() {
-		return (!displayName.isEmpty() && !displayName.equals(name));
+	public void kickUser(User user) {
+		if (inChannel.contains(user)) {
+			user.sendMessage(ChatColor.RED + "You have been kicked from " + ChatColor.GREEN + name);
+			user.setActiveChannel(null);
+			inChannel.remove(user);
+			broadcastMessage(getSpecialPrefix(user) + user.getColor() + user.getName() + ChatColor.YELLOW + " has been kicked from the chat");
+		}
+		kickSpy(user);
 	}
 
-	// Level-checking functions
+	public void kickSpy(User user) {
+		if (spies.contains(user)) {
+			user.sendMessage(ChatColor.RED + "You are no longer spying on " + ChatColor.GREEN + name);
+			user.unspyChannel(this);
+			spies.remove(user);
+		}
+	}
+
+	public void setRole(String user, ChatLevel role) {
+		if (role == ChatLevel.DEFAULT) {
+			role = defaultLevel;
+			if (users.containsKey(user)) {
+				users.remove(user);
+			}
+		} else {
+			users.put(user, role);
+		}
+		User u = User.matchUser(user);
+		if (u != null) {
+			if (role == ChatLevel.BANNED) {
+				kickUser(u);
+				u.sendMessage(ChatColor.YELLOW + "You are now banned from " + ChatColor.GREEN + name);
+			} else if (role == ChatLevel.MUTED) {
+				u.sendMessage(ChatColor.YELLOW + "You are now muted inside " + ChatColor.GREEN + name);
+				kickSpy(u);
+			} else if (role == ChatLevel.NORMAL) {
+				kickSpy(u);
+			} else if (role == ChatLevel.VIP) {
+				u.sendMessage(ChatColor.YELLOW + "You are now a VIP in " + ChatColor.GREEN + name);
+				kickSpy(u);
+			} else if (role == ChatLevel.MOD) {
+				u.sendMessage(ChatColor.YELLOW + "You are now a moderator in " + ChatColor.GREEN + name);
+			} else if (role == ChatLevel.COOWNER) {
+				u.sendMessage(ChatColor.YELLOW + "You are now a co-owner of " + ChatColor.GREEN + name);
+			} else if (role == ChatLevel.OWNER) {
+				u.sendMessage(ChatColor.YELLOW + "You are now the owner of " + ChatColor.GREEN + name);
+			}
+		}
+		BenCmd.getChatChannels().saveChannel(this);
+	}
+
+	public boolean canExecuteBasicCommands(User user) {
+		return (getLevel(user).getLevel() >= ChatLevel.MOD.getLevel());
+	}
+
+	public boolean canExecuteAdvancedCommands(User user) {
+		return (getLevel(user).getLevel() >= ChatLevel.COOWNER.getLevel());
+	}
+
+	public boolean canExecuteAllCommands(User user) {
+		return (getLevel(user) == ChatLevel.OWNER);
+	}
+
+	public void togglePaused() {
+		if (paused) {
+			paused = false;
+			broadcastMessage(ChatColor.YELLOW + "Pause mode has been disabled");
+		} else {
+			paused = true;
+			broadcastMessage(ChatColor.YELLOW + "Pause mode has been enabled");
+		}
+	}
+
+	public void toggleSlow() {
+		if (slow.isEnabled()) {
+			slow.DisableSlow();
+			broadcastMessage(ChatColor.YELLOW + "Slow mode has been disabled");
+		} else {
+			slow.EnableSlow(defaultSlowDelay);
+			broadcastMessage(ChatColor.YELLOW + "Slow mode has been enabled (" + (defaultSlowDelay / 1000) + " seconds)");
+		}
+	}
+
+	public void enableSlow(int millis) {
+		slow.EnableSlow(millis);
+		broadcastMessage(ChatColor.YELLOW + "Slow mode has been enabled (" + (millis / 1000) + " seconds)");
+	}
+
 	public ChatLevel getDefaultLevel() {
-		return defLevel;
+		return defaultLevel;
 	}
 
-	public boolean isOwner(String user) {
-		return owner.equals(user);
-	}
-
-	public boolean isMod(String user) {
-		for (String mod : mods) {
-			if (mod.equals(user)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public boolean isBanned(String user) {
-		for (String ban : banned) {
-			if (ban.equals(user)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public boolean isMuted(String user) {
-		for (String mute : muted) {
-			if (mute.equals(user)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public boolean isGuested(String user) {
-		for (String guest : guests) {
-			if (guest.equals(user)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public ChatLevel getLevel(PermissionUser user) {
-		if (isOwner(user.getName())) {
-			return ChatLevel.OWNER;
-		}
-		if (isMod(user.getName())) {
-			return ChatLevel.MOD;
-		}
-		if (isGuested(user.getName())) {
-			return ChatLevel.DEFAULT;
-		}
-		if (user.hasPerm("bencmd.chat.universalmod")) {
-			return ChatLevel.DEFAULT;
-		}
-		if (isBanned(user.getName())) {
-			return ChatLevel.BANNED;
-		}
-		if (isMuted(user.getName())) {
-			return ChatLevel.MUTED;
-		}
-		return defLevel;
+	public void setDefaultLevel(ChatLevel defaultLevel) {
+		this.defaultLevel = defaultLevel;
+		BenCmd.getChatChannels().saveChannel(this);
 	}
 
 	public String getMotd() {
 		return motd;
 	}
 
-	// Slow mode / Pause mode functions
-	public void enableSlow() {
-		slow.EnableSlow();
-		this.broadcastMessage(ChatColor.GRAY + "Slow mode has been enabled. You must wait " + (slow.getDefTime() / 1000) + " seconds between each chat message.");
+	public void setMotd(String motd) {
+		this.motd = motd;
+		BenCmd.getChatChannels().saveChannel(this);
 	}
 
-	public void enableSlow(int millis) {
-		slow.EnableSlow(millis);
-		this.broadcastMessage(ChatColor.GRAY + "Slow mode has been enabled. You must wait " + (slow.getDefTime() / 1000) + " seconds between each chat message.");
+	public int getDefaultSlowDelay() {
+		return defaultSlowDelay;
 	}
 
-	public void disableSlow() {
-		slow.DisableSlow();
-		this.broadcastMessage(ChatColor.GRAY + "Slow mode has been disabled.");
+	public void setDefaultSlowDelay(int defaultSlowDelay) {
+		this.defaultSlowDelay = defaultSlowDelay;
+		BenCmd.getChatChannels().saveChannel(this);
 	}
 
-	public boolean isSlow() {
-		return slow.isEnabled();
+	public boolean isDefaultSlowEnabled() {
+		return defaultSlowEnabled;
 	}
 
-	public void enablePause() {
-		paused = true;
-		this.broadcastMessage(ChatColor.GRAY + "Pause mode has been enabled. Only mods can talk.");
-	}
-
-	public void disablePause() {
-		paused = false;
-		this.broadcastMessage(ChatColor.GRAY + "Pause mode has been disabled.");
-	}
-
-	public boolean isPaused() {
-		return paused;
-	}
-
-	// Online-status functions and methods
-	private void forceJoin(User user, boolean announce) {
-		if (announce) {
-			if (user.isDev()) {
-				broadcastMessage(ChatColor.DARK_GREEN + "*" + user.getColor() + user.getDisplayName() + ChatColor.WHITE + " has joined the chat");
-			} else if (isOwner(user.getName())) {
-				broadcastMessage(ChatColor.GOLD + "*" + user.getColor() + user.getDisplayName() + ChatColor.WHITE + " has joined the chat");
-			} else if (isMod(user.getName())) {
-				broadcastMessage(ChatColor.GRAY + "*" + user.getColor() + user.getDisplayName() + ChatColor.WHITE + " has joined the chat");
-			} else {
-				broadcastMessage(user.getColor() + user.getDisplayName() + ChatColor.WHITE + " has joined the chat");
-			}
-		}
-		inChannel.add(user);
-	}
-
-	public ChatLevel joinChannel(User user, boolean announce) {
-		if (isSpying(user)) {
-			Unspy(user);
-		}
-		ChatLevel level;
-		switch (level = getLevel(user)) {
-			case BANNED:
-				user.sendMessage(ChatColor.RED + "You're not allowed to join that channel!");
-				break;
-			case MUTED:
-				user.sendMessage(ChatColor.WHITE + "You have joined " + ChatColor.GREEN + this.displayName);
-				user.sendMessage(ChatColor.YELLOW + motd);
-				user.sendMessage(ChatColor.RED + "Please note that you are muted on this channel...");
-				if (this.isPaused()) {
-					user.sendMessage(ChatColor.GRAY + "Please note that pause mode is enabled. Only mods can talk.");
-				}
-				forceJoin(user, announce);
-				break;
-			default:
-				user.sendMessage(ChatColor.WHITE + "You have joined " + ChatColor.GREEN + this.displayName);
-				user.sendMessage(ChatColor.YELLOW + motd);
-				if (this.isPaused()) {
-					user.sendMessage(ChatColor.GRAY + "Please note that pause mode is enabled. Only mods can talk.");
-				}
-				if (user.hasPerm("bencmd.chat.universalmod") && !isMod(user.getName()) && !isOwner(user.getName())) {
-					Mod(user.getName());
-				}
-				forceJoin(user, announce);
-				break;
-		}
-		return level;
-	}
-
-	public void leaveChannel(User user, boolean announce) {
-		for (int i = 0; i < inChannel.size(); i++) {
-			if (inChannel.get(i).getName().equalsIgnoreCase(user.getName())) {
-				inChannel.remove(i);
-				if (announce) {
-					if (user.isDev()) {
-						broadcastMessage(ChatColor.DARK_GREEN + "*" + user.getColor() + user.getDisplayName() + ChatColor.WHITE + " has left the chat");
-					} else if (isOwner(user.getName())) {
-						broadcastMessage(ChatColor.GOLD + "*" + user.getColor() + user.getDisplayName() + ChatColor.WHITE + " has left the chat");
-					} else if (isMod(user.getName())) {
-						broadcastMessage(ChatColor.GRAY + "*" + user.getColor() + user.getDisplayName() + ChatColor.WHITE + " has left the chat");
-					} else {
-						broadcastMessage(user.getColor() + user.getDisplayName() + ChatColor.WHITE + " has left the chat");
-					}
-				}
-				user.sendMessage(ChatColor.GRAY + "You successfully left the chat channel: " + name);
-				return;
-			}
-		}
-	}
-
-	public boolean Kick(User user) {
-		if (isOwner(user.getName())) {
-			return false;
-		}
-		if (isMod(user.getName())) {
-			return false;
-		}
-		if (isOnline(user.getName()) != null) {
-			user.leaveChannel(true);
-			user.sendMessage(ChatColor.RED + "You have been kicked from your active chat channel.");
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	private void KillKick(User user) {
-		if (isOnline(user.getName()) != null) {
-			user.leaveChannel(false);
-			user.sendMessage(ChatColor.RED + "Your active chat channel was shut down.");
-		}
-	}
-
-	private void KillUnspy(User user) {
-		user.unspyChannel(this);
-		user.sendMessage(ChatColor.RED + "Your active chat channel was shut down.");
-	}
-
-	protected void prepDelete() {
-		while (!inChannel.isEmpty()) {
-			KillKick(inChannel.get(0));
-		}
-		while (!spies.isEmpty()) {
-			KillUnspy(spies.get(0));
-		}
-	}
-
-	public User isOnline(String user) {
-		for (User online : inChannel) {
-			if (online.getName().equals(user)) {
-				return online;
-			}
-		}
-		return null;
-	}
-
-	public boolean Spy(User user) {
-		if (isMod(user.getName()) || isOwner(user.getName())) {
-			if (isOnline(user.getName()) != null) {
-				user.sendMessage(ChatColor.RED + "You can't spy on a channel that you're already in!");
-				return false;
-			}
-			if (isSpying(user)) {
-				user.sendMessage(ChatColor.RED + "You're already spying on that channel!");
-				return false;
-			}
-			spies.add(user);
-			user.sendMessage(ChatColor.GRAY + "You are now spying on the Chat Channel: " + name);
-			user.sendMessage(ChatColor.YELLOW + motd);
-			return true;
-		} else {
-			user.sendMessage(ChatColor.RED + "You must be a mod in that channel to spy on it!");
-			return false;
-		}
-	}
-
-	public boolean isSpying(User user) {
-		for (User online : spies) {
-			if (online.getName().equals(user.getName())) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public boolean Unspy(User user) {
-		if (isMod(user.getName()) || isOwner(user.getName())) {
-			if (!isSpying(user)) {
-				user.sendMessage(ChatColor.RED + "You're not spying on that channel!");
-				return false;
-			}
-			for (int i = 0; i < spies.size(); i++) {
-				if (spies.get(i).getName().equalsIgnoreCase(user.getName())) {
-					spies.remove(i);
-				}
-			}
-			user.sendMessage(ChatColor.GRAY + "You are no longer spying on Chat Channel: " + name);
-			return true;
-		} else {
-			user.sendMessage(ChatColor.RED + "You must be a mod in that channel to spy on it!");
-			return false;
-		}
-	}
-
-	// Messaging methods
-	public void sendChat(User user, String message) {
-		if (!isOwner(user.getName()) && !isMod(user.getName()) && paused) {
-			user.sendMessage(ChatColor.GRAY + "You can't talk while pause mode is enabled.");
-			return;
-		}
-		if (user.isMuted() != null) {
-			user.sendMessage(ChatColor.GRAY + BenCmd.getMainProperties().getString("muteMessage", "You are muted..."));
-			return;
-		}
-		if (isMuted(user.getName())) {
-			user.sendMessage(ChatColor.GRAY + BenCmd.getMainProperties().getString("muteMessage", "You are muted..."));
-			return;
-		}
-		boolean blocked = ChatChecker.checkBlocked(message);
-		if (blocked) {
-			user.sendMessage(ChatColor.GRAY + BenCmd.getMainProperties().getString("blockMessage", "You used a blocked word..."));
-			return;
-		}
-		long slowTimeLeft = slow.playerBlocked(user.getName());
-		if (!(isMod(user.getName()) || isOwner(user.getName())) && slow.isEnabled()) {
-			if (slowTimeLeft > 0) {
-				user.sendMessage(ChatColor.GRAY + "Slow mode is enabled! You must wait " + (int) Math.ceil(slowTimeLeft / 1000) + " more second(s) before you can talk again.");
-				return;
-			} else {
-				slow.playerAdd(user.getName());
-			}
-		}
-		if (message.toUpperCase(Locale.ENGLISH).equals(message) && !message.toLowerCase(Locale.ENGLISH).equals(message) && message.length() > 3) {
-			Random rand = new Random();
-			switch (rand.nextInt(7)) {
-				case 0:
-					user.sendMessage(ChatColor.GREEN + user.getDisplayName() + "'s Conscience" + ChatColor.GRAY + " has whispered: Every time you type in all caps, a baby kitten DIES.");
-					break;
-				case 1:
-					user.sendMessage(ChatColor.GOLD + "God" + ChatColor.GRAY + " has whispered: Every time you type in all caps, a dolphin gets run over by a jet ski! Save the dolphins!");
-					break;
-				case 2:
-					user.sendMessage(ChatColor.DARK_PURPLE + "Your mother" + ChatColor.GRAY + " has whispered: Talk in all caps, break your mother's poor old back!");
-					break;
-				case 3:
-					user.sendMessage(ChatColor.DARK_BLUE + "Server" + ChatColor.GRAY + " has whispered: Stop talking in all-caps! My ban-hammer is looming over your face!");
-					break;
-				case 4:
-					user.sendMessage(ChatColor.DARK_RED + "ben_dude56" + ChatColor.GRAY + " has whispered: All-caps message + Attitude = BANHAMMER!");
-					break;
-				case 5:
-					user.sendMessage(ChatColor.DARK_RED + "Herobrine" + ChatColor.GRAY + " has whispered: If you keep talking in all-caps, I will haunt you in your dreams!");
-					break;
-				case 6:
-					user.sendMessage(ChatColor.GREEN + "BANHAMMER" + ChatColor.GRAY + " has whispered: THIS IS WHAT YOU LOOK LIKE WHEN YOU TYPE IN ALL-CAPS!");
-					break;
-			}
-			return;
-		}
-		String username = user.getColor() + user.getDisplayName();
-		if (user.isDev()) {
-			username = ChatColor.DARK_GREEN + "*" + username;
-		} else if (isOwner(user.getName())) {
-			username = ChatColor.GOLD + "*" + username;
-		} else if (isMod(user.getName())) {
-			username = ChatColor.GRAY + "*" + username;
-		}
-		String prefix;
-		if (!(prefix = user.getPrefix()).isEmpty()) {
-			message = user.getColor() + "[" + prefix + "] " + username + ": " + ChatColor.WHITE + message;
-			this.broadcastMessage(message);
-		} else {
-			message = username + ": " + ChatColor.WHITE + message;
-			this.broadcastMessage(message);
-		}
-	}
-
-	public void Me(User user, String message) {
-		if (!isOwner(user.getName()) && !isMod(user.getName()) && paused) {
-			user.sendMessage(ChatColor.GRAY + "You can't talk while pause mode is enabled.");
-			return;
-		}
-		if (user.isMuted() != null) {
-			user.sendMessage(ChatColor.GRAY + BenCmd.getMainProperties().getString("muteMessage", "You are muted..."));
-			return;
-		}
-		if (isMuted(user.getName())) {
-			user.sendMessage(ChatColor.GRAY + BenCmd.getMainProperties().getString("muteMessage", "You are muted..."));
-			return;
-		}
-		boolean blocked = ChatChecker.checkBlocked(message);
-		if (blocked) {
-			user.sendMessage(ChatColor.GRAY + BenCmd.getMainProperties().getString("blockMessage", "You used a blocked word..."));
-			return;
-		}
-		long slowTimeLeft = slow.playerBlocked(user.getName());
-		if (!(isMod(user.getName()) || isOwner(user.getName())) && slow.isEnabled()) {
-			if (slowTimeLeft > 0) {
-				user.sendMessage(ChatColor.GRAY + "Slow mode is enabled! You must wait " + (int) Math.ceil(slowTimeLeft / 1000) + " more second(s) before you can talk again.");
-				return;
-			} else {
-				slow.playerAdd(user.getName());
-			}
-		}
-		if (message.toUpperCase(Locale.ENGLISH).equals(message) && !message.toLowerCase(Locale.ENGLISH).equals(message) && !message.equals(":D") && !message.equals("D:")) {
-			Random rand = new Random();
-			switch (rand.nextInt(7)) {
-				case 0:
-					user.sendMessage(ChatColor.GREEN + user.getDisplayName() + "'s Conscience" + ChatColor.GRAY + " has whispered: Every time you type in all caps, a baby kitten DIES.");
-					break;
-				case 1:
-					user.sendMessage(ChatColor.GOLD + "God" + ChatColor.GRAY + " has whispered: Every time you type in all caps, a dolphin gets run over by a jet ski! Save the dolphins!");
-					break;
-				case 2:
-					user.sendMessage(ChatColor.DARK_PURPLE + "Your mother" + ChatColor.GRAY + " has whispered: Talk in all caps, break your mother's poor old back!");
-					break;
-				case 3:
-					user.sendMessage(ChatColor.DARK_BLUE + "Server" + ChatColor.GRAY + " has whispered: Stop talking in all-caps! My ban-hammer is looming over your face!");
-					break;
-				case 4:
-					user.sendMessage(ChatColor.DARK_RED + "ben_dude56" + ChatColor.GRAY + " has whispered: All-caps message + Attitude = BANHAMMER!");
-					break;
-				case 5:
-					user.sendMessage(ChatColor.DARK_RED + "Herobrine" + ChatColor.GRAY + " has whispered: If you keep talking in all-caps, I will haunt you in your dreams!");
-					break;
-				case 6:
-					user.sendMessage(ChatColor.GREEN + "BANHAMMER" + ChatColor.GRAY + " has whispered: THIS IS WHAT YOU LOOK LIKE WHEN YOU TYPE IN ALL-CAPS!");
-					break;
-			}
-			return;
-		}
-		String username = user.getColor() + user.getDisplayName();
-		if (user.isDev()) {
-			username = ChatColor.DARK_GREEN + "*" + username;
-		} else if (isOwner(user.getName())) {
-			username = ChatColor.GOLD + "*" + username;
-		} else if (isMod(user.getName())) {
-			username = ChatColor.GRAY + "*" + username;
-		}
-		String prefix;
-		if (!(prefix = user.getPrefix()).isEmpty()) {
-			message = user.getColor() + "[" + prefix + "] " + username + " " + ChatColor.WHITE + message;
-			this.broadcastMessage(message);
-		} else {
-			message = username + " " + ChatColor.WHITE + message;
-			this.broadcastMessage(message);
-		}
-	}
-
-	protected void broadcastMessage(String message) {
-		BenCmd.log("(" + displayName + ") " + ChatColor.stripColor(message));
-		for (User user : inChannel) {
-			user.sendMessage(ChatColor.WHITE + message);
-		}
-		for (User user : spies) {
-			user.sendMessage(ChatColor.YELLOW + "(" + this.displayName + ") " + ChatColor.WHITE + message);
-		}
+	public void setDefaultSlowEnabled(boolean defaultSlowEnabled) {
+		this.defaultSlowEnabled = defaultSlowEnabled;
+		BenCmd.getChatChannels().saveChannel(this);
 	}
 
 	public void listUsers(User user) {
 		String value = "";
 		for (User online : inChannel) {
 			if (value.isEmpty()) {
-				value += online.getColor() + online.getDisplayName();
+				value += getSpecialPrefix(user) + online.getColor() + online.getName();
 			} else {
-				value += ChatColor.WHITE + ", " + online.getColor() + online.getDisplayName();
+				value += ChatColor.WHITE + ", " + getSpecialPrefix(user) + online.getColor() + online.getName();
 			}
 		}
 		user.sendMessage(ChatColor.GRAY + "The following users are on this chat channel: ");
 		user.sendMessage(ChatColor.GRAY + value);
 	}
 
-	// Permission-changing functions
-	protected void changeOwner(String user) {
-		String oldowner = owner;
-		if (isMod(user)) {
-			Unmod(user);
-		}
-		if (isGuested(user)) {
-			Unguest(user);
-		}
-		if (isMuted(user)) {
-			Unmute(user);
-		}
-		if (isBanned(user)) {
-			Unban(user);
-		}
-		owner = user;
-		Mod(oldowner);
-		control.saveChannel(this);
-	}
+	public enum ChatLevel {
 
-	protected void setMotd(String message) {
-		motd = message;
-		control.saveChannel(this);
-	}
+		OWNER("o", 6), COOWNER("c", 5), MOD("m", 4), VIP("v", 3), NORMAL("n", 2), MUTED("mu", 1), BANNED("b", 0), DEFAULT("d", -1);
 
-	private boolean Unmod(String user) {
-		User online;
-		if ((online = isOnline(user)) != null && isSpying(online)) {
-			online.unspyChannel(this);
-		}
-		for (int i = 0; i < mods.size(); i++) {
-			if (mods.get(i).equalsIgnoreCase(user)) {
-				mods.remove(i);
-				return true;
+		public static ChatLevel fromEntry(String entry) {
+			for (ChatLevel l : ChatLevel.values()) {
+				if (l.getEntry().equals(entry)) {
+					return l;
+				}
 			}
+			return ChatLevel.DEFAULT;
 		}
-		return false;
+
+		private String	entry;
+		private int		level;
+
+		private ChatLevel(String entry, int level) {
+			this.entry = entry;
+			this.level = level;
+		}
+
+		public String getEntry() {
+			return entry;
+		}
+
+		public int getLevel() {
+			return level;
+		}
 	}
 
-	public boolean Mod(String user) {
-		if (isOwner(user)) {
-			return false;
+	public void prepDelete() {
+		while (inChannel.size() > 0) {
+			inChannel.get(0).leaveChannel(false);
 		}
-		if (isMod(user)) {
-			return false;
+		while (spies.size() > 0) {
+			kickSpy(spies.get(0));
 		}
-		if (isGuested(user)) {
-			Unguest(user);
-		}
-		if (isMuted(user)) {
-			Unmute(user);
-		}
-		if (isBanned(user)) {
-			Unban(user);
-		}
-		mods.add(user);
-		User online;
-		if ((online = isOnline(user)) != null) {
-			online.sendMessage(ChatColor.GREEN + "You have been promoted to mod in this channel.");
-		}
-		control.saveChannel(this);
-		return true;
 	}
 
-	private boolean Unguest(String user) {
-		for (int i = 0; i < guests.size(); i++) {
-			if (guests.get(i).equalsIgnoreCase(user)) {
-				guests.remove(i);
-				return true;
-			}
-		}
-		return false;
+	public long getDelDanger() {
+		return delDanger;
 	}
 
-	public boolean Guest(String user) {
-		if (isOwner(user)) {
-			return false;
-		}
-		if (isGuested(user)) {
-			return false;
-		}
-		if (isMod(user)) {
-			Unmod(user);
-		}
-		if (isMuted(user)) {
-			Unmute(user);
-		}
-		if (isBanned(user)) {
-			Unban(user);
-		}
-		guests.add(user);
-		User online;
-		if ((online = isOnline(user)) != null) {
-			online.sendMessage(ChatColor.GREEN + "You are now a guest in this channel.");
-		}
-		control.saveChannel(this);
-		return true;
-	}
-
-	private boolean Unmute(String user) {
-		for (int i = 0; i < muted.size(); i++) {
-			if (muted.get(i).equalsIgnoreCase(user)) {
-				muted.remove(i);
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public boolean Mute(String user) {
-		if (isOwner(user)) {
-			return false;
-		}
-		if (isMuted(user)) {
-			return false;
-		}
-		if (isMod(user)) {
-			Unmod(user);
-		}
-		if (isGuested(user)) {
-			Unguest(user);
-		}
-		if (isBanned(user)) {
-			Unban(user);
-		}
-		muted.add(user);
-		User online;
-		if ((online = isOnline(user)) != null) {
-			online.sendMessage(ChatColor.RED + "You have been muted in this channel.");
-		}
-		control.saveChannel(this);
-		return true;
-	}
-
-	private boolean Unban(String user) {
-		if (isOwner(user)) {
-			return false;
-		}
-		for (int i = 0; i < banned.size(); i++) {
-			if (banned.get(i).equalsIgnoreCase(user)) {
-				banned.remove(i);
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public boolean Ban(String user) {
-		if (isOwner(user)) {
-			return false;
-		}
-		if (isBanned(user)) {
-			return false;
-		}
-		if (isMod(user)) {
-			Unmod(user);
-		}
-		if (isGuested(user)) {
-			Unguest(user);
-		}
-		if (isMuted(user)) {
-			Unmute(user);
-		}
-		banned.add(user);
-		User online;
-		if ((online = isOnline(user)) != null) {
-			Kick(online);
-		}
-		return true;
-	}
-
-	public static enum ChatLevel {
-		OWNER, MOD, DEFAULT, MUTED, BANNED
+	public void setDelDanger(long delDanger) {
+		this.delDanger = delDanger;
 	}
 }

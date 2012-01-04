@@ -12,7 +12,6 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 import com.bendude56.bencmd.chat.channels.ChatChannel;
-import com.bendude56.bencmd.chat.channels.ChatChannel.ChatLevel;
 import com.bendude56.bencmd.permissions.PermissionUser;
 import com.bendude56.bencmd.warps.Warp;
 
@@ -78,9 +77,9 @@ public class User extends PermissionUser {
 
 	public boolean joinChannel(ChatChannel channel, boolean announce) {
 		if (inChannel()) {
-			getActiveChannel().leaveChannel(this, true);
+			leaveChannel(true);
 		}
-		if (channel.joinChannel(this, announce) != ChatLevel.BANNED) {
+		if (channel.attemptJoin(this, announce)) {
 			setActiveChannel(channel);
 			return true;
 		} else {
@@ -97,22 +96,12 @@ public class User extends PermissionUser {
 		return activeChannel;
 	}
 
-	public boolean spyChannel(ChatChannel channel) {
-		if (channel.Spy(this)) {
-			spying.add(channel);
-			return true;
-		} else {
-			return false;
-		}
+	public void spyChannel(ChatChannel channel) {
+		spying.add(channel);
 	}
 
-	public boolean unspyChannel(ChatChannel channel) {
-		if (channel.Unspy(this)) {
-			spying.remove(channel);
-			return true;
-		} else {
-			return false;
-		}
+	public void unspyChannel(ChatChannel channel) {
+		spying.remove(channel);
 	}
 
 	public void unspyAll() {

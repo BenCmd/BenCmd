@@ -41,4 +41,8 @@ public class ChatChecker {
 		}
 		return newSplitMessage;
 	}
+	
+	public static boolean isAllCaps(String msg) {
+		return (msg.toUpperCase().equals(msg) && !msg.toLowerCase().equals(msg) && msg.length() > 3);
+	}
 }

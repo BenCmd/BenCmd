@@ -95,18 +95,18 @@ public class PermissionCommands implements Commands {
 			} else {
 				user.sendMessage(ChatColor.YELLOW + "Information for user " + user2.getColor() + user2.getName());
 				user.sendMessage(ChatColor.GRAY + "Groups: " + user2.listGroups());
-					user.sendMessage(ChatColor.GRAY + "Groups with a * are inherited from other groups.");
+				user.sendMessage(ChatColor.GRAY + "Groups with a * are inherited from other groups.");
 				if (user2.getPrefix().isEmpty()) {
 					user.sendMessage(ChatColor.GRAY + "Prefix: (None)");
 				} else {
 					user.sendMessage(ChatColor.GRAY + "Prefix: " + user2.getColor() + user2.getPrefix());
 				}
 			}
-		} else if (args[1].equalsIgnoreCase("perms") || args[1].equalsIgnoreCase("permissions")) {
+		} else if (args[1].equalsIgnoreCase("plist")) {
 			if (user2 == null) {
 				user.sendMessage(ChatColor.RED + "That user doesn't exist!");
 			} else {
-				user.sendMessage(ChatColor.YELLOW + "Permissions for " + user2.getColor() + user2.getName());
+				user.sendMessage(user2.listPermissions());
 			}
 		} else if (args[1].startsWith("+")) {
 			args[1] = args[1].replaceFirst("\\+", "");
@@ -412,7 +412,7 @@ public class PermissionCommands implements Commands {
 			boolean nopoofed = user2.isNoPoofed();
 			int health = ((Player) user.getHandle()).getHealth();
 			if (user.getActiveChannel() != null) {
-				user.sendMessage(ChatColor.GRAY + "   -Chat channel: " + user.getActiveChannel().getDisplayName());
+				user.sendMessage(ChatColor.GRAY + "   -Chat channel: " + user.getActiveChannel().getName());
 			}
 			if (godded) {
 				user.sendMessage(ChatColor.GREEN + "   -Godded: YES");
