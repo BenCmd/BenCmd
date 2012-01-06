@@ -1,10 +1,9 @@
-package com.bendude56.bencmd.multiworld;
+package com.bendude56.bencmd.warps;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
 
 import com.bendude56.bencmd.permissions.PermissionGroup;
-import com.bendude56.bencmd.warps.Warp;
 
 public class Portal {
 

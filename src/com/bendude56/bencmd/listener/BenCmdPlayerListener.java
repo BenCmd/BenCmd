@@ -58,12 +58,12 @@ import com.bendude56.bencmd.lots.sparea.PVPArea;
 import com.bendude56.bencmd.lots.sparea.SPArea;
 import com.bendude56.bencmd.lots.sparea.TRArea;
 import com.bendude56.bencmd.money.Currency;
-import com.bendude56.bencmd.multiworld.HomePortal;
-import com.bendude56.bencmd.multiworld.Portal;
 import com.bendude56.bencmd.permissions.PermissionUser;
 import com.bendude56.bencmd.protect.ProtectedBlock;
 import com.bendude56.bencmd.recording.RecordEntry.BlockPlaceEntry;
 import com.bendude56.bencmd.recording.RecordEntry.ChestOpenEntry;
+import com.bendude56.bencmd.warps.HomePortal;
+import com.bendude56.bencmd.warps.Portal;
 import com.bendude56.bencmd.warps.Warp;
 
 public class BenCmdPlayerListener extends PlayerListener {

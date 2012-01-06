@@ -52,8 +52,8 @@ import com.bendude56.bencmd.lots.sparea.SPAreaFile;
 import com.bendude56.bencmd.maps.MapCommands;
 import com.bendude56.bencmd.money.MoneyCommands;
 import com.bendude56.bencmd.money.PriceFile;
-import com.bendude56.bencmd.multiworld.PortalCommands;
-import com.bendude56.bencmd.multiworld.PortalFile;
+import com.bendude56.bencmd.multiworld.MultiworldCommands;
+import com.bendude56.bencmd.multiworld.MultiworldController;
 import com.bendude56.bencmd.permissions.MainPermissions;
 import com.bendude56.bencmd.permissions.PermissionCommands;
 import com.bendude56.bencmd.permissions.PermissionUser;
@@ -65,6 +65,8 @@ import com.bendude56.bencmd.recording.RecordingFile;
 import com.bendude56.bencmd.reporting.ReportCommands;
 import com.bendude56.bencmd.reporting.ReportFile;
 import com.bendude56.bencmd.warps.HomeWarps;
+import com.bendude56.bencmd.warps.PortalCommands;
+import com.bendude56.bencmd.warps.PortalFile;
 import com.bendude56.bencmd.warps.PreWarp;
 import com.bendude56.bencmd.warps.WarpCommands;
 import com.bendude56.bencmd.warps.WarpList;
@@ -121,6 +123,7 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 	private static TimeManager				time;
 	private static RecordingFile			record;
 	private static MonitorController		monitor;
+	private static MultiworldController		worlds;
 
 	public static MainPermissions getPermissionManager() {
 		return pManager;
@@ -244,9 +247,13 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 	public static RecordingFile getRecordingFile() {
 		return record;
 	}
-	
+
 	public static MonitorController getMonitorController() {
 		return monitor;
+	}
+
+	public static MultiworldController getWorlds() {
+		return worlds;
 	}
 
 	public static void log(Exception e) {
@@ -409,6 +416,7 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 		}
 		time = new TimeManager();
 		monitor = new MonitorController();
+		worlds = new MultiworldController();
 	}
 
 	protected static void unloadAll(boolean save) {
@@ -427,6 +435,7 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 			prices.saveAll();
 			pro.saveAll();
 			reports.saveAll();
+			worlds.saveAll();
 		}
 		pManager = null;
 		bc = null;
@@ -465,6 +474,7 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 		time = null;
 		record = null;
 		monitor = null;
+		worlds = null;
 	}
 
 	// END STATIC FILE METHODS
@@ -917,6 +927,8 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 			return true;
 		} else if (new RecordCommands().onCommand(sender, command, commandLabel, args)) {
 			return true;
+		} else if (new MultiworldCommands().onCommand(sender, command, commandLabel, args)) {
+			 return true;
 		} else {
 			User user = User.getUser(sender);
 			user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
@@ -961,8 +973,8 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 	}
 
 	public class TimeFreeze implements Runnable {
-		int t;
-		
+		int	t;
+
 		@Override
 		public void run() {
 			if (Calendar.getInstance().get(Calendar.DAY_OF_MONTH) != clog.get(Calendar.DAY_OF_MONTH)) {

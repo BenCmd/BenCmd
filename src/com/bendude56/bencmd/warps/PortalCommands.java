@@ -1,4 +1,4 @@
-package com.bendude56.bencmd.multiworld;
+package com.bendude56.bencmd.warps;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -12,7 +12,6 @@ import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.Commands;
 import com.bendude56.bencmd.User;
 import com.bendude56.bencmd.permissions.PermissionGroup;
-import com.bendude56.bencmd.warps.Warp;
 
 public class PortalCommands implements Commands {
 

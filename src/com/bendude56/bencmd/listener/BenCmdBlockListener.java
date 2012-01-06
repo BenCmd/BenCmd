@@ -25,10 +25,10 @@ import com.bendude56.bencmd.User;
 import com.bendude56.bencmd.advanced.Grave;
 import com.bendude56.bencmd.advanced.Shelf;
 import com.bendude56.bencmd.invtools.InventoryBackend;
-import com.bendude56.bencmd.multiworld.Portal;
 import com.bendude56.bencmd.protect.ProtectedBlock;
 import com.bendude56.bencmd.recording.RecordEntry.BlockBreakEntry;
 import com.bendude56.bencmd.recording.RecordEntry.BlockPlaceEntry;
+import com.bendude56.bencmd.warps.Portal;
 import com.bendude56.bencmd.warps.Warp;
 
 public class BenCmdBlockListener extends BlockListener {

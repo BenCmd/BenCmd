@@ -1,4 +1,4 @@
-package com.bendude56.bencmd.multiworld;
+package com.bendude56.bencmd.warps;
 
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -10,7 +10,6 @@ import org.bukkit.World;
 import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.BenCmdFile;
 import com.bendude56.bencmd.permissions.PermissionGroup;
-import com.bendude56.bencmd.warps.Warp;
 
 public class PortalFile extends BenCmdFile {
 	private HashMap<Location, Portal>	portals;

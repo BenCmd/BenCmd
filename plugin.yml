@@ -299,3 +299,6 @@ commands:
     monitor:
         usage:
         description:
+    world:
+        usage:
+        description:
