@@ -1,6 +1,5 @@
 package com.bendude56.bencmd;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -344,190 +343,136 @@ public class Help {
 						"Strikes lightning where you're pointing.",
 						"/strike;/strike bind",
 						"bencmd.storm.strike.location;bencmd.storm.strike.player;bencmd.storm.strike.bind",
-						"Strikes the ground where you are pointing.;Strikes a specific player, wherever they may be.;Binds the /strike command to the current tool so that you can right-click to cast lightning!")
+						"Strikes the ground where you are pointing.;Strikes a specific player, wherever they may be.;Binds the /strike command to the current tool so that you can right-click to cast lightning!"),
+				new BCommand("cr",
+						"Toggles creative and survival modes for a player.",
+						"/cr;/cr <player>",
+						"bencmd.creative.self;bencmd.creative.other",
+						"Changes your own gamemode to creative mode, or survival mode.;Changes the gamemode of another player to creative mode, or survival mode."),
+				new BCommand("monitor",
+						"Allows you to see what another player sees.",
+						"/monitor <player|none>",
+						"bencmd.monitor",
+						"Allows you to monitor another player, showing you the point of view that they have. It works by teleporting you to their location every time they move and making you two invisable to eachother so that you do not keep pushing eachother. You must be nearby for this to work, or you may experience a little bit of glitching. Type \"/monitor none\" to stop monitoring the player."),
+				new BCommand("record",
+						"Returns the records of a particular player.",
+						"/record <player>,/record <player> <page>",
+						"",
+						"Gives you the background check on a player. This lists all kicks, mutes, jails, and bans, including when it happened, and how long it lasted (for temporary jails and mutes, etc.). These records are PERMANENT, so even messing around with friends will go on their permanent record.")
 				);
 	}
 	
-	public static void ShowHelp(String c, User u) {
-		if (c.equalsIgnoreCase("time")) {
-			Time(u);
-		} else if (c.equalsIgnoreCase("spawn")) {
-			Spawn(u);
-		} else if (c.equalsIgnoreCase("god")) {
-			God(u);
-		} else if (c.equalsIgnoreCase("heal")) {
-			Heal(u);
-		} else if (c.equalsIgnoreCase("bencmd")) {
-			BenCmd(u);
-		} else if (c.equalsIgnoreCase("setspawn")) {
-			SetSpawn(u);
-		} else if (c.equalsIgnoreCase("help")) {
-			Help(u);
-		} else {
-			u.sendMessage(ChatColor.RED + "There is no '" + c + "' command!");
+	public static List<BCommand> Commands(User u) {
+		List<BCommand> cmds = Commands();
+		for (BCommand cmd : cmds) {
+			if (!cmd.canUse(u)) {
+				cmds.remove(cmd);
+			}
 		}
+		return cmds;
+	}
+	
+	public static void ShowHelp(String c, User u) {
+		for (BCommand cmd : Commands()) {
+			if (cmd.getLabel().equalsIgnoreCase(c)) {
+				u.sendMessage(pre + ChatColor.GREEN + "/" + cmd.getLabel() + " - " + ChatColor.GRAY + cmd.getGist());
+				String uses="",perms="";
+				
+				for (String perm : cmd.getPermssions()) {
+					if (perms != "") perms += ", ";
+					perms += perm;
+				}
+				
+				for (String s : cmd.getAllUses()) {
+					if (uses != "") uses += ", ";
+					uses += s;
+				}
+				
+				if (uses == "") uses = "None.";
+				if (perms == "") perms = "None.";
+				u.sendMessage(pre + ChatColor.GRAY + "Uses: " + uses);
+				u.sendMessage(pre + ChatColor.GRAY + "Permissions: " + perms);
+				return;
+			}
+		}
+		u.sendMessage(ChatColor.RED + "That command does not exist or does not have any documentation.");
+	}
+	
+	public static void ShowDetails(String c, User u) {
+		for (BCommand cmd : Commands()) {
+			if (cmd.getLabel().equalsIgnoreCase(c)) {
+				
+				Boolean noPerms = true;
+				for (int i=0 ; i < cmd.maxIndex() ; i++) {
+					if (i < cmd.getPermssions().length) {
+						
+						if (u.hasPerm(cmd.getPermssions()[i]) || cmd.getPermssions()[i] == "") {
+							noPerms = false;
+							
+							if (cmd.getUses(i) != null) {
+								String uses = "";
+								for (String s : cmd.getUses(i)) {
+									if (uses != "") uses += ", ";
+									uses += s;
+								}
+								u.sendMessage(pre + ChatColor.GREEN + uses);
+							}
+							
+							if (cmd.getPermssions()[i] == "") {
+								u.sendMessage(pre + ChatColor.DARK_GREEN + "No permissions required.");
+							} else {
+								u.sendMessage(pre + ChatColor.DARK_GREEN + cmd.getPermssions()[i]);
+							}
+							
+							if (i < cmd.getInstructions().length) {
+								if (cmd.getInstructions()[i] == "") {
+									u.sendMessage(pre + ChatColor.GRAY + "There are no instructions associated with this command.");
+								} else {
+									u.sendMessage(pre + ChatColor.GRAY + cmd.getInstructions()[i]);
+								}
+							} else {
+								u.sendMessage(pre + ChatColor.GRAY + "There are no instructions associated with this command.");
+							}
+						}
+					} else {
+						noPerms = false;
+						if (cmd.getUses(i) != null) {
+							String uses = "";
+							for (String s : cmd.getUses(i)) {
+								if (uses != "") uses += ", ";
+								uses += s;
+							}
+							u.sendMessage(pre + ChatColor.GREEN + uses);
+						}
+						
+						if (i < cmd.getInstructions().length) {
+							if (cmd.getInstructions()[i] == "") {
+								u.sendMessage(pre + ChatColor.GRAY + "There are no instructions associated with this command.");
+							} else {
+								u.sendMessage(pre + ChatColor.GRAY + cmd.getInstructions()[i]);
+							}
+						} else {
+							u.sendMessage(pre + ChatColor.GRAY + "There are no instructions associated with this command.");
+						}
+					}
+				}
+				if (noPerms) {
+					u.sendMessage(ChatColor.RED + "You do not have any permissions for this command!");
+				}
+				return;
+			}
+		}
+		u.sendMessage(ChatColor.RED + "That command does not exist or does not have any documentation.");
 	}
 	
 	private static String pre = ChatColor.YELLOW + "|  " + ChatColor.WHITE;
-	
-	private static void Time(User u) {
-		if (!u.hasPerm("bencmd.time.set") && !u.hasPerm("bencmd.time.lock")) {
-			u.sendMessage(ChatColor.RED + "You're not allowed to use this command!");
-			return;
-		}
-		u.sendMessage(ChatColor.GREEN + "/time : " + ChatColor.WHITE + "Change or freeze time of the current world.");
-		u.sendMessage(ChatColor.GREEN + "Correct Usages:");
-		if (u.hasPerm("bencmd.time.set")) {
-			u.sendMessage(pre + ChatColor.WHITE + "/time set <time>");
-			u.sendMessage(pre + ChatColor.WHITE + "/time <day|night|noon|midnight|etc>");
-		}
-		if (u.hasPerm("bencmd.time.lock")) {
-			u.sendMessage(pre + ChatColor.WHITE + "/time lock");
-		}
-		if (u.hasPerm("bencmd.editpermissions")) {
-			u.sendMessage(ChatColor.GREEN + "Required Permissions:");
-			u.sendMessage(pre + ChatColor.WHITE + "bencmd.time.set");
-			u.sendMessage(pre + ChatColor.WHITE + "bencmd.time.lock");
-		}
-	}
-	
-	private static void Spawn(User u) {
-		if (!u.hasPerm("bencmd.spawn.self") && !u.hasPerm("bencmd.spawn.all")) {
-			u.sendMessage(ChatColor.RED + "You're not allowed to use that command!");
-			return;
-		}
-		u.sendMessage(ChatColor.GREEN + "/spawn : " + ChatColor.WHITE + "Teleports you back to spawn");
-		u.sendMessage(ChatColor.GREEN + "Correct Usages: ");
-		if (u.hasPerm("bencmd.spawn.self")) {
-			u.sendMessage(pre + ChatColor.WHITE + "/spawn");
-		}
-		if (u.hasPerm("bencmd.spawn.all")) {
-			u.sendMessage(pre + ChatColor.WHITE + "/spawn <world>");
-		}
-		if (u.hasPerm("bencmd.editpermissions")) {
-			u.sendMessage(ChatColor.GREEN + "Required Permissions:");
-			u.sendMessage(pre + ChatColor.WHITE + "bencmd.spawn.normal");
-			u.sendMessage(pre + ChatColor.GRAY + "bencmd.spawn.all");
-		}
-	}
-	
-	private static void God(User u) {
-		if (!u.hasPerm("bencmd.god.self")) {
-			u.sendMessage(ChatColor.RED + "You're not allowed to use that command!");
-			return;
-		}
-		u.sendMessage(ChatColor.GREEN + "DESCRIPTION: " + ChatColor.WHITE + "Allows a user to become invincible to all forms");
-		u.sendMessage(ChatColor.WHITE + "of damage.");
-		u.sendMessage(ChatColor.GREEN + "ALLOWED USAGES: ");
-		u.sendMessage(ChatColor.WHITE + "/god");
-		if (u.hasPerm("bencmd.god.other")) {
-			u.sendMessage(ChatColor.WHITE + "/god <player>");
-		}
-		if (u.hasPerm("bencmd.editpermissions")) {
-			u.sendMessage(ChatColor.GREEN + "PERMISSIONS:");
-			u.sendMessage(ChatColor.WHITE + "bencmd.god.self");
-			u.sendMessage(ChatColor.GRAY + "bencmd.god.other");
-			u.sendMessage(ChatColor.DARK_GRAY + "bencmd.god.protect");
-			u.sendMessage(ChatColor.DARK_GRAY + "bencmd.god.all");
-		}
-	}
-	
-	private static void Heal(User u) {
-		if (!u.hasPerm("bencmd.heal.self")) {
-			u.sendMessage(ChatColor.RED + "You're not allowed to use that command!");
-			return;
-		}
-		u.sendMessage(ChatColor.GREEN + "DESCRIPTION: " + ChatColor.WHITE + "Allows a user to heal themselves or others,");
-		u.sendMessage(ChatColor.WHITE + "restoring health and food to their maximum level");
-		u.sendMessage(ChatColor.GREEN + "ALLOWED USAGES: ");
-		u.sendMessage(ChatColor.WHITE + "/heal");
-		if (u.hasPerm("bencmd.heal.other")) {
-			u.sendMessage(ChatColor.WHITE + "/heal <player>");
-		}
-		if (u.hasPerm("bencmd.editpermissions")) {
-			u.sendMessage(ChatColor.GREEN + "PERMISSIONS:");
-			u.sendMessage(ChatColor.WHITE + "bencmd.heal.self");
-			u.sendMessage(ChatColor.GRAY + "bencmd.heal.other");
-		}
-	}
-	
-	private static void BenCmd(User u) {
-		u.sendMessage(ChatColor.GREEN + "DESCRIPTION: " + ChatColor.WHITE + "Provides information on, or performs other");
-		u.sendMessage(ChatColor.WHITE + "functions related to BenCmd administration");
-		u.sendMessage(ChatColor.GREEN + "ALLOWED USAGES: ");
-		u.sendMessage(ChatColor.WHITE + "/bencmd version");
-		if (u.hasPerm("bencmd.reload")) {
-			u.sendMessage(ChatColor.WHITE + "/bencmd rel");
-		}
-		if (u.hasPerm("bencmd.update")) {
-			u.sendMessage(ChatColor.WHITE + "/bencmd update");
-			u.sendMessage(ChatColor.WHITE + "/bencmd fupdate");
-		}
-		if (u.hasPerm("bencmd.disable")) {
-			u.sendMessage(ChatColor.WHITE + "/bencmd disable");
-		}
-		if (u.hasPerm("bencmd.editpermissions")) {
-			u.sendMessage(ChatColor.GREEN + "PERMISSIONS:");
-			u.sendMessage(ChatColor.WHITE + "(None)");
-			u.sendMessage(ChatColor.GRAY + "bencmd.reload");
-			u.sendMessage(ChatColor.GRAY + "bencmd.update");
-			u.sendMessage(ChatColor.GRAY + "bencmd.disable");
-		}
-	}
-	
-	private static void SetSpawn(User u) {
-		if (!u.hasPerm("bencmd.spawn.set")) {
-			u.sendMessage(ChatColor.RED + "You're not allowed to use that command!");
-			return;
-		}
-		u.sendMessage(ChatColor.GREEN + "DESCRIPTION: " + ChatColor.WHITE + "Sets the current world's spawn point to the");
-		u.sendMessage(ChatColor.WHITE + "user's location");
-		u.sendMessage(ChatColor.GREEN + "ALLOWED USAGES: ");
-		u.sendMessage(ChatColor.WHITE + "/setspawn");
-		if (u.hasPerm("bencmd.editpermissions")) {
-			u.sendMessage(ChatColor.GREEN + "PERMISSIONS:");
-			u.sendMessage(ChatColor.WHITE + "bencmd.spawn.set");
-		}
-	}
-	
-	private static void Help(User u) {
-		u.sendMessage(ChatColor.GREEN + "DESCRIPTION: " + ChatColor.WHITE + "Pretty self-explanatory");
-		u.sendMessage(ChatColor.GREEN + "ALLOWED USAGES: ");
-		u.sendMessage(ChatColor.WHITE + "/help [page]");
-		u.sendMessage(ChatColor.WHITE + "/help <command>");
-		if (u.hasPerm("bencmd.editpermissions")) {
-			u.sendMessage(ChatColor.GREEN + "PERMISSIONS:");
-			u.sendMessage(ChatColor.WHITE + "(None)");
-		}
-	}
-	
-	private static void Kill(User u) {
-		if (!u.hasPerm("bencmd.kill.self")) {
-			u.sendMessage(ChatColor.RED + "You're not allowed to use that command!");
-			return;
-		}
-		u.sendMessage(ChatColor.GREEN + "DESCRIPTION: " + ChatColor.WHITE + "Allows a user to kill themselves or");
-		u.sendMessage(ChatColor.WHITE + "another user.");
-		u.sendMessage(ChatColor.GREEN + "ALLOWED USAGES: ");
-		u.sendMessage(ChatColor.WHITE + "/kill");
-		if (u.hasPerm("bencmd.kill.other")) {
-			u.sendMessage(ChatColor.WHITE + "/kill <player>");
-		}
-		if (u.hasPerm("bencmd.editpermissions")) {
-			u.sendMessage(ChatColor.GREEN + "PERMISSIONS:");
-			u.sendMessage(ChatColor.WHITE + "bencmd.kill.self");
-			u.sendMessage(ChatColor.GRAY + "bencmd.kill.other");
-			u.sendMessage(ChatColor.DARK_GRAY + "bencmd.kill.protect");
-			u.sendMessage(ChatColor.DARK_GRAY + "bencmd.kill.all");
-		}
-	}
 	
 	public static class BCommand {
 		private String label;
 		private String gist;
 		private String[] uses;
 		private String[] perms;
-		private String instructions;
+		private String[] instructions;
 
 		public BCommand(String label, String gist,
 				String uses, String perms, String instructions) {
@@ -539,15 +484,10 @@ public class Help {
 			} else {
 				this.perms = perms.split(";");
 			}
-			this.instructions = instructions;
+			this.instructions = instructions.split(";");
 		}
 
-		public BCommand(String label2, String gist2, String uses2,
-				String perms2, String instructions2) {
-			// TODO Auto-generated constructor stub
-		}
-
-		public String getName() {
+		public String getLabel() {
 			return label;
 		}
 
@@ -555,76 +495,56 @@ public class Help {
 			return gist;
 		}
 
-		public void sendUses(User u) {
-			/*for (int i = 0 ; i < uses.length ; i ++) {
-				if (perms.length > i) {
-					if (u.hasPerm(perms[i])) {
-						for (String use : uses[i].split(",")) { 
-							u.sendMessage(pre + use);
-						}
-					}
-				} else {
-					for (String use : uses[i].split(",")) { 
-						u.sendMessage(pre + use);
-					}
-				}
-			}*/
+		public String[] getUses(int index) {
+			if (index < uses.length) {
+				return (uses[index].split(","));
+			}
+			return null;
+		}
+		
+		public String[] getAllUses() {
+			int length = 0, index = 0, subindex = 0;
 			for (String use : uses) {
-				for (String subuse : use.split(",")) {
-					u.sendMessage(pre + subuse);
+				length += use.split(",").length;
+			}
+			String[] list = new String[length];
+			for (int i = 0 ; i < length ; i++) {
+				if (subindex < uses[index].split(",").length) {
+					list[i] = uses[index].split(",")[subindex];
+				} else {
+					subindex = 0;
+					index++;
 				}
 			}
+			return list;
 		}
 		
-		public void sendPerms(User u) {
-			for (String perm : perms) {
-				u.sendMessage(pre + perm);
-			}
+		public String[] getPermssions() {
+			return perms;
 		}
 		
-		public void sendInstructions(User u) { 
-			/*for (int i = 0 ; i < instructions.split(";").length ; i ++) {
-				if (perms.length > i) {
-					if (u.hasPerm(perms[i])) {
-						u.sendMessage(pre + instructions.split(";")[i]);
-					}
-				} else {
-					u.sendMessage(pre + instructions.split(";")[i]);
-				}
-			}*/
-			for (String inst : instructions.split(";")) {
-				u.sendMessage(pre + inst);
-			}
+		public String[] getInstructions() { 
+			return instructions;
 		}
 		
-		/*public boolean canUse(User user) {
-			if (neededPermission.equalsIgnoreCase(".")) {
-				return true;
-			} else if (neededPermission.startsWith("[C]")) {
-				if (BenCmd.getMainProperties().getBoolean("channelsEnabled", true)) {
-					neededPermission.replaceFirst("\\[C]", "");
-				} else {
-					return false;
-				}
-			} else if (neededPermission.startsWith("[!C]")) {
-				if (!BenCmd.getMainProperties().getBoolean("channelsEnabled", true)) {
-					neededPermission.replaceFirst("\\[!C]", "");
-				} else {
-					return false;
-				}
-			} else if (neededPermission.startsWith("[M]")) {
-				if (BenCmd.getMainProperties().getBoolean("marketOpen", false)) {
-					neededPermission.replaceFirst("\\[M]", "");
-				} else {
-					return false;
-				}
-			}
-			for (String p : neededPermission.split(",")) {
-				if (user.hasPerm(p)) {
+		public boolean canUse(User u) {
+			for (String p : perms) {
+				if (u.hasPerm(p)) {
 					return true;
 				}
 			}
 			return false;
-		}*/
+		}
+		
+		public int maxIndex() {
+			if (uses.length > perms.length && uses.length > instructions.length) {
+				return uses.length;
+			} else if (perms.length > instructions.length) {
+				return perms.length;
+			} else {
+				return instructions.length;
+			}
+		}
 	}
+
 }
