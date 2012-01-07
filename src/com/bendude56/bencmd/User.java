@@ -269,7 +269,7 @@ public class User extends PermissionUser {
 		if (isServer()) {
 			throw new UnsupportedOperationException();
 		}
-		Bukkit.broadcastMessage(this.getColor() + this.getDisplayName() + ChatColor.WHITE + " has left the game...");
+		Bukkit.broadcastMessage(this.getColor() + this.getDisplayName() + ChatColor.YELLOW + " has left the game...");
 		BenCmd.getPoofController().goOffline(this);
 	}
 
@@ -277,7 +277,7 @@ public class User extends PermissionUser {
 		if (isServer()) {
 			throw new UnsupportedOperationException();
 		}
-		Bukkit.broadcastMessage(this.getColor() + this.getDisplayName() + ChatColor.WHITE + " has joined the game...");
+		Bukkit.broadcastMessage(this.getColor() + this.getDisplayName() + ChatColor.YELLOW + " has joined the game...");
 		BenCmd.getPoofController().goOnline(this);
 	}
 
