@@ -30,10 +30,6 @@ public class SpoutConnector {
 		return SpoutManager.getPlayer(p).isSpoutCraftEnabled();
 	}
 
-	public void setItemName(Material m, short d, String name) {
-		SpoutManager.getItemManager().setItemName(m, d, name);
-	}
-
 	public void playMusic(Player p, String loc) {
 		if (enabled(p)) {
 			SpoutManager.getSoundManager().playCustomMusic(BenCmd.getPlugin(), SpoutManager.getPlayer(p), loc, true);
