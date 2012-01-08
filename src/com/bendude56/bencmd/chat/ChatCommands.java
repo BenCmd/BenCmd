@@ -8,6 +8,10 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.PlayerLoginEvent.Result;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.Commands;
@@ -39,9 +43,30 @@ public class ChatCommands implements Commands {
 					message += " " + word;
 				}
 			}
-			((Player) user.getHandle()).setDisplayName(message);
 			BenCmd.log(user2.getName() + " is now imitating " + message + "!");
+			String origName = ((EntityHuman) ((CraftPlayer) user2.getHandle()).getHandle()).name;
 			((EntityHuman) ((CraftPlayer) user2.getHandle()).getHandle()).name = message;
+			((Player) user2.getHandle()).setDisplayName(message);
+			PlayerLoginEvent el = new PlayerLoginEvent((Player) user2.getHandle());
+			Bukkit.getPluginManager().callEvent(el);
+			((EntityHuman) ((CraftPlayer) user2.getHandle()).getHandle()).name = origName;
+			((Player) user2.getHandle()).setDisplayName(origName);
+			if (el.getResult() != Result.ALLOWED) {
+				user2.sendMessage(ChatColor.RED + "Error changing name: " + el.getKickMessage());
+				return true;
+			}
+			PlayerQuitEvent eq = new PlayerQuitEvent((Player) user2.getHandle(), "");
+			Bukkit.getPluginManager().callEvent(eq);
+			if (eq.getQuitMessage() != "" && eq.getQuitMessage() != null) {
+				Bukkit.broadcastMessage(eq.getQuitMessage());
+			}
+			((EntityHuman) ((CraftPlayer) user2.getHandle()).getHandle()).name = message;
+			((Player) user2.getHandle()).setDisplayName(message);
+			PlayerJoinEvent ej = new PlayerJoinEvent((Player) user2.getHandle(), "");
+			Bukkit.getPluginManager().callEvent(ej);
+			if (ej.getJoinMessage() != "" && ej.getJoinMessage() != null) {
+				Bukkit.broadcastMessage(ej.getJoinMessage());
+			}
 			return true;
 		}
 		if (channelsEnabled()) {
