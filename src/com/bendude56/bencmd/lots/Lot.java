@@ -38,8 +38,8 @@ public class Lot {
 		LotID = key.split(",")[0];
 		SubID = key.split(",")[1];
 		FullID = key;
-		corner1 = new Location(World, Double.parseDouble(value.split(",")[0]), Integer.parseInt(value.split(",")[1]), Integer.parseInt(value.split(",")[2]));
-		corner2 = new Location(World, Integer.parseInt(value.split(",")[4]), Integer.parseInt(value.split(",")[5]), Integer.parseInt(value.split(",")[6]));
+		corner1 = new Location(World, Double.parseDouble(value.split(",")[0]), Double.parseDouble(value.split(",")[1]), Double.parseDouble(value.split(",")[2]));
+		corner2 = new Location(World, Double.parseDouble(value.split(",")[4]), Double.parseDouble(value.split(",")[5]), Double.parseDouble(value.split(",")[6]));
 		if (corner1.getX() == 1.1) {
 			GLOBALLOT = true;
 		}

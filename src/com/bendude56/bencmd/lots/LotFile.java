@@ -62,9 +62,9 @@ public class LotFile extends BenCmdFile {
 		value += corner2.getY() + ",";
 		value += corner2.getZ() + ",";
 		if (lot.DISABLED) {
-			value += lot.originalWorld + ",";
+			value += lot.originalWorld;
 		} else {
-			value += lot.World.getName() + ",";
+			value += lot.World.getName();
 		}
 		if (lot.getSubID().equalsIgnoreCase("0")) {
 			String owner = lot.getOwner();
