@@ -480,7 +480,7 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 	// END STATIC FILE METHODS
 
 	public final static boolean	debug			= false;
-	public final static int		buildId			= 44;
+	public final static int		buildId			= 45;
 	public final static int		cbbuild			= 1597;
 	public final static String	verLoc			= "http://cloud.github.com/downloads/BenCmd/BenCmd/version.txt";
 	public static String		devLoc			= "";
