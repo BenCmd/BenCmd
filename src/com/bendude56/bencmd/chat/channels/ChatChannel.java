@@ -184,6 +184,7 @@ public class ChatChannel {
 		for (User u : spies) {
 			u.sendMessage(ChatColor.GRAY + name + ": " + message);
 		}
+		BenCmd.log(message);
 	}
 
 	public void sendChat(User u, String msg) {
