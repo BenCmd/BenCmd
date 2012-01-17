@@ -480,7 +480,7 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 	// END STATIC FILE METHODS
 
 	public final static boolean	debug			= false;
-	public final static int		buildId			= 45;
+	public final static int		buildId			= 46;
 	public final static int		cbbuild			= 1597;
 	public final static String	verLoc			= "http://cloud.github.com/downloads/BenCmd/BenCmd/version.txt";
 	public static String		devLoc			= "";
@@ -940,7 +940,7 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 	// START WEPIF FUNCTIONS
 	@Override
 	public boolean hasPermission(String name, String permission) {
-		return PermissionUser.matchUser(name).hasPerm(permission);
+		return PermissionUser.matchUserIgnoreCase(name).hasPerm(permission);
 	}
 
 	@Override
@@ -950,7 +950,7 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 
 	@Override
 	public boolean inGroup(String player, String group) {
-		return PermissionUser.matchUser(player).inGroup(getPermissionManager().getGroupFile().getGroup(group));
+		return PermissionUser.matchUserIgnoreCase(player).inGroup(getPermissionManager().getGroupFile().getGroup(group));
 	}
 
 	@Override

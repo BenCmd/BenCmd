@@ -18,6 +18,9 @@ public class PermissionUser {
 		return null;
 	}
 
+	/**
+	 * @deprecated Use matchUserIgnoreCase(String name) instead!
+	 */
 	public static PermissionUser matchUser(String name) {
 		for (Object oUser : BenCmd.getPermissionManager().getUserFile().listUsers().values()) {
 			if (((InternalUser) oUser).getName().equals(name)) {

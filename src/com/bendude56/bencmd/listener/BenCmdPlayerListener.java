@@ -803,7 +803,11 @@ public class BenCmdPlayerListener extends PlayerListener {
 				BenCmd.getPermissionManager().getUserFile().addUser(user = PermissionUser.newUser(event.getPlayer().getName(), new ArrayList<String>()));
 			}
 		} else {
-			user = PermissionUser.matchUser(event.getPlayer().getName());
+			user = PermissionUser.matchUserIgnoreCase(event.getPlayer().getName());
+			if (!user.getName().equals(event.getPlayer().getName())) {
+				BenCmd.log(Level.WARNING, "Correcting users.db name: " + user.getName() + " -> " + event.getPlayer().getName());
+				BenCmd.getPermissionManager().getUserFile().correctCase(user, event.getPlayer().getName());
+			}
 		}
 		if (BenCmd.getPermissionManager().getGroupFile().getAllUserGroups(user).isEmpty()) {
 			BenCmd.getPermissionManager().getGroupFile().getGroup(BenCmd.getMainProperties().getString("defaultGroup", "default")).addUser(user);

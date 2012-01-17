@@ -333,7 +333,7 @@ public class LotFile extends BenCmdFile {
 		for (String LotID : lots.keySet()) {
 			if (getLot(LotID).withinLot(location)) {
 				inLot = true;
-				PermissionUser user = PermissionUser.matchUser(player.getName());
+				PermissionUser user = PermissionUser.matchUserIgnoreCase(player.getName());
 				if (user == null) {
 					return "noUser";
 				}

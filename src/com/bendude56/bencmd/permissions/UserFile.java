@@ -112,4 +112,12 @@ public class UserFile extends BenCmdFile {
 		}
 		return users;
 	}
+	
+	public void correctCase(PermissionUser user, String name) {
+		String oldName = user.getName();
+		if (!oldName.equals(name)) {
+			users.put(name, new InternalUser(name, users.get(oldName).getPermissions(false, true)));
+			users.remove(oldName);
+		}
+	}
 }

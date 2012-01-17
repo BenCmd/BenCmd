@@ -495,7 +495,7 @@ public class PermissionCommands implements Commands {
 			return;
 		}
 		PermissionUser puser2;
-		if ((puser2 = PermissionUser.matchUser(args[0])) == null) {
+		if ((puser2 = PermissionUser.matchUserIgnoreCase(args[0])) == null) {
 			user.sendMessage(ChatColor.RED + "That user could not be found!");
 			return;
 		}
@@ -551,7 +551,7 @@ public class PermissionCommands implements Commands {
 			return;
 		}
 		PermissionUser puser2;
-		if ((puser2 = PermissionUser.matchUser(args[0])) == null) {
+		if ((puser2 = PermissionUser.matchUserIgnoreCase(args[0])) == null) {
 			user.sendMessage(ChatColor.RED + "That user could not be found!");
 			return;
 		}
@@ -574,7 +574,7 @@ public class PermissionCommands implements Commands {
 			return;
 		}
 		PermissionUser puser2;
-		if ((puser2 = PermissionUser.matchUser(args[0])) == null) {
+		if ((puser2 = PermissionUser.matchUserIgnoreCase(args[0])) == null) {
 			user.sendMessage(ChatColor.RED + "That user could not be found!");
 			return;
 		}
@@ -631,7 +631,7 @@ public class PermissionCommands implements Commands {
 			return;
 		}
 		PermissionUser puser2;
-		if ((puser2 = PermissionUser.matchUser(args[0])) == null) {
+		if ((puser2 = PermissionUser.matchUserIgnoreCase(args[0])) == null) {
 			user.sendMessage(ChatColor.RED + "That user could not be found!");
 			return;
 		}
@@ -657,7 +657,7 @@ public class PermissionCommands implements Commands {
 			return;
 		}
 		PermissionUser puser2;
-		if ((puser2 = PermissionUser.matchUser(args[0])) == null) {
+		if ((puser2 = PermissionUser.matchUserIgnoreCase(args[0])) == null) {
 			user.sendMessage(ChatColor.RED + "That user could not be found!");
 			return;
 		}
@@ -713,7 +713,7 @@ public class PermissionCommands implements Commands {
 			return;
 		}
 		PermissionUser puser2;
-		if ((puser2 = PermissionUser.matchUser(args[0])) == null && !Bukkit.getPlayerExact(args[0]).isBanned()) {
+		if ((puser2 = PermissionUser.matchUserIgnoreCase(args[0])) == null && !Bukkit.getPlayerExact(args[0]).isBanned()) {
 			user.sendMessage(ChatColor.RED + "That user could not be found!");
 			return;
 		} 
@@ -734,7 +734,7 @@ public class PermissionCommands implements Commands {
 			return;
 		}
 		PermissionUser puser2;
-		if ((puser2 = PermissionUser.matchUser(args[0])) == null) {
+		if ((puser2 = PermissionUser.matchUserIgnoreCase(args[0])) == null) {
 			user.sendMessage(ChatColor.RED + "That user could not be found!");
 			return;
 		}
