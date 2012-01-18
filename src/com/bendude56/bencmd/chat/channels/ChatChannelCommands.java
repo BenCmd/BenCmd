@@ -195,7 +195,7 @@ public class ChatChannelCommands implements Commands {
 				}
 				if (user.inChannel()) {
 					if (user.getActiveChannel().canExecuteBasicCommands(user)) {
-						PermissionUser toBan = PermissionUser.matchUserIgnoreCase(args[1]);
+						PermissionUser toBan = PermissionUser.matchUserAllowPartial(args[1]);
 						if (toBan == null) {
 							user.sendMessage(ChatColor.RED + "That user couldn't be found!");
 							return;
@@ -218,7 +218,7 @@ public class ChatChannelCommands implements Commands {
 				}
 				if (user.inChannel()) {
 					if (user.getActiveChannel().canExecuteBasicCommands(user)) {
-						PermissionUser toMute = PermissionUser.matchUserIgnoreCase(args[1]);
+						PermissionUser toMute = PermissionUser.matchUserAllowPartial(args[1]);
 						if (toMute == null) {
 							user.sendMessage(ChatColor.RED + "That user couldn't be found!");
 							return;
@@ -241,7 +241,7 @@ public class ChatChannelCommands implements Commands {
 				}
 				if (user.inChannel()) {
 					if (user.getActiveChannel().canExecuteBasicCommands(user)) {
-						PermissionUser toNormal = PermissionUser.matchUserIgnoreCase(args[1]);
+						PermissionUser toNormal = PermissionUser.matchUserAllowPartial(args[1]);
 						if (toNormal == null) {
 							user.sendMessage(ChatColor.RED + "That user couldn't be found!");
 							return;
@@ -264,7 +264,7 @@ public class ChatChannelCommands implements Commands {
 				}
 				if (user.inChannel()) {
 					if (user.getActiveChannel().canExecuteAdvancedCommands(user)) {
-						PermissionUser toVip = PermissionUser.matchUserIgnoreCase(args[1]);
+						PermissionUser toVip = PermissionUser.matchUserAllowPartial(args[1]);
 						if (toVip == null) {
 							user.sendMessage(ChatColor.RED + "That user couldn't be found!");
 							return;
@@ -287,7 +287,7 @@ public class ChatChannelCommands implements Commands {
 				}
 				if (user.inChannel()) {
 					if (user.getActiveChannel().canExecuteAdvancedCommands(user)) {
-						PermissionUser toMod = PermissionUser.matchUserIgnoreCase(args[1]);
+						PermissionUser toMod = PermissionUser.matchUserAllowPartial(args[1]);
 						if (toMod == null) {
 							user.sendMessage(ChatColor.RED + "That user couldn't be found!");
 							return;
@@ -310,7 +310,7 @@ public class ChatChannelCommands implements Commands {
 				}
 				if (user.inChannel()) {
 					if (user.getActiveChannel().canExecuteAllCommands(user)) {
-						PermissionUser toOwn = PermissionUser.matchUserIgnoreCase(args[1]);
+						PermissionUser toOwn = PermissionUser.matchUserAllowPartial(args[1]);
 						if (toOwn == null) {
 							user.sendMessage(ChatColor.RED + "That user couldn't be found!");
 							return;
@@ -329,7 +329,7 @@ public class ChatChannelCommands implements Commands {
 				}
 				if (user.inChannel()) {
 					if (user.getActiveChannel().canExecuteAllCommands(user)) {
-						PermissionUser toOwn = PermissionUser.matchUserIgnoreCase(args[1]);
+						PermissionUser toOwn = PermissionUser.matchUserAllowPartial(args[1]);
 						if (toOwn == null) {
 							user.sendMessage(ChatColor.RED + "That user couldn't be found!");
 							return;

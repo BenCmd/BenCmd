@@ -42,7 +42,7 @@ public class ReportCommands implements Commands {
 			user.sendMessage(ChatColor.YELLOW + "Proper use is /report <player> <reason>");
 			return;
 		}
-		PermissionUser reported = PermissionUser.matchUserIgnoreCase(args[0]);
+		PermissionUser reported = PermissionUser.matchUserAllowPartial(args[0]);
 		if (reported == null) {
 			user.sendMessage(ChatColor.RED + "That user doesn't exist!");
 			return;

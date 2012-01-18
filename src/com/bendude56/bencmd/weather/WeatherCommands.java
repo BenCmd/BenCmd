@@ -111,7 +111,7 @@ public class WeatherCommands implements Commands {
 					return;
 				}
 				User user2;
-				if ((user2 = User.matchUser(args[0])) == null) {
+				if ((user2 = User.matchUserAllowPartial(args[0])) == null) {
 					user.sendMessage(ChatColor.RED + "That user couldn't be found!");
 					return;
 				}

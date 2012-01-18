@@ -201,7 +201,7 @@ public class WarpCommands implements Commands {
 				int homenum;
 				try {
 					homenum = Integer.parseInt(args[0]);
-					user.homeWarp(homenum, PermissionUser.matchUserIgnoreCase(args[1]));
+					user.homeWarp(homenum, PermissionUser.matchUserAllowPartial(args[1]));
 				} catch (NumberFormatException e) {
 					user.sendMessage(ChatColor.RED + "Invalid home number!");
 				}
@@ -239,7 +239,7 @@ public class WarpCommands implements Commands {
 				int homenum;
 				try {
 					homenum = Integer.parseInt(args[0]);
-					user.setHome(homenum, PermissionUser.matchUserIgnoreCase(args[1]));
+					user.setHome(homenum, PermissionUser.matchUserAllowPartial(args[1]));
 				} catch (NumberFormatException e) {
 					user.sendMessage(ChatColor.RED + "Invalid home number!");
 				}
@@ -315,7 +315,7 @@ public class WarpCommands implements Commands {
 				BenCmd.getPlugin().logPermFail();
 				return;
 			}
-			User user2 = User.matchUser(args[0]);
+			User user2 = User.matchUserAllowPartial(args[0]);
 			if (user2 == null) {
 				user.sendMessage(ChatColor.RED + args[0] + " isn't online!");
 				return;
@@ -338,8 +338,8 @@ public class WarpCommands implements Commands {
 				BenCmd.getPlugin().logPermFail();
 				return;
 			}
-			User user1 = User.matchUser(args[0]);
-			User user2 = User.matchUser(args[1]);
+			User user1 = User.matchUserAllowPartial(args[0]);
+			User user2 = User.matchUserAllowPartial(args[1]);
 			if (user1 == null) {
 				user.sendMessage(ChatColor.RED + args[0] + " isn't online!");
 				return;

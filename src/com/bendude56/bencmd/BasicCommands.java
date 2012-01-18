@@ -221,7 +221,7 @@ public class BasicCommands implements Commands {
 				return;
 			}
 			User user2;
-			if ((user2 = User.matchUser(args[0])) != null) {
+			if ((user2 = User.matchUserAllowPartial(args[0])) != null) {
 				if (user2.hasPerm("bencmd.kill.protect") && !user.hasPerm("bencmd.kill.all")) {
 					user.sendMessage(ChatColor.RED + "That player is protected from being killed!");
 					return;
@@ -358,12 +358,12 @@ public class BasicCommands implements Commands {
 				user.sendMessage(ChatColor.YELLOW + "Proper use is /god [player]");
 				return;
 			}
-			if (user.isGod()) { // If they're a god
-				user.makeNonGod(); // Delete them from the list
+			if (user.isGod()) {
+				user.makeNonGod();
 				user.sendMessage(ChatColor.GOLD + "You are no longer in god mode!");
 				BenCmd.log("BenCmd: " + user.getDisplayName() + " has been made a non-god by " + user.getDisplayName() + "!");
-			} else { // If they're not a god
-				user.makeGod(); // Add them to the list
+			} else {
+				user.makeGod();
 				user.sendMessage(ChatColor.GOLD + "You are now in god mode!");
 				BenCmd.log("BenCmd: " + user.getDisplayName() + " has been made a god by " + user.getDisplayName() + "!");
 			}
@@ -374,21 +374,18 @@ public class BasicCommands implements Commands {
 				return;
 			}
 			User user2;
-			if ((user2 = User.matchUser(args[0])) != null) { // If
-																// they
-																// exist
+			if ((user2 = User.matchUserAllowPartial(args[0])) != null) {
 				if (user2.hasPerm("bencmd.god.protect") && !user.hasPerm("bencmd.god.all")) {
 					user.sendMessage(ChatColor.RED + "That player is protected from being godded/ungodded by others!");
 					return;
 				}
-				if (user2.isGod()) { // If they're a god
-					user2.makeNonGod(); // Delete them from the
-										// list
+				if (user2.isGod()) {
+					user2.makeNonGod();
 					user2.sendMessage(ChatColor.GOLD + "You are no longer in god mode!");
 					user.sendMessage(ChatColor.GOLD + "You have un-godded " + user2.getColor() + user2.getDisplayName());
 					BenCmd.log("BenCmd: " + user2.getDisplayName() + " has been made a non-god by " + user.getDisplayName() + "!");
-				} else { // If they're not a god
-					user2.makeGod(); // Add them to the list
+				} else {
+					user2.makeGod();
 					user2.sendMessage(ChatColor.GOLD + "You are now in god mode!");
 					user.sendMessage(ChatColor.GOLD + "You have godded " + user2.getColor() + user2.getDisplayName());
 					BenCmd.log("BenCmd: " + user2.getDisplayName() + " has been made a god by " + user.getDisplayName() + "!");
@@ -417,8 +414,7 @@ public class BasicCommands implements Commands {
 			}
 			// Heal the other player
 			User user2;
-			if ((user2 = User.matchUser(args[0])) != null) {
-				user2 = User.matchUser(args[0]);
+			if ((user2 = User.matchUserAllowPartial(args[0])) != null) {
 				user2.heal();
 				user2.sendMessage(ChatColor.GREEN + "You have been healed.");
 				user.sendMessage(ChatColor.GREEN + "You have healed " + user2.getColor() + user2.getDisplayName());
@@ -447,8 +443,7 @@ public class BasicCommands implements Commands {
 			}
 			// Feed the other player
 			User user2;
-			if ((user2 = User.matchUser(args[0])) != null) {
-				user2 = User.matchUserIgnoreCase(args[0]);
+			if ((user2 = User.matchUserAllowPartial(args[0])) != null) {
 				user2.feed();
 				user2.sendMessage(ChatColor.GREEN + "You have been fed.");
 				user.sendMessage(ChatColor.GREEN + "You have fed" + user2.getColor() + user2.getDisplayName());

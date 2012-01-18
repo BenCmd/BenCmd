@@ -26,6 +26,32 @@ public class User extends PermissionUser {
 		}
 		return null;
 	}
+	
+	public static User matchUserAllowPartial(String name) {
+		name = name.toLowerCase();
+		List<User> startingMatches = new ArrayList<User>();
+		List<User> otherMatches = new ArrayList<User>();
+		for (Player online : Bukkit.getOnlinePlayers()) {
+			if (online.getName().toLowerCase().startsWith(name)) {
+				startingMatches.add(User.getUser(online));
+			} else if (online.getName().toLowerCase().contains(name)) {
+				otherMatches.add(User.getUser(online));
+			}
+		}
+		if (startingMatches.size() == 0) {
+			if (otherMatches.size() == 0) {
+				return null;
+			} else if (otherMatches.size() > 1) {
+				return null;
+			} else {
+				return otherMatches.get(0);
+			}
+		} else if (startingMatches.size() > 1) {
+			return null;
+		} else {
+			return startingMatches.get(0);
+		}
+	}
 
 	public static HashMap<String, User> getActiveUsers() {
 		return activeUsers;

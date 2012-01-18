@@ -122,7 +122,7 @@ public class InventoryCommands implements Commands {
 		int ItemDamage = Item.getDamage();
 		if (args.length == 3) {
 			User user2;
-			if ((user2 = User.matchUser(args[2])) == null) {
+			if ((user2 = User.matchUserAllowPartial(args[2])) == null) {
 				user.sendMessage(ChatColor.RED + "Cannot find the player '" + args[2] + "'");
 				return;
 			}
@@ -171,7 +171,7 @@ public class InventoryCommands implements Commands {
 			}
 			// Clear the other player's inventory
 			User user2;
-			if ((user2 = User.matchUser(args[0])) != null) {
+			if ((user2 = User.matchUserAllowPartial(args[0])) != null) {
 				if (user2.hasPerm("bencmd.inv.clr.protect") && !user.hasPerm("bencmd.inv.clr.all")) {
 					user.sendMessage(ChatColor.RED + "That player is protected from being godded/ungodded by others!");
 					return;

@@ -54,7 +54,7 @@ public class AdvancedCommands implements Commands {
 			return;
 		}
 		User target;
-		if ((target = User.matchUserIgnoreCase(args[0])) == null) {
+		if ((target = User.matchUserAllowPartial(args[0])) == null) {
 			user.sendMessage(ChatColor.RED + "That player isn't online!");
 			return;
 		}

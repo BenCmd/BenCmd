@@ -211,7 +211,7 @@ public class ProtectedCommands implements Commands {
 		if (args.length == 1) {
 			this.Lock(pointedAt, user, false);
 		} else if (args.length == 2) {
-			PermissionUser p = PermissionUser.matchUserIgnoreCase(args[1]);
+			PermissionUser p = PermissionUser.matchUserAllowPartial(args[1]);
 			if (p != null) {
 				this.Lock(pointedAt, user, p, false);
 			} else {
@@ -232,7 +232,7 @@ public class ProtectedCommands implements Commands {
 		if (args.length == 1) {
 			this.Lock(pointedAt, user, true);
 		} else if (args.length == 2) {
-			PermissionUser p = PermissionUser.matchUserIgnoreCase(args[1]);
+			PermissionUser p = PermissionUser.matchUserAllowPartial(args[1]);
 			if (p != null) {
 				this.Lock(pointedAt, user, p, true);
 			} else {
@@ -303,7 +303,7 @@ public class ProtectedCommands implements Commands {
 					return;
 				}
 				PermissionUser newOwner;
-				if ((newOwner = PermissionUser.matchUserIgnoreCase(args[1])) == null) {
+				if ((newOwner = PermissionUser.matchUserAllowPartial(args[1])) == null) {
 					user.sendMessage(ChatColor.RED + "That player doesn't exist!");
 					return;
 				}
@@ -332,7 +332,7 @@ public class ProtectedCommands implements Commands {
 				return;
 			}
 			PermissionUser newOwner;
-			if ((newOwner = PermissionUser.matchUserIgnoreCase(args[0])) == null) {
+			if ((newOwner = PermissionUser.matchUserAllowPartial(args[0])) == null) {
 				user.sendMessage(ChatColor.RED + "That player doesn't exist!");
 				return;
 			}
@@ -359,7 +359,7 @@ public class ProtectedCommands implements Commands {
 					return;
 				}
 				PermissionUser newOwner;
-				if ((newOwner = PermissionUser.matchUserIgnoreCase(args[1])) == null) {
+				if ((newOwner = PermissionUser.matchUserAllowPartial(args[1])) == null) {
 					user.sendMessage(ChatColor.RED + "That player doesn't exist!");
 					return;
 				}
@@ -390,7 +390,7 @@ public class ProtectedCommands implements Commands {
 				}
 				block = BenCmd.getProtections().getProtection(id);
 				PermissionUser newOwner;
-				if ((newOwner = PermissionUser.matchUserIgnoreCase(args[0])) == null) {
+				if ((newOwner = PermissionUser.matchUserAllowPartial(args[0])) == null) {
 					user.sendMessage(ChatColor.RED + "That player doesn't exist!");
 					return;
 				}
@@ -418,7 +418,7 @@ public class ProtectedCommands implements Commands {
 					return;
 				}
 				PermissionUser newOwner;
-				if ((newOwner = PermissionUser.matchUserIgnoreCase(args[1])) == null) {
+				if ((newOwner = PermissionUser.matchUserAllowPartial(args[1])) == null) {
 					user.sendMessage(ChatColor.RED + "That player doesn't exist!");
 					return;
 				}
@@ -447,7 +447,7 @@ public class ProtectedCommands implements Commands {
 					return;
 				}
 				PermissionUser newOwner;
-				if ((newOwner = PermissionUser.matchUserIgnoreCase(args[0])) == null) {
+				if ((newOwner = PermissionUser.matchUserAllowPartial(args[0])) == null) {
 					user.sendMessage(ChatColor.RED + "That player doesn't exist!");
 					return;
 				}

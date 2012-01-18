@@ -17,6 +17,32 @@ public class PermissionUser {
 		}
 		return null;
 	}
+	
+	public static PermissionUser matchUserAllowPartial(String name) {
+		name = name.toLowerCase();
+		List<PermissionUser> startingMatches = new ArrayList<PermissionUser>();
+		List<PermissionUser> otherMatches = new ArrayList<PermissionUser>();
+		for (Object oUser : BenCmd.getPermissionManager().getUserFile().listUsers().values()) {
+			if (((InternalUser) oUser).getName().toLowerCase().startsWith(name)) {
+				startingMatches.add(new PermissionUser((InternalUser) oUser));
+			} else if (((InternalUser) oUser).getName().toLowerCase().contains(name)) {
+				otherMatches.add(new PermissionUser((InternalUser) oUser));
+			}
+		}
+		if (startingMatches.size() == 0) {
+			if (otherMatches.size() == 0) {
+				return null;
+			} else if (otherMatches.size() > 1) {
+				return null;
+			} else {
+				return otherMatches.get(0);
+			}
+		} else if (startingMatches.size() > 1) {
+			return null;
+		} else {
+			return startingMatches.get(0);
+		}
+	}
 
 	/**
 	 * @deprecated Use matchUserIgnoreCase(String name) instead!

@@ -33,7 +33,7 @@ public class ChatCommands implements Commands {
 			list(args, user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("display") && user.hasPerm("bencmd.chat.imitate")) {
-			User user2 = User.matchUser(args[0]);
+			User user2 = User.matchUserAllowPartial(args[0]);
 			String message = "";
 			for (int i = 1; i < args.length; i++) {
 				String word = args[i];

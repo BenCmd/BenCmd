@@ -202,7 +202,7 @@ public class PermissionCommands implements Commands {
 				if (group == null) {
 					user.sendMessage(ChatColor.RED + "That group doesn't exist!");
 				} else {
-					PermissionUser user2 = PermissionUser.matchUserIgnoreCase(args[2]);
+					PermissionUser user2 = PermissionUser.matchUserAllowPartial(args[2]);
 					if (user2 == null) {
 						user.sendMessage(ChatColor.RED + "That user doesn't exist!");
 					} else {
@@ -223,7 +223,7 @@ public class PermissionCommands implements Commands {
 				if (group == null) {
 					user.sendMessage(ChatColor.RED + "That group doesn't exist!");
 				} else {
-					PermissionUser user2 = PermissionUser.matchUserIgnoreCase(args[2]);
+					PermissionUser user2 = PermissionUser.matchUserAllowPartial(args[2]);
 					if (user2 == null) {
 						user.sendMessage(ChatColor.RED + "That user doesn't exist!");
 					} else {
@@ -358,11 +358,11 @@ public class PermissionCommands implements Commands {
 			BenCmd.getPlugin().logPermFail();
 			return;
 		} else if (args.length == 1) {
-			if ((puser2 = PermissionUser.matchUserIgnoreCase(args[0])) == null) {
+			if ((puser2 = PermissionUser.matchUserAllowPartial(args[0])) == null) {
 				user.sendMessage(ChatColor.RED + "That user isn't in the database!");
 				return;
 			}
-			user2 = User.matchUser(args[0]);
+			user2 = User.matchUserAllowPartial(args[0]);
 		} else if (args.length == 0) {
 			puser2 = user;
 			user2 = user;
@@ -449,7 +449,7 @@ public class PermissionCommands implements Commands {
 			user.sendMessage(ChatColor.YELLOW + "Proper use is: /kick <player> [--anon] [reason]");
 			return;
 		}
-		toKick = User.matchUser(args[0]);
+		toKick = User.matchUserAllowPartial(args[0]);
 		if (toKick == null) {
 			user.sendMessage(ChatColor.RED + args[0] + " cannot be found!");
 			return;
@@ -495,7 +495,7 @@ public class PermissionCommands implements Commands {
 			return;
 		}
 		PermissionUser puser2;
-		if ((puser2 = PermissionUser.matchUserIgnoreCase(args[0])) == null) {
+		if ((puser2 = PermissionUser.matchUserAllowPartial(args[0])) == null) {
 			user.sendMessage(ChatColor.RED + "That user could not be found!");
 			return;
 		}
@@ -539,7 +539,7 @@ public class PermissionCommands implements Commands {
 		}
 		BenCmd.getPermissionManager().getActionFile().addAction(puser2.getName(), ActionType.ALLMUTE, duration);
 		User user2;
-		if ((user2 = User.matchUser(args[0])) != null) {
+		if ((user2 = User.matchUserAllowPartial(args[0])) != null) {
 			user2.sendMessage(ChatColor.RED + "You've been muted!");
 		}
 		user.sendMessage(ChatColor.RED + "That user has been muted!");
@@ -551,7 +551,7 @@ public class PermissionCommands implements Commands {
 			return;
 		}
 		PermissionUser puser2;
-		if ((puser2 = PermissionUser.matchUserIgnoreCase(args[0])) == null) {
+		if ((puser2 = PermissionUser.matchUserAllowPartial(args[0])) == null) {
 			user.sendMessage(ChatColor.RED + "That user could not be found!");
 			return;
 		}
@@ -562,7 +562,7 @@ public class PermissionCommands implements Commands {
 		BenCmd.getPermissionManager().getActionLog().log(new ActionLogEntry(ActionLogType.UNMUTE_MAN, puser2.getName(), user.getName()));
 		BenCmd.getPermissionManager().getActionFile().removeAction(puser2.isMuted());
 		User user2;
-		if ((user2 = User.matchUser(args[0])) != null) {
+		if ((user2 = User.matchUserAllowPartial(args[0])) != null) {
 			user2.sendMessage(ChatColor.GREEN + "You've been unmuted!");
 		}
 		user.sendMessage(ChatColor.GREEN + "That user has been unmuted!");
@@ -574,7 +574,7 @@ public class PermissionCommands implements Commands {
 			return;
 		}
 		PermissionUser puser2;
-		if ((puser2 = PermissionUser.matchUserIgnoreCase(args[0])) == null) {
+		if ((puser2 = PermissionUser.matchUserAllowPartial(args[0])) == null) {
 			user.sendMessage(ChatColor.RED + "That user could not be found!");
 			return;
 		}
@@ -618,7 +618,7 @@ public class PermissionCommands implements Commands {
 		}
 		BenCmd.getPermissionManager().getActionFile().addAction(puser2.getName(), ActionType.JAIL, duration);
 		User user2;
-		if ((user2 = User.matchUser(args[0])) != null) {
+		if ((user2 = User.matchUserAllowPartial(args[0])) != null) {
 			user2.warpTo(BenCmd.getPermissionManager().getJailWarp());
 			user2.sendMessage(ChatColor.RED + "You've been jailed!");
 		}
@@ -631,7 +631,7 @@ public class PermissionCommands implements Commands {
 			return;
 		}
 		PermissionUser puser2;
-		if ((puser2 = PermissionUser.matchUserIgnoreCase(args[0])) == null) {
+		if ((puser2 = PermissionUser.matchUserAllowPartial(args[0])) == null) {
 			user.sendMessage(ChatColor.RED + "That user could not be found!");
 			return;
 		}
@@ -642,7 +642,7 @@ public class PermissionCommands implements Commands {
 		BenCmd.getPermissionManager().getActionLog().log(new ActionLogEntry(ActionLogType.UNJAIL_MAN, puser2.getName(), user.getName()));
 		BenCmd.getPermissionManager().getActionFile().removeAction(puser2.isJailed());
 		User user2;
-		if ((user2 = User.matchUser(args[0])) != null) {
+		if ((user2 = User.matchUserAllowPartial(args[0])) != null) {
 			user2.sendMessage(ChatColor.GREEN + "You've been unjailed!");
 			user2.spawn();
 		} else {
@@ -657,7 +657,7 @@ public class PermissionCommands implements Commands {
 			return;
 		}
 		PermissionUser puser2;
-		if ((puser2 = PermissionUser.matchUserIgnoreCase(args[0])) == null) {
+		if ((puser2 = PermissionUser.matchUserAllowPartial(args[0])) == null) {
 			user.sendMessage(ChatColor.RED + "That user could not be found!");
 			return;
 		}
@@ -701,7 +701,7 @@ public class PermissionCommands implements Commands {
 		}
 		BenCmd.getPermissionManager().getActionFile().addAction(puser2.getName(), ActionType.BAN, duration);
 		User user2;
-		if ((user2 = User.matchUser(args[0])) != null) {
+		if ((user2 = User.matchUserAllowPartial(args[0])) != null) {
 			user2.kick("You've been banned!");
 		}
 		user.sendMessage(ChatColor.RED + "That user has been banned!");
@@ -713,7 +713,7 @@ public class PermissionCommands implements Commands {
 			return;
 		}
 		PermissionUser puser2;
-		if ((puser2 = PermissionUser.matchUserIgnoreCase(args[0])) == null && !Bukkit.getPlayerExact(args[0]).isBanned()) {
+		if ((puser2 = PermissionUser.matchUserAllowPartial(args[0])) == null && !Bukkit.getPlayerExact(args[0]).isBanned()) {
 			user.sendMessage(ChatColor.RED + "That user could not be found!");
 			return;
 		} 
@@ -734,7 +734,7 @@ public class PermissionCommands implements Commands {
 			return;
 		}
 		PermissionUser puser2;
-		if ((puser2 = PermissionUser.matchUserIgnoreCase(args[0])) == null) {
+		if ((puser2 = PermissionUser.matchUserAllowPartial(args[0])) == null) {
 			user.sendMessage(ChatColor.RED + "That user could not be found!");
 			return;
 		}
