@@ -239,6 +239,12 @@ class InternalGroup {
 	}
 
 	public void remUser(String user) {
+		for (String user2 : users) {
+			if (user2.equalsIgnoreCase(user)) {
+				user = user2;
+				break;
+			}
+		}
 		users.remove(user);
 		BenCmd.getPermissionManager().getGroupFile().updateGroup(this, true);
 	}
