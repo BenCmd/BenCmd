@@ -41,6 +41,14 @@ public class UserFile extends BenCmdFile {
 				value += "," + perm;
 			}
 		}
+		value += "|";
+		for (String ignored : user.getIgnoring()) {
+			if (value.endsWith("|")) {
+				value += ignored;
+			} else {
+				value += "," + ignored;
+			}
+		}
 		getFile().put(user.getName(), value);
 		users.put(user.getName(), user);
 		if (saveFile)
@@ -60,17 +68,29 @@ public class UserFile extends BenCmdFile {
 		users.clear();
 		for (int i = 0; i < getFile().size(); i++) {
 			String name = (String) getFile().keySet().toArray()[i];
-			List<String> permissions = new ArrayList<String>();
-			permissions.addAll(Arrays.asList(getFile().getProperty(name).split(",")));
-			users.put(name, new InternalUser(name, permissions));
+			if (getFile().getProperty(name).contains("|")) {
+				List<String> permissions = new ArrayList<String>();
+				permissions.addAll(Arrays.asList(getFile().getProperty(name).split("\\|", -1)[0].split(",")));
+				List<String> ignored = new ArrayList<String>();
+				ignored.addAll(Arrays.asList(getFile().getProperty(name).split("\\|", -1)[1].split(",")));
+				users.put(name, new InternalUser(name, permissions, ignored));
+			} else {
+				List<String> permissions = new ArrayList<String>();
+				permissions.addAll(Arrays.asList(getFile().getProperty(name).split(",")));
+				BenCmd.log(Level.WARNING, "User " + name + " is missing user-ignore metadata! Adding...");
+				InternalUser u;
+				users.put(name, u = new InternalUser(name, permissions, new ArrayList<String>()));
+				updateUser(u, true);
+			}
 		}
+		saveFile();
 	}
 
 	public void saveAll() {
 		for (Map.Entry<String, InternalUser> e : users.entrySet()) {
 			updateUser(e.getValue(), false);
 		}
-
+		saveFile();
 	}
 
 	public HashMap<String, InternalUser> listUsers() {
@@ -116,8 +136,11 @@ public class UserFile extends BenCmdFile {
 	public void correctCase(PermissionUser user, String name) {
 		String oldName = user.getName();
 		if (!oldName.equals(name)) {
-			users.put(name, new InternalUser(name, users.get(oldName).getPermissions(false, true)));
+			InternalUser i;
+			users.put(name, i = new InternalUser(name, users.get(oldName).getPermissions(false, true), users.get(oldName).getIgnoring()));
+			getFile().remove(oldName);
 			users.remove(oldName);
+			updateUser(i, true);
 		}
 	}
 }

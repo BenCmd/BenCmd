@@ -13,10 +13,30 @@ public class InternalUser {
 	
 	private String						name;
 	private List<String>				permissions;
+	private List<String>				ignoredUsers;
 
-	protected InternalUser(String name, List<String> permissions) {
+	protected InternalUser(String name, List<String> permissions, List<String> ignoredUsers) {
 		this.name = name;
 		this.permissions = permissions;
+		this.ignoredUsers = ignoredUsers;
+	}
+	
+	public boolean isIgnoring(String name) {
+		return ignoredUsers.contains(name.toLowerCase());
+	}
+	
+	public void ignore(String name) {
+		ignoredUsers.add(name.toLowerCase());
+		BenCmd.getPermissionManager().getUserFile().updateUser(this, true);
+	}
+	
+	public void unignore(String name) {
+		ignoredUsers.remove(name.toLowerCase());
+		BenCmd.getPermissionManager().getUserFile().updateUser(this, true);
+	}
+	
+	public List<String> getIgnoring() {
+		return ignoredUsers;
 	}
 
 	public String getName() {
@@ -146,6 +166,7 @@ public class InternalUser {
 	public void remVar(String variable) {
 		String key = variable + "=" + getVar(variable);
 		permissions.remove(key);
+		BenCmd.getPermissionManager().getUserFile().updateUser(this, true);
 	}
 
 	public void setVar(String variable, String value) {

@@ -56,20 +56,20 @@ public class PermissionUser {
 		return null;
 	}
 
-	public static PermissionUser newUser(String name, List<String> permissions) {
-		return new PermissionUser(name, permissions);
+	public static PermissionUser newUser(String name, List<String> permissions, List<String> ignoring) {
+		return new PermissionUser(name, permissions, ignoring);
 	}
 
 	public PermissionUser() {
-		user = new InternalUser("*", new ArrayList<String>());
+		user = new InternalUser("*", new ArrayList<String>(), new ArrayList<String>());
 	}
 
 	public PermissionUser(InternalUser internal) {
 		user = internal;
 	}
 
-	protected PermissionUser(String name, List<String> permissions) {
-		user = new InternalUser(name, permissions);
+	protected PermissionUser(String name, List<String> permissions, List<String> ignoring) {
+		user = new InternalUser(name, permissions, ignoring);
 	}
 
 	private void updateInternal() {
@@ -83,6 +83,26 @@ public class PermissionUser {
 		} else if (user == null) {
 			user = ouser;
 		}
+	}
+	
+	public boolean isIgnoring(PermissionUser otherUser) {
+		updateInternal();
+		return user.isIgnoring(otherUser.getName());
+	}
+	
+	public void ignore(PermissionUser otherUser) {
+		updateInternal();
+		user.ignore(otherUser.getName());
+	}
+	
+	public void unignore(PermissionUser otherUser) {
+		updateInternal();
+		user.unignore(otherUser.getName());
+	}
+	
+	public List<String> getIgnoring() {
+		updateInternal();
+		return user.getIgnoring();
 	}
 
 	public PermissionGroup highestLevelGroup() {

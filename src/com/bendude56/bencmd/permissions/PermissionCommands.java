@@ -84,7 +84,7 @@ public class PermissionCommands implements Commands {
 			if (user2 != null) {
 				user.sendMessage(user2.getColor() + user2.getName() + ChatColor.RED + " already exists in the database!");
 			} else {
-				user2 = new PermissionUser(args[0], new ArrayList<String>());
+				user2 = new PermissionUser(args[0], new ArrayList<String>(), new ArrayList<String>());
 				BenCmd.getPermissionManager().getUserFile().addUser(user2);
 				user.sendMessage(ChatColor.GREEN + "User " + user2.getColor() + user2.getName() + " was successfully created!");
 				BenCmd.log(user2.getName() + " has been added to the BenCmd database!");

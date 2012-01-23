@@ -116,7 +116,7 @@ public class ChatChannel {
 		}
 		sendJoinMsg(user);
 		if (announce) {
-			broadcastMessage(getSpecialPrefix(user) + user.getColor() + user.getName() + ChatColor.YELLOW + " has joined the chat");
+			broadcastMessage(getSpecialPrefix(user) + user.getColor() + user.getName() + ChatColor.YELLOW + " has joined the chat", user);
 		}
 		inChannel.add(user);
 		return true;
@@ -156,7 +156,7 @@ public class ChatChannel {
 		user.sendMessage(ChatColor.YELLOW + "You have left " + ChatColor.GREEN + name);
 		inChannel.remove(user);
 		if (announce) {
-			broadcastMessage(getSpecialPrefix(user) + user.getColor() + user.getName() + ChatColor.YELLOW + " has left the chat");
+			broadcastMessage(getSpecialPrefix(user) + user.getColor() + user.getName() + ChatColor.YELLOW + " has left the chat", user);
 		}
 	}
 
@@ -177,6 +177,20 @@ public class ChatChannel {
 		}
 	}
 
+	public void broadcastMessage(String message, User sender) {
+		for (User u : inChannel) {
+			if (sender.hasPerm("bencmd.chat.noignore") || !u.isIgnoring(sender)) {
+				u.sendMessage(message);
+			}
+		}
+		for (User u : spies) {
+			if (sender.hasPerm("bencmd.chat.noignore") || !u.isIgnoring(sender)) {
+				u.sendMessage(ChatColor.GRAY + name + ": " + message);
+			}
+		}
+		BenCmd.log(message);
+	}
+	
 	public void broadcastMessage(String message) {
 		for (User u : inChannel) {
 			u.sendMessage(message);
@@ -215,7 +229,7 @@ public class ChatChannel {
 
 		// Format + send the message
 		String prefix = (u.getPrefix().isEmpty()) ? (getSpecialPrefix(u) + u.getColor()) : (u.getColor() + "[" + u.getPrefix() + "] " + getSpecialPrefix(u) + u.getColor());
-		broadcastMessage(prefix + u.getName() + ": " + ChatColor.WHITE + msg);
+		broadcastMessage(prefix + u.getName() + ": " + ChatColor.WHITE + msg, u);
 	}
 
 	public void sendMe(User u, String msg) {

@@ -302,3 +302,9 @@ commands:
     world:
         usage:
         description:
+    ignore:
+        usage:
+        description:
+    unignore:
+        usage:
+        description:

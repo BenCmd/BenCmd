@@ -800,7 +800,7 @@ public class BenCmdPlayerListener extends PlayerListener {
 				event.disallow(Result.KICK_WHITELIST, BenCmd.getMainProperties().getString("newUserKick", "You aren't whitelisted on this server!"));
 				return;
 			} else {
-				BenCmd.getPermissionManager().getUserFile().addUser(user = PermissionUser.newUser(event.getPlayer().getName(), new ArrayList<String>()));
+				BenCmd.getPermissionManager().getUserFile().addUser(user = PermissionUser.newUser(event.getPlayer().getName(), new ArrayList<String>(), new ArrayList<String>()));
 			}
 		} else {
 			user = PermissionUser.matchUserIgnoreCase(event.getPlayer().getName());
@@ -812,8 +812,13 @@ public class BenCmdPlayerListener extends PlayerListener {
 		if (BenCmd.getPermissionManager().getGroupFile().getAllUserGroups(user).isEmpty()) {
 			BenCmd.getPermissionManager().getGroupFile().getGroup(BenCmd.getMainProperties().getString("defaultGroup", "default")).addUser(user);
 		}
-		if ((User.getUser(event.getPlayer())).isBanned() != null) {
-			event.disallow(Result.KICK_BANNED, "You are currently banned from this server!");
+		if (user.isBanned() != null) {
+			com.bendude56.bencmd.permissions.Action a = user.isBanned();
+			if (a.getExpiry() == -1) {
+				event.disallow(Result.KICK_BANNED, "You are currently banned from this server! FOREVER!");
+			} else {
+				event.disallow(Result.KICK_BANNED, "You are still banned for " + a.formatTimeLeft());
+			}
 			return;
 		}
 		long timeLeft;

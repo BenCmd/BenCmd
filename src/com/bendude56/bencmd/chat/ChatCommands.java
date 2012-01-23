@@ -17,6 +17,7 @@ import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.Commands;
 import com.bendude56.bencmd.User;
 import com.bendude56.bencmd.listener.BenCmdPlayerListener;
+import com.bendude56.bencmd.permissions.PermissionUser;
 
 public class ChatCommands implements Commands {
 
@@ -68,6 +69,60 @@ public class ChatCommands implements Commands {
 				Bukkit.broadcastMessage(ej.getJoinMessage());
 			}
 			return true;
+		} else if (commandLabel.equalsIgnoreCase("ignore") && user.hasPerm("bencmd.chat.ignore")) {
+			if (args.length == 0) {
+				String ignoring = "";
+				for (String i : user.getIgnoring()) {
+					if (ignoring.isEmpty()) {
+						ignoring = i;
+					} else {
+						ignoring += ", " + i;
+					}
+				}
+				if (ignoring.isEmpty()) {
+					user.sendMessage(ChatColor.RED + "You're not ignoring anybody!");
+					return true;
+				} else {
+					user.sendMessage(ChatColor.GRAY + "You are ignoring the following users:");
+					return true;
+				}
+			} else if (args.length == 1) {
+				PermissionUser u = PermissionUser.matchUserAllowPartial(args[0]);
+				if (u == null) {
+					user.sendMessage(ChatColor.RED + "That user could not be found!");
+					return true;
+				}
+				if (user.isIgnoring(u)) {
+					user.sendMessage(ChatColor.RED + "You are already ignoring that user!");
+					return true;
+				}
+				if (u.hasPerm("bencmd.chat.noignore")) {
+					user.sendMessage(ChatColor.RED + "You cannot ignore that user!");
+					return true;
+				}
+				user.ignore(u);
+				user.sendMessage(ChatColor.GREEN + "You are now ignoring that user!");
+				return true;
+			} else {
+				user.sendMessage(ChatColor.YELLOW + "Proper usage is: /ignore [player]");
+			}
+		} else if (commandLabel.equalsIgnoreCase("unignore") && user.hasPerm("bencmd.chat.ignore")) {
+			if (args.length == 1) {
+				PermissionUser u = PermissionUser.matchUserAllowPartial(args[0]);
+				if (u == null) {
+					user.sendMessage(ChatColor.RED + "That user could not be found!");
+					return true;
+				}
+				if (!user.isIgnoring(u)) {
+					user.sendMessage(ChatColor.RED + "You aren't ignoring that user!");
+					return true;
+				}
+				user.unignore(u);
+				user.sendMessage(ChatColor.GREEN + "You are no longer ignoring that user!");
+				return true;
+			} else {
+				user.sendMessage(ChatColor.YELLOW + "Proper usage is: /unignore <player>");
+			}
 		}
 		if (channelsEnabled()) {
 			return false;
@@ -169,6 +224,14 @@ public class ChatCommands implements Commands {
 		}
 		if (user2.getName().equalsIgnoreCase(user.getName())) {
 			user.sendMessage(ChatColor.RED + "Are you trying to talk to yourself? Weirdo...");
+			return;
+		}
+		if (user2.isIgnoring(user) && !user.hasPerm("bencmd.chat.noignore")) {
+			user.sendMessage(ChatColor.RED + "That user is ignoring you...");
+			return;
+		}
+		if (user.isIgnoring(user2) && !user2.hasPerm("bencmd.chat.noignore")) {
+			user.sendMessage(ChatColor.RED + "You are ignoring that user...");
 			return;
 		}
 		String message = "";

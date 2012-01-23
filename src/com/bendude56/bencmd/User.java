@@ -87,7 +87,7 @@ public class User extends PermissionUser {
 	private List<ChatChannel>	spying;
 
 	private User(CommandSender s) throws NullPointerException {
-		super((s instanceof ConsoleCommandSender) ? "*" : s.getName(), new ArrayList<String>());
+		super((s instanceof ConsoleCommandSender) ? "*" : s.getName(), new ArrayList<String>(), new ArrayList<String>());
 		sender = s;
 		isConsole = s instanceof ConsoleCommandSender;
 		if (!(s instanceof ConsoleCommandSender)) {
