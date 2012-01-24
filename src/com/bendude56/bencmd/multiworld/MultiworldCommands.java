@@ -27,7 +27,7 @@ public class MultiworldCommands implements Commands {
 
 	private void world(User user, String[] args) {
 		if (args.length == 0) {
-			user.sendMessage(ChatColor.YELLOW + "Proper use is: /world {create|delete|reset|info}");
+			user.sendMessage(ChatColor.YELLOW + "Proper use is: /world {create|delete|reset|info|spawn}");
 		} else if (args[0].equalsIgnoreCase("create")) {
 			if (!user.hasPerm("bencmd.world.create")) {
 				user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
@@ -132,7 +132,86 @@ public class MultiworldCommands implements Commands {
 			}
 		} else if (args[0].equalsIgnoreCase("info")) {
 			if (!user.hasPerm("bencmd.world.info")) {
-				
+				user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
+				BenCmd.getPlugin().logPermFail();
+				return;
+			}
+			BenCmdWorld w;
+			if (args.length == 1) {
+				w = BenCmd.getWorlds().getWorld(((Player) user.getHandle()).getWorld());
+				if (w == null) {
+					user.sendMessage(ChatColor.RED + "Your current world isn't controlled by BenCmd!");
+					return;
+				}
+			} else if (args.length == 2) {
+				w = BenCmd.getWorlds().getWorld(args[1]);
+				if (w == null) {
+					user.sendMessage(ChatColor.RED + "That world doesn't exist or isn't controlled by BenCmd!");
+					return;
+				}
+			} else {
+				user.sendMessage(ChatColor.YELLOW + "Proper use is: /world info [world]");
+				return;
+			}
+			user.sendMessage(ChatColor.GRAY + "Information for world \"" + w.getName() + "\"");
+			user.sendMessage(ChatColor.GRAY + "Seed: " + w.getSeed());
+			user.sendMessage(ChatColor.GRAY + "Spawn mode: " + ((w.getAllowSpawnAggressive()) ? "A" : "a") + ((w.getAllowSpawnNeutral()) ? "N" : "n") + ((w.getAllowSpawnPassive()) ? "P" : "p"));
+		} else if (args[0].equalsIgnoreCase("spawn")) {
+			if (!user.hasPerm("bencmd.world.spawn")) {
+				user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
+				BenCmd.getPlugin().logPermFail();
+				return;
+			}
+			BenCmdWorld w;
+			if (args.length == 3) {
+				w = BenCmd.getWorlds().getWorld(((Player) user.getHandle()).getWorld());
+				if (w == null) {
+					user.sendMessage(ChatColor.RED + "Your current world isn't controlled by BenCmd!");
+					return;
+				}
+			} else if (args.length == 4) {
+				w = BenCmd.getWorlds().getWorld(args[1]);
+				if (w == null) {
+					user.sendMessage(ChatColor.RED + "That world doesn't exist or isn't controlled by BenCmd!");
+					return;
+				}
+			} else {
+				user.sendMessage(ChatColor.YELLOW + "Proper use is: /world spawn {passive|neutral|aggressive} {true|false} [world]");
+				return;
+			}
+			boolean allow;
+			if (args[2].equalsIgnoreCase("true")) {
+				allow = true;
+			} else if (args[2].equalsIgnoreCase("false")) {
+				allow = false;
+			} else {
+				user.sendMessage(ChatColor.YELLOW + "Proper use is: /world spawn {passive|neutral|aggressive} {true|false} [world]");
+				return;
+			}
+			if (args[1].equalsIgnoreCase("passive")) {
+				w.setAllowSpawnPassive(allow);
+				BenCmd.getWorlds().updateWorldEntry(w, true);
+				if (allow) {
+					user.sendMessage(ChatColor.GREEN + "Passive mobs will now spawn in that world!");
+				} else {
+					user.sendMessage(ChatColor.GREEN + "Passive mobs will no longer spawn in that world!");
+				}
+			} else if (args[1].equalsIgnoreCase("neutral")) {
+				w.setAllowSpawnNeutral(allow);
+				BenCmd.getWorlds().updateWorldEntry(w, true);
+				if (allow) {
+					user.sendMessage(ChatColor.GREEN + "Neutral mobs will now spawn in that world!");
+				} else {
+					user.sendMessage(ChatColor.GREEN + "Neutral mobs will no longer spawn in that world!");
+				}
+			} else if (args[1].equalsIgnoreCase("aggressive")) {
+				w.setAllowSpawnAggressive(allow);
+				BenCmd.getWorlds().updateWorldEntry(w, true);
+				if (allow) {
+					user.sendMessage(ChatColor.GREEN + "Aggressive mobs will now spawn in that world!");
+				} else {
+					user.sendMessage(ChatColor.GREEN + "Aggressive mobs will no longer spawn in that world!");
+				}
 			}
 		}
 	}

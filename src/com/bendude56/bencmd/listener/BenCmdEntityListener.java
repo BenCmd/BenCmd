@@ -17,19 +17,10 @@ import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.craftbukkit.entity.CraftSkeleton;
 import org.bukkit.craftbukkit.entity.CraftSpider;
 import org.bukkit.craftbukkit.entity.CraftZombie;
-import org.bukkit.entity.Enderman;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.TNTPrimed;
+import org.bukkit.entity.*;
 import org.bukkit.event.Event;
-import org.bukkit.event.entity.EndermanPickupEvent;
-import org.bukkit.event.entity.EndermanPlaceEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.EntityListener;
-import org.bukkit.event.entity.EntityTargetEvent;
-import org.bukkit.event.entity.ExplosionPrimeEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.*;
+import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.painting.PaintingBreakByEntityEvent;
 import org.bukkit.event.painting.PaintingBreakEvent;
 import org.bukkit.event.painting.PaintingPlaceEvent;
@@ -45,6 +36,7 @@ import com.bendude56.bencmd.advanced.npc.NPC;
 import com.bendude56.bencmd.lots.sparea.DropTable;
 import com.bendude56.bencmd.lots.sparea.PVPArea;
 import com.bendude56.bencmd.lots.sparea.SPArea;
+import com.bendude56.bencmd.multiworld.BenCmdWorld;
 
 public class BenCmdEntityListener extends EntityListener {
 
@@ -77,10 +69,10 @@ public class BenCmdEntityListener extends EntityListener {
 		pm.registerEvent(Event.Type.ENDERMAN_PLACE, this, Event.Priority.Highest, BenCmd.getPlugin());
 		pm.registerEvent(Event.Type.PAINTING_BREAK, this, Event.Priority.Lowest, BenCmd.getPlugin());
 		pm.registerEvent(Event.Type.PAINTING_PLACE, this, Event.Priority.Lowest, BenCmd.getPlugin());
+		pm.registerEvent(Event.Type.CREATURE_SPAWN, this, Event.Priority.Normal, BenCmd.getPlugin());
 	}
 
 	private void pvpHit(EntityDamageEvent e) {
-
 		if (e instanceof EntityDamageByEntityEvent) {
 			EntityDamageByEntityEvent event = (EntityDamageByEntityEvent) e;
 			if (event.getDamager() instanceof Player && event.getEntity() instanceof Player) {
@@ -377,8 +369,101 @@ public class BenCmdEntityListener extends EntityListener {
 			}
 		}
 	}
+	
+	private void worldAllowSpawn(CreatureSpawnEvent event) {
+		if (event.isCancelled() || (event.getSpawnReason() != SpawnReason.NATURAL && event.getSpawnReason() != SpawnReason.SPAWNER)) {
+			return;
+		}
+		BenCmdWorld world = BenCmd.getWorlds().getWorld(event.getLocation().getWorld());
+		if (world == null) {
+			return; // World is not under BenCmd control
+		}
+		if (!world.getAllowSpawnPassive() && isPassive(event.getCreatureType())) {
+			event.setCancelled(true);
+			return;
+		}
+		if (!world.getAllowSpawnNeutral() && isNeutral(event.getCreatureType())) {
+			event.setCancelled(true);
+			return;
+		}
+		if (!world.getAllowSpawnAggressive() && isAggressive(event.getCreatureType())) {
+			event.setCancelled(true);
+			return;
+		}
+	}
+	
+	private boolean isPassive(CreatureType type) {
+		switch (type) {
+			case CHICKEN:
+				return true;
+			case COW:
+				return true;
+			case MUSHROOM_COW:
+				return true;
+			case PIG:
+				return true;
+			case SHEEP:
+				return true;
+			case SQUID:
+				return true;
+			case VILLAGER:
+				return true;
+			default:
+				return false;
+		}
+	}
+	
+	private boolean isNeutral(CreatureType type) {
+		switch (type) {
+			case GIANT:
+				return true;
+			case PIG_ZOMBIE:
+				return true;
+			case SNOWMAN:
+				return true;
+			case WOLF:
+				return true;
+			default:
+				return false;
+		}
+	}
+	
+	private boolean isAggressive(CreatureType type) {
+		switch (type) {
+			case BLAZE:
+				return true;
+			case CAVE_SPIDER:
+				return true;
+			case CREEPER:
+				return true;
+			case ENDER_DRAGON:
+				return true;
+			case ENDERMAN:
+				return true;
+			case GHAST:
+				return true;
+			case MAGMA_CUBE:
+				return true;
+			case MONSTER:
+				return true;
+			case SILVERFISH:
+				return true;
+			case SKELETON:
+				return true;
+			case SPIDER:
+				return true;
+			case ZOMBIE:
+				return true;
+			default:
+				return false;
+		}
+	}
 
 	// Split-off events
+	
+	public void onCreatureSpawn(CreatureSpawnEvent event) {
+		worldAllowSpawn(event);
+	}
 
 	public void onEntityDamage(EntityDamageEvent event) {
 		invincible(event);

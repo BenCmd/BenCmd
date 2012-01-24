@@ -14,10 +14,16 @@ public class BenCmdWorld {
 	
 	private World world;
 	private long dangerTime;
+	private boolean allowSpawnPassive;
+	private boolean allowSpawnNeutral;
+	private boolean allowSpawnAggressive;
 
-	public BenCmdWorld(World world) {
+	public BenCmdWorld(World world, boolean passive, boolean neutral, boolean aggro) {
 		this.world = world;
 		this.dangerTime = 0;
+		this.allowSpawnPassive = passive;
+		this.allowSpawnNeutral = neutral;
+		this.allowSpawnAggressive = aggro;
 	}
 	
 	public void reset() throws IOException {
@@ -77,6 +83,30 @@ public class BenCmdWorld {
 
 	public void setDangerTime(long dangerTime) {
 		this.dangerTime = dangerTime;
+	}
+
+	public boolean getAllowSpawnPassive() {
+		return allowSpawnPassive;
+	}
+
+	public void setAllowSpawnPassive(boolean allowSpawnPassive) {
+		this.allowSpawnPassive = allowSpawnPassive;
+	}
+
+	public boolean getAllowSpawnNeutral() {
+		return allowSpawnNeutral;
+	}
+
+	public void setAllowSpawnNeutral(boolean allowSpawnNeutral) {
+		this.allowSpawnNeutral = allowSpawnNeutral;
+	}
+
+	public boolean getAllowSpawnAggressive() {
+		return allowSpawnAggressive;
+	}
+
+	public void setAllowSpawnAggressive(boolean allowSpawnAggressive) {
+		this.allowSpawnAggressive = allowSpawnAggressive;
 	}
 
 }

@@ -37,6 +37,22 @@ public class MultiworldController extends BenCmdFile {
 			} catch (NumberFormatException ex) {
 				seed = ((String) e.getValue()).split("\\|")[0].hashCode();
 			}
+			boolean passive, neutral, aggro;
+			try {
+				passive = ((String) e.getValue()).split("\\|")[1] == "true";
+			} catch (IndexOutOfBoundsException ex) {
+				passive = true;
+			}
+			try {
+				neutral = ((String) e.getValue()).split("\\|")[2] == "true";
+			} catch (IndexOutOfBoundsException ex) {
+				neutral = true;
+			}
+			try {
+				aggro = ((String) e.getValue()).split("\\|")[3] == "true";
+			} catch (IndexOutOfBoundsException ex) {
+				aggro = true;
+			}
 			WorldCreator w = new WorldCreator((String) e.getKey());
 			boolean update = false;
 			if (seed == 0) {
@@ -45,7 +61,7 @@ public class MultiworldController extends BenCmdFile {
 			} else {
 				w.seed(seed);
 			}
-			worlds.put(w.name(), new BenCmdWorld(w.createWorld()));
+			worlds.put(w.name(), new BenCmdWorld(w.createWorld(), passive, neutral, aggro));
 			if (update) {
 				updateWorldEntry(worlds.get(w.name()), true);
 			}
@@ -62,7 +78,7 @@ public class MultiworldController extends BenCmdFile {
 		if (!worlds.containsKey(w.getName())) {
 			worlds.put(w.getName(), w);
 		}
-		getFile().put(w.getName(), w.getSeed() + "|");
+		getFile().put(w.getName(), w.getSeed() + "|" + ((w.getAllowSpawnPassive()) ? "true" : "false") + "|" + ((w.getAllowSpawnNeutral()) ? "true" : "false") + "|" + ((w.getAllowSpawnAggressive()) ? "true" : "false"));
 		if (save) {
 			saveFile();
 		}
@@ -88,7 +104,7 @@ public class MultiworldController extends BenCmdFile {
 			} else {
 				w.seed(seed);
 			}
-			worlds.put(w.name(), new BenCmdWorld(w.createWorld()));
+			worlds.put(w.name(), new BenCmdWorld(w.createWorld(), true, true, true));
 			updateWorldEntry(worlds.get(w.name()), true);
 		} catch (Exception e) {
 			throw new IOException(e);
