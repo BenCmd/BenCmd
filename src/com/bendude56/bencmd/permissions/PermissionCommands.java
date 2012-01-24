@@ -156,10 +156,10 @@ public class PermissionCommands implements Commands {
 			}
 			String list = "";
 			for (String g : groups) {
-				if (list != "") {
+				if (!list.isEmpty()) {
 					list += ", ";
-				list += g;
 				}
+				list += g;
 			}
 			user.sendMessage(ChatColor.GREEN + "The following groups exist: (" + groups.size() + ")");
 			user.sendMessage(list);
@@ -187,12 +187,17 @@ public class PermissionCommands implements Commands {
 				user.sendMessage(ChatColor.RED + "That group doesn't exist!");
 			} else {
 				user.sendMessage(ChatColor.GRAY + "Information for group \"" + group.getName() + "\":");
-				user.sendMessage(ChatColor.GRAY + "Users: " + group.listUsers());
-				user.sendMessage(ChatColor.GRAY + "Groups: " + group.listGroups());
-				if (group.getPrefix().isEmpty()) {
-					user.sendMessage(ChatColor.GRAY + "Prefix: " + group.getColor() + "(None)");
+				if (group.getName().contains("@")) {
+					user.sendMessage(ChatColor.RED + "This group is world-specific. Use /group <name> plist");
+					user.sendMessage(ChatColor.RED + "to list permissions.");
 				} else {
-					user.sendMessage(ChatColor.GRAY + "Prefix: " + group.getColor() + group.getPrefix());
+					user.sendMessage(ChatColor.GRAY + "Users: " + group.listUsers());
+					user.sendMessage(ChatColor.GRAY + "Groups: " + group.listGroups());
+					if (group.getPrefix().isEmpty()) {
+						user.sendMessage(ChatColor.GRAY + "Prefix: " + group.getColor() + "(None)");
+					} else {
+						user.sendMessage(ChatColor.GRAY + "Prefix: " + group.getColor() + group.getPrefix());
+					}
 				}
 			}
 		} else if (args[1].equalsIgnoreCase("adduser")) {
@@ -201,6 +206,8 @@ public class PermissionCommands implements Commands {
 			} else {
 				if (group == null) {
 					user.sendMessage(ChatColor.RED + "That group doesn't exist!");
+				} else if (group.getName().contains("@")) {
+					user.sendMessage(ChatColor.RED + "You cannot do that to a world-specific group!");
 				} else {
 					PermissionUser user2 = PermissionUser.matchUserAllowPartial(args[2]);
 					if (user2 == null) {
@@ -222,6 +229,8 @@ public class PermissionCommands implements Commands {
 			} else {
 				if (group == null) {
 					user.sendMessage(ChatColor.RED + "That group doesn't exist!");
+				} else if (group.getName().contains("@")) {
+					user.sendMessage(ChatColor.RED + "You cannot do that to a world-specific group!");
 				} else {
 					PermissionUser user2 = PermissionUser.matchUserAllowPartial(args[2]);
 					if (user2 == null) {
@@ -243,10 +252,14 @@ public class PermissionCommands implements Commands {
 			} else {
 				if (group == null) {
 					user.sendMessage(ChatColor.RED + "That group doesn't exist!");
+				} else if (group.getName().contains("@")) {
+					user.sendMessage(ChatColor.RED + "You cannot do that to a world-specific group!");
 				} else {
 					PermissionGroup group2 = BenCmd.getPermissionManager().getGroupFile().getGroup(args[2]);
 					if (group2 == null) {
 						user.sendMessage(ChatColor.RED + "That group doesn't exist!");
+					} else if (group2.getName().contains("@")) {
+						user.sendMessage(ChatColor.RED + "You cannot do that to a world-specific group!");
 					} else {
 						if (group.groupInGroup(group2)) {
 							user.sendMessage(ChatColor.RED + group2.getName() + " is already part of " + group.getName() + "!");
@@ -264,10 +277,14 @@ public class PermissionCommands implements Commands {
 			} else {
 				if (group == null) {
 					user.sendMessage(ChatColor.RED + "That group doesn't exist!");
+				} else if (group.getName().contains("@")) {
+					user.sendMessage(ChatColor.RED + "You cannot do that to a world-specific group!");
 				} else {
 					PermissionGroup group2 = BenCmd.getPermissionManager().getGroupFile().getGroup(args[2]);
 					if (group2 == null) {
 						user.sendMessage(ChatColor.RED + "That group doesn't exist!");
+					} else if (group2.getName().contains("@")) {
+						user.sendMessage(ChatColor.RED + "You cannot do that to a world-specific group!");
 					} else {
 						if (!group.groupInGroup(group2)) {
 							user.sendMessage(ChatColor.RED + group2.getName() + " is not part of " + group.getName() + "!");
@@ -282,6 +299,8 @@ public class PermissionCommands implements Commands {
 		} else if (args[1].startsWith("p:")) {
 			if (group == null) {
 				user.sendMessage(ChatColor.RED + "That group doesn't exist!");
+			} else if (group.getName().contains("@")) {
+				user.sendMessage(ChatColor.RED + "You cannot do that to a world-specific group!");
 			} else {
 				group.setPrefix(args[1].replaceFirst("p:", "").replace("_", " "));
 				user.sendMessage(ChatColor.GREEN + "Prefix of " + group.getName() + " was changed to " + args[1].replaceFirst("p:", "").replace("_", " "));
@@ -290,6 +309,8 @@ public class PermissionCommands implements Commands {
 		} else if (args[1].startsWith("c:")) {
 			if (group == null) {
 				user.sendMessage(ChatColor.RED + "That group doesn't exist!");
+			} else if (group.getName().contains("@")) {
+				user.sendMessage(ChatColor.RED + "You cannot do that to a world-specific group!");
 			} else {
 				try {
 					group.setColor(Integer.parseInt(args[1].replaceFirst("c:", ""), 16));
@@ -302,6 +323,8 @@ public class PermissionCommands implements Commands {
 		} else if (args[1].startsWith("l:")) {
 			if (group == null) {
 				user.sendMessage(ChatColor.RED + "That group doesn't exist!");
+			} else if (group.getName().contains("@")) {
+				user.sendMessage(ChatColor.RED + "You cannot do that to a world-specific group!");
 			} else {
 				try {
 					group.setLevel(Integer.parseInt(args[1].replaceFirst("l:", "")));

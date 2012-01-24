@@ -5,6 +5,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+
 import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.InvalidPermissionError;
 
@@ -100,6 +103,14 @@ public class InternalUser {
 		if (testGroup) {
 			for (PermissionGroup group : BenCmd.getPermissionManager().getGroupFile().getAllUserGroups(this)) {
 				perms.addAll(group.getInternal().getPermissions(true, true));
+			}
+			Player p = Bukkit.getPlayerExact(name);
+			if (p != null) {
+				for (PermissionGroup group : BenCmd.getPermissionManager().getGroupFile().getAllUserGroups(this)) {
+					if (BenCmd.getPermissionManager().getGroupFile().groupExists(group.getName() + "@" + p.getWorld().getName())) {
+						perms.addAll(BenCmd.getPermissionManager().getGroupFile().getGroup(group.getName() + "@" + p.getWorld().getName()).getInternal().getPermissions(true, true));
+					}
+				}
 			}
 		}
 		List<String> possibleStars = new ArrayList<String>();
