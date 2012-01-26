@@ -367,7 +367,7 @@ public class LotCommands implements Commands {
 					owner = user.getName();
 				}
 				if (!BenCmd.getPermissionManager().getGroupFile().groupExists(BenCmd.getMainProperties().getString("AdminGroup", "admin"))) {
-					BenCmd.getPermissionManager().getGroupFile().addGroup(new PermissionGroup(BenCmd.getMainProperties().getString("AdminGroup", "admin"), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), "", -1, 0));
+					BenCmd.getPermissionManager().getGroupFile().addGroup(new PermissionGroup(BenCmd.getMainProperties().getString("AdminGroup", "admin"), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), "", ' ', 0));
 				}
 				group = BenCmd.getMainProperties().getString("AdminGroup", "admin");
 				BenCmd.getLots().addLot(LotID, corner1, corner2, owner, group);
@@ -535,7 +535,7 @@ public class LotCommands implements Commands {
 					}
 				}
 				if (!BenCmd.getPermissionManager().getGroupFile().groupExists(BenCmd.getMainProperties().getString("AdminGroup", "admin"))) {
-					BenCmd.getPermissionManager().getGroupFile().addGroup(new PermissionGroup(BenCmd.getMainProperties().getString("AdminGroup", "admin"), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), "", -1, 0));
+					BenCmd.getPermissionManager().getGroupFile().addGroup(new PermissionGroup(BenCmd.getMainProperties().getString("AdminGroup", "admin"), new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), "", ' ', 0));
 				}
 				group = BenCmd.getMainProperties().getString("AdminGroup", "admin");
 				BenCmd.getLots().addLot(LotID, corner1, corner2, owner, group);

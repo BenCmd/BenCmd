@@ -1,18 +1,16 @@
 package com.bendude56.bencmd.listener;
 
-import org.bukkit.Bukkit;
-import org.bukkit.event.Event;
+import org.bukkit.event.*;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
-import org.bukkit.event.world.WorldListener;
 import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.event.world.WorldUnloadEvent;
-import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.*;
 
 import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.advanced.npc.NPC;
 
-public class BenCmdWorldListener extends WorldListener {
+public class BenCmdWorldListener implements Listener, EventExecutor {
 
 	// Singleton instancing
 
@@ -27,52 +25,32 @@ public class BenCmdWorldListener extends WorldListener {
 	}
 
 	public static void destroyInstance() {
-		instance.enabled = false;
 		instance = null;
 	}
-	
-	private boolean enabled = true;
 
 	private BenCmdWorldListener() {
-		PluginManager pm = Bukkit.getPluginManager();
-		pm.registerEvent(Event.Type.WORLD_LOAD, this, Event.Priority.Monitor, BenCmd.getPlugin());
-		pm.registerEvent(Event.Type.WORLD_UNLOAD, this, Event.Priority.Monitor, BenCmd.getPlugin());
-		pm.registerEvent(Event.Type.CHUNK_LOAD, this, Event.Priority.Monitor, BenCmd.getPlugin());
-		pm.registerEvent(Event.Type.CHUNK_UNLOAD, this, Event.Priority.Monitor, BenCmd.getPlugin());
+		WorldLoadEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.MONITOR, BenCmd.getPlugin()));
+		WorldUnloadEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.MONITOR, BenCmd.getPlugin()));
+		ChunkLoadEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.MONITOR, BenCmd.getPlugin()));
+		ChunkUnloadEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.MONITOR, BenCmd.getPlugin()));
 	}
+	
+	// Split-off events
 
-	public void onWorldLoad(WorldLoadEvent event) {
-		if (!enabled) {
-			return;
-		}
-		BenCmd.getNPCFile().reloadNPCs();
-	}
-
-	public void onWorldUnload(WorldUnloadEvent event) {
-		if (!enabled) {
-			return;
-		}
-		BenCmd.getNPCFile().reloadNPCs();
-	}
-
-	public void onChunkLoad(ChunkLoadEvent event) {
-		if (!enabled) {
-			return;
-		}
-		for (NPC npc : BenCmd.getNPCFile().inChunk(event.getChunk())) {
-			npc.spawn();
-		}
-	}
-
-	public void onChunkUnload(ChunkUnloadEvent event) {
-		if (!enabled) {
-			return;
-		}
-		if (event.isCancelled()) {
-			return;
-		}
-		for (NPC npc : BenCmd.getNPCFile().inChunk(event.getChunk())) {
-			npc.despawn();
+	@Override
+	public void execute(Listener listener, Event event) throws EventException {
+		if (event instanceof WorldLoadEvent || event instanceof WorldUnloadEvent) {
+			BenCmd.getNPCFile().reloadNPCs();
+		} else if (event instanceof ChunkLoadEvent) {
+			ChunkLoadEvent e = (ChunkLoadEvent) event;
+			for (NPC npc : BenCmd.getNPCFile().inChunk(e.getChunk())) {
+				npc.spawn();
+			}
+		} else if (event instanceof ChunkUnloadEvent) {
+			ChunkUnloadEvent e = (ChunkUnloadEvent) event;
+			for (NPC npc : BenCmd.getNPCFile().inChunk(e.getChunk())) {
+				npc.despawn();
+			}
 		}
 	}
 }

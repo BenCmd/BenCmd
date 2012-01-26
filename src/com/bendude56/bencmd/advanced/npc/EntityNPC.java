@@ -53,7 +53,7 @@ public class EntityNPC extends EntityPlayer {
 	}
 
 	public float checkYawDiff(float diff) {
-		for (this.aC = this.aI; diff < -180.0F; diff += 360.0F) {}
+		for (this.aB = this.aK; diff < -180.0F; diff += 360.0F) {}
 		while (diff >= 180.0F) {
 			diff -= 360.0F;
 		}
@@ -61,7 +61,7 @@ public class EntityNPC extends EntityPlayer {
 	}
 
 	public void forward() {
-		this.a(this.aB, this.aC);
+		this.a(this.aA, this.aB);
 	}
 
 	public Random getRandom() {

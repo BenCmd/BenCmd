@@ -15,7 +15,7 @@ import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.block.CraftChest;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
+import org.bukkit.event.*;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
@@ -25,7 +25,6 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
-import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
@@ -35,7 +34,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.*;
 
 import com.bendude56.bencmd.*;
 import com.bendude56.bencmd.advanced.Grave;
@@ -66,7 +65,7 @@ import com.bendude56.bencmd.warps.HomePortal;
 import com.bendude56.bencmd.warps.Portal;
 import com.bendude56.bencmd.warps.Warp;
 
-public class BenCmdPlayerListener extends PlayerListener {
+public class BenCmdPlayerListener implements Listener, EventExecutor {
 
 	// Singleton instancing
 
@@ -81,11 +80,8 @@ public class BenCmdPlayerListener extends PlayerListener {
 	}
 
 	public static void destroyInstance() {
-		instance.enabled = false;
 		instance = null;
 	}
-	
-	private boolean enabled = true;
 
 	public HashMap<String, Corner>			corner	= new HashMap<String, Corner>();
 	private HashMap<Player, List<SPArea>>	areas	= new HashMap<Player, List<SPArea>>();
@@ -120,22 +116,21 @@ public class BenCmdPlayerListener extends PlayerListener {
 	}
 
 	private BenCmdPlayerListener() {
-		PluginManager pm = Bukkit.getPluginManager();
-		pm.registerEvent(Event.Type.PLAYER_CHAT, this, Event.Priority.Lowest, BenCmd.getPlugin());
-		pm.registerEvent(Event.Type.PLAYER_JOIN, this, Event.Priority.Monitor, BenCmd.getPlugin());
-		pm.registerEvent(Event.Type.PLAYER_QUIT, this, Event.Priority.Monitor, BenCmd.getPlugin());
-		pm.registerEvent(Event.Type.PLAYER_KICK, this, Event.Priority.Monitor, BenCmd.getPlugin());
-		pm.registerEvent(Event.Type.PLAYER_INTERACT, this, Event.Priority.Lowest, BenCmd.getPlugin());
-		pm.registerEvent(Event.Type.PLAYER_INTERACT_ENTITY, this, Event.Priority.Lowest, BenCmd.getPlugin());
-		pm.registerEvent(Event.Type.PLAYER_LOGIN, this, Event.Priority.Normal, BenCmd.getPlugin());
-		pm.registerEvent(Event.Type.PLAYER_PICKUP_ITEM, this, Event.Priority.Highest, BenCmd.getPlugin());
-		pm.registerEvent(Event.Type.PLAYER_DROP_ITEM, this, Event.Priority.Highest, BenCmd.getPlugin());
-		pm.registerEvent(Event.Type.PLAYER_BUCKET_EMPTY, this, Event.Priority.Highest, BenCmd.getPlugin());
-		pm.registerEvent(Event.Type.PLAYER_BUCKET_FILL, this, Event.Priority.Highest, BenCmd.getPlugin());
-		pm.registerEvent(Event.Type.PLAYER_RESPAWN, this, Event.Priority.Monitor, BenCmd.getPlugin());
-		pm.registerEvent(Event.Type.PLAYER_TELEPORT, this, Event.Priority.Monitor, BenCmd.getPlugin());
-		pm.registerEvent(Event.Type.PLAYER_PORTAL, this, Event.Priority.Highest, BenCmd.getPlugin());
-		pm.registerEvent(Event.Type.PLAYER_MOVE, this, Event.Priority.Highest, BenCmd.getPlugin());
+		PlayerChatEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.HIGHEST, BenCmd.getPlugin()));
+		PlayerJoinEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.HIGHEST, BenCmd.getPlugin()));
+		PlayerQuitEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.HIGHEST, BenCmd.getPlugin()));
+		PlayerKickEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.HIGHEST, BenCmd.getPlugin()));
+		PlayerInteractEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.LOWEST, BenCmd.getPlugin()));
+		PlayerInteractEntityEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.NORMAL, BenCmd.getPlugin()));
+		PlayerLoginEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.LOWEST, BenCmd.getPlugin()));
+		PlayerPickupItemEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.LOWEST, BenCmd.getPlugin()));
+		PlayerDropItemEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.LOWEST, BenCmd.getPlugin()));
+		PlayerBucketEmptyEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.LOWEST, BenCmd.getPlugin()));
+		PlayerBucketFillEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.LOWEST, BenCmd.getPlugin()));
+		PlayerRespawnEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.LOWEST, BenCmd.getPlugin()));
+		PlayerTeleportEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.NORMAL, BenCmd.getPlugin()));
+		PlayerPortalEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.LOWEST, BenCmd.getPlugin()));
+		PlayerMoveEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.NORMAL, BenCmd.getPlugin()));
 	}
 
 	public void ToggleSlow(User user) {
@@ -920,124 +915,129 @@ public class BenCmdPlayerListener extends PlayerListener {
 	// Split-off events
 
 	public void onPlayerChat(PlayerChatEvent event) {
-		if (!enabled) {
-			return;
-		}
-		chat(event);
+		
 	}
 
 	public void onPlayerJoin(PlayerJoinEvent event) {
-		if (!enabled) {
-			return;
-		}
-		userInit(event);
+		
 	}
 
 	public void onPlayerQuit(PlayerQuitEvent event) {
-		if (!enabled) {
-			return;
-		}
-		quitFinalize(event);
+		
 	}
 
 	public void onPlayerKick(PlayerKickEvent event) {
-		if (!enabled) {
-			return;
-		}
-		kickFinalize(event);
+		
 	}
 
 	public void onPlayerInteract(PlayerInteractEvent event) {
-		if (!enabled) {
-			return;
-		}
-		logWand(event);
-		if (event.isCancelled()) {
-			return;
-		}
-		bookshelfInteract(event);
-		lockInteract(event);
-		disposalChestInteract(event);
-		strikeBind(event);
-		lotSelectInteract(event);
-		chestOpenLog(event);
+		
 	}
 
 	public void onPlayerBucketEmpty(PlayerBucketEmptyEvent event) {
-		if (!enabled) {
-			return;
-		}
-		lotBucketEmpty(event);
-		jailBucketEmpty(event);
-		logBucket(event);
+		
 	}
 
 	public void onPlayerBucketFill(PlayerBucketFillEvent event) {
-		if (!enabled) {
-			return;
-		}
-		lotBucketFill(event);
-		jailBucketFill(event);
+		
 	}
 
 	public void onPlayerRespawn(PlayerRespawnEvent event) {
-		if (!enabled) {
-			return;
-		}
-		pvpRespawn(event);
+		
 	}
 
 	public void onPlayerMove(PlayerMoveEvent event) {
-		if (!enabled) {
-			return;
-		}
-		sendSkins(event.getPlayer(), event.getTo());
-		areaMoveCheck(event);
-		BenCmd.getMonitorController().playerMove(event.getPlayer());
+		
 	}
 
 	public void onPlayerPortal(PlayerPortalEvent event) {
-		if (!enabled) {
-			return;
-		}
-		checkPortal(event);
-		flyPortal(event);
+		
 	}
 
 	public void onPlayerTeleport(PlayerTeleportEvent event) {
-		if (!enabled) {
-			return;
-		}
-		sendSkins(event.getPlayer(), event.getTo());
-		flyTeleport(event);
+		
 	}
 
 	public void onPlayerLogin(PlayerLoginEvent event) {
-		if (!enabled) {
-			return;
-		}
-		loginCheck(event);
+		
 	}
 
 	public void onPlayerPickupItem(PlayerPickupItemEvent event) {
-		if (!enabled) {
-			return;
-		}
-		jailPickupCheck(event);
+		
 	}
 
 	public void onPlayerDropItem(PlayerDropItemEvent event) {
-		if (!enabled) {
-			return;
-		}
-		jailDropCheck(event);
+		
 	}
 
 	public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
-		if (!enabled) {
-			return;
+		
+	}
+
+	@Override
+	public void execute(Listener listener, Event event) throws EventException {
+		if (event instanceof PlayerChatEvent) {
+			PlayerChatEvent e = (PlayerChatEvent) event;
+			chat(e);
+		} else if (event instanceof PlayerJoinEvent) {
+			PlayerJoinEvent e = (PlayerJoinEvent) event;
+			userInit(e);
+		} else if (event instanceof PlayerQuitEvent) {
+			PlayerQuitEvent e = (PlayerQuitEvent) event;
+			quitFinalize(e);
+		} else if (event instanceof PlayerKickEvent) {
+			PlayerKickEvent e = (PlayerKickEvent) event;
+			kickFinalize(e);
+		} else if (event instanceof PlayerInteractEvent) {
+			PlayerInteractEvent e = (PlayerInteractEvent) event;
+			logWand(e);
+			if (e.isCancelled()) {
+				return;
+			}
+			bookshelfInteract(e);
+			lockInteract(e);
+			disposalChestInteract(e);
+			strikeBind(e);
+			lotSelectInteract(e);
+			chestOpenLog(e);
+		} else if (event instanceof PlayerBucketEmptyEvent) {
+			PlayerBucketEmptyEvent e = (PlayerBucketEmptyEvent) event;
+			lotBucketEmpty(e);
+			jailBucketEmpty(e);
+			logBucket(e);
+		} else if (event instanceof PlayerBucketFillEvent) {
+			PlayerBucketFillEvent e = (PlayerBucketFillEvent) event;
+			lotBucketFill(e);
+			jailBucketFill(e);
+		} else if (event instanceof PlayerRespawnEvent) {
+			PlayerRespawnEvent e = (PlayerRespawnEvent) event;
+			pvpRespawn(e);
+		} else if (event instanceof PlayerMoveEvent) {
+			PlayerMoveEvent e = (PlayerMoveEvent) event;
+			sendSkins(e.getPlayer(), e.getTo());
+			areaMoveCheck(e);
+			BenCmd.getMonitorController().playerMove(e.getPlayer());
+		} else if (event instanceof PlayerPortalEvent) {
+			PlayerPortalEvent e = (PlayerPortalEvent) event;
+			checkPortal(e);
+			flyPortal(e);
+		} else if (event instanceof PlayerTeleportEvent) {
+			PlayerTeleportEvent e = (PlayerTeleportEvent) event;
+			sendSkins(e.getPlayer(), e.getTo());
+			flyTeleport(e);
+		} else if (event instanceof PlayerLoginEvent) {
+			PlayerLoginEvent e = (PlayerLoginEvent) event;
+			loginCheck(e);
+		} else if (event instanceof PlayerPickupItemEvent) {
+			PlayerPickupItemEvent e = (PlayerPickupItemEvent) event;
+			jailPickupCheck(e);
+		} else if (event instanceof PlayerDropItemEvent) {
+			PlayerDropItemEvent e = (PlayerDropItemEvent) event;
+			jailDropCheck(e);
+		} else if (event instanceof PlayerInteractEntityEvent) {
+			PlayerInteractEntityEvent e = (PlayerInteractEntityEvent) event;
+			npcInteractEntity(e);
 		}
-		npcInteractEntity(event);
 	}
 
 }

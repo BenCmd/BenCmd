@@ -1,18 +1,16 @@
 package com.bendude56.bencmd.listener;
 
-import org.bukkit.Bukkit;
-import org.bukkit.event.Event;
-import org.bukkit.plugin.PluginManager;
+import org.bukkit.event.*;
+import org.bukkit.plugin.*;
 import org.getspout.spoutapi.SpoutManager;
 import org.getspout.spoutapi.event.spout.SpoutCraftEnableEvent;
-import org.getspout.spoutapi.event.spout.SpoutListener;
 import org.getspout.spoutapi.packet.PacketSkinURL;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
 import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.advanced.npc.NPC;
 
-public class BenCmdSpoutListener extends SpoutListener {
+public class BenCmdSpoutListener implements Listener, EventExecutor {
 
 	// Singleton instancing
 
@@ -27,22 +25,14 @@ public class BenCmdSpoutListener extends SpoutListener {
 	}
 
 	public static void destroyInstance() {
-		instance.enabled = false;
 		instance = null;
 	}
-	
-	private boolean enabled = true;
 
 	private BenCmdSpoutListener() {
-		PluginManager pm = Bukkit.getPluginManager();
-		pm.registerEvent(Event.Type.CUSTOM_EVENT, this, Event.Priority.Normal, BenCmd.getPlugin());
+		SpoutCraftEnableEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.NORMAL, BenCmd.getPlugin()));
 	}
 
-	@Override
-	public void onSpoutCraftEnable(SpoutCraftEnableEvent event) {
-		if (!enabled) {
-			return;
-		}
+	public void sendSkins(SpoutCraftEnableEvent event) {
 		SpoutPlayer p = SpoutManager.getPlayer(event.getPlayer());
 		if (p.isSpoutCraftEnabled()) {
 			for (NPC n : BenCmd.getNPCFile().allNPCs()) {
@@ -50,6 +40,15 @@ public class BenCmdSpoutListener extends SpoutListener {
 					p.sendPacket(new PacketSkinURL(n.getEntityId(), n.getSkinURL()));
 				}
 			}
+		}
+	}
+	
+	// Split-off events
+	
+	public void execute(Listener listener, Event event) throws EventException {
+		if (event instanceof SpoutCraftEnableEvent) {
+			SpoutCraftEnableEvent e = (SpoutCraftEnableEvent) event;
+			sendSkins(e);
 		}
 	}
 }

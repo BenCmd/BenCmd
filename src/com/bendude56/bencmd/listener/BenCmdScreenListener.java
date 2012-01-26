@@ -1,17 +1,15 @@
 package com.bendude56.bencmd.listener;
 
-import org.bukkit.Bukkit;
-import org.bukkit.event.Event;
+import org.bukkit.event.*;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.*;
 import org.getspout.spoutapi.event.screen.ButtonClickEvent;
-import org.getspout.spoutapi.event.screen.ScreenListener;
 import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.SpoutConnector.NPCScreen;
 import com.bendude56.bencmd.SpoutConnector.StatusScreen;
 import com.bendude56.bencmd.advanced.npc.Skinnable;
 
-public class BenCmdScreenListener extends ScreenListener {
+public class BenCmdScreenListener implements Listener, EventExecutor {
 
 	// Singleton instancing
 
@@ -26,15 +24,11 @@ public class BenCmdScreenListener extends ScreenListener {
 	}
 
 	public static void destroyInstance() {
-		instance.enabled = false;
 		instance = null;
 	}
-	
-	private boolean enabled = true;
 
 	private BenCmdScreenListener() {
-		PluginManager pm = Bukkit.getPluginManager();
-		pm.registerEvent(Event.Type.CUSTOM_EVENT, this, Event.Priority.Normal, BenCmd.getPlugin());
+		ButtonClickEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.NORMAL, BenCmd.getPlugin()));
 	}
 
 	private void buttonNPC(ButtonClickEvent event) {
@@ -78,10 +72,17 @@ public class BenCmdScreenListener extends ScreenListener {
 	// Split-off events
 
 	public void onButtonClick(ButtonClickEvent event) {
-		if (!enabled) {
-			return;
-		}
 		buttonNPC(event);
 		buttonStatus(event);
+	}
+
+	@Override
+	public void execute(Listener listener, Event event) throws EventException {
+		if (event instanceof ButtonClickEvent) {
+			ButtonClickEvent e = (ButtonClickEvent) event;
+			buttonNPC(e);
+			buttonStatus(e);
+		}
+		
 	}
 }

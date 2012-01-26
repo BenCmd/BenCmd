@@ -86,12 +86,14 @@ public class NPC {
 	}
 
 	public void faceNearest() {
-		EntityHuman h;
-		if ((h = getClosestPlayer(5.0D)) != null) {
-			NPC.faceEntity(enpc, h);
-		} else if (this.getLocation().getYaw() != this.getCurrentLocation().getYaw()) {
-			enpc.setLocation(enpc.locX, enpc.locY, enpc.locZ, this.getLocation().getYaw(), enpc.pitch);
-		}
+		try {
+			EntityHuman h;
+			if ((h = getClosestPlayer(5.0D)) != null) {
+				NPC.faceEntity(enpc, h);
+			} else if (this.getLocation().getYaw() != this.getCurrentLocation().getYaw()) {
+				enpc.setLocation(enpc.locX, enpc.locY, enpc.locZ, this.getLocation().getYaw(), enpc.pitch);
+			}
+		} catch (Exception e) { }
 	}
 
 	protected EntityHuman getClosestPlayer(double range) {
@@ -151,9 +153,7 @@ public class NPC {
 	}
 
 	public static void faceEntity(EntityNPC enpc, Entity e) {
-		try {
-			faceLocation(enpc, Vec3D.a(e.locX, e.locY, e.locZ));
-		} catch (Exception ex) {}
+		faceLocation(enpc, Vec3D.a(e.locX, e.locY, e.locZ));
 	}
 
 	public static void faceLocation(EntityNPC enpc, Vec3D loc2) {

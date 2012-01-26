@@ -14,7 +14,7 @@ class InternalGroup {
 	private List<String>	users;
 	private List<String>	groups;
 	private String			prefix;
-	private Integer			color;
+	private Character		color;
 	private Integer			level;
 
 	static InternalGroup highestLevel(Iterable<InternalGroup> groups) {
@@ -38,12 +38,14 @@ class InternalGroup {
 		return new PermissionGroup(highest);
 	}
 
-	protected InternalGroup(String groupName, List<String> permissions, List<String> users, List<String> groups, String prefix, Integer color, Integer level) {
+	protected InternalGroup(String groupName, List<String> permissions, List<String> users, List<String> groups, String prefix, Character color, Integer level) {
 		this.groupName = groupName;
 		this.permissions = permissions;
 		this.users = users;
 		this.groups = groups;
 		this.prefix = prefix;
+		if (color.equals('-'))
+			color = ' ';
 		this.color = color;
 		this.level = level;
 	}
@@ -192,12 +194,12 @@ class InternalGroup {
 		}
 	}
 
-	public Integer getColorCode() {
+	public Character getColorCode() {
 		return color;
 	}
 
 	public ChatColor getColor() {
-		if (color == -1) {
+		if (color == ' ') {
 			List<InternalGroup> possibleGroups = new ArrayList<InternalGroup>();
 			for (InternalGroup group : BenCmd.getPermissionManager().getGroupFile().getGroupGroups(this)) {
 				if (group.getColor() != ChatColor.YELLOW) {
@@ -210,7 +212,7 @@ class InternalGroup {
 				return InternalGroup.highestLevel(possibleGroups).getColor();
 			}
 		} else {
-			return ChatColor.getByCode(color);
+			return ChatColor.getByChar(color);
 		}
 	}
 
@@ -223,7 +225,7 @@ class InternalGroup {
 		BenCmd.getPermissionManager().getGroupFile().updateGroup(this, true);
 	}
 
-	public void setColor(Integer value) {
+	public void setColor(Character value) {
 		color = value;
 		BenCmd.getPermissionManager().getGroupFile().updateGroup(this, true);
 	}

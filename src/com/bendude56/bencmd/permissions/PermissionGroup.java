@@ -13,7 +13,7 @@ public class PermissionGroup {
 		group = internal;
 	}
 
-	public PermissionGroup(String groupName, List<String> permissions, List<String> users, List<String> groups, String prefix, Integer color, Integer level) {
+	public PermissionGroup(String groupName, List<String> permissions, List<String> users, List<String> groups, String prefix, Character color, Integer level) {
 		group = new InternalGroup(groupName, permissions, users, groups, prefix, color, level);
 	}
 
@@ -61,7 +61,7 @@ public class PermissionGroup {
 		return group.getPrefix();
 	}
 
-	public Integer getColorCode() {
+	public Character getColorCode() {
 		updateInternal();
 		return group.getColorCode();
 	}
@@ -85,7 +85,7 @@ public class PermissionGroup {
 		group.setPrefix(value);
 	}
 
-	public void setColor(Integer value) {
+	public void setColor(Character value) {
 		updateInternal();
 		group.setColor(value);
 	}

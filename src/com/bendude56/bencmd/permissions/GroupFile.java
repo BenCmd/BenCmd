@@ -77,17 +77,13 @@ public class GroupFile extends BenCmdFile {
 				List<String> users = new ArrayList<String>();
 				List<String> groups = new ArrayList<String>();
 				String prefix;
-				Integer color;
+				Character color;
 				Integer level;
 				permissions.addAll(Arrays.asList(value.split("/")[0].split(",")));
 				users.addAll(Arrays.asList(value.split("/")[1].split(",")));
 				groups.addAll(Arrays.asList(value.split("/")[2].split(",")));
 				prefix = value.split("/")[3];
-				try {
-					color = Integer.parseInt(value.split("/")[4], 16);
-				} catch (NumberFormatException e) {
-					color = -1;
-				}
+				color = value.split("/")[4].charAt(0);
 				try {
 					level = Integer.parseInt(value.split("/")[5]);
 				} catch (NumberFormatException e) {

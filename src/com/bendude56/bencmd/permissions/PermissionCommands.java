@@ -178,7 +178,7 @@ public class PermissionCommands implements Commands {
 			if (group != null) {
 				user.sendMessage(ChatColor.RED + "That group already exists!");
 			} else {
-				BenCmd.getPermissionManager().getGroupFile().addGroup(new PermissionGroup(args[0], new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), "", -1, 0));
+				BenCmd.getPermissionManager().getGroupFile().addGroup(new PermissionGroup(args[0], new ArrayList<String>(), new ArrayList<String>(), new ArrayList<String>(), "", ' ', 0));
 				user.sendMessage(ChatColor.GREEN + "Group " + args[0] + " was successfully created!");
 				BenCmd.log("Group " + args[0] + " has been created!");
 			}
@@ -312,13 +312,12 @@ public class PermissionCommands implements Commands {
 			} else if (group.getName().contains("@")) {
 				user.sendMessage(ChatColor.RED + "You cannot do that to a world-specific group!");
 			} else {
-				try {
-					group.setColor(Integer.parseInt(args[1].replaceFirst("c:", ""), 16));
-					user.sendMessage(ChatColor.GREEN + "The color of " + group.getName() + " was changed to " + ChatColor.getByCode(Integer.parseInt(args[1].replaceFirst("c:", ""), 16)) + args[1].replaceFirst("c:", ""));
-					BenCmd.log("The color of group " + args[0] + " was changed to " + args[1].replaceFirst("c:", ""));
-				} catch (NumberFormatException e) {
-					user.sendMessage(ChatColor.RED + "Are you sure that's a hex number?");
-				}
+				char code = args[1].replaceFirst("c:", "").charAt(0);
+				if (code == '-')
+					code = ' ';
+				user.sendMessage(ChatColor.GREEN + "The color of " + group.getName() + " was changed to " + ChatColor.getByChar((code == ' ') ? 'f' : code) + code);
+				BenCmd.log("The color of group " + args[0] + " was changed to " + code);
+				group.setColor(code);
 			}
 		} else if (args[1].startsWith("l:")) {
 			if (group == null) {

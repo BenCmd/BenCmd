@@ -18,14 +18,14 @@ import org.bukkit.craftbukkit.entity.CraftSkeleton;
 import org.bukkit.craftbukkit.entity.CraftSpider;
 import org.bukkit.craftbukkit.entity.CraftZombie;
 import org.bukkit.entity.*;
-import org.bukkit.event.Event;
+import org.bukkit.event.*;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.painting.PaintingBreakByEntityEvent;
 import org.bukkit.event.painting.PaintingBreakEvent;
 import org.bukkit.event.painting.PaintingPlaceEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.*;
 
 import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.User;
@@ -38,7 +38,7 @@ import com.bendude56.bencmd.lots.sparea.PVPArea;
 import com.bendude56.bencmd.lots.sparea.SPArea;
 import com.bendude56.bencmd.multiworld.BenCmdWorld;
 
-public class BenCmdEntityListener extends EntityListener {
+public class BenCmdEntityListener implements Listener, EventExecutor {
 
 	// Singleton instancing
 
@@ -53,23 +53,19 @@ public class BenCmdEntityListener extends EntityListener {
 	}
 
 	public static void destroyInstance() {
-		instance.enabled = false;
 		instance = null;
 	}
-	
-	private boolean enabled = true;
 
 	private BenCmdEntityListener() {
-		PluginManager pm = Bukkit.getPluginManager();
-		pm.registerEvent(Event.Type.ENTITY_DAMAGE, this, Event.Priority.Highest, BenCmd.getPlugin());
-		pm.registerEvent(Event.Type.ENTITY_DEATH, this, Event.Priority.Monitor, BenCmd.getPlugin());
-		pm.registerEvent(Event.Type.ENTITY_TARGET, this, Event.Priority.Highest, BenCmd.getPlugin());
-		pm.registerEvent(Event.Type.EXPLOSION_PRIME, this, Event.Priority.Highest, BenCmd.getPlugin());
-		pm.registerEvent(Event.Type.ENDERMAN_PICKUP, this, Event.Priority.Highest, BenCmd.getPlugin());
-		pm.registerEvent(Event.Type.ENDERMAN_PLACE, this, Event.Priority.Highest, BenCmd.getPlugin());
-		pm.registerEvent(Event.Type.PAINTING_BREAK, this, Event.Priority.Lowest, BenCmd.getPlugin());
-		pm.registerEvent(Event.Type.PAINTING_PLACE, this, Event.Priority.Lowest, BenCmd.getPlugin());
-		pm.registerEvent(Event.Type.CREATURE_SPAWN, this, Event.Priority.Normal, BenCmd.getPlugin());
+		EntityDamageEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.LOWEST, BenCmd.getPlugin()));
+		EntityDeathEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.LOWEST, BenCmd.getPlugin()));
+		EntityTargetEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.LOWEST, BenCmd.getPlugin()));
+		ExplosionPrimeEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.LOWEST, BenCmd.getPlugin()));
+		EndermanPickupEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.LOWEST, BenCmd.getPlugin()));
+		EndermanPlaceEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.LOWEST, BenCmd.getPlugin()));
+		PaintingBreakEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.LOWEST, BenCmd.getPlugin()));
+		PaintingPlaceEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.LOWEST, BenCmd.getPlugin()));
+		CreatureSpawnEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.LOWEST, BenCmd.getPlugin()));
 	}
 
 	private void pvpHit(EntityDamageEvent e) {
@@ -460,66 +456,41 @@ public class BenCmdEntityListener extends EntityListener {
 	}
 
 	// Split-off events
-	
-	public void onCreatureSpawn(CreatureSpawnEvent event) {
-		worldAllowSpawn(event);
-	}
 
-	public void onEntityDamage(EntityDamageEvent event) {
-		invincible(event);
-		pvpHit(event);
-	}
-
-	public void onEntityDeath(EntityDeathEvent event) {
-		if (!enabled) {
-			return;
+	@Override
+	public void execute(Listener listener, Event event) throws EventException {
+		if (event instanceof CreatureSpawnEvent) {
+			CreatureSpawnEvent e = (CreatureSpawnEvent) event;
+			worldAllowSpawn(e);
+		} else if (event instanceof EntityDamageEvent) {
+			EntityDamageEvent e = (EntityDamageEvent) event;
+			invincible(e);
+			pvpHit(e);
+		} else if (event instanceof EntityDeathEvent) {
+			EntityDeathEvent e = (EntityDeathEvent) event;
+			pvpDie(e);
+			playerDie(e);
+			mobDrop(e);
+			endermanDropBlock(e);
+		} else if (event instanceof EntityTargetEvent) {
+			EntityTargetEvent e = (EntityTargetEvent) event;
+			endermanPassive(e);
+			creeperPassive(e);
+		} else if (event instanceof ExplosionPrimeEvent) {
+			ExplosionPrimeEvent e = (ExplosionPrimeEvent) event;
+			tntExplode(e);
+		} else if (event instanceof EndermanPickupEvent) {
+			EndermanPickupEvent e = (EndermanPickupEvent) event;
+			endermanGriefTake(e);
+		} else if (event instanceof EndermanPlaceEvent) {
+			EndermanPlaceEvent e = (EndermanPlaceEvent) event;
+			endermanGriefPlace(e);
+		} else if (event instanceof PaintingBreakEvent) {
+			PaintingBreakEvent e = (PaintingBreakEvent) event;
+			paintingBreakCheck(e);
+		} else if (event instanceof PaintingPlaceEvent) {
+			PaintingPlaceEvent e = (PaintingPlaceEvent) event;
+			paintingPlaceCheck(e);
 		}
-		pvpDie(event);
-		playerDie(event);
-		mobDrop(event);
-		endermanDropBlock(event);
-	}
-
-	public void onEntityTarget(EntityTargetEvent event) {
-		if (!enabled) {
-			return;
-		}
-		endermanPassive(event);
-		creeperPassive(event);
-	}
-
-	public void onExplosionPrime(ExplosionPrimeEvent event) {
-		if (!enabled) {
-			return;
-		}
-		tntExplode(event);
-	}
-
-	public void onEndermanPickup(EndermanPickupEvent event) {
-		if (!enabled) {
-			return;
-		}
-		endermanGriefTake(event);
-	}
-
-	public void onEndermanPlace(EndermanPlaceEvent event) {
-		if (!enabled) {
-			return;
-		}
-		endermanGriefPlace(event);
-	}
-
-	public void onPaintingBreak(PaintingBreakEvent event) {
-		if (!enabled) {
-			return;
-		}
-		paintingBreakCheck(event);
-	}
-
-	public void onPaintingPlace(PaintingPlaceEvent event) {
-		if (!enabled) {
-			return;
-		}
-		paintingPlaceCheck(event);
 	}
 }

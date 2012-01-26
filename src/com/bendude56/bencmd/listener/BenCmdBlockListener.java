@@ -2,24 +2,23 @@ package com.bendude56.bencmd.listener;
 
 import java.util.Date;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.block.CraftChest;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
+import org.bukkit.event.*;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
-import org.bukkit.event.block.BlockListener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.*;
+
 import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.User;
 import com.bendude56.bencmd.advanced.Grave;
@@ -31,7 +30,7 @@ import com.bendude56.bencmd.recording.RecordEntry.BlockPlaceEntry;
 import com.bendude56.bencmd.warps.Portal;
 import com.bendude56.bencmd.warps.Warp;
 
-public class BenCmdBlockListener extends BlockListener {
+public class BenCmdBlockListener implements EventExecutor, Listener {
 
 	// Singleton instancing
 
@@ -46,20 +45,16 @@ public class BenCmdBlockListener extends BlockListener {
 	}
 
 	public static void destroyInstance() {
-		instance.enabled = false;
 		instance = null;
 	}
-	
-	private boolean enabled = true;
 
 	private BenCmdBlockListener() {
-		PluginManager pm = Bukkit.getPluginManager();
-		pm.registerEvent(Event.Type.BLOCK_BREAK, this, Event.Priority.Lowest, BenCmd.getPlugin());
-		pm.registerEvent(Event.Type.BLOCK_PLACE, this, Event.Priority.Lowest, BenCmd.getPlugin());
-		pm.registerEvent(Event.Type.BLOCK_IGNITE, this, Event.Priority.Highest, BenCmd.getPlugin());
-		pm.registerEvent(Event.Type.BLOCK_BURN, this, Event.Priority.Highest, BenCmd.getPlugin());
-		pm.registerEvent(Event.Type.SIGN_CHANGE, this, Event.Priority.Monitor, BenCmd.getPlugin());
-		pm.registerEvent(Event.Type.REDSTONE_CHANGE, this, Event.Priority.Monitor, BenCmd.getPlugin());
+		BlockBreakEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.LOWEST, BenCmd.getPlugin()));
+		BlockPlaceEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.LOWEST, BenCmd.getPlugin()));
+		BlockIgniteEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.NORMAL, BenCmd.getPlugin()));
+		BlockBurnEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.NORMAL, BenCmd.getPlugin()));
+		SignChangeEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.MONITOR, BenCmd.getPlugin()));
+		BlockRedstoneEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.MONITOR, BenCmd.getPlugin()));
 	}
 
 	private void bookshelfBreak(BlockBreakEvent event) {
@@ -300,54 +295,35 @@ public class BenCmdBlockListener extends BlockListener {
 
 	// Split-off events
 
-	public void onBlockBreak(BlockBreakEvent event) {
-		if (!enabled) {
-			return;
+	@Override
+	public void execute(Listener listener, Event event) throws EventException {
+		if (event instanceof BlockBreakEvent) {
+			BlockBreakEvent e = (BlockBreakEvent) event;
+			lotBreakCheck(e);
+			bookshelfBreak(e);
+			dcudDestroy(e);
+			lockDestroyCheck(e);
+			logBlockBreak(e);
+			jailedDestroyCheck(e);
+		} else if (event instanceof BlockPlaceEvent) {
+			BlockPlaceEvent e = (BlockPlaceEvent) event;
+			lotPlaceCheck(e);
+			newPortalCheck(e);
+			logBlockPlace(e);
+			jailedPlaceCheck(e);
+		} else if (event instanceof BlockIgniteEvent) {
+			BlockIgniteEvent e = (BlockIgniteEvent) event;
+			igniteCheck(e);
+		} else if (event instanceof BlockBurnEvent) {
+			BlockBurnEvent e = (BlockBurnEvent) event;
+			burnCheck(e);
+		} else if (event instanceof SignChangeEvent) {
+			SignChangeEvent e = (SignChangeEvent) event;
+			signLog(e);
+		} else if (event instanceof BlockRedstoneEvent) {
+			BlockRedstoneEvent e = (BlockRedstoneEvent) event;
+			unlDispRedstone(e);
 		}
-		lotBreakCheck(event);
-		bookshelfBreak(event);
-		dcudDestroy(event);
-		lockDestroyCheck(event);
-		logBlockBreak(event);
-		jailedDestroyCheck(event);
-	}
-
-	public void onBlockPlace(BlockPlaceEvent event) {
-		if (!enabled) {
-			return;
-		}
-		lotPlaceCheck(event);
-		newPortalCheck(event);
-		logBlockPlace(event);
-		jailedPlaceCheck(event);
-	}
-
-	public void onBlockIgnite(BlockIgniteEvent event) {
-		if (!enabled) {
-			return;
-		}
-		igniteCheck(event);
-	}
-
-	public void onBlockBurn(BlockBurnEvent event) {
-		if (!enabled) {
-			return;
-		}
-		burnCheck(event);
-	}
-
-	public void onSignChange(SignChangeEvent event) {
-		if (!enabled) {
-			return;
-		}
-		signLog(event);
-	}
-
-	public void onBlockRedstoneChange(BlockRedstoneEvent event) {
-		if (!enabled) {
-			return;
-		}
-		unlDispRedstone(event);
 	}
 
 }
