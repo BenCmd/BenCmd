@@ -1012,11 +1012,6 @@ public class BenCmdPlayerListener implements Listener, EventExecutor {
 		} else if (event instanceof PlayerRespawnEvent) {
 			PlayerRespawnEvent e = (PlayerRespawnEvent) event;
 			pvpRespawn(e);
-		} else if (event instanceof PlayerMoveEvent) {
-			PlayerMoveEvent e = (PlayerMoveEvent) event;
-			sendSkins(e.getPlayer(), e.getTo());
-			areaMoveCheck(e);
-			BenCmd.getMonitorController().playerMove(e.getPlayer());
 		} else if (event instanceof PlayerPortalEvent) {
 			PlayerPortalEvent e = (PlayerPortalEvent) event;
 			checkPortal(e);
@@ -1025,6 +1020,11 @@ public class BenCmdPlayerListener implements Listener, EventExecutor {
 			PlayerTeleportEvent e = (PlayerTeleportEvent) event;
 			sendSkins(e.getPlayer(), e.getTo());
 			flyTeleport(e);
+		} else if (event instanceof PlayerMoveEvent) {
+			PlayerMoveEvent e = (PlayerMoveEvent) event;
+			sendSkins(e.getPlayer(), e.getTo());
+			areaMoveCheck(e);
+			BenCmd.getMonitorController().playerMove(e.getPlayer());
 		} else if (event instanceof PlayerLoginEvent) {
 			PlayerLoginEvent e = (PlayerLoginEvent) event;
 			loginCheck(e);
