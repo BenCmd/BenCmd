@@ -234,9 +234,11 @@ public class WarpList {
 	public List<Warp> listWarps(Player player) {
 		List<Warp> list = new ArrayList<Warp>();
 		for (Warp warp : warps.values()) {
-			if (warp.canWarpHere(User.getUser(player))) {
-				list.add(warp);
-			}
+			try {
+				if (warp.canWarpHere(User.getUser(player))) {
+					list.add(warp);
+				}
+			} catch (Exception e) { }
 		}
 		return list;
 	}
