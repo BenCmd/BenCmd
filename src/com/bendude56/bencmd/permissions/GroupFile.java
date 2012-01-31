@@ -49,7 +49,7 @@ public class GroupFile extends BenCmdFile {
 				groups += "," + groupn;
 			}
 		}
-		getFile().put(group.getName(), permissions + "/" + users + "/" + groups + "/" + group.getPrefix() + "/" + Integer.toString(group.getColorCode(), 16) + "/" + group.getLevel().toString());
+		getFile().put(group.getName(), permissions + "/" + users + "/" + groups + "/" + group.getPrefix() + "/" + group.getColorCode() + "/" + group.getLevel().toString());
 		if (saveFile)
 			saveFile();
 	}
