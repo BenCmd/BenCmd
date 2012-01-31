@@ -35,19 +35,29 @@ public class BenCmdWorld {
 		BenCmd.log("World '" + world.getName() + "' has been reset...");
 	}
 	
+	public void remove() {
+		unload();
+		BenCmd.getWorlds().removeWorldEntry(this);
+		BenCmd.log("World '" + world.getName() + "' has been removed...");
+	}
+	
 	public void delete() throws IOException {
 		deleteBukkit();
 		BenCmd.getWorlds().removeWorldEntry(this);
 		BenCmd.log("World '" + world.getName() + "' has been deleted...");
 	}
 	
-	private void deleteBukkit() throws IOException {
+	private void unload() {
 		while (world.getPlayers().size() > 0) {
 			world.getPlayers().get(0).sendMessage(ChatColor.RED + "The world you were in has been deleted!");
 			world.getPlayers().get(0).sendMessage(ChatColor.RED + "You have been teleported back to the main world.");
 			world.getPlayers().get(0).teleport(Bukkit.getWorlds().get(0).getSpawnLocation());
 		}
 		Bukkit.unloadWorld(world, true);
+	}
+	
+	private void deleteBukkit() throws IOException {
+		unload();
 		if (!deleteFolder(new File(world.getName()))) {
 			throw new IOException("Failed to delete folder!");
 		}

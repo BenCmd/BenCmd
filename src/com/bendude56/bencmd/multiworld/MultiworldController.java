@@ -111,4 +111,14 @@ public class MultiworldController extends BenCmdFile {
 		}
 	}
 
+	public void importWorld(String name) throws IOException {
+		try {
+			WorldCreator w = new WorldCreator(name);
+			worlds.put(w.name(), new BenCmdWorld(w.createWorld(), true, true, true));
+			updateWorldEntry(worlds.get(w.name()), true);
+		} catch (Exception e) {
+			throw new IOException(e);
+		}
+	}
+
 }

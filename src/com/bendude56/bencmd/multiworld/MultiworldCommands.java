@@ -1,9 +1,11 @@
 package com.bendude56.bencmd.multiworld;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.logging.Level;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -27,7 +29,7 @@ public class MultiworldCommands implements Commands {
 
 	private void world(User user, String[] args) {
 		if (args.length == 0) {
-			user.sendMessage(ChatColor.YELLOW + "Proper use is: /world {create|delete|reset|info|spawn}");
+			user.sendMessage(ChatColor.YELLOW + "Proper use is: /world {create|import|remove|delete|reset|info|spawn}");
 		} else if (args[0].equalsIgnoreCase("create")) {
 			if (!user.hasPerm("bencmd.world.create")) {
 				user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
@@ -36,6 +38,10 @@ public class MultiworldCommands implements Commands {
 			}
 			if (args.length < 2|| args.length > 3) {
 				user.sendMessage(ChatColor.YELLOW + "Proper use is: /world create <name> [seed]");
+				return;
+			}
+			if (new File(args[1]).exists()) {
+				user.sendMessage(ChatColor.RED + "A folder or file already exists with that name!");
 				return;
 			}
 			long seed = 0;
@@ -53,6 +59,66 @@ public class MultiworldCommands implements Commands {
 				user.sendMessage(ChatColor.RED + "Failed to create world '" + args[1] + "'!");
 				BenCmd.log(Level.SEVERE, "Failed to create world '" + args[1] + "':");
 				BenCmd.log(e);
+			}
+		} else if (args[0].equalsIgnoreCase("import")) {
+			if (!user.hasPerm("bencmd.world.import")) {
+				user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
+				BenCmd.getPlugin().logPermFail();
+				return;
+			}
+			if (args.length != 2) {
+				user.sendMessage(ChatColor.YELLOW + "Proper use is: /world import <name>");
+				return;
+			}
+			if (BenCmd.getWorlds().getWorld(args[1]) != null) {
+				user.sendMessage(ChatColor.RED + "That world is already under BenCmd control!");
+				return;
+			} else if (Bukkit.getWorld(args[1]) != null) {
+				user.sendMessage(ChatColor.RED + "That world is under the control of another plugin!");
+				return;
+			} else if (!new File(args[1]).exists() || !new File(args[1]).isDirectory()) {
+				user.sendMessage(ChatColor.RED + "That world was not found!");
+				return;
+			}
+			try {
+				BenCmd.getWorlds().importWorld(args[1]);
+				user.sendMessage(ChatColor.GREEN + "World '" + args[1] + "' has been imported! Use /spawn " + args[1] + " to go there!");
+			} catch (IOException e) {
+				user.sendMessage(ChatColor.RED + "Failed to import world '" + args[1] + "'!");
+				BenCmd.log(Level.SEVERE, "Failed to import world '" + args[1] + "':");
+				BenCmd.log(e);
+			}
+		} else if (args[0].equalsIgnoreCase("remove")) {
+			if (!user.hasPerm("bencmd.world.remove")) {
+				user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
+				BenCmd.getPlugin().logPermFail();
+				return;
+			}
+			BenCmdWorld w;
+			if (args.length == 1) {
+				w = BenCmd.getWorlds().getWorld(((Player) user.getHandle()).getWorld());
+				if (w == null) {
+					user.sendMessage(ChatColor.RED + "Your current world isn't controlled by BenCmd!");
+					return;
+				}
+			} else if (args.length == 2) {
+				w = BenCmd.getWorlds().getWorld(args[1]);
+				if (w == null) {
+					user.sendMessage(ChatColor.RED + "That world doesn't exist or isn't controlled by BenCmd!");
+					return;
+				}
+			} else {
+				user.sendMessage(ChatColor.YELLOW + "Proper use is: /world remove [world]");
+				return;
+			}
+			if (new Date().getTime() < w.getDangerTime()) {
+				w.remove();
+				user.sendMessage(ChatColor.GREEN + "World '" + w.getName() + "' has been unloaded and removed from BenCmd control!");
+			} else {
+				w.setDangerTime(new Date().getTime() + 20000);
+				user.sendMessage(ChatColor.RED + "WARNING: You are about to remove this world from BenCmd");
+				user.sendMessage(ChatColor.RED + "control! All current users will be sent to spawn! Repeat");
+				user.sendMessage(ChatColor.RED + "this command within 20 seconds to verify your intention!");
 			}
 		} else if (args[0].equalsIgnoreCase("delete")) {
 			if (!user.hasPerm("bencmd.world.delete")) {
