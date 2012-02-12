@@ -132,14 +132,14 @@ public class InventoryCommands implements Commands {
 				return;
 			}
 			for (Integer amount : splitamount) {
-				if (((Player) user.getHandle()).getInventory().firstEmpty() >= 0) {
-					((Player) user.getHandle()).getInventory().addItem(new ItemStack(mat, amount, (short) ItemDamage));
+				if (((Player) user2.getHandle()).getInventory().firstEmpty() >= 0) {
+					((Player) user2.getHandle()).getInventory().addItem(new ItemStack(mat, amount, (short) ItemDamage));
 				} else {
-					((Player) user.getHandle()).getWorld().dropItem(((Player) user.getHandle()).getLocation(), new ItemStack(mat, amount, (short) ItemDamage));
+					((Player) user2.getHandle()).getWorld().dropItem(((Player) user2.getHandle()).getLocation(), new ItemStack(mat, amount, (short) ItemDamage));
 				}
 			}
 			user2.sendMessage(ChatColor.GREEN + user.getDisplayName() + " has sent you a gift.");
-			user.sendMessage(ChatColor.GREEN + "Your gift has been sent!");
+			user.sendMessage(ChatColor.GREEN + "Your gift has been sent to " + user2.getColor() + user2.getName() + ChatColor.GREEN + "!");
 			BenCmd.log("BenCmd: " + user.getDisplayName() + " gave " + user2.getDisplayName() + " an item. (id: " + String.valueOf(mat.getId()) + ", amount: " + String.valueOf(fullAmount) + ", damage: " + String.valueOf(ItemDamage) + ")");
 		} else {
 			if (user.isServer()) {
