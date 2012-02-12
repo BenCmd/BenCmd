@@ -212,7 +212,7 @@ public class ProtectedCommands implements Commands {
 			BenCmd.getPlugin().logPermFail();
 			return;
 		}
-		Block pointedAt = ((Player) user.getHandle()).getTargetBlock(null, 4);
+		Block pointedAt = ((Player) user.getHandle()).getTargetBlock(BenCmd.getPlugin().getTransparentBlocks(), 4);
 		if (args.length == 1) {
 			this.Lock(pointedAt, user, false);
 		} else if (args.length == 2) {
@@ -233,7 +233,7 @@ public class ProtectedCommands implements Commands {
 			BenCmd.getPlugin().logPermFail();
 			return;
 		}
-		Block pointedAt = ((Player) user.getHandle()).getTargetBlock(null, 4);
+		Block pointedAt = ((Player) user.getHandle()).getTargetBlock(BenCmd.getPlugin().getTransparentBlocks(), 4);
 		if (args.length == 1) {
 			this.Lock(pointedAt, user, true);
 		} else if (args.length == 2) {
@@ -249,7 +249,7 @@ public class ProtectedCommands implements Commands {
 	}
 
 	public void RemoveProtect(String[] args, User user) {
-		Block pointedAt = ((Player) user.getHandle()).getTargetBlock(null, 4);
+		Block pointedAt = ((Player) user.getHandle()).getTargetBlock(BenCmd.getPlugin().getTransparentBlocks(), 4);
 		if (args.length == 1) {
 			Unlock(pointedAt, user);
 		} else if (args.length == 2) {
@@ -277,7 +277,7 @@ public class ProtectedCommands implements Commands {
 			BenCmd.getPlugin().logPermFail();
 			return;
 		}
-		Block pointedAt = ((Player) user.getHandle()).getTargetBlock(null, 4);
+		Block pointedAt = ((Player) user.getHandle()).getTargetBlock(BenCmd.getPlugin().getTransparentBlocks(), 4);
 		if (args.length == 1) {
 			Info(pointedAt, user);
 		} else if (args.length == 2) {
@@ -299,7 +299,7 @@ public class ProtectedCommands implements Commands {
 	}
 
 	public void OwnerProtect(String[] args, User user) {
-		Block pointedAt = ((Player) user.getHandle()).getTargetBlock(null, 4);
+		Block pointedAt = ((Player) user.getHandle()).getTargetBlock(BenCmd.getPlugin().getTransparentBlocks(), 4);
 		ProtectedBlock block;
 		if (args.length == 2) {
 			if ((block = BenCmd.getProtections().getProtection(BenCmd.getProtections().getProtection(pointedAt.getLocation()))) != null) {
@@ -355,7 +355,7 @@ public class ProtectedCommands implements Commands {
 	}
 
 	public void AddGuest(String[] args, User user) {
-		Block pointedAt = ((Player) user.getHandle()).getTargetBlock(null, 4);
+		Block pointedAt = ((Player) user.getHandle()).getTargetBlock(BenCmd.getPlugin().getTransparentBlocks(), 4);
 		ProtectedBlock block;
 		if (args.length == 2) {
 			if ((block = BenCmd.getProtections().getProtection(BenCmd.getProtections().getProtection(pointedAt.getLocation()))) != null) {
@@ -414,7 +414,7 @@ public class ProtectedCommands implements Commands {
 	}
 
 	public void RemGuest(String[] args, User user) {
-		Block pointedAt = ((Player) user.getHandle()).getTargetBlock(null, 4);
+		Block pointedAt = ((Player) user.getHandle()).getTargetBlock(BenCmd.getPlugin().getTransparentBlocks(), 4);
 		ProtectedBlock block;
 		if (args.length == 2) {
 			if ((block = BenCmd.getProtections().getProtection(BenCmd.getProtections().getProtection(pointedAt.getLocation()))) != null) {
