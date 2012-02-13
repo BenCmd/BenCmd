@@ -61,6 +61,10 @@ public class MoneyCommands implements Commands {
 				user.sendMessage(ChatColor.RED + "Invalid amount");
 				return;
 			}
+			if (Amount <= 0) {
+				user.sendMessage(ChatColor.RED + "You cannot buy " + Amount + " of an item!");
+				return;
+			}
 		}
 		BuyableItem bitem = BenCmd.getMarketController().getItem(item);
 		if (bitem == null) {
@@ -102,6 +106,10 @@ public class MoneyCommands implements Commands {
 				Amount = Integer.parseInt(args[1]);
 			} catch (NumberFormatException e) {
 				user.sendMessage(ChatColor.RED + "Invalid amount");
+				return;
+			}
+			if (Amount <= 0) {
+				user.sendMessage(ChatColor.RED + "You cannot sell " + Amount + " of an item!");
 				return;
 			}
 		}
