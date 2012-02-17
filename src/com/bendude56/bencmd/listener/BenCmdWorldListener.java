@@ -29,10 +29,10 @@ public class BenCmdWorldListener implements Listener, EventExecutor {
 	}
 
 	private BenCmdWorldListener() {
-		WorldLoadEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.MONITOR, BenCmd.getPlugin()));
-		WorldUnloadEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.MONITOR, BenCmd.getPlugin()));
-		ChunkLoadEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.MONITOR, BenCmd.getPlugin()));
-		ChunkUnloadEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.MONITOR, BenCmd.getPlugin()));
+		WorldLoadEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.MONITOR, BenCmd.getPlugin(), false));
+		WorldUnloadEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.MONITOR, BenCmd.getPlugin(), false));
+		ChunkLoadEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.MONITOR, BenCmd.getPlugin(), false));
+		ChunkUnloadEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.MONITOR, BenCmd.getPlugin(), false));
 	}
 	
 	// Split-off events

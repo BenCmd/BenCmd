@@ -4,7 +4,7 @@ import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.CraftServer;
-import org.bukkit.entity.Entity;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import net.minecraft.server.EntityHuman;
@@ -73,7 +73,7 @@ public class EntityNPC extends EntityPlayer {
 	}
 
 	@Override
-	public Entity getBukkitEntity() {
+	public CraftPlayer getBukkitEntity() {
 		return new CraftNPC((CraftServer) Bukkit.getServer(), this);
 	}
 	

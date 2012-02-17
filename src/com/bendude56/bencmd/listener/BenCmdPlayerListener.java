@@ -116,21 +116,21 @@ public class BenCmdPlayerListener implements Listener, EventExecutor {
 	}
 
 	private BenCmdPlayerListener() {
-		PlayerChatEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.HIGHEST, BenCmd.getPlugin()));
-		PlayerJoinEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.HIGHEST, BenCmd.getPlugin()));
-		PlayerQuitEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.HIGHEST, BenCmd.getPlugin()));
-		PlayerKickEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.HIGHEST, BenCmd.getPlugin()));
-		PlayerInteractEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.LOWEST, BenCmd.getPlugin()));
-		PlayerInteractEntityEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.NORMAL, BenCmd.getPlugin()));
-		PlayerLoginEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.LOWEST, BenCmd.getPlugin()));
-		PlayerPickupItemEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.LOWEST, BenCmd.getPlugin()));
-		PlayerDropItemEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.LOWEST, BenCmd.getPlugin()));
-		PlayerBucketEmptyEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.LOWEST, BenCmd.getPlugin()));
-		PlayerBucketFillEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.LOWEST, BenCmd.getPlugin()));
-		PlayerRespawnEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.LOWEST, BenCmd.getPlugin()));
-		PlayerTeleportEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.NORMAL, BenCmd.getPlugin()));
-		PlayerPortalEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.LOWEST, BenCmd.getPlugin()));
-		PlayerMoveEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.NORMAL, BenCmd.getPlugin()));
+		PlayerChatEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.HIGHEST, BenCmd.getPlugin(), false));
+		PlayerJoinEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.HIGHEST, BenCmd.getPlugin(), false));
+		PlayerQuitEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.HIGHEST, BenCmd.getPlugin(), false));
+		PlayerKickEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.HIGHEST, BenCmd.getPlugin(), false));
+		PlayerInteractEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.LOWEST, BenCmd.getPlugin(), false));
+		PlayerInteractEntityEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.NORMAL, BenCmd.getPlugin(), false));
+		PlayerLoginEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.LOWEST, BenCmd.getPlugin(), false));
+		PlayerPickupItemEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.LOWEST, BenCmd.getPlugin(), false));
+		PlayerDropItemEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.LOWEST, BenCmd.getPlugin(), false));
+		PlayerBucketEmptyEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.LOWEST, BenCmd.getPlugin(), false));
+		PlayerBucketFillEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.LOWEST, BenCmd.getPlugin(), false));
+		PlayerRespawnEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.LOWEST, BenCmd.getPlugin(), false));
+		PlayerTeleportEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.NORMAL, BenCmd.getPlugin(), false));
+		PlayerPortalEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.LOWEST, BenCmd.getPlugin(), false));
+		PlayerMoveEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.NORMAL, BenCmd.getPlugin(), false));
 	}
 
 	public void ToggleSlow(User user) {

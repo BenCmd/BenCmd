@@ -28,7 +28,7 @@ public class BenCmdInventoryListener implements Listener, EventExecutor {
 	}
 
 	private BenCmdInventoryListener() {
-		InventoryCraftEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.NORMAL, BenCmd.getPlugin()));
+		InventoryCraftEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.NORMAL, BenCmd.getPlugin(), false));
 	}
 
 	public void checkCraft(InventoryCraftEvent event) {

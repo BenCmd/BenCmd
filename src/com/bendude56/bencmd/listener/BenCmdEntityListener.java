@@ -57,15 +57,13 @@ public class BenCmdEntityListener implements Listener, EventExecutor {
 	}
 
 	private BenCmdEntityListener() {
-		EntityDamageEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.LOWEST, BenCmd.getPlugin()));
-		EntityDeathEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.LOWEST, BenCmd.getPlugin()));
-		EntityTargetEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.LOWEST, BenCmd.getPlugin()));
-		ExplosionPrimeEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.LOWEST, BenCmd.getPlugin()));
-		EndermanPickupEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.LOWEST, BenCmd.getPlugin()));
-		EndermanPlaceEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.LOWEST, BenCmd.getPlugin()));
-		PaintingBreakEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.LOWEST, BenCmd.getPlugin()));
-		PaintingPlaceEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.LOWEST, BenCmd.getPlugin()));
-		CreatureSpawnEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.LOWEST, BenCmd.getPlugin()));
+		EntityDamageEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.LOWEST, BenCmd.getPlugin(), false));
+		EntityDeathEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.LOWEST, BenCmd.getPlugin(), false));
+		EntityTargetEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.LOWEST, BenCmd.getPlugin(), false));
+		ExplosionPrimeEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.LOWEST, BenCmd.getPlugin(), false));
+		PaintingBreakEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.LOWEST, BenCmd.getPlugin(), false));
+		PaintingPlaceEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.LOWEST, BenCmd.getPlugin(), false));
+		CreatureSpawnEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.LOWEST, BenCmd.getPlugin(), false));
 	}
 
 	private void pvpHit(EntityDamageEvent e) {
@@ -148,52 +146,6 @@ public class BenCmdEntityListener implements Listener, EventExecutor {
 			event.setCancelled(true);
 		if (event.getTarget() instanceof Player && User.getUser((Player) event.getTarget()).isPoofed())
 			event.setCancelled(true);
-	}
-
-	private void endermanGriefTake(EndermanPickupEvent event) {
-		if (!BenCmd.getMainProperties().getBoolean("endermenGriefing", true)) {
-			event.setCancelled(true);
-			return;
-		}
-		Location BlockLocation = event.getBlock().getLocation();
-		if (!BenCmd.getLots().isInLot(BlockLocation).equalsIgnoreCase("-1") && !BenCmd.getMainProperties().getBoolean("endermenLotGriefing", false)) {
-			event.setCancelled(true);
-		}
-	}
-
-	private void endermanGriefPlace(EndermanPlaceEvent event) {
-		if (!BenCmd.getMainProperties().getBoolean("endermenGriefing", true)) {
-			event.setCancelled(true);
-		}
-		if (!BenCmd.getMainProperties().getBoolean("endermenLotGriefing", false)) {
-			int range = 4;
-			int xoffset = -range;
-			int yoffset = -range;
-			int zoffset = -range;
-			Location loc = event.getEntity().getLocation();
-			double x = loc.getX();
-			double y = loc.getY();
-			double z = loc.getZ();
-			loc.setWorld(event.getEntity().getWorld());
-			for (int i = 0; i < range * range * range; i++) {
-				loc.setX(x + xoffset);
-				loc.setY(y + yoffset);
-				loc.setZ(z + zoffset);
-				if (!BenCmd.getLots().isInLot(loc).equalsIgnoreCase("-1")) {
-					event.setCancelled(true);
-					return;
-				}
-				xoffset++;
-				if (xoffset > range) {
-					xoffset = -range;
-					yoffset++;
-					if (yoffset > range) {
-						yoffset = -range;
-						zoffset++;
-					}
-				}
-			}
-		}
 	}
 
 	private void endermanDropBlock(EntityDeathEvent event) {
@@ -440,8 +392,6 @@ public class BenCmdEntityListener implements Listener, EventExecutor {
 				return true;
 			case MAGMA_CUBE:
 				return true;
-			case MONSTER:
-				return true;
 			case SILVERFISH:
 				return true;
 			case SKELETON:
@@ -479,12 +429,6 @@ public class BenCmdEntityListener implements Listener, EventExecutor {
 		} else if (event instanceof ExplosionPrimeEvent) {
 			ExplosionPrimeEvent e = (ExplosionPrimeEvent) event;
 			tntExplode(e);
-		} else if (event instanceof EndermanPickupEvent) {
-			EndermanPickupEvent e = (EndermanPickupEvent) event;
-			endermanGriefTake(e);
-		} else if (event instanceof EndermanPlaceEvent) {
-			EndermanPlaceEvent e = (EndermanPlaceEvent) event;
-			endermanGriefPlace(e);
 		} else if (event instanceof PaintingBreakEvent) {
 			PaintingBreakEvent e = (PaintingBreakEvent) event;
 			paintingBreakCheck(e);

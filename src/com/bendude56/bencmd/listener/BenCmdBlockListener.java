@@ -49,12 +49,12 @@ public class BenCmdBlockListener implements EventExecutor, Listener {
 	}
 
 	private BenCmdBlockListener() {
-		BlockBreakEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.LOWEST, BenCmd.getPlugin()));
-		BlockPlaceEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.LOWEST, BenCmd.getPlugin()));
-		BlockIgniteEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.NORMAL, BenCmd.getPlugin()));
-		BlockBurnEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.NORMAL, BenCmd.getPlugin()));
-		SignChangeEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.MONITOR, BenCmd.getPlugin()));
-		BlockRedstoneEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.MONITOR, BenCmd.getPlugin()));
+		BlockBreakEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.LOWEST, BenCmd.getPlugin(), false));
+		BlockPlaceEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.LOWEST, BenCmd.getPlugin(), false));
+		BlockIgniteEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.NORMAL, BenCmd.getPlugin(), false));
+		BlockBurnEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.NORMAL, BenCmd.getPlugin(), false));
+		SignChangeEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.MONITOR, BenCmd.getPlugin(), false));
+		BlockRedstoneEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.MONITOR, BenCmd.getPlugin(), false));
 	}
 
 	private void bookshelfBreak(BlockBreakEvent event) {

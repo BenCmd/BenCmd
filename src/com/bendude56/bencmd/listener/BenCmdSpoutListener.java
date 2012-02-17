@@ -29,7 +29,7 @@ public class BenCmdSpoutListener implements Listener, EventExecutor {
 	}
 
 	private BenCmdSpoutListener() {
-		SpoutCraftEnableEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.NORMAL, BenCmd.getPlugin()));
+		SpoutCraftEnableEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.NORMAL, BenCmd.getPlugin(), false));
 	}
 
 	public void sendSkins(SpoutCraftEnableEvent event) {

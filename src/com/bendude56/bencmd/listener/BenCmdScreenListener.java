@@ -28,7 +28,7 @@ public class BenCmdScreenListener implements Listener, EventExecutor {
 	}
 
 	private BenCmdScreenListener() {
-		ButtonClickEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.NORMAL, BenCmd.getPlugin()));
+		ButtonClickEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.NORMAL, BenCmd.getPlugin(), false));
 	}
 
 	private void buttonNPC(ButtonClickEvent event) {
