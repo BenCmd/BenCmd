@@ -170,7 +170,7 @@ public class ChatChannelCommands implements Commands {
 				} else {
 					user.leaveChannel(true);
 				}
-			} else if (args[0].equalsIgnoreCase("remove")) {
+			} else if (args[0].equalsIgnoreCase("remove") || args[0].equalsIgnoreCase("delete")) {
 				if (user.inChannel()) {
 					if (user.getActiveChannel().canExecuteAllCommands(user)) {
 						if (new Date().getTime() < user.getActiveChannel().getDelDanger()) {

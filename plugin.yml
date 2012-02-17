@@ -62,6 +62,9 @@ commands:
     feed:
         usage:
         description: Feeds a player.
+    level:
+        usage:
+        description: Adjusts a player's experience level.
     bencmd:
         usage:
         description: Displays the version info for, or reloads, BenCmd.

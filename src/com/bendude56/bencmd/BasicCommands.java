@@ -1,6 +1,5 @@
 package com.bendude56.bencmd;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -18,6 +17,8 @@ import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
+
+import com.bendude56.bencmd.Help.BCommand;
 
 public class BasicCommands implements Commands {
 
@@ -464,8 +465,12 @@ public class BasicCommands implements Commands {
 				user.sendMessage("You cannot set the server's experience level!");
 				return;
 			}
+			if (!user.hasPerm("bencmd.experience.self")) {
+				user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
+				return;
+			}
 			try {
-				Bukkit.getPlayerExact(user.getName()).setTotalExperience(Integer.parseInt(args[0]));
+				Bukkit.getPlayerExact(user.getName()).setLevel(Integer.parseInt(args[0]));
 				user.sendMessage(ChatColor.GREEN + "Your experience level has been set to " + args[0]);
 				return;
 			} catch (NumberFormatException e) {
@@ -478,7 +483,7 @@ public class BasicCommands implements Commands {
 				return;
 			}
 			try {
-				Bukkit.getPlayerExact(args[1]).setTotalExperience(Integer.parseInt(args[0]));
+				Bukkit.getPlayerExact(args[1]).setLevel(Integer.parseInt(args[0]));
 				user.sendMessage(ChatColor.GREEN + args[1] + "'s experience has been set to " + args[1]);
 				return;
 			} catch (NumberFormatException e) {
@@ -534,28 +539,41 @@ public class BasicCommands implements Commands {
 			try {
 				pageToShow = Integer.parseInt(args[0]);
 			} catch (NumberFormatException e) {
-				user.sendMessage(ChatColor.RED + args[0] + " is an invalid page number!");
+				if (args.length == 1 || (args.length == 2 && (args[1].equalsIgnoreCase("1") || args[1].equalsIgnoreCase("gist")))) {
+					Help.ShowHelp(args[0], user);
+				} else if (args.length == 2 && (args[1].equalsIgnoreCase("2") || args[1].equalsIgnoreCase("more") || args[1].equalsIgnoreCase("details") || args[1].equalsIgnoreCase("instructions"))) {
+					Help.ShowDetails(args[0], user);
+				} else {
+					user.sendMessage(ChatColor.RED + "Proper use is /help <page> or /help <command> [more]");
+				}
 				return;
 			}
 		}
-		List<BCommand> commands = getCommands(user);
+		List<BCommand> commands = Help.Commands(user);
 		int max;
 		if (pageToShow > (max = (int) Math.ceil((commands.size() - 1) / 6) + 1)) {
-			user.sendMessage(ChatColor.RED + "There are only " + max + " pages!");
+			user.sendMessage(ChatColor.RED + "There are only " + max
+					+ " pages!");
 			return;
 		} else if (pageToShow <= 0) {
-			user.sendMessage(ChatColor.RED + "There are no negative pages.");
+			user.sendMessage(ChatColor.RED
+					+ "There are no negative pages.");
 			return;
 		}
 		int i = (pageToShow - 1) * 6;
-		user.sendMessage(ChatColor.YELLOW + "Displaying help page " + ChatColor.RED + pageToShow + ChatColor.YELLOW + " of " + ChatColor.RED + max + ChatColor.YELLOW + ":");
+		user.sendMessage(ChatColor.YELLOW + "Displaying help page "
+				+ ChatColor.RED + pageToShow + ChatColor.YELLOW + " of "
+				+ ChatColor.RED + max + ChatColor.YELLOW + ":");
 		while (i < (pageToShow - 1) * 6 + 6) {
 			if (i >= commands.size()) {
 				break;
 			}
-			user.sendMessage(ChatColor.GREEN + commands.get(i).getName() + ChatColor.WHITE + " - " + ChatColor.GRAY + commands.get(i).getDescription());
+			user.sendMessage(ChatColor.GREEN + "/" + Help.Commands().get(i).getLabel()
+					+ ChatColor.WHITE + " - " + ChatColor.GRAY
+					+ Help.Commands().get(i).getGist());
 			i++;
 		}
+		user.sendMessage(ChatColor.GREEN + "Type \"/help <command> [more]\" to get help on a particular command.");
 	}
 
 	public void SpawnMob(String[] args, User user) {
@@ -794,7 +812,7 @@ public class BasicCommands implements Commands {
 		}
 	}
 
-	public List<BCommand> getCommands(User user) {
+	/*public List<BCommand> getCommands(User user) {
 		List<BCommand> commands = new ArrayList<BCommand>();
 		commands.add(new BCommand("/help [page]", "Displays the xth page of the command list...", "."));
 		commands.add(new BCommand("/slow [delay]", "Makes each user wait x seconds between chats.", "bencmd.chat.slow"));
@@ -871,6 +889,6 @@ public class BasicCommands implements Commands {
 			}
 		}
 		return commands;
-	}
+	}*/
 
 }
