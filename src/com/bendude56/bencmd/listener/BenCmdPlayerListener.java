@@ -271,8 +271,10 @@ public class BenCmdPlayerListener implements Listener, EventExecutor {
 		}
 
 		// Join general channel
-		if (BenCmd.getChatChannels().getChannel(user.getVar("bencmd.chat.defaultchannel", "general")) != null) {
-			user.joinChannel(BenCmd.getChatChannels().getChannel(user.getVar("bencmd.chat.defaultchannel", "general")), false);
+		if (BenCmd.getChatChannels() != null) {
+			if (BenCmd.getChatChannels().getChannel(user.getVar("bencmd.chat.defaultchannel", "general")) != null) {
+				user.joinChannel(BenCmd.getChatChannels().getChannel(user.getVar("bencmd.chat.defaultchannel", "general")), false);
+			}
 		}
 		event.setJoinMessage(user.getColor() + user.getDisplayName() + ChatColor.YELLOW + " has joined the game.");
 
