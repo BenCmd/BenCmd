@@ -131,7 +131,7 @@ public class BasicCommands implements Commands {
 		} else if (commandLabel.equalsIgnoreCase("spawner") && user.hasPerm("bencmd.spawnmob")) {
 			Spawner(args, user);
 			return true;
-		} else if (commandLabel.equalsIgnoreCase("killall") && user.hasPerm("bencmd.spawnmob")) {
+		} else if (commandLabel.equalsIgnoreCase("killmobs") && user.hasPerm("bencmd.spawnmob")) {
 			KillEntities(args, user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("rechunk")) {
@@ -714,7 +714,7 @@ public class BasicCommands implements Commands {
 			return;
 		}
 		Player player = ((Player) user.getHandle());
-		if (player.getTargetBlock(null, 4).getType() == Material.MOB_SPAWNER) {
+		if (player.getTargetBlock(null, 4).getType().equals(Material.MOB_SPAWNER)) {
 			if (args.length!= 1) {
 				user.sendMessage(ChatColor.RED + "Proper use is /spawner <creature>");
 				return;
@@ -724,7 +724,7 @@ public class BasicCommands implements Commands {
 				user.sendMessage(ChatColor.RED + "Invalid mob type!");
 				return;
 			}
-			((CreatureSpawner) player.getTargetBlock(null, 4)).setCreatureType(mob);
+			((CreatureSpawner) player.getTargetBlock(null, 4).getState()).setCreatureType(mob);
 			user.sendMessage(ChatColor.GREEN + "This spawner now spawns " + mob.name() + "s.");
 			return; 
 		} else {
@@ -741,41 +741,62 @@ public class BasicCommands implements Commands {
 		// Tally up the mobs
 		int mobCounter = 0;
 		int range = -1;
-		try {
-			range = Integer.parseInt(args[args.length - 1]);
-		} catch (NumberFormatException e) {
-			range = -1;
+		boolean killmobs = false;
+		boolean killHostile = false;
+		CreatureType mobToKill = CreatureType.PIG;
+		if (args.length == 0) {
+			user.sendMessage(ChatColor.RED + "Proper use is /killmobs <mob> ... <range>");
+			return;
+		} else if (args.length == 1) {
+			if (getMobType(args[0]) == null) {
+				if (args[0].equalsIgnoreCase("hostile")) {
+					killHostile = true;
+				} else if (args[0].equalsIgnoreCase("all")) {
+					killmobs = true;
+				} else {
+					user.sendMessage(ChatColor.RED + "Proper use is /killmobs <mob> ... <range>");
+					return;
+				}
+			}
+		} else {
+			try {
+				range = Integer.parseInt(args[args.length - 1]);
+			} catch (NumberFormatException e) {
+				range = -1;
+			}
 		}
 		for (int i = 0; i < args.length; i++) {
-			CreatureType mobToKill = getMobType(args[i]);
-			if (mobToKill != null) {
+			if (args[i].equalsIgnoreCase("all")
+					|| args[i].equalsIgnoreCase("hostile")
+					|| (mobToKill = getMobType(args[i])) != null) {
 				for (int ii = 0; ii < ((Player) user.getHandle()).getWorld().getLivingEntities().size(); ii++) {
-					LivingEntity entity = ((Player) user.getHandle()).getWorld().getLivingEntities().get(ii);
-					{
-						if (	   (entity instanceof Creeper && mobToKill == CreatureType.CREEPER)
-								|| (entity instanceof Zombie && mobToKill == CreatureType.ZOMBIE)
-								|| (entity instanceof Skeleton && mobToKill == CreatureType.SKELETON)
-								|| (entity instanceof Spider && mobToKill == CreatureType.SPIDER)
-								|| (entity instanceof Slime && mobToKill == CreatureType.SLIME)
-								|| (entity instanceof CaveSpider && mobToKill == CreatureType.CAVE_SPIDER)
-								|| (entity instanceof Enderman && mobToKill == CreatureType.ENDERMAN)
-								|| (entity instanceof Silverfish && mobToKill == CreatureType.SILVERFISH)
-								|| (entity instanceof PigZombie && mobToKill == CreatureType.PIG_ZOMBIE)
-								|| (entity instanceof Ghast && mobToKill == CreatureType.GHAST)
-								|| (entity instanceof MagmaCube && mobToKill == CreatureType.MAGMA_CUBE)
-								|| (entity instanceof Blaze && mobToKill == CreatureType.BLAZE)
-								|| (entity instanceof Pig && mobToKill == CreatureType.PIG)
-								|| (entity instanceof Cow && mobToKill == CreatureType.COW)
-								|| (entity instanceof Chicken && mobToKill == CreatureType.CHICKEN)
-								|| (entity instanceof MushroomCow && mobToKill == CreatureType.MUSHROOM_COW)
-								|| (entity instanceof Squid && mobToKill == CreatureType.SQUID)
-								|| (entity instanceof Villager && mobToKill == CreatureType.VILLAGER)
-								|| (entity instanceof Wolf && mobToKill == CreatureType.WOLF)
-								|| (entity instanceof Snowman && mobToKill == CreatureType.SNOWMAN)
-								|| (entity instanceof EnderDragon && mobToKill == CreatureType.ENDER_DRAGON)
-								|| (entity instanceof Giant && mobToKill == CreatureType.GIANT)) {
-							if (range == -1 || getDistance(((Player) user.getHandle()).getLocation(), ((Player) user.getHandle()).getWorld().getLivingEntities().get(ii).getLocation(), false) <= range) {
-								((Player) user.getHandle()).getWorld().getEntities().get(ii).remove();
+						LivingEntity entity = ((Player) user.getHandle()).getWorld().getLivingEntities().get(ii);
+						{
+						if (	   (entity instanceof Creeper && (mobToKill == CreatureType.CREEPER || killmobs || killHostile))
+								|| (entity instanceof Zombie && (mobToKill == CreatureType.ZOMBIE || killmobs || killHostile))
+								|| (entity instanceof Skeleton && (mobToKill == CreatureType.SKELETON || killmobs || killHostile))
+								|| (entity instanceof Spider && (mobToKill == CreatureType.SPIDER || killmobs || killHostile))
+								|| (entity instanceof Slime && (mobToKill == CreatureType.SLIME || killmobs || killHostile))
+								|| (entity instanceof CaveSpider && (mobToKill == CreatureType.CAVE_SPIDER || killmobs))
+								|| (entity instanceof Enderman && (mobToKill == CreatureType.ENDERMAN || killmobs || killHostile))
+								|| (entity instanceof Silverfish && (mobToKill == CreatureType.SILVERFISH || killmobs || killHostile))
+								|| (entity instanceof PigZombie && (mobToKill == CreatureType.PIG_ZOMBIE || killmobs || killHostile))
+								|| (entity instanceof Ghast && (mobToKill == CreatureType.GHAST || killmobs || killHostile))
+								|| (entity instanceof MagmaCube && (mobToKill == CreatureType.MAGMA_CUBE || killmobs || killHostile))
+								|| (entity instanceof Blaze && (mobToKill == CreatureType.BLAZE || killmobs || killHostile))
+								|| (entity instanceof Pig && (mobToKill == CreatureType.PIG || killmobs))
+								|| (entity instanceof Sheep && (mobToKill == CreatureType.SHEEP || killmobs))
+								|| (entity instanceof Cow && (mobToKill == CreatureType.COW || killmobs))
+								|| (entity instanceof Chicken && (mobToKill == CreatureType.CHICKEN || killmobs))
+								|| (entity instanceof MushroomCow && ((mobToKill == CreatureType.MUSHROOM_COW && mobToKill != CreatureType.COW) || killmobs))
+								|| (entity instanceof Squid && (mobToKill == CreatureType.SQUID || killmobs))
+								|| (entity instanceof Villager && (mobToKill == CreatureType.VILLAGER || killmobs))
+								|| (entity instanceof Wolf && (mobToKill == CreatureType.WOLF || killmobs))
+								|| (entity instanceof Snowman && (mobToKill == CreatureType.SNOWMAN || killmobs))
+								|| (entity instanceof EnderDragon && (mobToKill == CreatureType.ENDER_DRAGON || killmobs || killHostile))
+								|| (entity instanceof Giant && (mobToKill == CreatureType.GIANT || killmobs || killHostile))) {
+							if (range == -1 || getDistance(((Player) user.getHandle()).getLocation(), entity.getLocation(), false) <= range) {
+								entity.remove();
 								mobCounter++;
 							}
 						}
@@ -787,6 +808,7 @@ public class BasicCommands implements Commands {
 			user.sendMessage(ChatColor.RED + "No mobs were killed.");
 		} else {
 			user.sendMessage(ChatColor.GREEN + "" + mobCounter + " mobs were killed!");
+			BenCmd.log(Level.INFO, user.getName() + " killed " + mobCounter + " mobs in world " + ((Player) user.getHandle()).getWorld().getName() + ".");
 		}
 	}
 
@@ -964,7 +986,7 @@ public class BasicCommands implements Commands {
 		commands.add(new BCommand("/ticket", "Lists and changes existing reports. Type /ticket for more info...", "bencmd.ticket.readown"));
 		commands.add(new BCommand("/kill <player>", "Kills the player listed.", "bemcmd.kill.*"));
 		commands.add(new BCommand("/mob <Mob Name>,<Passenger>,.. [Amount]", "Spawns a specific amount of a specific mob.", "bencmd.spawnmob"));
-		commands.add(new BCommand("/killall <Mob Name> <Mob Name> etc <range>", "Kills all specified mobs within the given range.", "bencmd.spawmnmob"));
+		commands.add(new BCommand("/killmobs <Mob Name> <Mob Name> etc <range>", "Kills all specified mobs within the given range.", "bencmd.spawmnmob"));
 		commands.add(new BCommand("/buy <Item> [Amount]", "Buys an item.", "."));
 		commands.add(new BCommand("/sell <Item> [Amount]", "Sells an item from your inventory.", "."));
 		commands.add(new BCommand("/price <Item>", "Lists the price of a specific item.", "."));

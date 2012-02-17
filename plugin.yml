@@ -191,7 +191,7 @@ commands:
     mob:
         usage:
         description: Spawns mobs too
-    killall:
+    killmobs:
         usage:
         description: Kills entities
     spawner:

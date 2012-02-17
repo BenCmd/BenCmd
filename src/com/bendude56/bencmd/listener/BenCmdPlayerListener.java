@@ -405,6 +405,19 @@ public class BenCmdPlayerListener implements Listener, EventExecutor {
 			}
 		}
 	}
+	
+	private void spawnerEggEvent(PlayerInteractEvent event) {
+		if ((event.getAction() == Action.RIGHT_CLICK_BLOCK || event.getAction() == Action.RIGHT_CLICK_AIR) && (event.getPlayer().getItemInHand().getType() == Material.MONSTER_EGG || event.getPlayer().getItemInHand().getType() == Material.MONSTER_EGGS)) {
+			User user = (User) BenCmd.getPermissionManager().getUserFile().getUser(event.getPlayer().getName());
+			if (user == null) {
+				return;
+			}
+			if (!user.hasPerm("bencmd.spawnmob")) {
+				event.setCancelled(true);
+				user.sendMessage(ChatColor.RED + "You do not have permission to do that!");
+			}
+		}
+	}
 
 	private void disposalChestInteract(PlayerInteractEvent event) {
 		InventoryBackend back = InventoryBackend.getInstance();
@@ -997,6 +1010,7 @@ public class BenCmdPlayerListener implements Listener, EventExecutor {
 				return;
 			}
 			bookshelfInteract(e);
+			spawnerEggEvent(e);
 			lockInteract(e);
 			disposalChestInteract(e);
 			strikeBind(e);

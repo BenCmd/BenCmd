@@ -54,11 +54,11 @@ public class Help {
 						"/mob <mob> <amount>,/mob <mob,mob,mob,...> <amount>",
 						"bencmd.spawnmob",
 						"This will spawn a mob. Example: \"/mob creeper 6\" will spawn 6 creepers at your location. You can also pile mobs on top of eachother. Example: \"/mob spider,skeleton 3\" will spawn 3 skeletons riding spiders. Not specifying an amount will spawn only one mob."),
-				new BCommand("killall",
+				new BCommand("killmobs",
 						"Kills all mobs of specified kind(s) around your location.",
-						"/killall <mob>,/killall <mob> <range>,/killall <mob> <mob> <mob> ... <amount>",
+						"/killmobs <mob>,/killmobs <mob> <range>,/killmobs <mob> <mob> <mob> ... <amount>",
 						"bencmd.killmob",
-						"This will kill all mobs of the specified type(s) that are within the range you specified. Example: \"/killall creepers 8\" will kill all creepers that are 8 blocks of you. \"/killall pigmen\" will kill all pigmen in the world. \"/killall creepers skeletons and spiders\" will kill all creepers, skeletons, and spiders in the world."),
+						"This will kill all mobs of the specified type(s) that are within the range you specified. Example: \"/killmobs creepers 8\" will kill all creepers that are 8 blocks of you. \"/killmobs pigmen\" will kill all pigmen in the world. \"/killmobs creepers skeletons and spiders\" will kill all creepers, skeletons, and spiders in the world."),
 				new BCommand("rechunk",
 						"Usually fixes the chunk error you're in.",
 						"/rechunk",
@@ -479,7 +479,7 @@ public class Help {
 			this.label = label;
 			this.gist = gist;
 			this.uses = uses.split(";");
-			if (perms == "") {
+			if (perms.equalsIgnoreCase("")) {
 				this.perms = null;
 			} else {
 				this.perms = perms.split(";");
@@ -528,8 +528,11 @@ public class Help {
 		}
 		
 		public boolean canUse(User u) {
+			if (perms == null) {
+				return true;
+			}
 			for (String p : perms) {
-				if (u.hasPerm(p)) {
+				if (p.equalsIgnoreCase("") || u.hasPerm(p)) {
 					return true;
 				}
 			}
