@@ -64,7 +64,7 @@ commands:
         description: Feeds a player.
     level:
         usage:
-        description: Adjusts a player's experience level.
+        description: Sets a player's total experience level.
     bencmd:
         usage:
         description: Displays the version info for, or reloads, BenCmd.

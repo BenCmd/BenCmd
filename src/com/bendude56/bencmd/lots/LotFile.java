@@ -140,6 +140,7 @@ public class LotFile extends BenCmdFile {
 				for (Lot l : getLot(LotID).getSubs()) {
 					deleteLot(l.getFullID());
 				}
+				getFile().remove(LotID);
 				saveFile();
 			} catch (Exception e) {
 				return false; // An unknown error was encountered!
@@ -164,11 +165,13 @@ public class LotFile extends BenCmdFile {
 					return false;
 				}
 				this.sortSubs(LotID);
+				getFile().remove(LotID);
 				saveFile();
 			} else {
 				try {
 					lots.remove(LotID + "," + SubID);
 					this.sortSubs(LotID);
+					getFile().remove(LotID);
 					saveFile();
 				} catch (Exception e) {
 					return false;

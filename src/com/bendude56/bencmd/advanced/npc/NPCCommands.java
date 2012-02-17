@@ -32,17 +32,23 @@ public class NPCCommands implements Commands {
 		}
 		if (args[0].equalsIgnoreCase("bank")) {
 			BenCmd.getNPCFile().addNPC(new BankerNPC(BenCmd.getNPCFile().nextId(), ((Player) user.getHandle()).getLocation()));
+			user.sendMessage(ChatColor.GREEN + "Bank NPC Created!");
 		} else if (args[0].equalsIgnoreCase("bupgrade")) {
 			BenCmd.getNPCFile().addNPC(new BankManagerNPC(BenCmd.getNPCFile().nextId(), ((Player) user.getHandle()).getLocation()));
+			user.sendMessage(ChatColor.GREEN + "Bank Manager NPC Created!");
 		} else if (args[0].equalsIgnoreCase("blacksmith")) {
 			BenCmd.getNPCFile().addNPC(new BlacksmithNPC(BenCmd.getNPCFile().nextId(), ((Player) user.getHandle()).getLocation(), null, null));
+			user.sendMessage(ChatColor.GREEN + "Blacksmith NPC Created!");
 		} else if (args[0].equalsIgnoreCase("static")) {
 			if (args.length == 1) {
 				BenCmd.getNPCFile().addNPC(new StaticNPC("Unnamed NPC", "", BenCmd.getNPCFile().nextId(), ((Player) user.getHandle()).getLocation(), new ItemStack(Material.AIR), true));
+				user.sendMessage(ChatColor.GREEN + "Static NPC Created!");
 			} else if (args.length == 2) {
 				BenCmd.getNPCFile().addNPC(new StaticNPC(args[1].replace('-', ' '), args[1].replace('-', ' '), BenCmd.getNPCFile().nextId(), ((Player) user.getHandle()).getLocation(), new ItemStack(Material.AIR), true));
+				user.sendMessage(ChatColor.GREEN + "Static NPC Created!");
 			} else if (args.length == 3) {
 				BenCmd.getNPCFile().addNPC(new StaticNPC(args[1].replace('-', ' '), args[2], BenCmd.getNPCFile().nextId(), ((Player) user.getHandle()).getLocation(), new ItemStack(Material.AIR), true));
+				user.sendMessage(ChatColor.GREEN + "Static NPC Created!");
 			} else {
 				user.sendMessage(ChatColor.YELLOW + "Proper usage: /npc static [name] [skin]");
 			}
