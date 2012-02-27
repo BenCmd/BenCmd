@@ -31,21 +31,21 @@ public class MapCommands implements Commands {
 		BCMap map = new BCMap(((Player) user.getHandle()).getItemInHand().getDurability(), ((CraftWorld) ((Player) user.getHandle()).getWorld()).getHandle());
 		if (args[0].equalsIgnoreCase("zoomin")) {
 			if (!user.hasPerm("bencmd.map.zoom")) {
-				user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
+				user.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
 				BenCmd.getPlugin().logPermFail();
 				return;
 			}
 			map.zoomIn();
 		} else if (args[0].equalsIgnoreCase("zoomout")) {
 			if (!user.hasPerm("bencmd.map.zoom")) {
-				user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
+				user.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
 				BenCmd.getPlugin().logPermFail();
 				return;
 			}
 			map.zoomOut();
 		} else if (args[0].equalsIgnoreCase("center")) {
 			if (!user.hasPerm("bencmd.map.center")) {
-				user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
+				user.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
 				BenCmd.getPlugin().logPermFail();
 				return;
 			}

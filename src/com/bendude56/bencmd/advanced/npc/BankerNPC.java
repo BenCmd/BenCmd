@@ -24,7 +24,7 @@ public class BankerNPC extends NPC implements Clickable {
 		if (!BenCmd.getBankController().hasBank(p.getName())) {
 			BenCmd.getBankController().addBank(new BankInventory(p.getName()));
 		}
-		BenCmd.log(p.getName() + " has opened their bank!");
+		BenCmd.log(BenCmd.getLocale().getString("log.bank.openSelf", p.getName()));
 		BenCmd.getBankController().openInventory(p);
 	}
 

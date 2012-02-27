@@ -66,19 +66,19 @@ public class WeatherCommands implements Commands {
 		Location loc = null;
 		if (args.length == 0) {
 			if (user.isServer()) {
-				user.sendMessage(ChatColor.RED + "The server cannot do that!");
+				user.sendMessage(BenCmd.getLocale().getString("basic.noServerUse"));
 				return;
 			}
 			loc = targetBlock.getLocation();
 		} else {
 			if (args[0].equalsIgnoreCase("bind")) {
 				if (!user.hasPerm("bencmd.storm.strike.bind")) {
-					user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
+					user.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
 					BenCmd.getPlugin().logPermFail();
 					return;
 				}
 				if (user.isServer()) {
-					user.sendMessage(ChatColor.RED + "The server cannot do that!");
+					user.sendMessage(BenCmd.getLocale().getString("basic.noServerUse"));
 					return;
 				}
 				if (BenCmd.getStrikeBindings().tryBind(((Player) user.getHandle()))) {
@@ -89,12 +89,12 @@ public class WeatherCommands implements Commands {
 				return;
 			} else if (args[0].equalsIgnoreCase("unbind")) {
 				if (!user.hasPerm("bencmd.storm.strike.bind")) {
-					user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
+					user.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
 					BenCmd.getPlugin().logPermFail();
 					return;
 				}
 				if (user.isServer()) {
-					user.sendMessage(ChatColor.RED + "The server cannot do that!");
+					user.sendMessage(BenCmd.getLocale().getString("basic.noServerUse"));
 					return;
 				}
 				if (BenCmd.getStrikeBindings().hasBoundItem(((Player) user.getHandle()))) {
@@ -106,13 +106,13 @@ public class WeatherCommands implements Commands {
 				return;
 			} else {
 				if (!user.hasPerm("bencmd.storm.strike.player")) {
-					user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
+					user.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
 					BenCmd.getPlugin().logPermFail();
 					return;
 				}
 				User user2;
 				if ((user2 = User.matchUserAllowPartial(args[0])) == null) {
-					user.sendMessage(ChatColor.RED + "That user couldn't be found!");
+					user.sendMessage(BenCmd.getLocale().getString("basic.userNotFound", args[0]));
 					return;
 				}
 				loc = ((Player) user2.getHandle()).getLocation();

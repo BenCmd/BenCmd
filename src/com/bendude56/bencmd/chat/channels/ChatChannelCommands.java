@@ -103,7 +103,7 @@ public class ChatChannelCommands implements Commands {
 							if (channel.canExecuteBasicCommands(user)) {
 								channel.listUsers(user);
 							} else {
-								user.sendMessage(ChatColor.RED + "You must be a channel moderator to do that!");
+								user.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
 							}
 						}
 					}
@@ -118,7 +118,7 @@ public class ChatChannelCommands implements Commands {
 							if (channel.canExecuteBasicCommands(user)) {
 								channel.listUsers(user);
 							} else {
-								user.sendMessage(ChatColor.RED + "You must be a channel moderator to do that!");
+								user.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
 							}
 						}
 					}
@@ -129,7 +129,7 @@ public class ChatChannelCommands implements Commands {
 					return;
 				}
 				if (!user.hasPerm("bencmd.chat.newchannel")) {
-					user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
+					user.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
 					BenCmd.getPlugin().logPermFail();
 					return;
 				}
@@ -159,7 +159,7 @@ public class ChatChannelCommands implements Commands {
 						user.sendMessage(ChatColor.GRAY + "Slow delay: " + ChatColor.GREEN + (user.getActiveChannel().getDefaultSlowDelay() / 1000) + " seconds");
 						user.sendMessage(ChatColor.GRAY + "MOTD: " + ChatColor.GREEN + user.getActiveChannel().getMotd());
 					} else {
-						user.sendMessage(ChatColor.RED + "You must be a channel moderator to do that!");
+						user.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
 					}
 				} else {
 					user.sendMessage(ChatColor.RED + "You're not in a channel!");
@@ -183,7 +183,7 @@ public class ChatChannelCommands implements Commands {
 							user.sendMessage(ChatColor.RED + "command within 20 seconds to verify your intention!");
 						}
 					} else {
-						user.sendMessage(ChatColor.RED + "You must be the channel owner to do that!");
+						user.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
 					}
 				} else {
 					user.sendMessage(ChatColor.RED + "You're not in a channel!");
@@ -197,7 +197,7 @@ public class ChatChannelCommands implements Commands {
 					if (user.getActiveChannel().canExecuteBasicCommands(user)) {
 						PermissionUser toBan = PermissionUser.matchUserAllowPartial(args[1]);
 						if (toBan == null) {
-							user.sendMessage(ChatColor.RED + "That user couldn't be found!");
+							user.sendMessage(BenCmd.getLocale().getString("basic.userNotFound", args[1]));
 							return;
 						}
 						if (!user.getActiveChannel().canExecuteAllCommands(user) && user.getActiveChannel().getLevel(user).getLevel() <= user.getActiveChannel().getLevel(toBan).getLevel()) {
@@ -206,7 +206,7 @@ public class ChatChannelCommands implements Commands {
 						}
 						user.getActiveChannel().setRole(toBan.getName(), ChatLevel.BANNED);
 					} else {
-						user.sendMessage(ChatColor.RED + "You must be a channel moderator to do that!");
+						user.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
 					}
 				} else {
 					user.sendMessage(ChatColor.RED + "You're not in a channel!");
@@ -220,7 +220,7 @@ public class ChatChannelCommands implements Commands {
 					if (user.getActiveChannel().canExecuteBasicCommands(user)) {
 						PermissionUser toMute = PermissionUser.matchUserAllowPartial(args[1]);
 						if (toMute == null) {
-							user.sendMessage(ChatColor.RED + "That user couldn't be found!");
+							user.sendMessage(BenCmd.getLocale().getString("basic.userNotFound", args[1]));
 							return;
 						}
 						if (!user.getActiveChannel().canExecuteAllCommands(user) && user.getActiveChannel().getLevel(user).getLevel() <= user.getActiveChannel().getLevel(toMute).getLevel()) {
@@ -229,7 +229,7 @@ public class ChatChannelCommands implements Commands {
 						}
 						user.getActiveChannel().setRole(toMute.getName(), ChatLevel.MUTED);
 					} else {
-						user.sendMessage(ChatColor.RED + "You must be a channel moderator to do that!");
+						user.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
 					}
 				} else {
 					user.sendMessage(ChatColor.RED + "You're not in a channel!");
@@ -243,7 +243,7 @@ public class ChatChannelCommands implements Commands {
 					if (user.getActiveChannel().canExecuteBasicCommands(user)) {
 						PermissionUser toNormal = PermissionUser.matchUserAllowPartial(args[1]);
 						if (toNormal == null) {
-							user.sendMessage(ChatColor.RED + "That user couldn't be found!");
+							user.sendMessage(BenCmd.getLocale().getString("basic.userNotFound", args[1]));
 							return;
 						}
 						if (!user.getActiveChannel().canExecuteAllCommands(user) && user.getActiveChannel().getLevel(user).getLevel() <= user.getActiveChannel().getLevel(toNormal).getLevel()) {
@@ -252,7 +252,7 @@ public class ChatChannelCommands implements Commands {
 						}
 						user.getActiveChannel().setRole(toNormal.getName(), ChatLevel.NORMAL);
 					} else {
-						user.sendMessage(ChatColor.RED + "You must be a channel moderator to do that!");
+						user.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
 					}
 				} else {
 					user.sendMessage(ChatColor.RED + "You're not in a channel!");
@@ -266,7 +266,7 @@ public class ChatChannelCommands implements Commands {
 					if (user.getActiveChannel().canExecuteAdvancedCommands(user)) {
 						PermissionUser toVip = PermissionUser.matchUserAllowPartial(args[1]);
 						if (toVip == null) {
-							user.sendMessage(ChatColor.RED + "That user couldn't be found!");
+							user.sendMessage(BenCmd.getLocale().getString("basic.userNotFound", args[1]));
 							return;
 						}
 						if (!user.getActiveChannel().canExecuteAllCommands(user) && user.getActiveChannel().getLevel(user).getLevel() <= user.getActiveChannel().getLevel(toVip).getLevel()) {
@@ -275,7 +275,7 @@ public class ChatChannelCommands implements Commands {
 						}
 						user.getActiveChannel().setRole(toVip.getName(), ChatLevel.VIP);
 					} else {
-						user.sendMessage(ChatColor.RED + "You must be a channel owner/co-owner to do that!");
+						user.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
 					}
 				} else {
 					user.sendMessage(ChatColor.RED + "You're not in a channel!");
@@ -289,7 +289,7 @@ public class ChatChannelCommands implements Commands {
 					if (user.getActiveChannel().canExecuteAdvancedCommands(user)) {
 						PermissionUser toMod = PermissionUser.matchUserAllowPartial(args[1]);
 						if (toMod == null) {
-							user.sendMessage(ChatColor.RED + "That user couldn't be found!");
+							user.sendMessage(BenCmd.getLocale().getString("basic.userNotFound", args[1]));
 							return;
 						}
 						if (!user.getActiveChannel().canExecuteAllCommands(user) && user.getActiveChannel().getLevel(user).getLevel() <= user.getActiveChannel().getLevel(toMod).getLevel()) {
@@ -298,7 +298,7 @@ public class ChatChannelCommands implements Commands {
 						}
 						user.getActiveChannel().setRole(toMod.getName(), ChatLevel.MOD);
 					} else {
-						user.sendMessage(ChatColor.RED + "You must be a channel owner/co-owner to do that!");
+						user.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
 					}
 				} else {
 					user.sendMessage(ChatColor.RED + "You're not in a channel!");
@@ -312,7 +312,7 @@ public class ChatChannelCommands implements Commands {
 					if (user.getActiveChannel().canExecuteAllCommands(user)) {
 						PermissionUser toOwn = PermissionUser.matchUserAllowPartial(args[1]);
 						if (toOwn == null) {
-							user.sendMessage(ChatColor.RED + "That user couldn't be found!");
+							user.sendMessage(BenCmd.getLocale().getString("basic.userNotFound", args[1]));
 							return;
 						}
 						user.getActiveChannel().setRole(toOwn.getName(), ChatLevel.COOWNER);
@@ -331,12 +331,12 @@ public class ChatChannelCommands implements Commands {
 					if (user.getActiveChannel().canExecuteAllCommands(user)) {
 						PermissionUser toOwn = PermissionUser.matchUserAllowPartial(args[1]);
 						if (toOwn == null) {
-							user.sendMessage(ChatColor.RED + "That user couldn't be found!");
+							user.sendMessage(BenCmd.getLocale().getString("basic.userNotFound", args[1]));
 							return;
 						}
 						user.getActiveChannel().setRole(toOwn.getName(), ChatLevel.OWNER);
 					} else {
-						user.sendMessage(ChatColor.RED + "You must be the channel owner to do that!");
+						user.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
 					}
 				} else {
 					user.sendMessage(ChatColor.RED + "You're not in a channel!");
@@ -361,7 +361,7 @@ public class ChatChannelCommands implements Commands {
 							user.getActiveChannel().enableSlow(millis);
 						}
 					} else {
-						user.sendMessage(ChatColor.RED + "You must be a channel moderator to do that!");
+						user.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
 					}
 				} else {
 					user.sendMessage(ChatColor.RED + "You're not in a channel!");
@@ -375,7 +375,7 @@ public class ChatChannelCommands implements Commands {
 					if (user.getActiveChannel().canExecuteBasicCommands(user)) {
 						user.getActiveChannel().togglePaused();
 					} else {
-						user.sendMessage(ChatColor.RED + "You must be a channel moderator to do that!");
+						user.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
 					}
 				} else {
 					user.sendMessage(ChatColor.RED + "You're not in a channel!");
@@ -397,7 +397,7 @@ public class ChatChannelCommands implements Commands {
 						}
 						user.getActiveChannel().setMotd(motd);
 					} else {
-						user.sendMessage(ChatColor.RED + "You must be a channel owner/co-owner to do that!");
+						user.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
 					}
 				} else {
 					user.sendMessage(ChatColor.RED + "You're not in a channel!");
@@ -422,7 +422,7 @@ public class ChatChannelCommands implements Commands {
 						}
 						user.getActiveChannel().setDefaultLevel(def);
 					} else {
-						user.sendMessage(ChatColor.RED + "You must be a channel owner/co-owner to do that!");
+						user.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
 					}
 				} else {
 					user.sendMessage(ChatColor.RED + "You're not in a channel!");
@@ -436,7 +436,7 @@ public class ChatChannelCommands implements Commands {
 					if (user.getActiveChannel().canExecuteAllCommands(user)) {
 						user.getActiveChannel().setName(args[1]);
 					} else {
-						user.sendMessage(ChatColor.RED + "You must be the channel owner to do that!");
+						user.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
 					}
 				} else {
 					user.sendMessage(ChatColor.RED + "You're not in a channel!");
@@ -459,7 +459,7 @@ public class ChatChannelCommands implements Commands {
 						}
 						user.getActiveChannel().setDefaultSlowEnabled(alwaysSlow);
 					} else {
-						user.sendMessage(ChatColor.RED + "You must be a channel owner/co-owner to do that!");
+						user.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
 					}
 				} else {
 					user.sendMessage(ChatColor.RED + "You're not in a channel!");

@@ -31,7 +31,7 @@ public class RecordCommands implements Commands {
 			// TODO Add usage
 		} else if (args[0].equalsIgnoreCase("wand")) {
 			if (!user.hasPerm("bencmd.log.wand")) {
-				user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
+				user.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
 				BenCmd.getPlugin().logPermFail();
 				return;
 			}
@@ -126,7 +126,7 @@ public class RecordCommands implements Commands {
 			}
 		} else if (args[0].equalsIgnoreCase("save")) {
 			if (!user.hasPerm("bencmd.record.copy")) {
-				user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
+				user.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
 				BenCmd.getPlugin().logPermFail();
 				return;
 			}
@@ -142,7 +142,7 @@ public class RecordCommands implements Commands {
 			}
 		} else if (args[0].equalsIgnoreCase("copy")) {
 			if (!user.hasPerm("bencmd.record.copy")) {
-				user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
+				user.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
 				BenCmd.getPlugin().logPermFail();
 				return;
 			}
@@ -166,7 +166,7 @@ public class RecordCommands implements Commands {
 			}
 		} else if (args[0].equalsIgnoreCase("start")) {
 			if (!user.hasPerm("bencmd.record.new")) {
-				user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
+				user.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
 				BenCmd.getPlugin().logPermFail();
 				return;
 			}
@@ -186,7 +186,7 @@ public class RecordCommands implements Commands {
 			}
 		} else if (args[0].equalsIgnoreCase("delete")) {
 			if (!user.hasPerm("bencmd.record.delete")) {
-				user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
+				user.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
 				BenCmd.getPlugin().logPermFail();
 				return;
 			}

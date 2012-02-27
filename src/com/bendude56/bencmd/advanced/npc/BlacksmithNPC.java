@@ -3,7 +3,6 @@ package com.bendude56.bencmd.advanced.npc;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -306,30 +305,30 @@ public class BlacksmithNPC extends NPC implements Clickable {
 					if (c == -1.0) {
 						toolPrices.get(tm).remove(t);
 						BenCmd.getNPCFile().saveNPC(this);
-						p.sendMessage(ChatColor.GREEN + "That tool can no longer be repaired!");
+						p.sendMessage(BenCmd.getLocale().getString("npc.blacksmith.remToolRepair"));
 					} else {
 						toolPrices.get(tm).put(t, c);
 						BenCmd.getNPCFile().saveNPC(this);
-						p.sendMessage(ChatColor.GREEN + "That tool's price has been updated!");
+						p.sendMessage(BenCmd.getLocale().getString("npc.blacksmith.updateToolRepair"));
 					}
 				} else {
 					if (c == -1.0) {
-						p.sendMessage(ChatColor.RED + "That tool is not set as repairable...");
+						p.sendMessage(BenCmd.getLocale().getString("npc.blacksmith.noToolRepair"));
 					} else {
 						toolPrices.get(tm).put(t, c);
 						BenCmd.getNPCFile().saveNPC(this);
-						p.sendMessage(ChatColor.GREEN + "That tool can now be repaired!");
+						p.sendMessage(BenCmd.getLocale().getString("npc.blacksmith.addToolRepair"));
 					}
 				}
 			} else {
 				if (c == -1.0) {
-					p.sendMessage(ChatColor.RED + "That tool is not set as repairable...");
+					p.sendMessage(BenCmd.getLocale().getString("npc.blacksmith.noToolRepair"));
 				} else {
 					HashMap<ToolType, Double> toPut = new HashMap<ToolType, Double>();
 					toPut.put(t, c);
 					toolPrices.put(tm, toPut);
 					BenCmd.getNPCFile().saveNPC(this);
-					p.sendMessage(ChatColor.GREEN + "That tool can now be repaired!");
+					p.sendMessage(BenCmd.getLocale().getString("npc.blacksmith.addToolRepair"));
 				}
 			}
 			return;
@@ -343,62 +342,62 @@ public class BlacksmithNPC extends NPC implements Clickable {
 					if (c == -1.0) {
 						armorPrices.get(am).remove(t);
 						BenCmd.getNPCFile().saveNPC(this);
-						p.sendMessage(ChatColor.GREEN + "That armor can no longer be repaired!");
+						p.sendMessage(BenCmd.getLocale().getString("npc.blacksmith.remArmorRepair"));
 					} else {
 						armorPrices.get(am).put(t, c);
 						BenCmd.getNPCFile().saveNPC(this);
-						p.sendMessage(ChatColor.GREEN + "That armor's price has been updated!");
+						p.sendMessage(BenCmd.getLocale().getString("npc.blacksmith.updateArmorRepair"));
 					}
 				} else {
 					if (c == -1.0) {
-						p.sendMessage(ChatColor.RED + "That armor is not set as repairable...");
+						p.sendMessage(BenCmd.getLocale().getString("npc.blacksmith.noArmorRepair"));
 					} else {
 						armorPrices.get(am).put(t, c);
 						BenCmd.getNPCFile().saveNPC(this);
-						p.sendMessage(ChatColor.GREEN + "That armor can now be repaired!");
+						p.sendMessage(BenCmd.getLocale().getString("npc.blacksmith.addArmorRepair"));
 					}
 				}
 			} else {
 				if (c == -1.0) {
-					p.sendMessage(ChatColor.RED + "That armor is not set as repairable...");
+					p.sendMessage(BenCmd.getLocale().getString("npc.blacksmith.noArmorRepair"));
 				} else {
 					HashMap<ArmorType, Double> toPut = new HashMap<ArmorType, Double>();
 					toPut.put(t, c);
 					armorPrices.put(am, toPut);
 					BenCmd.getNPCFile().saveNPC(this);
-					p.sendMessage(ChatColor.GREEN + "That armor can now be repaired!");
+					p.sendMessage(BenCmd.getLocale().getString("npc.blacksmith.addArmorRepair"));
 				}
 			}
 			return;
 		}
-		p.sendMessage(ChatColor.RED + "That item cannot be repaired!");
+		p.sendMessage(BenCmd.getLocale().getString("npc.blacksmith.invalidItem"));
 	}
 
 	@Override
 	public void onRightClick(Player p) {
 		if (p.getItemInHand() == null) {
-			p.sendMessage(ChatColor.RED + "Right-click with a tool or armor in your hand to have it repaired.");
+			p.sendMessage(BenCmd.getLocale().getString("npc.blacksmith.help"));
 			return;
 		}
 		int id = p.getItemInHand().getTypeId();
 		if (ToolMaterial.getMaterial(id) == ToolMaterial.NOTATOOL && ArmorMaterial.getMaterial(id) == ArmorMaterial.NOTARMOR) {
-			p.sendMessage(ChatColor.RED + "Right-click with a tool or armor in your hand to have it repaired.");
+			p.sendMessage(BenCmd.getLocale().getString("npc.blacksmith.help"));
 			return;
 		}
 		if (canRepair(id)) {
 			if (getRepairPrice(id) == -1.0) {
-				p.sendMessage(ChatColor.RED + "This blacksmith can't repair that item!");
+				p.sendMessage(BenCmd.getLocale().getString("npc.blacksmith.cannotRepair"));
 			} else if (p.getItemInHand().getDurability() == 0) {
-				p.sendMessage(ChatColor.RED + "That item cannot be repaired further!");
+				p.sendMessage(BenCmd.getLocale().getString("npc.blacksmith.fullRepair"));
 			} else if (BuyableItem.hasMoney(User.getUser(p), getRepairPrice(id), new ArrayList<Material>())) {
 				BuyableItem.remMoney(User.getUser(p), getRepairPrice(id), new ArrayList<Material>());
 				p.getItemInHand().setDurability((short) 0);
-				p.sendMessage(ChatColor.GREEN + "That item has been repaired!");
+				p.sendMessage(BenCmd.getLocale().getString("npc.blacksmith.repairSuccess"));
 			} else {
-				p.sendMessage(ChatColor.RED + "You must have at least " + getRepairPrice(id) + " worth of currency to repair that item!");
+				p.sendMessage(BenCmd.getLocale().getString("basic.insufficientMoney", getRepairPrice(id) + ""));
 			}
 		} else {
-			p.sendMessage(ChatColor.RED + "This blacksmith can't repair that item!");
+			p.sendMessage(BenCmd.getLocale().getString("npc.blacksmith.cannotRepair"));
 		}
 	}
 

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -37,32 +36,32 @@ public class BankCommands implements Commands {
 			if (!BenCmd.getBankController().hasBank(user.getName())) {
 				BenCmd.getBankController().addBank(new BankInventory(user.getName()));
 			}
-			BenCmd.log(user.getName() + " has opened their bank!");
+			BenCmd.log(BenCmd.getLocale().getString("log.bank.openSelf", user.getName()));
 			BenCmd.getBankController().openInventory(((Player) user.getHandle()));
 		} else if (args.length == 1) {
 			if (args[0].equalsIgnoreCase("upgrade")) {
 				if (BenCmd.getBankController().getBank(user.getName()).isUpgraded()) {
-					user.sendMessage(ChatColor.RED + "Your bank has already been upgraded!");
+					user.sendMessage(BenCmd.getLocale().getString("command.bank.selfAlreadyUpgraded"));
 				} else {
 					if (user.hasPerm("bencmd.bank.admin")) {
-						BenCmd.log(user.getName() + " has upgraded their bank!");
+						BenCmd.log(BenCmd.getLocale().getString("log.bank.upgradeSelf", user.getName()));
 						BenCmd.getBankController().upgradeBank(user.getName());
-						user.sendMessage(ChatColor.GREEN + "Enjoy the extra bank space!");
+						user.sendMessage(BenCmd.getLocale().getString("command.bank.selfUpgrade"));
 					} else {
 						if (BuyableItem.hasMoney(user, BenCmd.getMainProperties().getDouble("bankUpgradeCost", 4096), new ArrayList<Material>())) {
 							BuyableItem.remMoney(user, BenCmd.getMainProperties().getDouble("bankUpgradeCost", 4096), new ArrayList<Material>());
 							BenCmd.getBankController().upgradeBank(user.getName());
-							BenCmd.log(user.getName() + " has upgraded their bank!");
-							user.sendMessage(ChatColor.GREEN + "Enjoy the extra bank space!");
+							BenCmd.log(BenCmd.getLocale().getString("log.bank.upgradeSelf", user.getName()));
+							user.sendMessage(BenCmd.getLocale().getString("command.bank.selfUpgrade"));
 						} else {
-							user.sendMessage(ChatColor.RED + "You need at least " + BenCmd.getMainProperties().getDouble("bankUpgradeCost", 4096) + " worth of currency to upgrade your bank!");
+							user.sendMessage(BenCmd.getLocale().getString("basic.insufficientMoney", BenCmd.getMainProperties().getDouble("bankUpgradeCost", 4096) + ""));
 						}
 					}
 				}
 			} else if (args[0].equalsIgnoreCase("downgrade")) {
 				if (BenCmd.getBankController().getBank(user.getName()).isUpgraded()) {
 					if (!BenCmd.getBankController().canDowngradeBank(user.getName())) {
-						user.sendMessage(ChatColor.RED + "The bottom half of your bank must be empty in order to proceed!");
+						user.sendMessage(BenCmd.getLocale().getString("command.bank.selfCannotDowngrade"));
 						return;
 					}
 					BenCmd.getBankController().downgradeBank(user.getName());
@@ -82,72 +81,70 @@ public class BankCommands implements Commands {
 							}
 						}
 					}
-					BenCmd.log(user.getName() + " has downgraded their bank!");
-					user.sendMessage(ChatColor.GREEN + "Your bank has been downgraded successfully!");
+					BenCmd.log(BenCmd.getLocale().getString("log.bank.downgradeSelf", user.getName()));
+					user.sendMessage(BenCmd.getLocale().getString("command.bank.selfDowngrade"));
 				} else {
-					user.sendMessage(ChatColor.RED + "Your bank isn't upgraded!");
+					user.sendMessage(BenCmd.getLocale().getString("command.bank.selfAlreadyDowngraded"));
 				}
 			} else {
 				if (!user.hasPerm("bencmd.bank.admin")) {
-					user.sendMessage(ChatColor.RED + "You need to be an admin to do that!");
-					BenCmd.getPlugin().logPermFail();
+					BenCmd.getPlugin().logPermFail(user, "bank", args, true);
 					return;
 				}
 				PermissionUser u = PermissionUser.matchUserAllowPartial(args[0]);
 				if (!BenCmd.getBankController().hasBank(u.getName())) {
-					user.sendMessage(ChatColor.RED + "That player doesn't have a bank account!");
+					user.sendMessage(BenCmd.getLocale().getString("command.bank.otherNoBank"));
 					return;
 				}
 				if (u.hasPerm("bencmd.bank.protect") && !user.hasPerm("bencmd.bank.all")) {
-					user.sendMessage(ChatColor.RED + "That player's bank is protected!");
+					user.sendMessage(BenCmd.getLocale().getString("command.bank.protected", u.getName()));
 					return;
 				}
-				BenCmd.log(user.getName() + " has opened " + u.getName() + "'s bank!");
+				BenCmd.log(BenCmd.getLocale().getString("log.bank.openOther", user.getName(), u.getName()));
 				BenCmd.getBankController().openInventory(u.getName(), ((Player) user.getHandle()));
 			}
 		} else if (args.length == 2) {
 			if (!user.hasPerm("bencmd.bank.admin")) {
-				user.sendMessage(ChatColor.RED + "You need to be an admin to do that!");
-				BenCmd.getPlugin().logPermFail();
+				BenCmd.getPlugin().logPermFail(user, "bank", args, true);
 				return;
 			}
 			PermissionUser u = PermissionUser.matchUserAllowPartial(args[0]);
 			if (!BenCmd.getBankController().hasBank(u.getName())) {
-				user.sendMessage(ChatColor.RED + "That player doesn't have a bank account!");
+				user.sendMessage(BenCmd.getLocale().getString("command.bank.otherNoBank"));
 				return;
 			}
 			if (u.hasPerm("bencmd.bank.protect") && !user.hasPerm("bencmd.bank.all")) {
-				user.sendMessage(ChatColor.RED + "That player's bank is protected!");
+				user.sendMessage(BenCmd.getLocale().getString("command.bank.protected", u.getName()));
 				return;
 			}
 			if (args[1].equalsIgnoreCase("upgrade")) {
 				if (BenCmd.getBankController().getBank(u.getName()).isUpgraded()) {
-					user.sendMessage(ChatColor.RED + "That player's bank is already upgraded!");
+					user.sendMessage(BenCmd.getLocale().getString("command.bank.otherAlreadyUpgraded", u.getName()));
 				} else {
 					BenCmd.getBankController().upgradeBank(u.getName());
-					BenCmd.log(user.getName() + " has upgraded " + u.getName() + "'s bank!");
-					user.sendMessage(ChatColor.GREEN + "That player's bank has been upgraded!");
+					BenCmd.log(BenCmd.getLocale().getString("log.bank.upgradeOther", user.getName(), u.getName()));
+					user.sendMessage(BenCmd.getLocale().getString("command.bank.otherUpgrade", u.getName()));
 				}
 			} else if (args[1].equalsIgnoreCase("downgrade")) {
 				if (BenCmd.getBankController().getBank(u.getName()).isUpgraded()) {
 					if (!BenCmd.getBankController().canDowngradeBank(u.getName())) {
-						user.sendMessage(ChatColor.RED + "The bottom half of that player's bank must be empty in order to proceed!");
+						user.sendMessage(BenCmd.getLocale().getString("command.bank.otherCannotDowngrade", u.getName()));
 						return;
 					}
-					BenCmd.log(user.getName() + " has downgraded " + u.getName() + "'s bank!");
 					BenCmd.getBankController().downgradeBank(u.getName());
-					user.sendMessage(ChatColor.GREEN + "That player's bank has been downgraded successfully!");
+					BenCmd.log(BenCmd.getLocale().getString("log.bank.downgradeOther", user.getName(), u.getName()));
+					user.sendMessage(BenCmd.getLocale().getString("command.bank.otherDowngrade", u.getName()));
 				} else {
-					user.sendMessage(ChatColor.RED + "That player's bank isn't upgraded!");
+					user.sendMessage(BenCmd.getLocale().getString("command.bank.otherAlreadyDowngraded", u.getName()));
 				}
 			} else {
-				user.sendMessage(ChatColor.YELLOW + "Proper usage: /bank [{upgrade|downgrade|<name> [{upgrade|downgrade}]}]");
+				BenCmd.showUse(user, "bank.admin");
 			}
 		} else {
 			if (user.hasPerm("bencmd.bank.admin")) {
-				user.sendMessage(ChatColor.YELLOW + "Proper usage: /bank [{upgrade|downgrade|<name> [{upgrade|downgrade}]}]");
+				BenCmd.showUse(user, "bank.admin");
 			} else {
-				user.sendMessage(ChatColor.YELLOW + "Proper usage: /bank [{upgrade|downgrade}]");
+				BenCmd.showUse(user, "bank.normal");
 			}
 		}
 	}

@@ -35,7 +35,7 @@ public class ReportCommands implements Commands {
 
 	public void Report(String[] args, User user) {
 		if (user.isServer()) {
-			user.sendMessage(ChatColor.RED + "The server cannot do that!");
+			user.sendMessage(BenCmd.getLocale().getString("basic.noServerUse"));
 			return;
 		}
 		if (args.length < 2) {
@@ -44,7 +44,7 @@ public class ReportCommands implements Commands {
 		}
 		PermissionUser reported = PermissionUser.matchUserAllowPartial(args[0]);
 		if (reported == null) {
-			user.sendMessage(ChatColor.RED + "That user doesn't exist!");
+			user.sendMessage(BenCmd.getLocale().getString("basic.userNotFound", args[0]));
 			return;
 		}
 		String reason = "";

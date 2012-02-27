@@ -11,6 +11,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -91,8 +92,6 @@ public class BasicCommands implements Commands {
 				} else {
 					BenCmd.log(args[0]);
 				}
-			} else {
-				user.sendMessage(ChatColor.RED + "No, you cannot spam the server console, smart one!");
 			}
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("spawn") && user.hasPerm("bencmd.spawn.normal")) {
@@ -136,7 +135,7 @@ public class BasicCommands implements Commands {
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("rechunk")) {
 			if (user.isServer()) {
-				user.sendMessage(ChatColor.RED + "The server cannot do that!");
+				user.sendMessage(BenCmd.getLocale().getString("basic.noServerUse"));
 				return true;
 			}
 			Chunk chunk = ((Player) user.getHandle()).getWorld().getChunkAt(((Player) user.getHandle()).getLocation());
@@ -148,7 +147,7 @@ public class BasicCommands implements Commands {
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("fire") && user.hasPerm("bencmd.fire.spread")) {
 			if (user.isServer()) {
-				user.sendMessage(ChatColor.RED + "The server cannot do that!");
+				user.sendMessage(BenCmd.getLocale().getString("basic.noServerUse"));
 				return true;
 			}
 			Location loc = ((Player) user.getHandle()).getTargetBlock(null, 4).getLocation();
@@ -157,7 +156,7 @@ public class BasicCommands implements Commands {
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("nofire") && user.hasPerm("bencmd.fire.spread")) {
 			if (user.isServer()) {
-				user.sendMessage(ChatColor.RED + "The server cannot do that!");
+				user.sendMessage(BenCmd.getLocale().getString("basic.noServerUse"));
 				return true;
 			}
 			BenCmd.getPlugin().canSpread.clear();
@@ -192,8 +191,8 @@ public class BasicCommands implements Commands {
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("debug")) {
 			if (!user.isDev() && !user.isServer()) {
-				user.sendMessage(ChatColor.RED + "That command is reserved for BenCmd developers only!");
-				BenCmd.getPlugin().logPermFail();
+				user.sendMessage(BenCmd.getLocale().getString("basic.devOnly"));
+				BenCmd.getPlugin().logPermFail(user, "debug", args, false);
 				return true;
 			}
 			if (args.length == 0 || args[0].equalsIgnoreCase("ver")) {
@@ -237,38 +236,39 @@ public class BasicCommands implements Commands {
 	public void Kill(String[] args, User user) {
 		if (args.length == 0) {
 			if (!user.kill()) {
-				user.sendMessage(ChatColor.RED + "You can't kill yourself while you're godded!");
+				user.sendMessage(BenCmd.getLocale().getString("command.kill.selfGod"));
 			}
 		} else if (args.length == 1) {
 			if (!user.hasPerm("bencmd.kill.other")) {
-				user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
-				BenCmd.getPlugin().logPermFail();
+				BenCmd.getPlugin().logPermFail(user, "kill", args, true);
 				return;
 			}
 			User user2;
 			if ((user2 = User.matchUserAllowPartial(args[0])) != null) {
 				if (user2.hasPerm("bencmd.kill.protect") && !user.hasPerm("bencmd.kill.all")) {
-					user.sendMessage(ChatColor.RED + "That player is protected from being killed!");
+					user.sendMessage(BenCmd.getLocale().getString("command.kill.protected", user2.getName()));
 					return;
 				}
 				if (!user2.kill()) {
-					user.sendMessage(ChatColor.RED + "You can't kill someone while they're godded!");
+					user.sendMessage(BenCmd.getLocale().getString("command.kill.otherGod", user2.getName()));
 				}
 			} else {
-				user.sendMessage(ChatColor.RED + "That user doesn't exist!");
+				user.sendMessage(BenCmd.getLocale().getString("basic.userNotFound", args[0]));
 			}
+		} else {
+			BenCmd.showUse(user, "kill");
 		}
 	}
 
 	public void Time(String[] args, User user) {
 		if (args.length == 0) {
-			user.sendMessage(ChatColor.YELLOW + "Proper use is /time {day|night|set|lock} [time]");
+			BenCmd.showUse(user, "time");
 		} else {
 			World w = null;
 			if ((args[0].equals("set") && args.length == 3) || (!args[0].equals("set") && args.length == 2)) {
 				w = Bukkit.getWorld((args[0].equals("set")) ? args[2] : args[1]);
 				if (w == null) {
-					user.sendMessage(ChatColor.RED + "There is no world by the name of '" + ((args[0].equals("set")) ? args[2] : args[1]) + "'!");
+					user.sendMessage(BenCmd.getLocale().getString("basic.worldNotFound", (args[0].equals("set")) ? args[2] : args[1]));
 					return;
 				}
 			}
@@ -278,15 +278,14 @@ public class BasicCommands implements Commands {
 				Bukkit.dispatchCommand(user.getHandle(), "time set " + TIME_NIGHT + ((w == null) ? "" : " " + w.getName()));
 			} else if (args[0].equalsIgnoreCase("set")) {
 				if (!user.hasPerm("bencmd.time.set")) {
-					user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
-					BenCmd.getPlugin().logPermFail();
+					BenCmd.getPlugin().logPermFail(user, "time", args, true);
 					return;
 				}
 				int time;
 				try {
 					time = Integer.parseInt(args[1]);
 				} catch (NumberFormatException e) {
-					user.sendMessage(ChatColor.RED + "Invalid time.");
+					user.sendMessage(BenCmd.getLocale().getString("command.time.invalidTime"));
 					return;
 				}
 				if (user.isServer() && w == null) {
@@ -294,12 +293,15 @@ public class BasicCommands implements Commands {
 						world.setTime(time);
 						BenCmd.getTimeManager().syncLastTime(world);
 					}
+					user.sendMessage(BenCmd.getLocale().getString("command.time.setAllSuccess", time + ""));
 				} else if (w == null) {
 					((Player) user.getHandle()).getWorld().setTime(time);
 					BenCmd.getTimeManager().syncLastTime(((Player) user.getHandle()).getWorld());
+					user.sendMessage(BenCmd.getLocale().getString("command.time.setSuccess", ((Player) user.getHandle()).getWorld().getName(), time + ""));
 				} else {
 					w.setTime(time);
 					BenCmd.getTimeManager().syncLastTime(w);
+					user.sendMessage(BenCmd.getLocale().getString("command.time.setSuccess", w.getName(), time + ""));
 				}
 			} else if (args[0].equalsIgnoreCase("dawn")) {
 				Bukkit.dispatchCommand(user.getHandle(), "time set " + TIME_DAWN + ((w == null) ? "" : " " + w.getName()));
@@ -315,57 +317,57 @@ public class BasicCommands implements Commands {
 				Bukkit.dispatchCommand(user.getHandle(), "time set " + TIME_MIDNIGHT + ((w == null) ? "" : " " + w.getName()));
 			} else if (args[0].equalsIgnoreCase("lock")) {
 				if (!user.hasPerm("bencmd.time.lock")) {
-					user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
-					BenCmd.getPlugin().logPermFail();
+					BenCmd.getPlugin().logPermFail(user, "time", args, true);
 					return;
 				}
 				if (user.isServer() && w == null) {
 					for (World world : Bukkit.getWorlds()) {
 						BenCmd.getTimeManager().setFrozen(world, true);
 					}
-					Bukkit.broadcastMessage(ChatColor.BLUE + "Server has frozen time!");
+					Bukkit.broadcastMessage(BenCmd.getLocale().getString("command.time.lockAll"));
 				} else if (w == null) {
 					w = ((Player) user.getHandle()).getWorld();
 					BenCmd.getTimeManager().setFrozen(w, true);
 					for (Player p : w.getPlayers()) {
-						p.sendMessage(ChatColor.BLUE + user.getDisplayName() + " has frozen time!");
+						p.sendMessage(BenCmd.getLocale().getString("command.time.lock", w.getName()));
 					}
 				} else {
 					BenCmd.getTimeManager().setFrozen(w, true);
 					for (Player p : w.getPlayers()) {
-						p.sendMessage(ChatColor.BLUE + user.getDisplayName() + " has frozen time!");
+						p.sendMessage(BenCmd.getLocale().getString("command.time.lock", w.getName()));
 					}
 				}
 			} else if (args[0].equalsIgnoreCase("unlock")) {
 				if (!user.hasPerm("bencmd.time.lock")) {
-					user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
-					BenCmd.getPlugin().logPermFail();
+					BenCmd.getPlugin().logPermFail(user, "time", args, true);
 					return;
 				}
 				if (user.isServer() && w == null) {
 					for (World world : Bukkit.getWorlds()) {
 						BenCmd.getTimeManager().setFrozen(world, false);
 					}
-					Bukkit.broadcastMessage(ChatColor.BLUE + "Server has unfrozen time!");
+					Bukkit.broadcastMessage(BenCmd.getLocale().getString("command.time.unlockAll"));
 				} else if (w == null) {
 					w = ((Player) user.getHandle()).getWorld();
 					BenCmd.getTimeManager().setFrozen(w, false);
 					for (Player p : w.getPlayers()) {
-						p.sendMessage(ChatColor.BLUE + user.getDisplayName() + " has unfrozen time!");
+						p.sendMessage(BenCmd.getLocale().getString("command.time.unlock", w.getName()));
 					}
 				} else {
 					BenCmd.getTimeManager().setFrozen(w, false);
 					for (Player p : w.getPlayers()) {
-						p.sendMessage(ChatColor.BLUE + user.getDisplayName() + " has unfrozen time!");
+						p.sendMessage(BenCmd.getLocale().getString("command.time.unlock", w.getName()));
 					}
 				}
+			} else {
+				BenCmd.showUse(user, "time");
 			}
 		}
 	}
 
 	public void Spawn(String[] args, User user) {
 		if (user.isServer()) {
-			user.sendMessage(ChatColor.RED + "The server cannot do that!");
+			user.sendMessage(BenCmd.getLocale().getString("basic.noServerUse"));
 			return;
 		}
 		String spawnworld;
@@ -380,72 +382,71 @@ public class BasicCommands implements Commands {
 	public void God(String[] args, User user) {
 		if (args.length == 0) {
 			if (user.isServer()) {
-				user.sendMessage(ChatColor.YELLOW + "Proper use is /god [player]");
+				BenCmd.showUse(user, "god");
 				return;
 			}
 			if (user.isGod()) {
 				user.makeNonGod();
-				user.sendMessage(ChatColor.GOLD + "You are no longer in god mode!");
-				BenCmd.log("BenCmd: " + user.getDisplayName() + " has been made a non-god by " + user.getDisplayName() + "!");
+				user.sendMessage(BenCmd.getLocale().getString("command.god.selfOff"));
+				BenCmd.log(Level.INFO, BenCmd.getLocale().getString("log.god.selfOff", user.getName()));
 			} else {
 				user.makeGod();
-				user.sendMessage(ChatColor.GOLD + "You are now in god mode!");
-				BenCmd.log("BenCmd: " + user.getDisplayName() + " has been made a god by " + user.getDisplayName() + "!");
+				user.sendMessage(BenCmd.getLocale().getString("command.god.selfOn"));
+				BenCmd.log(Level.INFO, BenCmd.getLocale().getString("log.god.selfOn", user.getName()));
 			}
 		} else if (args.length == 1) {
 			if (!user.hasPerm("bencmd.god.other")) {
-				user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
-				BenCmd.getPlugin().logPermFail();
+				BenCmd.getPlugin().logPermFail(user, "god", args, true);
 				return;
 			}
 			User user2;
 			if ((user2 = User.matchUserAllowPartial(args[0])) != null) {
 				if (user2.hasPerm("bencmd.god.protect") && !user.hasPerm("bencmd.god.all")) {
-					user.sendMessage(ChatColor.RED + "That player is protected from being godded/ungodded by others!");
+					user.sendMessage(BenCmd.getLocale().getString("command.god.protected"));
+					BenCmd.getPlugin().logPermFail(user, "god", args, false);
 					return;
 				}
 				if (user2.isGod()) {
 					user2.makeNonGod();
-					user2.sendMessage(ChatColor.GOLD + "You are no longer in god mode!");
-					user.sendMessage(ChatColor.GOLD + "You have un-godded " + user2.getColor() + user2.getDisplayName());
-					BenCmd.log("BenCmd: " + user2.getDisplayName() + " has been made a non-god by " + user.getDisplayName() + "!");
+					user.sendMessage(BenCmd.getLocale().getString("command.god.selfOff"));
+					user.sendMessage(BenCmd.getLocale().getString("command.god.otherOff", user2.getName()));
+					BenCmd.log(Level.INFO, BenCmd.getLocale().getString("log.god.otherOff", user.getName(), user2.getName()));
 				} else {
 					user2.makeGod();
-					user2.sendMessage(ChatColor.GOLD + "You are now in god mode!");
-					user.sendMessage(ChatColor.GOLD + "You have godded " + user2.getColor() + user2.getDisplayName());
-					BenCmd.log("BenCmd: " + user2.getDisplayName() + " has been made a god by " + user.getDisplayName() + "!");
+					user.sendMessage(BenCmd.getLocale().getString("command.god.selfOn"));
+					user.sendMessage(BenCmd.getLocale().getString("command.god.otherOn", user2.getName()));
+					BenCmd.log(Level.INFO, BenCmd.getLocale().getString("log.god.otherOn", user.getName(), user2.getName()));
 				}
 			}
 		} else {
-			user.sendMessage(ChatColor.YELLOW + "Proper use is /god [player]");
+			BenCmd.showUse(user, "god");
 		}
 	}
 
 	public void Heal(String[] args, User user) {
 		if (args.length == 0) {
 			if (user.isServer()) {
-				user.sendMessage(ChatColor.YELLOW + "Proper use is /heal [player]");
+				BenCmd.showUse(user, "heal");
 				return;
 			}
 			// Heal the player
 			user.heal();
-			user.sendMessage(ChatColor.GREEN + "You have been healed.");
-			BenCmd.log("BenCmd: " + user.getDisplayName() + " has been healed by " + user.getDisplayName());
+			user.sendMessage(BenCmd.getLocale().getString("command.heal.self"));
+			BenCmd.log(BenCmd.getLocale().getString("log.heal.self", user.getName()));
 		} else {
 			if (!user.hasPerm("bencmd.heal.other") && !(args[0].equalsIgnoreCase(user.getDisplayName()) && user.hasPerm("bencmd.heal.self"))) {
-				user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
-				BenCmd.getPlugin().logPermFail();
+				BenCmd.getPlugin().logPermFail(user, "heal", args, true);
 				return;
 			}
 			// Heal the other player
 			User user2;
 			if ((user2 = User.matchUserAllowPartial(args[0])) != null) {
 				user2.heal();
-				user2.sendMessage(ChatColor.GREEN + "You have been healed.");
-				user.sendMessage(ChatColor.GREEN + "You have healed " + user2.getColor() + user2.getDisplayName());
-				BenCmd.log("BenCmd: " + user2.getDisplayName() + " has been healed by " + user.getDisplayName());
+				user2.sendMessage(BenCmd.getLocale().getString("command.heal.self"));
+				user.sendMessage(BenCmd.getLocale().getString("command.heal.other", user2.getName()));
+				BenCmd.log(BenCmd.getLocale().getString("log.heal.self", user.getName()));
 			} else {
-				user.sendMessage(ChatColor.RED + args[0] + " doesn't exist or is not online.");
+				user.sendMessage(BenCmd.getLocale().getString("basic.userNotFound", args[0]));
 			}
 		}
 	}
@@ -453,109 +454,111 @@ public class BasicCommands implements Commands {
 	public void Feed(String[] args, User user) {
 		if (args.length == 0) {
 			if (user.isServer()) {
-				user.sendMessage(ChatColor.YELLOW + "Proper use is /feed [player]");
+				BenCmd.showUse(user, "feed");
 				return;
 			}
 			// Feed the player
 			user.feed();
-			user.sendMessage(ChatColor.GREEN + "You have been fed.");
-			BenCmd.log("BenCmd: " + user.getDisplayName() + " has been fed by " + user.getDisplayName());
+			user.sendMessage(BenCmd.getLocale().getString("command.feed.self"));
+			BenCmd.log(BenCmd.getLocale().getString("log.feed.self", user.getName()));
 		} else {
 			if (!user.hasPerm("bencmd.feed.other") && !(args[0].equalsIgnoreCase(user.getDisplayName()) && user.hasPerm("bencmd.feed.self"))) {
-				user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
-				BenCmd.getPlugin().logPermFail();
+				BenCmd.getPlugin().logPermFail(user, "feed", args, true);
 				return;
 			}
 			// Feed the other player
 			User user2;
 			if ((user2 = User.matchUserAllowPartial(args[0])) != null) {
 				user2.feed();
-				user2.sendMessage(ChatColor.GREEN + "You have been fed.");
-				user.sendMessage(ChatColor.GREEN + "You have fed" + user2.getColor() + user2.getDisplayName());
-				BenCmd.log("BenCmd: " + user2.getDisplayName() + " has been healed by " + user.getDisplayName());
+				user2.sendMessage(BenCmd.getLocale().getString("command.feed.self"));
+				user.sendMessage(BenCmd.getLocale().getString("command.feed.other", user2.getName()));
+				BenCmd.log(BenCmd.getLocale().getString("log.feed.other", user.getName(), user2.getName()));
 			} else {
-				user.sendMessage(ChatColor.RED + args[0] + " doens't exist or is not online.");
+				user.sendMessage(BenCmd.getLocale().getString("basic.userNotFound", args[0]));
 			}
 		}
 	}
 	
 	public void Level(String[] args, User user) {
 		if (args.length == 0) {
-			user.sendMessage(ChatColor.YELLOW + "Proper use is /level <integer> [player]");
-			return;
-		}
-		if (args.length == 1) {
+			BenCmd.showUse(user, "level");
+		} else if (args.length == 1) {
 			if (user.isServer()) {
-				user.sendMessage("You cannot set the server's experience level!");
+				user.sendMessage(BenCmd.getLocale().getString("basic.noServerUse"));
 				return;
 			}
 			if (!user.hasPerm("bencmd.experience.self")) {
-				user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
+				BenCmd.getPlugin().logPermFail(user, "level", args, true);
 				return;
 			}
 			try {
 				((Player) user.getHandle()).setTotalExperience(Integer.parseInt(args[0]));
-				user.sendMessage(ChatColor.GREEN + "Your experience level has been set to " + args[0]);
+				user.sendMessage(BenCmd.getLocale().getString("command.level.self", args[0]));
+				BenCmd.log(BenCmd.getLocale().getString("log.level.self", args[0]));
 				return;
 			} catch (NumberFormatException e) {
-				user.sendMessage(ChatColor.RED + args[0] + " is not an integer!");
+				user.sendMessage(BenCmd.getLocale().getString("command.level.invalidExp"));
 				return;
 			}
-		} else if (user.hasPerm("bencmd.experience.other")) {
-			if (Bukkit.getPlayer(args[1]) == null) {
-				user.sendMessage(ChatColor.RED + args[1] + " does not exist!");
+		} else if (args.length == 2) {
+			if (!user.hasPerm("bencmd.experience.other")) {
+				BenCmd.getPlugin().logPermFail(user, "level", args, true);
+				return;
+			}
+			User user2;
+			if ((user2 = User.matchUserAllowPartial(args[1])) == null) {
+				user.sendMessage(BenCmd.getLocale().getString("basic.userNotFound", args[1]));
 				return;
 			}
 			try {
-				Bukkit.getPlayerExact(args[1]).setLevel(Integer.parseInt(args[0]));
-				user.sendMessage(ChatColor.GREEN + args[1] + "'s experience has been set to " + args[1]);
+				((Player) user2.getHandle()).setLevel(Integer.parseInt(args[0]));
+				user2.sendMessage(BenCmd.getLocale().getString("command.level.self", args[0]));
+				user.sendMessage(BenCmd.getLocale().getString("command.level.other", user2.getName(), args[0]));
+				BenCmd.log(BenCmd.getLocale().getString("log.level.other", user.getName(), user2.getName(), args[0]));
 				return;
 			} catch (NumberFormatException e) {
-				user.sendMessage(ChatColor.RED + args[0] + " is not an integer!");
+				user.sendMessage(BenCmd.getLocale().getString("command.level.invalidExp"));
 				return;
 			}
 		} else {
-			user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
-			return;
+			BenCmd.showUse(user, "level");
 		}
 	}
 
 	public void BenCmd(String[] args, User user) {
 		if (args.length == 0 || args[0].equalsIgnoreCase("version")) {
 			PluginDescriptionFile pdfFile = BenCmd.getPlugin().getDescription();
-			user.sendMessage(ChatColor.YELLOW + "This server is running " + pdfFile.getName() + " version " + pdfFile.getVersion() + ".");
+			user.sendMessage(BenCmd.getLocale().getString("command.bencmd.version", pdfFile.getVersion()));
 			return;
-		}
-		if ((args[0].equalsIgnoreCase("reload") || args[0].equalsIgnoreCase("rel")) && user.hasPerm("bencmd.reload")) {
+		} else if ((args[0].equalsIgnoreCase("reload") || args[0].equalsIgnoreCase("rel")) && user.hasPerm("bencmd.reload")) {
 			BenCmd.unloadAll(true);
 			BenCmd.loadAll();
-			user.sendMessage(ChatColor.GREEN + "BenCmd Config Successfully reloaded!");
-			BenCmd.log(Level.WARNING, user.getDisplayName() + " has reloaded the BenCmd configuration.");
+			user.sendMessage(BenCmd.getLocale().getString("command.bencmd.reloadSuccess"));
+			BenCmd.log(Level.WARNING, BenCmd.getLocale().getString("log.bencmd.reload", user.getName()));
 		} else if (args[0].equalsIgnoreCase("update") && user.hasPerm("bencmd.update")) {
+			BenCmd.log(Level.WARNING, BenCmd.getLocale().getString("log.bencmd.update", user.getName()));
 			if (!BenCmd.getPlugin().update(false)) {
-				user.sendMessage(ChatColor.RED + "BenCmd is up to date... Use /bencmd fupdate to force an update...");
+				user.sendMessage(BenCmd.getLocale().getString("command.bencmd.noUpdates"));
 			}
 		} else if (args[0].equalsIgnoreCase("fupdate") && user.hasPerm("bencmd.update")) {
+			BenCmd.log(Level.WARNING, BenCmd.getLocale().getString("log.bencmd.fupdate", user.getName()));
 			BenCmd.getPlugin().update(true);
-		} else if (args[0].equalsIgnoreCase("disable") && user.hasPerm("bencmd.disable")) {
-			Bukkit.broadcastMessage(ChatColor.RED + "BenCmd is being temporarily disabled for maintenance...");
-			Bukkit.broadcastMessage(ChatColor.RED + "Some commands may cease to function until it is restarted...");
-			Bukkit.getPluginManager().disablePlugin(BenCmd.getPlugin());
 		}
 	}
 
 	public void SetSpawn(User user) {
 		if (user.isServer()) {
-			user.sendMessage(ChatColor.RED + "The server cannot do that!");
+			user.sendMessage(BenCmd.getLocale().getString("basic.noServerUse"));
 			return;
 		}
 		Location newSpawn = ((Player) user.getHandle()).getLocation();
-		user.sendMessage(ChatColor.GREEN + "The spawn location has been set!");
-		BenCmd.log(user.getDisplayName() + " has set the spawn location to (" + newSpawn.getBlockX() + ", " + newSpawn.getBlockY() + ", " + newSpawn.getBlockZ() + ")");
+		user.sendMessage(BenCmd.getLocale().getString("command.setspawn.setSuccess", newSpawn.getWorld().getName()));
+		BenCmd.log(BenCmd.getLocale().getString("log.setspawn.set", user.getName(), newSpawn.getWorld().getName(), newSpawn.getBlockX() + "", newSpawn.getBlockY() + "", newSpawn.getBlockZ() + ""));
 		((Player) user.getHandle()).getWorld().setSpawnLocation(newSpawn.getBlockX(), newSpawn.getBlockY(), newSpawn.getBlockZ());
 	}
 
 	public void Help(String[] args, User user) {
+		// TODO Add localization to /help command
 		int pageToShow;
 		if (args.length == 0) {
 			pageToShow = 1;
@@ -602,11 +605,11 @@ public class BasicCommands implements Commands {
 
 	public void SpawnMob(String[] args, User user) {
 		if (user.isServer()) {
-			user.sendMessage(ChatColor.RED + "The server cannot do that!");
+			user.sendMessage(BenCmd.getLocale().getString("basic.noServerUse"));
 			return;
 		}
 		if (args.length != 1 && args.length != 2) {
-			user.sendMessage(ChatColor.YELLOW + "Proper use is /spawnmob <Mob Name> [Amount]");
+			BenCmd.showUse(user, "spawnmob");
 			return;
 		}
 		int amount = 1;
@@ -614,7 +617,7 @@ public class BasicCommands implements Commands {
 			try {
 				amount = Integer.parseInt(args[1]);
 			} catch (NumberFormatException e) {
-				user.sendMessage(ChatColor.RED + args[1] + " cannot be converted into a number!");
+				user.sendMessage(BenCmd.getLocale().getString("command.spawnmob.invalidAmount"));
 				return;
 			}
 		}
@@ -624,16 +627,19 @@ public class BasicCommands implements Commands {
 		// Prepare for passengers
 		String[] passengers = args[0].split(",");
 		LivingEntity vehicle = null, passenger, mob;
-		CreatureType mobType;
+		CreatureType mobType = CreatureType.COW;
+		
+		Location l = ((Player) user.getHandle()).getLocation();
 
 		// Spawn the mob(s)
+		// TODO HERE BE DRAGONS!!
 		for (int i = 0; i < amount; i++) {
 			vehicle = null;
 			for (int p = 0; p < passengers.length; p++) {
 				mobType = getMobType(passengers[p].split(":")[0]);
 				
 				if (mobType != null) {
-					mob = ((Player) user.getHandle()).getWorld().spawnCreature(((Player) user.getHandle()).getLocation(), mobType);
+					mob = l.getWorld().spawnCreature(l, mobType);
 					if (mobType == CreatureType.CREEPER) {
 						if (passengers[p].equalsIgnoreCase("supercreeper") || passengers[p].equalsIgnoreCase("chargedcreeper")) {
 							((Creeper) mob).setPowered(true);
@@ -705,37 +711,40 @@ public class BasicCommands implements Commands {
 				}
 			}
 		}
-		user.sendMessage(ChatColor.GREEN + "" + mobCounter + " mobs spawned!");
+		user.sendMessage(BenCmd.getLocale().getString("command.spawnmob.spawnMsg", mobCounter + ""));
+		BenCmd.log(BenCmd.getLocale().getString("log.spawnmob.spawnMsg", user.getName(), amount + "", mobType.getName(), l.getX() + "", l.getY() + "", l.getX() + "", l.getWorld().getName()));
 	}
 
 	public void Spawner(String args[], User user) {
 		if (user.isServer()) {
-			user.sendMessage(ChatColor.RED + "The server cannot do that!");
+			user.sendMessage(BenCmd.getLocale().getString("basic.noServerUse"));
 			return;
 		}
 		Player player = ((Player) user.getHandle());
-		if (player.getTargetBlock(null, 4).getType().equals(Material.MOB_SPAWNER)) {
+		Block b = player.getTargetBlock(null, 4);
+		if (b.getType().equals(Material.MOB_SPAWNER)) {
 			if (args.length!= 1) {
 				user.sendMessage(ChatColor.RED + "Proper use is /spawner <creature>");
 				return;
 			}
 			CreatureType mob = getMobType(args[0]);
 			if (mob == null) {
-				user.sendMessage(ChatColor.RED + "Invalid mob type!");
+				user.sendMessage(BenCmd.getLocale().getString("command.spawner.invalidMob"));
 				return;
 			}
-			((CreatureSpawner) player.getTargetBlock(null, 4).getState()).setCreatureType(mob);
-			user.sendMessage(ChatColor.GREEN + "This spawner now spawns " + mob.name() + "s.");
+			((CreatureSpawner) b).setCreatureType(mob);
+			user.sendMessage(BenCmd.getLocale().getString("command.spawner.setSuccess", mob.getName()));
+			BenCmd.log(BenCmd.getLocale().getString("log.spawner.set", user.getName(), b.getX() + "", b.getY() + "", b.getZ() + "", b.getWorld().getName(), mob.getName()));
 			return; 
 		} else {
-			user.sendMessage(ChatColor.RED + "That is not a spawner! Make sure nothing is in the way!");
+			user.sendMessage(BenCmd.getLocale().getString("command.spawner.invalidSpawner"));
 			return;
 		}
 	}
 
-	public void KillEntities(String args[], User user) {
+	public void KillEntities(String args[], User user) {		
 		if (user.isServer()) {
-			user.sendMessage(ChatColor.RED + "The server cannot do that!");
+			user.sendMessage(BenCmd.getLocale().getString("basic.noServerUse"));
 			return;
 		}
 		// Tally up the mobs
@@ -744,8 +753,10 @@ public class BasicCommands implements Commands {
 		boolean killmobs = false;
 		boolean killHostile = false;
 		CreatureType mobToKill = CreatureType.PIG;
+		
+		// TODO HERE BE DRAGONS!!
 		if (args.length == 0) {
-			user.sendMessage(ChatColor.RED + "Proper use is /killmobs <mob> ... <range>");
+			BenCmd.showUse(user, "killmobs");
 			return;
 		} else if (args.length == 1) {
 			if (getMobType(args[0]) == null) {
@@ -754,7 +765,7 @@ public class BasicCommands implements Commands {
 				} else if (args[0].equalsIgnoreCase("all")) {
 					killmobs = true;
 				} else {
-					user.sendMessage(ChatColor.RED + "Proper use is /killmobs <mob> ... <range>");
+					BenCmd.showUse(user, "killmobs");
 					return;
 				}
 			}
@@ -805,10 +816,10 @@ public class BasicCommands implements Commands {
 			}
 		}
 		if (mobCounter == 0) {
-			user.sendMessage(ChatColor.RED + "No mobs were killed.");
+			user.sendMessage(BenCmd.getLocale().getString("command.killmobs.noMobs"));
 		} else {
-			user.sendMessage(ChatColor.GREEN + "" + mobCounter + " mobs were killed!");
-			BenCmd.log(Level.INFO, user.getName() + " killed " + mobCounter + " mobs in world " + ((Player) user.getHandle()).getWorld().getName() + ".");
+			user.sendMessage(BenCmd.getLocale().getString("command.killmobs.success", mobCounter + ""));
+			BenCmd.log(BenCmd.getLocale().getString("log.killmobs.success", user.getName(), mobCounter + "", ((Player) user.getHandle()).getWorld().getName()));
 		}
 	}
 
@@ -885,42 +896,41 @@ public class BasicCommands implements Commands {
 	public void Cr(String[] args, User user) {
 		if (args.length == 0) {
 			if (user.isServer()) {
-				user.sendMessage(ChatColor.RED + "The server cannot do that!");
+				user.sendMessage(BenCmd.getLocale().getString("basic.noServerUse"));
 				return;
 			}
 			if (((Player) user.getHandle()).getGameMode() == GameMode.CREATIVE) {
 				((Player) user.getHandle()).setGameMode(GameMode.SURVIVAL);
-				user.sendMessage(ChatColor.GREEN + "You are now in survival mode!");
-				BenCmd.log(user.getName() + " has left creative mode");
+				user.sendMessage(BenCmd.getLocale().getString("command.cr.selfOff"));
+				BenCmd.log(BenCmd.getLocale().getString("log.cr.selfOff", user.getName()));
 			} else {
 				((Player) user.getHandle()).setGameMode(GameMode.CREATIVE);
-				user.sendMessage(ChatColor.GREEN + "You are now in creative mode!");
-				BenCmd.log(user.getName() + " has entered creative mode!");
+				user.sendMessage(BenCmd.getLocale().getString("command.cr.selfOn"));
+				BenCmd.log(BenCmd.getLocale().getString("log.cr.selfOn", user.getName()));
 			}
 		} else if (args.length == 1) {
 			if (!user.hasPerm("bencmd.creative.other")) {
-				user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
-				BenCmd.getPlugin().logPermFail();
+				BenCmd.getPlugin().logPermFail(user, "cr", args, true);
 				return;
 			}
 			User u = User.matchUser(args[0]);
 			if (u == null) {
-				user.sendMessage(ChatColor.RED + args[0] + " isn't online right now!");
+				user.sendMessage(BenCmd.getLocale().getString("basic.userNotFound", args[0]));
 				return;
 			}
-			if (((Player) user.getHandle()).getGameMode() == GameMode.CREATIVE) {
-				((Player) user.getHandle()).setGameMode(GameMode.SURVIVAL);
-				u.sendMessage(ChatColor.GREEN + "You are now in survival mode!");
-				user.sendMessage(ChatColor.GREEN + "That user is now in survival mode!");
-				BenCmd.log(u.getName() + " has left creative mode (" + user.getName() + ")");
+			if (((Player) u.getHandle()).getGameMode() == GameMode.CREATIVE) {
+				((Player) u.getHandle()).setGameMode(GameMode.SURVIVAL);
+				u.sendMessage(BenCmd.getLocale().getString("command.cr.selfOff"));
+				user.sendMessage(BenCmd.getLocale().getString("command.cr.otherOff", u.getName()));
+				BenCmd.log(BenCmd.getLocale().getString("log.cr.otherOff", user.getName(), u.getName()));
 			} else {
-				((Player) user.getHandle()).setGameMode(GameMode.CREATIVE);
-				u.sendMessage(ChatColor.GREEN + "You are now in creative mode!");
-				user.sendMessage(ChatColor.GREEN + "That user is now in creative mode!");
-				BenCmd.log(u.getName() + " has entered creative mode (" + user.getName() + ")");
+				((Player) u.getHandle()).setGameMode(GameMode.CREATIVE);
+				u.sendMessage(BenCmd.getLocale().getString("command.cr.selfOn"));
+				user.sendMessage(BenCmd.getLocale().getString("command.cr.otherOn", u.getName()));
+				BenCmd.log(BenCmd.getLocale().getString("log.cr.otherOn", user.getName(), u.getName()));
 			}
 		} else {
-			user.sendMessage(ChatColor.YELLOW + "Proper use: /cr [player]");
+			BenCmd.showUse(user, "cr");
 		}
 	}
 

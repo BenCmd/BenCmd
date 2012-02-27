@@ -61,7 +61,7 @@ public class ProtectedCommands implements Commands {
 
 	public void Protect(String[] args, User user) {
 		if (user.isServer()) {
-			user.sendMessage(ChatColor.RED + "The server cannot do that!");
+			user.sendMessage(BenCmd.getLocale().getString("basic.noServerUse"));
 			return;
 		}
 		if (args.length == 0) {
@@ -139,7 +139,7 @@ public class ProtectedCommands implements Commands {
 		if ((id = BenCmd.getProtections().getProtection(l.getLocation())) != -1) {
 			ProtectedBlock block = BenCmd.getProtections().getProtection(id);
 			if (!block.canChange(u.getName()) && !u.hasPerm("bencmd.lock.remove")) {
-				u.sendMessage(ChatColor.RED + "You don't have permission to remove the protection on that block!");
+				u.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
 				return false;
 			} else {
 				ProtectionRemoveEvent event = new ProtectionRemoveEvent(block, u);
@@ -203,7 +203,7 @@ public class ProtectedCommands implements Commands {
 
 	public void AddProtect(String[] args, User user) {
 		if (!user.hasPerm("bencmd.lock.create")) {
-			user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
+			user.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
 			BenCmd.getPlugin().logPermFail();
 			return;
 		}
@@ -215,7 +215,7 @@ public class ProtectedCommands implements Commands {
 			if (p != null) {
 				this.Lock(pointedAt, user, p, false);
 			} else {
-				user.sendMessage(ChatColor.RED + "That user doesn't exist!");
+				user.sendMessage(BenCmd.getLocale().getString("basic.userNotFound", args[1]));
 			}
 		} else {
 			user.sendMessage(ChatColor.YELLOW + "Proper use is /protect add [owner]");
@@ -224,7 +224,7 @@ public class ProtectedCommands implements Commands {
 
 	public void PublicProtect(String[] args, User user) {
 		if (!user.hasPerm("bencmd.lock.public")) {
-			user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
+			user.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
 			BenCmd.getPlugin().logPermFail();
 			return;
 		}
@@ -236,7 +236,7 @@ public class ProtectedCommands implements Commands {
 			if (p != null) {
 				this.Lock(pointedAt, user, p, true);
 			} else {
-				user.sendMessage(ChatColor.RED + "That user doesn't exist!");
+				user.sendMessage(BenCmd.getLocale().getString("basic.userNotFound", args[1]));
 			}
 		} else {
 			user.sendMessage(ChatColor.YELLOW + "Proper use is /protect protect [owner]");
@@ -268,7 +268,7 @@ public class ProtectedCommands implements Commands {
 
 	public void InfoProtect(String[] args, User user) {
 		if (!user.hasPerm("bencmd.lock.info")) {
-			user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
+			user.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
 			BenCmd.getPlugin().logPermFail();
 			return;
 		}
@@ -299,12 +299,12 @@ public class ProtectedCommands implements Commands {
 		if (args.length == 2) {
 			if ((block = BenCmd.getProtections().getProtection(BenCmd.getProtections().getProtection(pointedAt.getLocation()))) != null) {
 				if (!block.canChange(user.getName()) && !user.hasPerm("bencmd.lock.edit")) {
-					user.sendMessage(ChatColor.RED + "You don't have permission to edit the protection on that block!");
+					user.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
 					return;
 				}
 				PermissionUser newOwner;
 				if ((newOwner = PermissionUser.matchUserAllowPartial(args[1])) == null) {
-					user.sendMessage(ChatColor.RED + "That player doesn't exist!");
+					user.sendMessage(BenCmd.getLocale().getString("basic.userNotFound", args[1]));
 					return;
 				}
 				ProtectionEditEvent event = new ProtectionEditEvent(block, user, ChangeType.SET_OWNER, newOwner);
@@ -328,12 +328,12 @@ public class ProtectedCommands implements Commands {
 			}
 			block = BenCmd.getProtections().getProtection(id);
 			if (!block.canChange(user.getName()) && !user.hasPerm("bencmd.lock.edit")) {
-				user.sendMessage(ChatColor.RED + "You don't have permission to edit the protection on that block!");
+				user.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
 				return;
 			}
 			PermissionUser newOwner;
-			if ((newOwner = PermissionUser.matchUserAllowPartial(args[0])) == null) {
-				user.sendMessage(ChatColor.RED + "That player doesn't exist!");
+			if ((newOwner = PermissionUser.matchUserAllowPartial(args[1])) == null) {
+				user.sendMessage(BenCmd.getLocale().getString("basic.userNotFound", args[1]));
 				return;
 			}
 			ProtectionEditEvent event = new ProtectionEditEvent(block, user, ChangeType.SET_OWNER, newOwner);
@@ -355,12 +355,12 @@ public class ProtectedCommands implements Commands {
 		if (args.length == 2) {
 			if ((block = BenCmd.getProtections().getProtection(BenCmd.getProtections().getProtection(pointedAt.getLocation()))) != null) {
 				if (!block.canChange(user.getName()) && !user.hasPerm("bencmd.lock.edit")) {
-					user.sendMessage(ChatColor.RED + "You don't have permission to edit the protection on that block!");
+					user.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
 					return;
 				}
 				PermissionUser newOwner;
 				if ((newOwner = PermissionUser.matchUserAllowPartial(args[1])) == null) {
-					user.sendMessage(ChatColor.RED + "That player doesn't exist!");
+					user.sendMessage(BenCmd.getLocale().getString("basic.userNotFound", args[1]));
 					return;
 				}
 				ProtectionEditEvent event = new ProtectionEditEvent(block, user, ChangeType.ADD_GUEST, newOwner);
@@ -385,13 +385,13 @@ public class ProtectedCommands implements Commands {
 			}
 			if ((block = BenCmd.getProtections().getProtection(id)) != null) {
 				if (!block.canChange(user.getName()) && !user.hasPerm("bencmd.lock.edit")) {
-					user.sendMessage(ChatColor.RED + "You don't have permission to edit the protection on that block!");
+					user.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
 					return;
 				}
 				block = BenCmd.getProtections().getProtection(id);
 				PermissionUser newOwner;
-				if ((newOwner = PermissionUser.matchUserAllowPartial(args[0])) == null) {
-					user.sendMessage(ChatColor.RED + "That player doesn't exist!");
+				if ((newOwner = PermissionUser.matchUserAllowPartial(args[1])) == null) {
+					user.sendMessage(BenCmd.getLocale().getString("basic.userNotFound", args[1]));
 					return;
 				}
 				ProtectionEditEvent event = new ProtectionEditEvent(block, user, ChangeType.ADD_GUEST, newOwner);
@@ -414,12 +414,12 @@ public class ProtectedCommands implements Commands {
 		if (args.length == 2) {
 			if ((block = BenCmd.getProtections().getProtection(BenCmd.getProtections().getProtection(pointedAt.getLocation()))) != null) {
 				if (!block.canChange(user.getName()) && !user.hasPerm("bencmd.lock.edit")) {
-					user.sendMessage(ChatColor.RED + "You don't have permission to edit the protection on that block!");
+					user.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
 					return;
 				}
 				PermissionUser newOwner;
 				if ((newOwner = PermissionUser.matchUserAllowPartial(args[1])) == null) {
-					user.sendMessage(ChatColor.RED + "That player doesn't exist!");
+					user.sendMessage(BenCmd.getLocale().getString("basic.userNotFound", args[1]));
 					return;
 				}
 				ProtectionEditEvent event = new ProtectionEditEvent(block, user, ChangeType.REMOVE_GUEST, newOwner);
@@ -443,12 +443,12 @@ public class ProtectedCommands implements Commands {
 			}
 			if ((block = BenCmd.getProtections().getProtection(id)) != null) {
 				if (!block.canChange(user.getName()) && !user.hasPerm("bencmd.lock.edit")) {
-					user.sendMessage(ChatColor.RED + "You don't have permission to edit the protection on that block!");
+					user.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
 					return;
 				}
 				PermissionUser newOwner;
-				if ((newOwner = PermissionUser.matchUserAllowPartial(args[0])) == null) {
-					user.sendMessage(ChatColor.RED + "That player doesn't exist!");
+				if ((newOwner = PermissionUser.matchUserAllowPartial(args[1])) == null) {
+					user.sendMessage(BenCmd.getLocale().getString("basic.userNotFound", args[1]));
 					return;
 				}
 				ProtectionEditEvent event = new ProtectionEditEvent(block, user, ChangeType.REMOVE_GUEST, newOwner);

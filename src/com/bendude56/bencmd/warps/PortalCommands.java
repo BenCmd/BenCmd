@@ -64,7 +64,7 @@ public class PortalCommands implements Commands {
 				try {
 					group = BenCmd.getPermissionManager().getGroupFile().getGroup(args[1]);
 				} catch (NullPointerException e) {
-					user.sendMessage(ChatColor.RED + "That group doesn't exist!");
+					user.sendMessage(BenCmd.getLocale().getString("basic.groupNotFound", args[1]));
 					return;
 				}
 			}

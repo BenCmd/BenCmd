@@ -76,7 +76,6 @@ import com.bendude56.bencmd.weather.WeatherCommands;
 import com.sk89q.bukkit.migration.PermissionsProvider;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -125,6 +124,7 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 	private static RecordingFile			record;
 	private static MonitorController		monitor;
 	private static MultiworldController		worlds;
+	private static LocalizationHandler		locale;
 
 	public static MainPermissions getPermissionManager() {
 		return pManager;
@@ -256,6 +256,10 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 	public static MultiworldController getWorlds() {
 		return worlds;
 	}
+	
+	public static LocalizationHandler getLocale() {
+		return locale;
+	}
 
 	public static void log(Exception e) {
 		Logger.getLogger("Minecraft").log(Level.SEVERE, e.getMessage(), e);
@@ -265,6 +269,11 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 	public static void log(Level l, String message) {
 		Logger.getLogger("Minecraft").log(l, "[BenCmd] " + message);
 		Logger.getLogger("Minecraft.BenCmd").log(l, message);
+	}
+	
+	public static void showUse(User user, String command) {
+		user.sendMessage(getLocale().getString("basic.use"));
+		user.sendMessage(getLocale().getString("command." + command + ".use"));
 	}
 
 	public static void log(String message) {
@@ -418,6 +427,7 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 		time = new TimeManager();
 		monitor = new MonitorController();
 		worlds = new MultiworldController();
+		locale = new LocalizationHandler(main.getProperty("defaultLocale", "en-US"));
 	}
 
 	protected static void unloadAll(boolean save) {
@@ -476,6 +486,7 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 		record = null;
 		monitor = null;
 		worlds = null;
+		locale = null;
 	}
 
 	// END STATIC FILE METHODS
@@ -487,7 +498,7 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 	public static String		devLoc			= "";
 	public static String		stableLoc		= "";
 	public static boolean		updateAvailable	= false;
-	public static String[]		devs;
+	public static String[]		devs = new String[0];
 	public final static String	propDir			= "plugins/BenCmd/";
 	public final String[]		files			= { "action.db", "bank.db", "channels.db", "chest.db", "usage.db", "disp.db", "groups.db", "homes.db", "itembw.db", "items.txt", "kits.db", "lever.db", "lots.db", "main.properties", "npc.db", "portals.db", "prices.db", "protection.db", "shelves.db", "sparea.db", "tickets.db", "users.db", "warps.db" };
 
@@ -496,9 +507,27 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 	private Logger				bLog			= Logger.getLogger("Minecraft.BenCmd");
 	public FileHandler			fh;
 	public Calendar				clog;
-
+	
+	@Deprecated
 	public void logPermFail() {
 		incStat("permFail");
+	}
+	
+	public void logPermFail(User user, String commandLabel, String[] args, boolean showMessage) {
+		String fullCommand = commandLabel;
+		for (String arg : args) {
+			fullCommand += " " + arg;
+		}
+		logPermFail(user, fullCommand, showMessage);
+	}
+
+	public void logPermFail(User user, String fullCommand, boolean showMessage) {
+		incStat("permFail");
+		log(Level.INFO, getLocale().getString("log.basic.permissionFail", user.getName(), fullCommand));
+		Location l = ((Player) user.getHandle()).getLocation();
+		log(Level.INFO, getLocale().getString("log.basic.permissionFailLocation", l.getX() + "", l.getY() + "", l.getZ() + "", l.getWorld().getName()));
+		if (showMessage)
+			user.sendMessage(getLocale().getString("basic.noPermission"));
 	}
 
 	public void incStat(String statName) {
@@ -642,7 +671,7 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 			return;
 		}
 		BenCmd.log("Retreiving dev list... Please wait...");
-		try {
+		/*try {
 			URL devlistloc = new URL("http://cloud.github.com/downloads/BenCmd/BenCmd/devlist.txt");
 			BufferedReader r = new BufferedReader(new InputStreamReader((InputStream) devlistloc.getContent()));
 			String l;
@@ -657,14 +686,14 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 		} catch (Exception e) {
 			BenCmd.log(Level.WARNING, "Failed to retreive dev list! (Will assume default)");
 			devs = new String[] { "ben_dude56", "Deaboy" };
-		}
+		}*/
 		// Check for existing players (on reload) and add them to the maxPlayers
 		// class and join them to the general channel
 		for (Player player : this.getServer().getOnlinePlayers()) {
 			User user;
 			JoinType jt = BenCmd.getPermissionManager().getMaxPlayerHandler().join(user = User.getUser(player));
 			if (jt == JoinType.NO_SLOT_NORMAL || jt == JoinType.NO_SLOT_RESERVED) {
-				user.kick("The server ran out of player slots when reloading... :(");
+				user.kick(locale.getString("kick.reloadFull"));
 			}
 			if (BenCmd.isSpoutConnected() && BenCmd.getSpoutConnector().enabled(player)) {
 				for (NPC n : BenCmd.getNPCFile().allNPCs()) {
@@ -733,9 +762,9 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 		if (!checkForUpdates() && !force) {
 			return false;
 		}
-		getServer().broadcastMessage(ChatColor.RED + "BenCmd is updating... Some features may reset after it is updated...");
-		BenCmd.log("BenCmd update in progress...");
-		BenCmd.log("Opening connection...");
+		getServer().broadcastMessage(getLocale().getString("basic.updateInProgress"));
+		BenCmd.log(getLocale().getString("log.update.start"));
+		BenCmd.log(getLocale().getString("log.update.openConnection"));
 		try {
 			URL loc;
 			if (BenCmd.getMainProperties().getBoolean("downloadDevUpdates", false)) {
@@ -751,10 +780,10 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 			getServer().reload();
 			return true;
 		} catch (Exception e) {
-			BenCmd.log(Level.SEVERE, "Failed to download update:");
+			BenCmd.log(Level.SEVERE, getLocale().getString("log.update.failLine1"));
 			BenCmd.log(e);
-			BenCmd.log(Level.SEVERE, "BenCmd may be in an unstable state! You are advised to try downloading BenCmd manually...");
-			getServer().broadcastMessage(ChatColor.RED + "BenCmd failed to update properly! Some features may cease to function...");
+			BenCmd.log(Level.SEVERE, getLocale().getString("log.update.failLine2"));
+			getServer().broadcastMessage(getLocale().getString("basic.updateFail"));
 			return false;
 		}
 	}
@@ -763,12 +792,12 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 		if (updateAvailable) {
 			return true; // Skip the version check
 		}
-		BenCmd.log("Checking for BenCmd updates...");
+		BenCmd.log(Level.INFO, getLocale().getString("log.update.check"));
 		URL u;
 		try {
 			u = new URL(verLoc);
 		} catch (MalformedURLException e) {
-			BenCmd.log(Level.SEVERE, "Could not process download URL... Maybe your copy of BenCmd is corrupted?");
+			BenCmd.log(Level.SEVERE, getLocale().getString("log.update.badUrl"));
 			return false;
 		}
 		int stableBuild = 0;
@@ -786,37 +815,32 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 						devLoc = l.split(":", 2)[1];
 					} else if (l.startsWith("lstable:")) {
 						stableLoc = l.split(":", 2)[1];
-					} else {
-						BenCmd.log(Level.WARNING, "Failed to get info from line: ");
-						BenCmd.log(Level.WARNING, l);
 					}
 				} catch (NumberFormatException e) {
-					BenCmd.log(Level.WARNING, "Failed to get info from line: ");
-					BenCmd.log(Level.WARNING, l);
 				}
 			}
 		} catch (IOException e) {
-			BenCmd.log(Level.SEVERE, "BenCmd failed to check for updates:");
+			BenCmd.log(Level.SEVERE, getLocale().getString("log.update.checkFail"));
 			BenCmd.log(e);
 		}
 		if (BenCmd.getMainProperties().getBoolean("downloadDevUpdates", false)) {
 			if (buildId < devBuild) {
-				BenCmd.log("A new BenCmd update is available! Use \"bencmd update\" to update your server...");
+				BenCmd.log(getLocale().getString("log.update.nag"));
 				for (User user : BenCmd.getPermissionManager().getUserFile().allWithPerm("bencmd.update")) {
-					user.sendMessage(ChatColor.RED + "A new BenCmd update was detected! Use \"/bencmd update\" to update your server...");
+					user.sendMessage(getLocale().getString("basic.updateNag"));
 				}
 				return true;
 			}
 		} else {
 			if (buildId < stableBuild) {
-				BenCmd.log("A new BenCmd update is available! Use \"bencmd update\" to update your server...");
+				BenCmd.log(getLocale().getString("log.update.nag"));
 				for (User user : BenCmd.getPermissionManager().getUserFile().allWithPerm("bencmd.update")) {
-					user.sendMessage(ChatColor.RED + "A new BenCmd update was detected! Use \"/bencmd update\" to update your server...");
+					user.sendMessage(getLocale().getString("basic.updateNag"));
 				}
 				return true;
 			}
 		}
-		BenCmd.log("BenCmd is up to date!");
+		BenCmd.log(getLocale().getString("log.update.upToDate"));
 		return false;
 	}
 
@@ -934,8 +958,7 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 			 return true;
 		} else {
 			User user = User.getUser(sender);
-			user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
-			this.logPermFail();
+			this.logPermFail(user, commandLabel, args, true);
 			return true;
 		}
 	}

@@ -414,7 +414,7 @@ public class BenCmdPlayerListener implements Listener, EventExecutor {
 			}
 			if (!user.hasPerm("bencmd.spawnmob")) {
 				event.setCancelled(true);
-				event.getPlayer().sendMessage(ChatColor.RED + "You do not have permission to do that!");
+				event.getPlayer().sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
 			}
 		}
 	}
@@ -925,68 +925,6 @@ public class BenCmdPlayerListener implements Listener, EventExecutor {
 				BenCmd.getRecordingFile().logEvent(e);
 			}
 		}
-	}
-
-	// Split-off events
-
-	public void onPlayerChat(PlayerChatEvent event) {
-		
-	}
-
-	public void onPlayerJoin(PlayerJoinEvent event) {
-		
-	}
-
-	public void onPlayerQuit(PlayerQuitEvent event) {
-		
-	}
-
-	public void onPlayerKick(PlayerKickEvent event) {
-		
-	}
-
-	public void onPlayerInteract(PlayerInteractEvent event) {
-		
-	}
-
-	public void onPlayerBucketEmpty(PlayerBucketEmptyEvent event) {
-		
-	}
-
-	public void onPlayerBucketFill(PlayerBucketFillEvent event) {
-		
-	}
-
-	public void onPlayerRespawn(PlayerRespawnEvent event) {
-		
-	}
-
-	public void onPlayerMove(PlayerMoveEvent event) {
-		
-	}
-
-	public void onPlayerPortal(PlayerPortalEvent event) {
-		
-	}
-
-	public void onPlayerTeleport(PlayerTeleportEvent event) {
-		
-	}
-
-	public void onPlayerLogin(PlayerLoginEvent event) {
-		
-	}
-
-	public void onPlayerPickupItem(PlayerPickupItemEvent event) {
-		
-	}
-
-	public void onPlayerDropItem(PlayerDropItemEvent event) {
-		
-	}
-
-	public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
-		
 	}
 
 	@Override
