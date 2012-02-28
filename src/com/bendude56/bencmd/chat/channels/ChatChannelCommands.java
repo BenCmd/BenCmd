@@ -47,16 +47,16 @@ public class ChatChannelCommands implements Commands {
 		if (args.length == 0) {
 			if (user.inChannel()) {
 				if (user.getActiveChannel().canExecuteAllCommands(user)) {
-					user.sendMessage(ChatColor.YELLOW + "Proper use is /channel {join|spy|unspy|list|info|leave|remove|kick|ban|mute|normal|vip|mod|coown|own|slow|pause|motd|default|rename|alwaysslow|slowdelay}");
+					BenCmd.showUse(user, "channel.owner");
 				} else if (user.getActiveChannel().canExecuteAdvancedCommands(user)) {
-					user.sendMessage(ChatColor.YELLOW + "Proper use is /channel {join|spy|unspy|list|info|leave|kick|ban|mute|normal|vip|mod|slow|pause|motd|default|alwaysslow|slowdelay}");
+					BenCmd.showUse(user, "channel.coowner");
 				} else if (user.getActiveChannel().canExecuteBasicCommands(user)) {
-					user.sendMessage(ChatColor.YELLOW + "Proper use is /channel {join|spy|unspy|list|info|leave|kick|ban|mute|normal|slow|pause}");
+					BenCmd.showUse(user, "channel.mod");
 				} else {
-					user.sendMessage(ChatColor.YELLOW + "Proper use is /channel {join|spy|unspy|list|leave}");
+					BenCmd.showUse(user, "channel.normal");
 				}
 			} else {
-				user.sendMessage(ChatColor.YELLOW + "Proper use is /channel {join|spy|unspy|list|add}");
+				BenCmd.showUse(user, "channel.outside");
 			}
 		} else {
 			if (args[0].equalsIgnoreCase("join")) {
@@ -129,8 +129,7 @@ public class ChatChannelCommands implements Commands {
 					return;
 				}
 				if (!user.hasPerm("bencmd.chat.newchannel")) {
-					user.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
-					BenCmd.getPlugin().logPermFail();
+					BenCmd.getPlugin().logPermFail(user, "channel", args, true);
 					return;
 				}
 				BenCmd.getChatChannels().addChannel(args[1], user);

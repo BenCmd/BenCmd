@@ -218,13 +218,15 @@ public class BasicCommands implements Commands {
 				} else {
 					user.sendMessage(ChatColor.GRAY + "General channel: " + ChatColor.RED + "Channels disabled");
 				}
-				/*if (BenCmd.getMainServer() != null) {
-					user.sendMessage(ChatColor.GRAY + "Main server connection: " + ChatColor.GREEN + "Connected");
-				} else if (BenCmd.getMainProperties().getBoolean("connectMainServer", true)) {
-					user.sendMessage(ChatColor.GRAY + "Main server connection: " + ChatColor.YELLOW + "Disabled");
-				} else {
-					user.sendMessage(ChatColor.GRAY + "Main server connection: " + ChatColor.RED + "Not connected");
-				}*/
+			} else if (args[0].equalsIgnoreCase("lmsg")) {
+				if (args.length < 2 || args.length > 3) {
+					return true;
+				}
+				String msg = args[1];
+				String lang = (args.length == 3) ? args[2] : BenCmd.getLocale().language;
+				user.sendMessage(ChatColor.GRAY + "Message handle: \"" + msg + "\"");
+				user.sendMessage(ChatColor.GRAY + "Language: \"" + lang + "\"");
+				user.sendMessage(ChatColor.GRAY + "Contents: " + BenCmd.getLocale().getStringEx(msg, lang));
 			} else {
 				user.sendMessage(ChatColor.GRAY + "Invalid debug command");
 			}

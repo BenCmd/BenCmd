@@ -52,16 +52,19 @@ public class NPCCommands implements Commands {
 				Location l = ((Player) user.getHandle()).getLocation();
 				BenCmd.getNPCFile().addNPC(new StaticNPC(BenCmd.getLocale().getString("npc.unnamed.name"), BenCmd.getLocale().getString("npc.unnamed.name"), id, l, new ItemStack(Material.AIR), true));
 				user.sendMessage(BenCmd.getLocale().getString("command.npc.created", BenCmd.getLocale().getString("command.npc.static")));
+				BenCmd.log(BenCmd.getLocale().getString("log.npc.create.static", user.getName(), BenCmd.getLocale().getString("command.npc.static"), BenCmd.getLocale().getString("npc.unnamed.name"), BenCmd.getLocale().getString("npc.unnamed.name"), id + "", l.getX() + "", l.getY() + "", l.getZ() + "", l.getWorld().getName()));
 			} else if (args.length == 2) {
 				int id = BenCmd.getNPCFile().nextId();
 				Location l = ((Player) user.getHandle()).getLocation();
 				BenCmd.getNPCFile().addNPC(new StaticNPC(args[1].replace('-', ' '), args[1].replace('-', ' '), id, l, new ItemStack(Material.AIR), true));
 				user.sendMessage(BenCmd.getLocale().getString("command.npc.created", BenCmd.getLocale().getString("command.npc.static")));
+				BenCmd.log(BenCmd.getLocale().getString("log.npc.create.static", user.getName(), BenCmd.getLocale().getString("command.npc.static"), args[1].replace('-', ' '), args[1].replace('-', ' '), id + "", l.getX() + "", l.getY() + "", l.getZ() + "", l.getWorld().getName()));
 			} else if (args.length == 3) {
 				int id = BenCmd.getNPCFile().nextId();
 				Location l = ((Player) user.getHandle()).getLocation();
 				BenCmd.getNPCFile().addNPC(new StaticNPC(args[1].replace('-', ' '), args[2], id, l, new ItemStack(Material.AIR), true));
 				user.sendMessage(BenCmd.getLocale().getString("command.npc.created", BenCmd.getLocale().getString("command.npc.static")));
+				BenCmd.log(BenCmd.getLocale().getString("log.npc.create.static", user.getName(), BenCmd.getLocale().getString("command.npc.static"), args[1].replace('-', ' '), args[2], id + "", l.getX() + "", l.getY() + "", l.getZ() + "", l.getWorld().getName()));
 			} else {
 				BenCmd.showUse(user, "npc.static");
 			}
@@ -83,6 +86,7 @@ public class NPCCommands implements Commands {
 				if (!BenCmd.isSpoutConnected() || !BenCmd.getSpoutConnector().enabled((Player) user.getHandle())) {
 					user.sendMessage(BenCmd.getLocale().getString("command.npc.skin.noSpout"));
 				}
+				BenCmd.log(BenCmd.getLocale().getString("log.npc.skin", user.getName(), Integer.parseInt(args[1]) + "", args[2]));
 			} else {
 				BenCmd.showUse(user, "npc.skin");
 			}
@@ -100,11 +104,12 @@ public class NPCCommands implements Commands {
 					return;
 				}
 				if (((Player) user.getHandle()).getInventory().getItemInHand() == null) {
-					user.sendMessage(ChatColor.RED + "You must hold an item to do that!");
+					user.sendMessage(BenCmd.getLocale().getString("command.npc.item.noItem"));
 					return;
 				}
 				npc.setHeldItem(((Player) user.getHandle()).getInventory().getItemInHand());
-				user.sendMessage(ChatColor.GREEN + "That NPCs item was changed successfully!");
+				user.sendMessage(BenCmd.getLocale().getString("command.npc.item.success"));
+				BenCmd.log(BenCmd.getLocale().getString("log.npc.skin", user.getName(), Integer.parseInt(args[1]) + "", ((Player) user.getHandle()).getInventory().getItemInHand().toString()));
 			} else {
 				BenCmd.showUse(user, "npc.item");
 			}
@@ -123,6 +128,7 @@ public class NPCCommands implements Commands {
 				}
 				((StaticNPC) npc).setName(args[2].replace('-', ' '));
 				user.sendMessage(BenCmd.getLocale().getString("command.npc.name.success", args[2].replace('-', ' ')));
+				BenCmd.log(BenCmd.getLocale().getString("log.npc.name", user.getName(), Integer.parseInt(args[1]) + "", args[2].replace('-', ' ')));
 			} else {
 				BenCmd.showUse(user, "npc.name");
 			}
@@ -150,6 +156,7 @@ public class NPCCommands implements Commands {
 			try {
 				((BlacksmithNPC) npc).addItem(((Player) user.getHandle()).getItemInHand(), Double.parseDouble(args[2]), ((Player) user.getHandle()));
 				user.sendMessage(BenCmd.getLocale().getString("command.npc.rep.success", Double.parseDouble(args[2]) + ""));
+				BenCmd.log(BenCmd.getLocale().getString("log.npc.rep", user.getName(), Integer.parseInt(args[1]) + "", ((Player) user.getHandle()).getItemInHand().toString(), Double.parseDouble(args[2]) + ""));
 			} catch (NumberFormatException e) {
 				user.sendMessage(BenCmd.getLocale().getString("command.npc.rep.invalidPrice"));
 			}
@@ -172,6 +179,7 @@ public class NPCCommands implements Commands {
 			}
 			BenCmd.getNPCFile().remNPC(npc);
 			user.sendMessage(BenCmd.getLocale().getString("command.npc.remove.success"));
+			BenCmd.log(BenCmd.getLocale().getString("log.npc.delete", user.getName(), Integer.parseInt(args[1]) + ""));
 		} else if (args[0].equalsIgnoreCase("despawnall")) {
 			if (!user.hasPerm("bencmd.npc.despawnall")) {
 				BenCmd.getPlugin().logPermFail(user, "npc", args, true);

@@ -136,6 +136,13 @@ public class LocalizationHandler {
 		p.setProperty("command.bencmd.reloadSuccess", ChatColor.GREEN + "BenCmd config reloaded!");
 		p.setProperty("command.bencmd.version", ChatColor.YELLOW + "This server is running BenCmd v" + ChatColor.GREEN + "%1" + ChatColor.YELLOW + "!");
 		
+		p.setProperty("command.channel.coowner.use", ChatColor.YELLOW + "/channel {join|spy|unspy|list|info|leave|kick|ban|mute|normal|vip|mod|slow|pause|motd|default|alwaysslow|slowdelay}");
+		// p.setProperty("command.channel., value)
+		p.setProperty("command.channel.mod.use", ChatColor.YELLOW + "/channel {join|spy|unspy|list|info|leave|kick|ban|mute|normal|slow|pause}");
+		p.setProperty("command.channel.normal.use", ChatColor.YELLOW + "/channel {join|spy|unspy|list|leave}");
+		p.setProperty("command.channel.outside.use", ChatColor.YELLOW + "/channel {join|spy|unspy|list|add}");
+		p.setProperty("command.channel.owner.use", ChatColor.YELLOW + "/channel {join|spy|unspy|list|info|leave|remove|kick|ban|mute|normal|vip|mod|coown|own|slow|pause|motd|default|rename|alwaysslow|slowdelay}");
+		
 		p.setProperty("command.cr.otherOff", ChatColor.GREEN + "%1 is now in survival mode!");
 		p.setProperty("command.cr.otherOn", ChatColor.GREEN + "%1 is now in creative mode!");
 		p.setProperty("command.cr.selfOff", ChatColor.GREEN + "You are now in survival mode!");
@@ -170,6 +177,13 @@ public class LocalizationHandler {
 		p.setProperty("command.level.other", ChatColor.GREEN + "You have set %1's total experience to %2.");
 		p.setProperty("command.level.self", ChatColor.GREEN + "Your total experience has been set to %1.");
 		p.setProperty("command.level.use", ChatColor.YELLOW + "/level <exp> [player]");
+		
+		p.setProperty("command.lever.notALever", ChatColor.RED + "The block you are pointing at is not a lever!");
+		p.setProperty("command.lever.notTimed", ChatColor.RED + "That lever is not time-controlled!");
+		p.setProperty("command.lever.success.day", ChatColor.GREEN + "That lever will now activate during the day!");
+		p.setProperty("command.lever.success.night", ChatColor.GREEN + "That lever will now activate during the night!");
+		p.setProperty("command.lever.success.none", ChatColor.GREEN + "That lever is no longer time controlled!");
+		p.setProperty("command.lever.use", ChatColor.YELLOW + "/lever {day|night|none}");
 		
 		p.setProperty("command.npc.banker", "Banker");
 		p.setProperty("command.npc.bankManager", "Bank Manager");
@@ -260,6 +274,10 @@ public class LocalizationHandler {
 		
 		p.setProperty("log.level.self", "%1 has set their total experience to %2");
 		p.setProperty("log.level.other", "%1 has set %2's total experience to %3");
+		
+		p.setProperty("log.lever.day", "%1 has set a lever at (%2, %3, %4) in world '%5' to activate during the day");
+		p.setProperty("log.lever.night", "%1 has set a lever at (%2, %3, %4) in world '%5' to activate during the night");
+		p.setProperty("log.lever.none", "%1 has set a lever at (%2, %3, %4) in world '%5' to stop activating based on time");
 		
 		p.setProperty("log.npc.create", "%1 has created an NPC of type '%2' (ID: %3) at (%4, %5, %6) in world '%7'");
 		p.setProperty("log.npc.create.static", "%1 has created an NPC of type '%2' (ID: %3, Name: '%4', Skin: '%5') at (%6, %7, %8) in world '%9'");

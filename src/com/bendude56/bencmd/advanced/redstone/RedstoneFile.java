@@ -64,6 +64,10 @@ public class RedstoneFile extends BenCmdFile {
 		getFile().remove(l.getWorld().getName() + "," + l.getBlockX() + "," + l.getBlockY() + "," + l.getBlockZ());
 		saveFile();
 	}
+	
+	public boolean isLever(Location l) {
+		return getFile().containsKey(l.getWorld().getName() + "," + l.getBlockX() + "," + l.getBlockY() + "," + l.getBlockZ());
+	}
 
 	public void saveLever(RedstoneLever lever) {
 		saveLever(lever, true);

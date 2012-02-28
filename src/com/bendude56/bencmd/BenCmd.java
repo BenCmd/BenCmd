@@ -75,10 +75,7 @@ import com.bendude56.bencmd.weather.WeatherBinding;
 import com.bendude56.bencmd.weather.WeatherCommands;
 import com.sk89q.bukkit.migration.PermissionsProvider;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -261,7 +258,7 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 		return locale;
 	}
 
-	public static void log(Exception e) {
+	public static void log(Throwable e) {
 		Logger.getLogger("Minecraft").log(Level.SEVERE, e.getMessage(), e);
 		Logger.getLogger("Minecraft.BenCmd").log(Level.SEVERE, e.getMessage(), e);
 	}
@@ -671,7 +668,7 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 			return;
 		}
 		BenCmd.log("Retreiving dev list... Please wait...");
-		/*try {
+		try {
 			URL devlistloc = new URL("http://cloud.github.com/downloads/BenCmd/BenCmd/devlist.txt");
 			BufferedReader r = new BufferedReader(new InputStreamReader((InputStream) devlistloc.getContent()));
 			String l;
@@ -686,7 +683,7 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 		} catch (Exception e) {
 			BenCmd.log(Level.WARNING, "Failed to retreive dev list! (Will assume default)");
 			devs = new String[] { "ben_dude56", "Deaboy" };
-		}*/
+		}
 		// Check for existing players (on reload) and add them to the maxPlayers
 		// class and join them to the general channel
 		for (Player player : this.getServer().getOnlinePlayers()) {
@@ -916,49 +913,62 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 
 	public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
 		incStat("cmd," + commandLabel);
-		if (new BasicCommands().onCommand(sender, command, commandLabel, args)) {
-			return true;
-		} else if (new ChatCommands().onCommand(sender, command, commandLabel, args)) {
-			return true;
-		} else if (new PermissionCommands().onCommand(sender, command, commandLabel, args)) {
-			return true;
-		} else if (new WarpCommands().onCommand(sender, command, commandLabel, args)) {
-			return true;
-		} else if (new InventoryCommands().onCommand(sender, command, commandLabel, args)) {
-			return true;
-		} else if (new LotCommands().onCommand(sender, command, commandLabel, args)) {
-			return true;
-		} else if (new InvisibleCommands().onCommand(sender, command, commandLabel, args)) {
-			return true;
-		} else if (new ProtectedCommands().onCommand(sender, command, commandLabel, args)) {
-			return true;
-		} else if (new ChatChannelCommands().onCommand(sender, command, commandLabel, args)) {
-			return true;
-		} else if (new ReportCommands().onCommand(sender, command, commandLabel, args)) {
-			return true;
-		} else if (new WeatherCommands().onCommand(sender, command, commandLabel, args)) {
-			return true;
-		} else if (new MoneyCommands().onCommand(sender, command, commandLabel, args)) {
-			return true;
-		} else if (new MapCommands().onCommand(sender, command, commandLabel, args)) {
-			return true;
-		} else if (new PortalCommands().onCommand(sender, command, commandLabel, args)) {
-			return true;
-		} else if (new AdvancedCommands().onCommand(sender, command, commandLabel, args)) {
-			return true;
-		} else if (new BankCommands().onCommand(sender, command, commandLabel, args)) {
-			return true;
-		} else if (new NPCCommands().onCommand(sender, command, commandLabel, args)) {
-			return true;
-		} else if (new RedstoneCommands().onCommand(sender, command, commandLabel, args)) {
-			return true;
-		} else if (new RecordCommands().onCommand(sender, command, commandLabel, args)) {
-			return true;
-		} else if (new MultiworldCommands().onCommand(sender, command, commandLabel, args)) {
-			 return true;
-		} else {
-			User user = User.getUser(sender);
-			this.logPermFail(user, commandLabel, args, true);
+		try {
+			if (new BasicCommands().onCommand(sender, command, commandLabel, args)) {
+				return true;
+			} else if (new ChatCommands().onCommand(sender, command, commandLabel, args)) {
+				return true;
+			} else if (new PermissionCommands().onCommand(sender, command, commandLabel, args)) {
+				return true;
+			} else if (new WarpCommands().onCommand(sender, command, commandLabel, args)) {
+				return true;
+			} else if (new InventoryCommands().onCommand(sender, command, commandLabel, args)) {
+				return true;
+			} else if (new LotCommands().onCommand(sender, command, commandLabel, args)) {
+				return true;
+			} else if (new InvisibleCommands().onCommand(sender, command, commandLabel, args)) {
+				return true;
+			} else if (new ProtectedCommands().onCommand(sender, command, commandLabel, args)) {
+				return true;
+			} else if (new ChatChannelCommands().onCommand(sender, command, commandLabel, args)) {
+				return true;
+			} else if (new ReportCommands().onCommand(sender, command, commandLabel, args)) {
+				return true;
+			} else if (new WeatherCommands().onCommand(sender, command, commandLabel, args)) {
+				return true;
+			} else if (new MoneyCommands().onCommand(sender, command, commandLabel, args)) {
+				return true;
+			} else if (new MapCommands().onCommand(sender, command, commandLabel, args)) {
+				return true;
+			} else if (new PortalCommands().onCommand(sender, command, commandLabel, args)) {
+				return true;
+			} else if (new AdvancedCommands().onCommand(sender, command, commandLabel, args)) {
+				return true;
+			} else if (new BankCommands().onCommand(sender, command, commandLabel, args)) {
+				return true;
+			} else if (new NPCCommands().onCommand(sender, command, commandLabel, args)) {
+				return true;
+			} else if (new RedstoneCommands().onCommand(sender, command, commandLabel, args)) {
+				return true;
+			} else if (new RecordCommands().onCommand(sender, command, commandLabel, args)) {
+				return true;
+			} else if (new MultiworldCommands().onCommand(sender, command, commandLabel, args)) {
+				 return true;
+			} else {
+				User user = User.getUser(sender);
+				this.logPermFail(user, commandLabel, args, true);
+				return true;
+			}
+		} catch (Throwable e) {
+			sender.sendMessage(ChatColor.RED + "BenCmd encountered an error while attempting to process");
+			sender.sendMessage(ChatColor.RED + "your request. This error has been logged and an");
+			sender.sendMessage(ChatColor.RED + "administrator will be notified.");
+			String cmd = commandLabel;
+			for (String arg : args) {
+				cmd += " " + arg;
+			}
+			BenCmd.log(Level.SEVERE, "Error while attempting to perform command '" + cmd + "':");
+			BenCmd.log(e);
 			return true;
 		}
 	}
