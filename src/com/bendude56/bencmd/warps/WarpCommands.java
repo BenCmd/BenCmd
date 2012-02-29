@@ -85,6 +85,17 @@ public class WarpCommands implements Commands {
 			user.warpTo(warp);
 			return;
 		}
+		if (args.length == 2 && args[0].equalsIgnoreCase("lot")) {
+			if (BenCmd.getLots().getLot(args[1]) == null) {
+				user.sendMessage(ChatColor.RED + "That lot does not exist!");
+			} else {
+				BenCmd.getWarpCheckpoints().SetPreWarp(((Player) user.getHandle()));
+				((Player) user.getHandle()).teleport(BenCmd.getLots().getLot(args[1]).getCorner1());
+				user.sendMessage(ChatColor.YELLOW + "WOOSH!");
+				BenCmd.log(user.getName() + " has warped to lot " + args[1]);
+			}
+			return;
+		}
 		if (args.length == 2 && user.hasPerm("bencmd.warp.other")) {
 			Warp warp = BenCmd.getWarps().getWarp(args[0]);
 			if (warp == null) {
@@ -358,6 +369,9 @@ public class WarpCommands implements Commands {
 			((Player) user1.getHandle()).teleport(((Player) user2.getHandle()));
 			BenCmd.log(user1.getName() + " has been teleported to " + user2.getName() + " by " + user.getName());
 			user1.sendMessage(ChatColor.YELLOW + "Woosh!");
+			if (user != user1 && user != user2) {
+				user.sendMessage(user1.getColor() + user1.getName() + ChatColor.GREEN + " has been teleported to " + user2.getColor() + user2.getName());
+			}
 		} else {
 			if (user.hasPerm("bencmd.tp.self") || user.hasPerm("bencmd.tp.other")) {
 				user.sendMessage(ChatColor.YELLOW + "Proper use is: /tp <player> [player]");

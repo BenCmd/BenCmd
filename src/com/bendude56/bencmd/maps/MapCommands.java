@@ -36,6 +36,7 @@ public class MapCommands implements Commands {
 				return;
 			}
 			map.zoomIn();
+			user.sendMessage(ChatColor.GREEN + "Map_" + map.mapID + " has zoomed in.");
 		} else if (args[0].equalsIgnoreCase("zoomout")) {
 			if (!user.hasPerm("bencmd.map.zoom")) {
 				user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
@@ -43,6 +44,7 @@ public class MapCommands implements Commands {
 				return;
 			}
 			map.zoomOut();
+			user.sendMessage(ChatColor.GREEN + "Map_" + map.mapID + " has zoomed out.");
 		} else if (args[0].equalsIgnoreCase("center")) {
 			if (!user.hasPerm("bencmd.map.center")) {
 				user.sendMessage(ChatColor.RED + "You don't have permission to do that!");
@@ -50,6 +52,7 @@ public class MapCommands implements Commands {
 				return;
 			}
 			map.setCenter(((Player) user.getHandle()).getLocation().getBlockX(), ((Player) user.getHandle()).getLocation().getBlockZ());
+			user.sendMessage(ChatColor.GREEN + "Map_" + map.mapID + " has been re-centered.");
 		}
 	}
 }
