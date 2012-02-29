@@ -205,7 +205,7 @@ public class ChatCommands implements Commands {
 		}
 		message = ChatColor.WHITE + "*" + user.getColor() + user.getName() + " " + ChatColor.WHITE + message;
 		Bukkit.broadcastMessage(message);
-		BenCmd.log(message);
+		BenCmd.log(ChatColor.stripColor(message));
 	}
 
 	public void tell(String[] args, User user) {
@@ -219,8 +219,12 @@ public class ChatCommands implements Commands {
 		}
 		User user2;
 		if ((user2 = User.matchUser(args[0])) == null) {
-			user.sendMessage(ChatColor.RED + "That user doesn't exist!");
-			return;
+			if (args[0].equalsIgnoreCase("server")) {
+				user2 = User.getUser(Bukkit.getConsoleSender());
+			} else {
+				user.sendMessage(ChatColor.RED + "That user doesn't exist!");
+				return;
+			}
 		}
 		if (user2.getName().equalsIgnoreCase(user.getName())) {
 			user.sendMessage(ChatColor.RED + "Are you trying to talk to yourself? Weirdo...");

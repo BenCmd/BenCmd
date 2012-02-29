@@ -69,7 +69,7 @@ public class BenCmdEntityListener implements Listener, EventExecutor {
 	private void pvpHit(EntityDamageEvent e) {
 		if (e instanceof EntityDamageByEntityEvent) {
 			EntityDamageByEntityEvent event = (EntityDamageByEntityEvent) e;
-			if (event.getDamager() instanceof Player && event.getEntity() instanceof Player) {
+			if (event.getDamager() instanceof Player && event.getEntity() instanceof Player){
 				if (((CraftPlayer) event.getDamager()).getHandle() instanceof EntityNPC) {
 					if (User.getUser((Player) event.getEntity()).isGod())
 						event.setCancelled(true);
@@ -83,6 +83,15 @@ public class BenCmdEntityListener implements Listener, EventExecutor {
 					}
 				}
 				event.setCancelled(!(inPVP((Player) event.getDamager()) != null && inPVP((Player) event.getEntity()) != null));
+			}
+			
+			if (event.getEntity() instanceof Player && event.getDamager() instanceof Arrow && ((Arrow) event.getDamager()).getShooter() instanceof Player) {
+				if (((CraftPlayer) ((Arrow) event.getDamager()).getShooter()).getHandle() instanceof EntityNPC) {
+					if (User.getUser((Player) event.getEntity()).isGod())
+						event.setCancelled(true);
+					return;
+				}
+				event.setCancelled(!(inPVP((Player) ((Arrow) event.getDamager()).getShooter()) != null && inPVP((Player) event.getEntity()) != null));
 			}
 		}
 	}

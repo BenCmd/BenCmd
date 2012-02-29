@@ -188,7 +188,7 @@ public class ChatChannel {
 				u.sendMessage(ChatColor.GRAY + name + ": " + message);
 			}
 		}
-		BenCmd.log(message);
+		BenCmd.log(ChatColor.stripColor(message));
 	}
 	
 	public void broadcastMessage(String message) {
@@ -198,7 +198,7 @@ public class ChatChannel {
 		for (User u : spies) {
 			u.sendMessage(ChatColor.GRAY + name + ": " + message);
 		}
-		BenCmd.log(message);
+		BenCmd.log(ChatColor.stripColor(message));
 	}
 
 	public void sendChat(User u, String msg) {

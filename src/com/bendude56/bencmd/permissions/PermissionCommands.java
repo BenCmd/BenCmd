@@ -718,6 +718,7 @@ public class PermissionCommands implements Commands {
 		}
 		if (duration == -1) {
 			BenCmd.getPermissionManager().getActionLog().log(new ActionLogEntry(ActionLogType.BAN_PERM, puser2.getName(), user.getName()));
+			Bukkit.getOfflinePlayer(puser2.getName()).setBanned(true);
 		} else {
 			BenCmd.getPermissionManager().getActionLog().log(new ActionLogEntry(ActionLogType.BAN_TEMP, puser2.getName(), user.getName(), duration));
 		}
@@ -735,19 +736,25 @@ public class PermissionCommands implements Commands {
 			return;
 		}
 		PermissionUser puser2;
-		if ((puser2 = PermissionUser.matchUserAllowPartial(args[0])) == null && !Bukkit.getPlayerExact(args[0]).isBanned()) {
+		if ((puser2 = PermissionUser.matchUserAllowPartial(args[0])) == null) {
+			if (Bukkit.getOfflinePlayer(args[0]).isBanned()) {
+				Bukkit.getOfflinePlayer(args[0]).setBanned(false);
+				user.sendMessage(ChatColor.GREEN + "That user has been pardoned!");
+				return;
+			}
 			user.sendMessage(ChatColor.RED + "That user could not be found!");
 			return;
 		} 
-		if (puser2.isBanned() == null && !Bukkit.getPlayerExact(puser2.getName()).isBanned()) {
+		if (puser2.isBanned() == null && !Bukkit.getOfflinePlayer(puser2.getName()).isBanned()) {
 			user.sendMessage(ChatColor.RED + "That user isn't banned!");
 			return;
 		}
-		if (puser2 != null) {
+		if (puser2 != null && puser2.isBanned() != null) {
 			BenCmd.getPermissionManager().getActionLog().log(new ActionLogEntry(ActionLogType.UNBAN_MAN, puser2.getName(), user.getName()));
 			BenCmd.getPermissionManager().getActionFile().removeAction(puser2.isBanned());
 		}
-		user.sendMessage(ChatColor.GREEN + "That user has been unbanned!");
+		Bukkit.getOfflinePlayer(puser2.getName()).setBanned(false);
+		user.sendMessage(ChatColor.GREEN + "That user has been pardoned!");
 	}
 
 	public void Note(String[] args, User user) {
