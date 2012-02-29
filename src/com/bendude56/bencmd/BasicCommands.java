@@ -471,10 +471,10 @@ public class BasicCommands implements Commands {
 			if ((user2 = User.matchUserAllowPartial(args[0])) != null) {
 				user2.feed();
 				user2.sendMessage(ChatColor.GREEN + "You have been fed.");
-				user.sendMessage(ChatColor.GREEN + "You have fed" + user2.getColor() + user2.getDisplayName());
-				BenCmd.log("BenCmd: " + user2.getDisplayName() + " has been healed by " + user.getDisplayName());
+				user.sendMessage(ChatColor.GREEN + "You have fed " + user2.getColor() + user2.getDisplayName());
+				BenCmd.log("BenCmd: " + user2.getDisplayName() + " has been fed by " + user.getDisplayName());
 			} else {
-				user.sendMessage(ChatColor.RED + args[0] + " doens't exist or is not online.");
+				user.sendMessage(ChatColor.RED + args[0] + " doesn't exist or is not online.");
 			}
 		}
 	}

@@ -378,9 +378,13 @@ public class Help {
 				u.sendMessage(pre + ChatColor.GREEN + "/" + cmd.getLabel() + " - " + ChatColor.GRAY + cmd.getGist());
 				String uses="",perms="";
 				
-				for (String perm : cmd.getPermssions()) {
-					if (perms != "") perms += ", ";
-					perms += perm;
+				if (cmd.getPermssions() == null) {
+					perms = "None.";
+				} else {
+					for (String perm : cmd.getPermssions()) {
+						if (perms != "") perms += ", ";
+						perms += perm;
+					}
 				}
 				
 				for (String s : cmd.getAllUses()) {
@@ -389,7 +393,6 @@ public class Help {
 				}
 				
 				if (uses == "") uses = "None.";
-				if (perms == "") perms = "None.";
 				u.sendMessage(pre + ChatColor.GRAY + "Uses: " + uses);
 				u.sendMessage(pre + ChatColor.GRAY + "Permissions: " + perms);
 				return;

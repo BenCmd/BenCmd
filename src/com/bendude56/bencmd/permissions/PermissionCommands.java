@@ -396,7 +396,7 @@ public class PermissionCommands implements Commands {
 			BenCmd.getSpoutConnector().showStatusScreen(user, (user2 == null) ? puser2 : user2, (user.hasPerm("bencmd.action.status.advanced") || user.getName().equals(user2.getName())));
 			return;
 		}
-		boolean banned = puser2.isBanned() != null;
+		boolean banned = puser2.isBanned() != null || Bukkit.getOfflinePlayer(puser2.getName()).isBanned();
 		boolean jailed = puser2.isJailed() != null;
 		boolean muted = puser2.isMuted() != null;
 		boolean reported = false;
@@ -433,6 +433,7 @@ public class PermissionCommands implements Commands {
 			boolean poofed = user2.isPoofed();
 			boolean nopoofed = user2.isNoPoofed();
 			int health = ((Player) user.getHandle()).getHealth();
+			int food = ((Player) user.getHandle()).getFoodLevel();
 			if (user.getActiveChannel() != null) {
 				user.sendMessage(ChatColor.GRAY + "   -Chat channel: " + user.getActiveChannel().getName());
 			}
@@ -459,6 +460,14 @@ public class PermissionCommands implements Commands {
 				user.sendMessage(ChatColor.RED + "   -Health: " + (((double) health) / 2) + "/10");
 			} else {
 				user.sendMessage(ChatColor.YELLOW + "   -Health: " + (((double) health) / 2) + "/10");
+			}
+			
+			if (food >= 15) {
+				user.sendMessage(ChatColor.GREEN + "   -Food Level: " + (((double) food) / 2) + "/10");
+			} else if (food <= 5) {
+				user.sendMessage(ChatColor.RED + "   -Food Level: " + (((double) food) / 2) + "/10");
+			} else {
+				user.sendMessage(ChatColor.YELLOW + "   -Food Level: " + (((double) food) / 2) + "/10");
 			}
 		}
 	}
