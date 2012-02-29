@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -44,22 +43,22 @@ public class Grave {
 		t--;
 		if (t == 0) {
 			delete();
-			p.sendMessage(ChatColor.RED + "Your grave has crumbled into dust, taking your items along with it...");
+			p.sendMessage(BenCmd.getLocale().getString("misc.grave.crumble"));
 			Grave.graves.remove(this);
 		} else if (t % 60 == 0) {
 			if (t == 60) {
-				p.sendMessage(ChatColor.RED + "Your grave will crumble in 1 minute...");
+				p.sendMessage(BenCmd.getLocale().getString("misc.grave.crumbleWarning", BenCmd.getLocale().getString("misc.grave.minute")));
 			} else {
-				p.sendMessage(ChatColor.RED + "Your grave will crumble in " + t / 60 + " minutes...");
+				p.sendMessage(BenCmd.getLocale().getString("misc.grave.crumbleWarning", BenCmd.getLocale().getString("misc.grave.minutes", (t / 60) + "")));
 			}
 		} else if (t % 15 == 0 && t < 60) {
-			p.sendMessage(ChatColor.RED + "Your grave will crumble in " + t + " seconds...");
+			p.sendMessage(BenCmd.getLocale().getString("misc.grave.crumbleWarning", BenCmd.getLocale().getString("misc.grave.seconds", (t / 60) + "")));
 		} else if (t == 10) {
-			p.sendMessage(ChatColor.RED + "Your grave will crumble in 10 seconds...");
+			p.sendMessage(BenCmd.getLocale().getString("misc.grave.crumbleWarning", BenCmd.getLocale().getString("misc.grave.seconds", "10")));
 		} else if (t == 5) {
-			p.sendMessage(ChatColor.RED + "Your grave will crumble in 5...");
+			p.sendMessage(BenCmd.getLocale().getString("misc.grave.crumbleWarning", "5"));
 		} else if (t < 5) {
-			p.sendMessage(ChatColor.RED + String.valueOf(t) + "...");
+			p.sendMessage(BenCmd.getLocale().getString("misc.grave.finalSeconds", t + ""));
 		}
 	}
 
@@ -73,17 +72,17 @@ public class Grave {
 			}
 			delete();
 			Grave.graves.remove(this);
-			p.sendMessage(ChatColor.GREEN + "You've reached your grave in time and your items are safe!");
+			p.sendMessage(BenCmd.getLocale().getString("misc.grave.success"));
 			return true;
 		} else {
 			User user = User.getUser(player);
 			if (user.hasPerm("bencmd.grave.destroy")) {
 				delete();
 				Grave.graves.remove(this);
-				p.sendMessage(ChatColor.RED + "Your grave has been crushed by an admin, taking your items along with it...");
+				p.sendMessage(BenCmd.getLocale().getString("misc.grave.adminSmash"));
 				return true;
 			} else {
-				player.sendMessage(ChatColor.RED + "You cannot destroy someone else's grave!");
+				player.sendMessage(BenCmd.getLocale().getString("misc.grave.cannotDestroy"));
 				return false;
 			}
 		}

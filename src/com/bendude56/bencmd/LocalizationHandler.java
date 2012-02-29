@@ -163,6 +163,9 @@ public class LocalizationHandler {
 		p.setProperty("command.heal.self", ChatColor.GREEN + "You have been healed!");
 		p.setProperty("command.heal.use", ChatColor.YELLOW + "/heal [player]");
 		
+		p.setProperty("command.inv.protected", ChatColor.RED + "%1's inventory is protected!");
+		p.setProperty("command.inv.use", ChatColor.YELLOW + "/inv <player>");
+		
 		p.setProperty("command.kill.otherGod", ChatColor.RED + "You can't kill %1 while they're godded!");
 		p.setProperty("command.kill.protected", ChatColor.RED + "%1 is protected from being killed!");
 		p.setProperty("command.kill.selfGod", ChatColor.RED + "You can't kill yourself while you're godded!");
@@ -233,6 +236,10 @@ public class LocalizationHandler {
 		p.setProperty("command.time.unlockAll", ChatColor.GREEN + "Time in all worlds has been unlocked!");
 		p.setProperty("command.time.use", ChatColor.YELLOW + "/time {sunrise|dawn|day|noon|sunset|dusk|night|midnight|set <time>|lock|unlock");
 		
+		p.setProperty("command.write.notAllowed", ChatColor.RED + "You're not allowed to do that here!");
+		p.setProperty("command.write.notAShelf", ChatColor.RED + "You're not pointing at a bookshelf!");
+		p.setProperty("command.write.success", ChatColor.GREEN + "That bookshelf has been written to successfully!");
+		
 		// Kick messages
 		p.setProperty("kick.reloadFull", "The server ran out of user slots when reloading... :(");
 		
@@ -266,6 +273,8 @@ public class LocalizationHandler {
 		
 		p.setProperty("log.heal.self", "%1 has healed themself");
 		p.setProperty("log.heal.other", "%1 has healed %2");
+		
+		p.setProperty("log.inv.look", "%1 is looking at %2's inventory");
 		
 		p.setProperty("log.kill.self", "%1 has killed themself");
 		p.setProperty("log.kill.other", "%1 has killed %2");
@@ -310,6 +319,51 @@ public class LocalizationHandler {
 		p.setProperty("log.update.openConnection", "Opening connection to update URL...");
 		p.setProperty("log.update.start", "BenCmd update in progress...");
 		p.setProperty("log.update.upToDate", "BenCmd is up to date...");
+		
+		p.setProperty("log.write.success", "%1 has written on a shelf at (%2, %3, %4) in world '%5'. Message: %6");
+		
+		// Miscellaneous messages
+		p.setProperty("misc.channel.connect", ChatColor.GREEN + "You are now in '%1'");
+		p.setProperty("misc.channel.connect.spy", ChatColor.GREEN + "You are now spying on '%1'!");
+		p.setProperty("misc.channel.defaultMotd", "Change this message using /channel motd <message>");
+		p.setProperty("misc.channel.disconnect", ChatColor.GREEN + "You are no longer in '%1'");
+		p.setProperty("misc.channel.disconnect.spy", ChatColor.GREEN + "You are no longer spying on '%1'!");
+		p.setProperty("misc.channel.join", "%1" + ChatColor.YELLOW + " has joined the chat");
+		p.setProperty("misc.channel.kicked", ChatColor.RED + "You have been kicked from '%1'!");
+		p.setProperty("misc.channel.leave", "%2" + ChatColor.YELLOW + " has left the chat");
+		p.setProperty("misc.channel.list", ChatColor.YELLOW + "The following players are on '%1':");
+		p.setProperty("misc.channel.motd", ChatColor.YELLOW + "MOTD: %1");
+		p.setProperty("misc.channel.noConnect", ChatColor.RED + "You do not have permission to enter '%1'!");
+		p.setProperty("misc.channel.noConnect.ban", ChatColor.RED + "You are currently banned from '%1'!");
+		p.setProperty("misc.channel.noConnect.spy", ChatColor.RED + "You aren't allowed to spy on '%1'!");
+		p.setProperty("misc.channel.note.muted", ChatColor.GRAY + "NOTE: You cannot speak in this channel");
+		p.setProperty("misc.channel.note.paused", ChatColor.GRAY + "NOTE: Pause mode is on in this channel");
+		p.setProperty("misc.channel.note.slow", ChatColor.GRAY + "NOTE: Slow mode is on in this channel");
+		p.setProperty("misc.channel.noTalk.block", ChatColor.RED + "You used a blocked word!");
+		p.setProperty("misc.channel.noTalk.caps", ChatColor.RED + "You cannot send messages in all-caps!");
+		p.setProperty("misc.channel.noTalk.muted", ChatColor.RED + "You cannot speak in this channel!");
+		p.setProperty("misc.channel.noTalk.paused", ChatColor.RED + "You cannot speak while this channel is in slow mode!");
+		p.setProperty("misc.channel.noTalk.slow", ChatColor.RED + "You must wait %1 seconds before you can send another message!");
+		p.setProperty("misc.channel.pause.off", ChatColor.YELLOW + "Pause mode has been disabled");
+		p.setProperty("misc.channel.pause.on", ChatColor.YELLOW + "Pause mode has been enabled");
+		p.setProperty("misc.channel.role.banned", ChatColor.RED + "You are now banned from '%1'");
+		p.setProperty("misc.channel.role.coowner", ChatColor.GREEN + "You are now a co-owner of '%1'");
+		p.setProperty("misc.channel.role.mod", ChatColor.GREEN + "You are now a moderator in '%1'");
+		p.setProperty("misc.channel.role.muted", ChatColor.RED + "You are now muted in '%1'");
+		p.setProperty("misc.channel.role.owner", ChatColor.GREEN + "You are now the owner of '%1'");
+		p.setProperty("misc.channel.role.vip", ChatColor.GREEN + "You are now a VIP in '%1'");
+		p.setProperty("misc.channel.slow.off", ChatColor.YELLOW + "Slow mode has been disabled");
+		p.setProperty("misc.channel.slow.on", ChatColor.YELLOW + "Slow mode has been enabled (%1s)");
+		
+		p.setProperty("misc.grave.adminSmash", ChatColor.RED + "Your grave has been crushed by an admin, taking your items along with it...");
+		p.setProperty("misc.grave.cannotDestroy", ChatColor.RED + "You cannot destroy another user's grave!");
+		p.setProperty("misc.grave.crumble", ChatColor.RED + "Your grave has crumbled into dust, taking your items along with it...");
+		p.setProperty("misc.grave.crumbleWarning", ChatColor.RED + "Your grave will crumble in %1");
+		p.setProperty("misc.grave.finalSeconds", ChatColor.RED + "%1...");
+		p.setProperty("misc.grave.minute", "one minute");
+		p.setProperty("misc.grave.minutes", "%1 minutes");
+		p.setProperty("misc.grave.seconds", "%1 seconds");
+		p.setProperty("misc.grave.success", ChatColor.GREEN + "You've reached your grave in time and your items are safe!");
 		
 		// NPC Messages
 		p.setProperty("npc.bank.adminNoUse", ChatColor.RED + "Admins cannot use this NPC to upgrade banks, use /bank upgrade instead!");

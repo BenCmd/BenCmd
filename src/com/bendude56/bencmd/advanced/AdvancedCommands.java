@@ -1,7 +1,6 @@
 package com.bendude56.bencmd.advanced;
 
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
@@ -26,13 +25,13 @@ public class AdvancedCommands implements Commands {
 	}
 
 	public void Write(String[] args, User user) {
-		// TODO Log writing on bookcases as if they were signs
 		if (((Player) user.getHandle()).getTargetBlock(null, 4).getType() != Material.BOOKSHELF) {
-			user.sendMessage(ChatColor.RED + "You're not pointing at a bookshelf!");
+			user.sendMessage(BenCmd.getLocale().getString("command.write.notAShelf"));
 			return;
 		}
-		if (!BenCmd.getLots().canBuildHere(((Player) user.getHandle()), ((Player) user.getHandle()).getTargetBlock(null, 4).getLocation())) {
-			user.sendMessage(ChatColor.RED + "You're not allowed to do that here!");
+		Location l = ((Player) user.getHandle()).getTargetBlock(null, 4).getLocation();
+		if (!BenCmd.getLots().canBuildHere(((Player) user.getHandle()), l)) {
+			user.sendMessage(BenCmd.getLocale().getString("command.write.notAllowed"));
 			return;
 		}
 		String message = "";
@@ -45,27 +44,28 @@ public class AdvancedCommands implements Commands {
 			}
 		}
 		BenCmd.getShelfFile().addShelf(new Shelf(((Player) user.getHandle()).getTargetBlock(null, 4).getLocation(), message));
-		user.sendMessage(ChatColor.GREEN + "Magically, writing appears on that shelf.");
+		user.sendMessage(BenCmd.getLocale().getString("command.write.success"));
+		BenCmd.log(BenCmd.getLocale().getString("log.write.success", user.getName(), l.getX() + "", l.getY() + "", l.getZ() + "", l.getWorld().getName(), message));
 	}
 
 	public void Inv(String[] args, User user) {
 		if (args.length != 1) {
-			user.sendMessage(ChatColor.YELLOW + "Proper usage: /inv <player>");
+			BenCmd.showUse(user, "inv");
 			return;
 		}
 		User target;
 		if ((target = User.matchUserAllowPartial(args[0])) == null) {
-			user.sendMessage(ChatColor.RED + "That player isn't online!");
+			user.sendMessage(BenCmd.getLocale().getString("basic.userNotFound", args[0]));
 			return;
 		}
 		if (target.hasPerm("bencmd.inv.protect") && !user.hasPerm("bencmd.inv.all")) {
-			user.sendMessage(ChatColor.RED + "That player's inventory is protected!");
+			user.sendMessage(BenCmd.getLocale().getString("command.inv.protected", args[0]));
 			return;
 		}
 		if (!(((CraftPlayer) target.getHandle()).getHandle().inventory instanceof ViewableInventory)) {
 			ViewableInventory.replInv((CraftPlayer) target.getHandle());
 		}
-		BenCmd.log(user.getName() + " has opened " + args[0] + "'s inventory!");
+		BenCmd.log(BenCmd.getLocale().getString("log.inv.look", user.getName(), target.getName()));
 		((CraftPlayer) user.getHandle()).getHandle().a(((CraftPlayer) target.getHandle()).getHandle().inventory);
 	}
 }
