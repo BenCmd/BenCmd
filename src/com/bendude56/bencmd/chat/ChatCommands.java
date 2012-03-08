@@ -89,7 +89,7 @@ public class ChatCommands implements Commands {
 			} else if (args.length == 1) {
 				PermissionUser u = PermissionUser.matchUserAllowPartial(args[0]);
 				if (u == null) {
-					user.sendMessage(BenCmd.getLocale().getString("basic.userNotFound", args[0]));
+					BenCmd.getLocale().sendMessage(user, "basic.userNotFound", args[0]);
 					return true;
 				}
 				if (user.isIgnoring(u)) {
@@ -110,7 +110,7 @@ public class ChatCommands implements Commands {
 			if (args.length == 1) {
 				PermissionUser u = PermissionUser.matchUserAllowPartial(args[0]);
 				if (u == null) {
-					user.sendMessage(BenCmd.getLocale().getString("basic.userNotFound", args[0]));
+					BenCmd.getLocale().sendMessage(user, "basic.userNotFound", args[0]);
 					return true;
 				}
 				if (!user.isIgnoring(u)) {
@@ -219,7 +219,7 @@ public class ChatCommands implements Commands {
 		}
 		User user2;
 		if ((user2 = User.matchUser(args[0])) == null) {
-			user.sendMessage(BenCmd.getLocale().getString("basic.userNotFound", args[0]));
+			BenCmd.getLocale().sendMessage(user, "basic.userNotFound", args[0]);
 			return;
 		}
 		if (user2.getName().equalsIgnoreCase(user.getName())) {

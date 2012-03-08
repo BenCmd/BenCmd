@@ -296,6 +296,7 @@ public class BlacksmithNPC extends NPC implements Clickable {
 	}
 
 	public void addItem(ItemStack i, Double c, Player p) {
+		User u = User.getUser(p);
 		ToolMaterial tm = ToolMaterial.getMaterial(i.getTypeId());
 		if (tm != ToolMaterial.NOTATOOL) {
 			ToolType t = ToolType.getType(i.getTypeId());
@@ -305,30 +306,30 @@ public class BlacksmithNPC extends NPC implements Clickable {
 					if (c == -1.0) {
 						toolPrices.get(tm).remove(t);
 						BenCmd.getNPCFile().saveNPC(this);
-						p.sendMessage(BenCmd.getLocale().getString("npc.blacksmith.remToolRepair"));
+						BenCmd.getLocale().sendMessage(u, "npc.blacksmith.remToolRepair");
 					} else {
 						toolPrices.get(tm).put(t, c);
 						BenCmd.getNPCFile().saveNPC(this);
-						p.sendMessage(BenCmd.getLocale().getString("npc.blacksmith.updateToolRepair"));
+						BenCmd.getLocale().sendMessage(u, "npc.blacksmith.updateToolRepair");
 					}
 				} else {
 					if (c == -1.0) {
-						p.sendMessage(BenCmd.getLocale().getString("npc.blacksmith.noToolRepair"));
+						BenCmd.getLocale().sendMessage(u, "npc.blacksmith.noToolRepair");
 					} else {
 						toolPrices.get(tm).put(t, c);
 						BenCmd.getNPCFile().saveNPC(this);
-						p.sendMessage(BenCmd.getLocale().getString("npc.blacksmith.addToolRepair"));
+						BenCmd.getLocale().sendMessage(u, "npc.blacksmith.addToolRepair");
 					}
 				}
 			} else {
 				if (c == -1.0) {
-					p.sendMessage(BenCmd.getLocale().getString("npc.blacksmith.noToolRepair"));
+					BenCmd.getLocale().sendMessage(u, "npc.blacksmith.noToolRepair");
 				} else {
 					HashMap<ToolType, Double> toPut = new HashMap<ToolType, Double>();
 					toPut.put(t, c);
 					toolPrices.put(tm, toPut);
 					BenCmd.getNPCFile().saveNPC(this);
-					p.sendMessage(BenCmd.getLocale().getString("npc.blacksmith.addToolRepair"));
+					BenCmd.getLocale().sendMessage(u, "npc.blacksmith.addToolRepair");
 				}
 			}
 			return;
@@ -342,62 +343,63 @@ public class BlacksmithNPC extends NPC implements Clickable {
 					if (c == -1.0) {
 						armorPrices.get(am).remove(t);
 						BenCmd.getNPCFile().saveNPC(this);
-						p.sendMessage(BenCmd.getLocale().getString("npc.blacksmith.remArmorRepair"));
+						BenCmd.getLocale().sendMessage(u, "npc.blacksmith.remArmorRepair");
 					} else {
 						armorPrices.get(am).put(t, c);
 						BenCmd.getNPCFile().saveNPC(this);
-						p.sendMessage(BenCmd.getLocale().getString("npc.blacksmith.updateArmorRepair"));
+						BenCmd.getLocale().sendMessage(u, "npc.blacksmith.updateArmorRepair");
 					}
 				} else {
 					if (c == -1.0) {
-						p.sendMessage(BenCmd.getLocale().getString("npc.blacksmith.noArmorRepair"));
+						BenCmd.getLocale().sendMessage(u, "npc.blacksmith.noArmorRepair");
 					} else {
 						armorPrices.get(am).put(t, c);
 						BenCmd.getNPCFile().saveNPC(this);
-						p.sendMessage(BenCmd.getLocale().getString("npc.blacksmith.addArmorRepair"));
+						BenCmd.getLocale().sendMessage(u, "npc.blacksmith.addArmorRepair");
 					}
 				}
 			} else {
 				if (c == -1.0) {
-					p.sendMessage(BenCmd.getLocale().getString("npc.blacksmith.noArmorRepair"));
+					BenCmd.getLocale().sendMessage(u, "npc.blacksmith.noArmorRepair");
 				} else {
 					HashMap<ArmorType, Double> toPut = new HashMap<ArmorType, Double>();
 					toPut.put(t, c);
 					armorPrices.put(am, toPut);
 					BenCmd.getNPCFile().saveNPC(this);
-					p.sendMessage(BenCmd.getLocale().getString("npc.blacksmith.addArmorRepair"));
+					BenCmd.getLocale().sendMessage(u, "npc.blacksmith.addArmorRepair");
 				}
 			}
 			return;
 		}
-		p.sendMessage(BenCmd.getLocale().getString("npc.blacksmith.invalidItem"));
+		BenCmd.getLocale().sendMessage(u, "npc.blacksmith.invalidItem");
 	}
 
 	@Override
 	public void onRightClick(Player p) {
+		User u = User.getUser(p);
 		if (p.getItemInHand() == null) {
-			p.sendMessage(BenCmd.getLocale().getString("npc.blacksmith.help"));
+			BenCmd.getLocale().sendMessage(u, "npc.blacksmith.help");
 			return;
 		}
 		int id = p.getItemInHand().getTypeId();
 		if (ToolMaterial.getMaterial(id) == ToolMaterial.NOTATOOL && ArmorMaterial.getMaterial(id) == ArmorMaterial.NOTARMOR) {
-			p.sendMessage(BenCmd.getLocale().getString("npc.blacksmith.help"));
+			BenCmd.getLocale().sendMessage(u, "npc.blacksmith.help");
 			return;
 		}
 		if (canRepair(id)) {
 			if (getRepairPrice(id) == -1.0) {
-				p.sendMessage(BenCmd.getLocale().getString("npc.blacksmith.cannotRepair"));
+				BenCmd.getLocale().sendMessage(u, "npc.blacksmith.cannotRepair");
 			} else if (p.getItemInHand().getDurability() == 0) {
-				p.sendMessage(BenCmd.getLocale().getString("npc.blacksmith.fullRepair"));
+				BenCmd.getLocale().sendMessage(u, "npc.blacksmith.fullRepair");
 			} else if (BuyableItem.hasMoney(User.getUser(p), getRepairPrice(id), new ArrayList<Material>())) {
 				BuyableItem.remMoney(User.getUser(p), getRepairPrice(id), new ArrayList<Material>());
 				p.getItemInHand().setDurability((short) 0);
-				p.sendMessage(BenCmd.getLocale().getString("npc.blacksmith.repairSuccess"));
+				BenCmd.getLocale().sendMessage(u, "npc.blacksmith.repairSuccess");
 			} else {
-				p.sendMessage(BenCmd.getLocale().getString("basic.insufficientMoney", getRepairPrice(id) + ""));
+				BenCmd.getLocale().sendMessage(u, "basic.insufficientMoney", getRepairPrice(id) + "");
 			}
 		} else {
-			p.sendMessage(BenCmd.getLocale().getString("npc.blacksmith.cannotRepair"));
+			BenCmd.getLocale().sendMessage(u, "npc.blacksmith.cannotRepair");
 		}
 	}
 

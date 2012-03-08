@@ -25,23 +25,24 @@ public class BankManagerNPC extends NPC implements Clickable {
 
 	@Override
 	public void onRightClick(Player p) {
+		User u = User.getUser(p);
 		if (User.getUser(p).hasPerm("bencmd.bank.admin")) {
-			p.sendMessage(BenCmd.getLocale().getString("npc.bank.adminNoUse"));
+			BenCmd.getLocale().sendMessage(u, "npc.bank.adminNoUse");
 			return;
 		}
 		if (!BenCmd.getBankController().hasBank(p.getName())) {
 			BenCmd.getBankController().addBank(new BankInventory(p.getName()));
 		}
 		if (BenCmd.getBankController().getBank(p.getName()).isUpgraded()) {
-			p.sendMessage(BenCmd.getLocale().getString("command.bank.selfAlreadyUpgraded"));
+			BenCmd.getLocale().sendMessage(u, "command.bank.selfAlreadyUpgraded");
 		} else {
 			if (BuyableItem.hasMoney(User.getUser(p), BenCmd.getMainProperties().getDouble("bankUpgradeCost", 4096), new ArrayList<Material>())) {
 				BuyableItem.remMoney(User.getUser(p), BenCmd.getMainProperties().getDouble("bankUpgradeCost", 4096), new ArrayList<Material>());
 				BenCmd.getBankController().upgradeBank(p.getName());
 				BenCmd.log(BenCmd.getLocale().getString("log.bank.upgradeSelf", p.getName()));
-				p.sendMessage(BenCmd.getLocale().getString("command.bank.selfUpgrade"));
+				BenCmd.getLocale().sendMessage(u, "command.bank.selfUpgrade");
 			} else {
-				p.sendMessage(BenCmd.getLocale().getString("basic.insufficientMoney", BenCmd.getMainProperties().getDouble("bankUpgradeCost", 4096) + ""));
+				BenCmd.getLocale().sendMessage(u, "basic.insufficientMoney", BenCmd.getMainProperties().getDouble("bankUpgradeCost", 4096) + "");
 			}
 		}
 	}

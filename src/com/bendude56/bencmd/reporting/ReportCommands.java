@@ -35,7 +35,7 @@ public class ReportCommands implements Commands {
 
 	public void Report(String[] args, User user) {
 		if (user.isServer()) {
-			user.sendMessage(BenCmd.getLocale().getString("basic.noServerUse"));
+			BenCmd.getLocale().sendMessage(user, "basic.noServerUse");
 			return;
 		}
 		if (args.length < 2) {
@@ -44,7 +44,7 @@ public class ReportCommands implements Commands {
 		}
 		PermissionUser reported = PermissionUser.matchUserAllowPartial(args[0]);
 		if (reported == null) {
-			user.sendMessage(BenCmd.getLocale().getString("basic.userNotFound", args[0]));
+			BenCmd.getLocale().sendMessage(user, "basic.userNotFound", args[0]);
 			return;
 		}
 		String reason = "";

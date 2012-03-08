@@ -32,7 +32,7 @@ public class MultiworldCommands implements Commands {
 			user.sendMessage(ChatColor.YELLOW + "Proper use is: /world {create|import|remove|delete|reset|info|spawn}");
 		} else if (args[0].equalsIgnoreCase("create")) {
 			if (!user.hasPerm("bencmd.world.create")) {
-				user.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
+				BenCmd.getLocale().sendMessage(user, "basic.noPermission");
 				BenCmd.getPlugin().logPermFail();
 				return;
 			}
@@ -62,7 +62,7 @@ public class MultiworldCommands implements Commands {
 			}
 		} else if (args[0].equalsIgnoreCase("import")) {
 			if (!user.hasPerm("bencmd.world.import")) {
-				user.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
+				BenCmd.getLocale().sendMessage(user, "basic.noPermission");
 				BenCmd.getPlugin().logPermFail();
 				return;
 			}
@@ -90,7 +90,7 @@ public class MultiworldCommands implements Commands {
 			}
 		} else if (args[0].equalsIgnoreCase("remove")) {
 			if (!user.hasPerm("bencmd.world.remove")) {
-				user.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
+				BenCmd.getLocale().sendMessage(user, "basic.noPermission");
 				BenCmd.getPlugin().logPermFail();
 				return;
 			}
@@ -122,7 +122,7 @@ public class MultiworldCommands implements Commands {
 			}
 		} else if (args[0].equalsIgnoreCase("delete")) {
 			if (!user.hasPerm("bencmd.world.delete")) {
-				user.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
+				BenCmd.getLocale().sendMessage(user, "basic.noPermission");
 				BenCmd.getPlugin().logPermFail();
 				return;
 			}
@@ -160,7 +160,7 @@ public class MultiworldCommands implements Commands {
 			}
 		} else if (args[0].equalsIgnoreCase("reset")) {
 			if (!user.hasPerm("bencmd.world.reset")) {
-				user.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
+				BenCmd.getLocale().sendMessage(user, "basic.noPermission");
 				BenCmd.getPlugin().logPermFail();
 				return;
 			}
@@ -198,7 +198,7 @@ public class MultiworldCommands implements Commands {
 			}
 		} else if (args[0].equalsIgnoreCase("info")) {
 			if (!user.hasPerm("bencmd.world.info")) {
-				user.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
+				BenCmd.getLocale().sendMessage(user, "basic.noPermission");
 				BenCmd.getPlugin().logPermFail();
 				return;
 			}
@@ -224,7 +224,7 @@ public class MultiworldCommands implements Commands {
 			user.sendMessage(ChatColor.GRAY + "Spawn mode: " + ((w.getAllowSpawnAggressive()) ? "A" : "a") + ((w.getAllowSpawnNeutral()) ? "N" : "n") + ((w.getAllowSpawnPassive()) ? "P" : "p"));
 		} else if (args[0].equalsIgnoreCase("spawn")) {
 			if (!user.hasPerm("bencmd.world.spawn")) {
-				user.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
+				BenCmd.getLocale().sendMessage(user, "basic.noPermission");
 				BenCmd.getPlugin().logPermFail();
 				return;
 			}

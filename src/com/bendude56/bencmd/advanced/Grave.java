@@ -40,29 +40,32 @@ public class Grave {
 	}
 
 	public void tick() {
+		User u = User.getUser(p);
 		t--;
 		if (t == 0) {
 			delete();
-			p.sendMessage(BenCmd.getLocale().getString("misc.grave.crumble"));
+			BenCmd.getLocale().sendMessage(u, "misc.grave.crumble");
 			Grave.graves.remove(this);
 		} else if (t % 60 == 0) {
 			if (t == 60) {
-				p.sendMessage(BenCmd.getLocale().getString("misc.grave.crumbleWarning", BenCmd.getLocale().getString("misc.grave.minute")));
+				BenCmd.getLocale().sendMessage(u, "misc.grave.crumbleWarning", BenCmd.getLocale().getString("misc.grave.minute"));
 			} else {
-				p.sendMessage(BenCmd.getLocale().getString("misc.grave.crumbleWarning", BenCmd.getLocale().getString("misc.grave.minutes", (t / 60) + "")));
+				BenCmd.getLocale().sendMessage(u, "misc.grave.crumbleWarning", BenCmd.getLocale().getString("misc.grave.minutes", (t / 60) + ""));
 			}
 		} else if (t % 15 == 0 && t < 60) {
-			p.sendMessage(BenCmd.getLocale().getString("misc.grave.crumbleWarning", BenCmd.getLocale().getString("misc.grave.seconds", (t / 60) + "")));
+			BenCmd.getLocale().sendMessage(u, "misc.grave.crumbleWarning", BenCmd.getLocale().getString("misc.grave.seconds", (t / 60) + ""));
 		} else if (t == 10) {
-			p.sendMessage(BenCmd.getLocale().getString("misc.grave.crumbleWarning", BenCmd.getLocale().getString("misc.grave.seconds", "10")));
+			BenCmd.getLocale().sendMessage(u, "misc.grave.crumbleWarning", BenCmd.getLocale().getString("misc.grave.seconds", "10"));
 		} else if (t == 5) {
-			p.sendMessage(BenCmd.getLocale().getString("misc.grave.crumbleWarning", "5"));
+			BenCmd.getLocale().sendMessage(u, "misc.grave.crumbleWarning", "5");
 		} else if (t < 5) {
-			p.sendMessage(BenCmd.getLocale().getString("misc.grave.finalSeconds", t + ""));
+			BenCmd.getLocale().sendMessage(u, "misc.grave.finalSeconds", t + "");
 		}
 	}
 
 	public boolean destroyBy(Player player) {
+		User u = User.getUser(p);
+		User u2 = User.getUser(player);
 		if (p.equals(player)) {
 			for (ItemStack i : this.i) {
 				if (BenCmd.getMainProperties().getBoolean("destroyCurrencyOnDeath", false) && BenCmd.getMarketController().isCurrency(i)) {
@@ -72,17 +75,16 @@ public class Grave {
 			}
 			delete();
 			Grave.graves.remove(this);
-			p.sendMessage(BenCmd.getLocale().getString("misc.grave.success"));
+			BenCmd.getLocale().sendMessage(u, "misc.grave.success");
 			return true;
 		} else {
-			User user = User.getUser(player);
-			if (user.hasPerm("bencmd.grave.destroy")) {
+			if (u2.hasPerm("bencmd.grave.destroy")) {
 				delete();
 				Grave.graves.remove(this);
-				p.sendMessage(BenCmd.getLocale().getString("misc.grave.adminSmash"));
+				BenCmd.getLocale().sendMessage(u, "misc.grave.adminSmash");
 				return true;
 			} else {
-				player.sendMessage(BenCmd.getLocale().getString("misc.grave.cannotDestroy"));
+				BenCmd.getLocale().sendMessage(u2, "misc.grave.cannotDestroy");
 				return false;
 			}
 		}

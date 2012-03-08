@@ -74,7 +74,7 @@ public class PermissionCommands implements Commands {
 		PermissionUser user2 = BenCmd.getPermissionManager().getUserFile().getUser(args[0]);
 		if (args[1].equalsIgnoreCase("remove") || args[1].equalsIgnoreCase("delete")) {
 			if (user2 == null) {
-				user.sendMessage(BenCmd.getLocale().getString("basic.userNotFound", args[0]));
+				BenCmd.getLocale().sendMessage(user, "basic.userNotFound", args[0]);
 			} else {
 				user.sendMessage(ChatColor.GREEN + "User " + user2.getColor() + user2.getName() + ChatColor.GREEN + " was successfully deleted!");
 				BenCmd.log(user2.getName() + " was deleted from the BenCmd database!");
@@ -91,7 +91,7 @@ public class PermissionCommands implements Commands {
 			}
 		} else if (args[1].equalsIgnoreCase("info")) {
 			if (user2 == null) {
-				user.sendMessage(BenCmd.getLocale().getString("basic.userNotFound", args[0]));
+				BenCmd.getLocale().sendMessage(user, "basic.userNotFound", args[0]);
 			} else {
 				user.sendMessage(ChatColor.YELLOW + "Information for user " + user2.getColor() + user2.getName());
 				user.sendMessage(ChatColor.GRAY + "Groups: " + user2.listGroups());
@@ -104,14 +104,14 @@ public class PermissionCommands implements Commands {
 			}
 		} else if (args[1].equalsIgnoreCase("plist")) {
 			if (user2 == null) {
-				user.sendMessage(BenCmd.getLocale().getString("basic.userNotFound", args[0]));
+				BenCmd.getLocale().sendMessage(user, "basic.userNotFound", args[0]);
 			} else {
 				user.sendMessage(user2.listPermissions());
 			}
 		} else if (args[1].startsWith("+")) {
 			args[1] = args[1].replaceFirst("\\+", "");
 			if (user2 == null) {
-				user.sendMessage(BenCmd.getLocale().getString("basic.userNotFound", args[0]));
+				BenCmd.getLocale().sendMessage(user, "basic.userNotFound", args[0]);
 			} else {
 				if (user2.hasPerm(args[1], false, false)) {
 					user.sendMessage(ChatColor.RED + "That user can already do that!");
@@ -124,7 +124,7 @@ public class PermissionCommands implements Commands {
 		} else if (args[1].startsWith("-")) {
 			args[1] = args[1].replaceFirst("-", "");
 			if (user2 == null) {
-				user.sendMessage(BenCmd.getLocale().getString("basic.userNotFound", args[0]));
+				BenCmd.getLocale().sendMessage(user, "basic.userNotFound", args[0]);
 			} else {
 				if (!user2.hasPerm(args[1], false, false)) {
 					user.sendMessage(ChatColor.RED + "That user can't do that!");
@@ -168,7 +168,7 @@ public class PermissionCommands implements Commands {
 		PermissionGroup group = BenCmd.getPermissionManager().getGroupFile().getGroup(args[0]);
 		if (args[1].equalsIgnoreCase("remove")) {
 			if (group == null) {
-				user.sendMessage(BenCmd.getLocale().getString("basic.groupNotFound", args[0]));
+				BenCmd.getLocale().sendMessage(user, "basic.groupNotFound", args[0]);
 			} else {
 				BenCmd.getPermissionManager().getGroupFile().removeGroup(group);
 				user.sendMessage(ChatColor.GREEN + "Group " + args[0] + " was successfully removed!");
@@ -184,7 +184,7 @@ public class PermissionCommands implements Commands {
 			}
 		} else if (args[1].equalsIgnoreCase("info")) {
 			if (group == null) {
-				user.sendMessage(BenCmd.getLocale().getString("basic.groupNotFound", args[0]));
+				BenCmd.getLocale().sendMessage(user, "basic.groupNotFound", args[0]);
 			} else {
 				user.sendMessage(ChatColor.GRAY + "Information for group \"" + group.getName() + "\":");
 				if (group.getName().contains("@")) {
@@ -205,13 +205,13 @@ public class PermissionCommands implements Commands {
 				user.sendMessage(ChatColor.YELLOW + "Proper use is: /group <name> adduser <user>");
 			} else {
 				if (group == null) {
-					user.sendMessage(BenCmd.getLocale().getString("basic.groupNotFound", args[0]));
+					BenCmd.getLocale().sendMessage(user, "basic.groupNotFound", args[0]);
 				} else if (group.getName().contains("@")) {
 					user.sendMessage(ChatColor.RED + "You cannot do that to a world-specific group!");
 				} else {
 					PermissionUser user2 = PermissionUser.matchUserAllowPartial(args[2]);
 					if (user2 == null) {
-						user.sendMessage(BenCmd.getLocale().getString("basic.userNotFound", args[2]));
+						BenCmd.getLocale().sendMessage(user, "basic.userNotFound", args[2]);
 					} else {
 						if (group.userInGroup(user2)) {
 							user.sendMessage(ChatColor.RED + user2.getName() + " is already part of " + group.getName() + "!");
@@ -228,13 +228,13 @@ public class PermissionCommands implements Commands {
 				user.sendMessage(ChatColor.YELLOW + "Proper use is: /group <name> remuser <user>");
 			} else {
 				if (group == null) {
-					user.sendMessage(BenCmd.getLocale().getString("basic.groupNotFound", args[0]));
+					BenCmd.getLocale().sendMessage(user, "basic.groupNotFound", args[0]);
 				} else if (group.getName().contains("@")) {
 					user.sendMessage(ChatColor.RED + "You cannot do that to a world-specific group!");
 				} else {
 					PermissionUser user2 = PermissionUser.matchUserAllowPartial(args[2]);
 					if (user2 == null) {
-						user.sendMessage(BenCmd.getLocale().getString("basic.userNotFound", args[2]));
+						BenCmd.getLocale().sendMessage(user, "basic.userNotFound", args[2]);
 					} else {
 						if (!group.userInGroup(user2)) {
 							user.sendMessage(ChatColor.RED + user2.getName() + " is not part of " + group.getName() + "!");
@@ -251,13 +251,13 @@ public class PermissionCommands implements Commands {
 				user.sendMessage(ChatColor.YELLOW + "Proper use is: /group <name> addgroup <group>");
 			} else {
 				if (group == null) {
-					user.sendMessage(BenCmd.getLocale().getString("basic.groupNotFound", args[0]));
+					BenCmd.getLocale().sendMessage(user, "basic.groupNotFound", args[0]);
 				} else if (group.getName().contains("@")) {
 					user.sendMessage(ChatColor.RED + "You cannot do that to a world-specific group!");
 				} else {
 					PermissionGroup group2 = BenCmd.getPermissionManager().getGroupFile().getGroup(args[2]);
 					if (group2 == null) {
-						user.sendMessage(BenCmd.getLocale().getString("basic.groupNotFound", args[2]));
+						BenCmd.getLocale().sendMessage(user, "basic.groupNotFound", args[2]);
 					} else if (group2.getName().contains("@")) {
 						user.sendMessage(ChatColor.RED + "You cannot do that to a world-specific group!");
 					} else {
@@ -276,13 +276,13 @@ public class PermissionCommands implements Commands {
 				user.sendMessage(ChatColor.YELLOW + "Proper use is: /group <name> remgroup <group>");
 			} else {
 				if (group == null) {
-					user.sendMessage(BenCmd.getLocale().getString("basic.groupNotFound", args[0]));
+					BenCmd.getLocale().sendMessage(user, "basic.groupNotFound", args[0]);
 				} else if (group.getName().contains("@")) {
 					user.sendMessage(ChatColor.RED + "You cannot do that to a world-specific group!");
 				} else {
 					PermissionGroup group2 = BenCmd.getPermissionManager().getGroupFile().getGroup(args[2]);
 					if (group2 == null) {
-						user.sendMessage(BenCmd.getLocale().getString("basic.groupNotFound", args[2]));
+						BenCmd.getLocale().sendMessage(user, "basic.groupNotFound", args[2]);
 					} else if (group2.getName().contains("@")) {
 						user.sendMessage(ChatColor.RED + "You cannot do that to a world-specific group!");
 					} else {
@@ -298,7 +298,7 @@ public class PermissionCommands implements Commands {
 			}
 		} else if (args[1].startsWith("p:")) {
 			if (group == null) {
-				user.sendMessage(BenCmd.getLocale().getString("basic.groupNotFound", args[0]));
+				BenCmd.getLocale().sendMessage(user, "basic.groupNotFound", args[0]);
 			} else if (group.getName().contains("@")) {
 				user.sendMessage(ChatColor.RED + "You cannot do that to a world-specific group!");
 			} else {
@@ -308,7 +308,7 @@ public class PermissionCommands implements Commands {
 			}
 		} else if (args[1].startsWith("c:")) {
 			if (group == null) {
-				user.sendMessage(BenCmd.getLocale().getString("basic.groupNotFound", args[0]));
+				BenCmd.getLocale().sendMessage(user, "basic.groupNotFound", args[0]);
 			} else if (group.getName().contains("@")) {
 				user.sendMessage(ChatColor.RED + "You cannot do that to a world-specific group!");
 			} else {
@@ -321,7 +321,7 @@ public class PermissionCommands implements Commands {
 			}
 		} else if (args[1].startsWith("l:")) {
 			if (group == null) {
-				user.sendMessage(BenCmd.getLocale().getString("basic.groupNotFound", args[0]));
+				BenCmd.getLocale().sendMessage(user, "basic.groupNotFound", args[0]);
 			} else if (group.getName().contains("@")) {
 				user.sendMessage(ChatColor.RED + "You cannot do that to a world-specific group!");
 			} else {
@@ -336,7 +336,7 @@ public class PermissionCommands implements Commands {
 		} else if (args[1].startsWith("+")) {
 			args[1] = args[1].replaceFirst("\\+", "");
 			if (group == null) {
-				user.sendMessage(BenCmd.getLocale().getString("basic.groupNotFound", args[0]));
+				BenCmd.getLocale().sendMessage(user, "basic.groupNotFound", args[0]);
 			} else {
 				if (group.hasPerm(args[1], false, false)) {
 					user.sendMessage(ChatColor.RED + "That group can already do that!");
@@ -349,7 +349,7 @@ public class PermissionCommands implements Commands {
 		} else if (args[1].startsWith("-")) {
 			args[1] = args[1].replaceFirst("-", "");
 			if (group == null) {
-				user.sendMessage(BenCmd.getLocale().getString("basic.groupNotFound", args[0]));
+				BenCmd.getLocale().sendMessage(user, "basic.groupNotFound", args[0]);
 			} else {
 				if (!group.hasPerm(args[1], false, false)) {
 					user.sendMessage(ChatColor.RED + "That group can't do that!");
@@ -361,7 +361,7 @@ public class PermissionCommands implements Commands {
 			}
 		} else if (args[1].equalsIgnoreCase("plist")) {
 			if (group == null) {
-				user.sendMessage(BenCmd.getLocale().getString("basic.groupNotFound", args[0]));
+				BenCmd.getLocale().sendMessage(user, "basic.groupNotFound", args[0]);
 			} else {
 				user.sendMessage(group.listPermissions());
 				return;
@@ -376,7 +376,7 @@ public class PermissionCommands implements Commands {
 		PermissionUser puser2 = null;
 		User user2 = null;
 		if (args.length == 1 && !user.hasPerm("bencmd.action.status.other")) {
-			user.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
+			BenCmd.getLocale().sendMessage(user, "basic.noPermission");
 			BenCmd.getPlugin().logPermFail();
 			return;
 		} else if (args.length == 1) {
@@ -473,7 +473,7 @@ public class PermissionCommands implements Commands {
 		}
 		toKick = User.matchUserAllowPartial(args[0]);
 		if (toKick == null) {
-			user.sendMessage(BenCmd.getLocale().getString("basic.userNotFound", args[0]));
+			BenCmd.getLocale().sendMessage(user, "basic.userNotFound", args[0]);
 			return;
 		}
 		if (args.length > 1) {
@@ -518,7 +518,7 @@ public class PermissionCommands implements Commands {
 		}
 		PermissionUser puser2;
 		if ((puser2 = PermissionUser.matchUserAllowPartial(args[0])) == null) {
-			user.sendMessage(BenCmd.getLocale().getString("basic.userNotFound", args[0]));
+			BenCmd.getLocale().sendMessage(user, "basic.userNotFound", args[0]);
 			return;
 		}
 		if (puser2.isMuted() != null) {
@@ -574,7 +574,7 @@ public class PermissionCommands implements Commands {
 		}
 		PermissionUser puser2;
 		if ((puser2 = PermissionUser.matchUserAllowPartial(args[0])) == null) {
-			user.sendMessage(BenCmd.getLocale().getString("basic.userNotFound", args[0]));
+			BenCmd.getLocale().sendMessage(user, "basic.userNotFound", args[0]);
 			return;
 		}
 		if (puser2.isMuted() == null) {
@@ -597,7 +597,7 @@ public class PermissionCommands implements Commands {
 		}
 		PermissionUser puser2;
 		if ((puser2 = PermissionUser.matchUserAllowPartial(args[0])) == null) {
-			user.sendMessage(BenCmd.getLocale().getString("basic.userNotFound", args[0]));
+			BenCmd.getLocale().sendMessage(user, "basic.userNotFound", args[0]);
 			return;
 		}
 		if (puser2.isJailed() != null) {
@@ -654,7 +654,7 @@ public class PermissionCommands implements Commands {
 		}
 		PermissionUser puser2;
 		if ((puser2 = PermissionUser.matchUserAllowPartial(args[0])) == null) {
-			user.sendMessage(BenCmd.getLocale().getString("basic.userNotFound", args[0]));
+			BenCmd.getLocale().sendMessage(user, "basic.userNotFound", args[0]);
 			return;
 		}
 		if (puser2.isJailed() == null) {
@@ -680,7 +680,7 @@ public class PermissionCommands implements Commands {
 		}
 		PermissionUser puser2;
 		if ((puser2 = PermissionUser.matchUserAllowPartial(args[0])) == null) {
-			user.sendMessage(BenCmd.getLocale().getString("basic.userNotFound", args[0]));
+			BenCmd.getLocale().sendMessage(user, "basic.userNotFound", args[0]);
 			return;
 		}
 		if (puser2.isBanned() != null) {
@@ -736,7 +736,7 @@ public class PermissionCommands implements Commands {
 		}
 		PermissionUser puser2;
 		if ((puser2 = PermissionUser.matchUserAllowPartial(args[0])) == null && !Bukkit.getPlayerExact(args[0]).isBanned()) {
-			user.sendMessage(BenCmd.getLocale().getString("basic.userNotFound", args[0]));
+			BenCmd.getLocale().sendMessage(user, "basic.userNotFound", args[0]);
 			return;
 		} 
 		if (puser2.isBanned() == null && !Bukkit.getPlayerExact(puser2.getName()).isBanned()) {
@@ -757,7 +757,7 @@ public class PermissionCommands implements Commands {
 		}
 		PermissionUser puser2;
 		if ((puser2 = PermissionUser.matchUserAllowPartial(args[0])) == null) {
-			user.sendMessage(BenCmd.getLocale().getString("basic.userNotFound", args[0]));
+			BenCmd.getLocale().sendMessage(user, "basic.userNotFound", args[0]);
 			return;
 		}
 		String m = "";

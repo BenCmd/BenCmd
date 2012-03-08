@@ -24,7 +24,7 @@ public class RedstoneCommands implements Commands {
 
 	public void Lever(String[] args, User user) {
 		if (((Player) user.getHandle()).getTargetBlock(null, 4).getType() != Material.LEVER) {
-			user.sendMessage(BenCmd.getLocale().getString("command.lever.notALever"));
+			BenCmd.getLocale().sendMessage(user, "command.lever.notALever");
 			return;
 		}
 		Location l = ((Player) user.getHandle()).getTargetBlock(null, 4).getLocation();
@@ -33,19 +33,19 @@ public class RedstoneCommands implements Commands {
 			return;
 		} else if (args[0].equalsIgnoreCase("day")) {
 			BenCmd.getRedstoneFile().addLever(new RedstoneLever(l, RedstoneLever.LeverType.DAY));
-			user.sendMessage(BenCmd.getLocale().getString("command.lever.success.day"));
+			BenCmd.getLocale().sendMessage(user, "command.lever.success.day");
 			BenCmd.log(BenCmd.getLocale().getString("log.lever.day", user.getName(), l.getBlockX() + "", l.getBlockY() + "", l.getBlockZ() + "", l.getWorld().getName()));
 		} else if (args[0].equalsIgnoreCase("night")) {
 			BenCmd.getRedstoneFile().addLever(new RedstoneLever(l, RedstoneLever.LeverType.NIGHT));
-			user.sendMessage(BenCmd.getLocale().getString("command.lever.success.night"));
+			BenCmd.getLocale().sendMessage(user, "command.lever.success.night");
 			BenCmd.log(BenCmd.getLocale().getString("log.lever.night", user.getName(), l.getBlockX() + "", l.getBlockY() + "", l.getBlockZ() + "", l.getWorld().getName()));
 		} else if (args[0].equalsIgnoreCase("none")) {
 			if (!BenCmd.getRedstoneFile().isLever(l)) {
-				user.sendMessage(BenCmd.getLocale().getString("command.lever.notTimed"));
+				BenCmd.getLocale().sendMessage(user, "command.lever.notTimed");
 				return;
 			}
 			BenCmd.getRedstoneFile().removeLever(l);
-			user.sendMessage(BenCmd.getLocale().getString("command.lever.success.none"));
+			BenCmd.getLocale().sendMessage(user, "command.lever.success.none");
 			BenCmd.log(BenCmd.getLocale().getString("log.lever.none", user.getName(), l.getBlockX() + "", l.getBlockY() + "", l.getBlockZ() + "", l.getWorld().getName()));
 		} else {
 			BenCmd.showUse(user, "lever");

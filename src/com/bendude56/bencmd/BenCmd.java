@@ -268,6 +268,11 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 		Logger.getLogger("Minecraft.BenCmd").log(l, message);
 	}
 	
+	public static void showUse(User user, String command, String subCommand) {
+		user.sendMessage(getLocale().getString("basic.use"));
+		user.sendMessage(getLocale().getString("command." + command + ".use." + subCommand));
+	}
+	
 	public static void showUse(User user, String command) {
 		user.sendMessage(getLocale().getString("basic.use"));
 		user.sendMessage(getLocale().getString("command." + command + ".use"));

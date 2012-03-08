@@ -47,7 +47,7 @@ public class Warp {
 
 	public void warpHere(User player) {
 		if (!this.canWarpHere(player)) {
-			player.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
+			BenCmd.getLocale().sendMessage(player, "basic.noPermission");
 			BenCmd.log(player.getName() + " tried to warp to " + warpName + ", but they don't have permission.");
 			return;
 		}
@@ -64,7 +64,7 @@ public class Warp {
 
 	public void warpHere(User player, User sender) {
 		if (!this.canWarpHere(sender)) {
-			player.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
+			BenCmd.getLocale().sendMessage(player, "basic.noPermission");
 			BenCmd.log(sender.getName() + " tried to warp " + player.getName() + " to " + warpName + ", but they don't have permission.");
 		}
 		try {

@@ -414,7 +414,7 @@ public class BenCmdPlayerListener implements Listener, EventExecutor {
 			}
 			if (!user.hasPerm("bencmd.spawnmob")) {
 				event.setCancelled(true);
-				event.getPlayer().sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
+				BenCmd.getLocale().sendMessage(User.getUser(event.getPlayer()), "basic.noPermission");
 			}
 		}
 	}

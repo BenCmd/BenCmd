@@ -26,12 +26,12 @@ public class AdvancedCommands implements Commands {
 
 	public void Write(String[] args, User user) {
 		if (((Player) user.getHandle()).getTargetBlock(null, 4).getType() != Material.BOOKSHELF) {
-			user.sendMessage(BenCmd.getLocale().getString("command.write.notAShelf"));
+			BenCmd.getLocale().sendMessage(user, "command.write.notAShelf");
 			return;
 		}
 		Location l = ((Player) user.getHandle()).getTargetBlock(null, 4).getLocation();
 		if (!BenCmd.getLots().canBuildHere(((Player) user.getHandle()), l)) {
-			user.sendMessage(BenCmd.getLocale().getString("command.write.notAllowed"));
+			BenCmd.getLocale().sendMessage(user, "command.write.notAllowed");
 			return;
 		}
 		String message = "";
@@ -44,7 +44,7 @@ public class AdvancedCommands implements Commands {
 			}
 		}
 		BenCmd.getShelfFile().addShelf(new Shelf(((Player) user.getHandle()).getTargetBlock(null, 4).getLocation(), message));
-		user.sendMessage(BenCmd.getLocale().getString("command.write.success"));
+		BenCmd.getLocale().sendMessage(user, "command.write.success");
 		BenCmd.log(BenCmd.getLocale().getString("log.write.success", user.getName(), l.getX() + "", l.getY() + "", l.getZ() + "", l.getWorld().getName(), message));
 	}
 
@@ -55,11 +55,11 @@ public class AdvancedCommands implements Commands {
 		}
 		User target;
 		if ((target = User.matchUserAllowPartial(args[0])) == null) {
-			user.sendMessage(BenCmd.getLocale().getString("basic.userNotFound", args[0]));
+			BenCmd.getLocale().sendMessage(user, "basic.userNotFound", args[0]);
 			return;
 		}
 		if (target.hasPerm("bencmd.inv.protect") && !user.hasPerm("bencmd.inv.all")) {
-			user.sendMessage(BenCmd.getLocale().getString("command.inv.protected", args[0]));
+			BenCmd.getLocale().sendMessage(user, "command.inv.protected", args[0]);
 			return;
 		}
 		if (!(((CraftPlayer) target.getHandle()).getHandle().inventory instanceof ViewableInventory)) {

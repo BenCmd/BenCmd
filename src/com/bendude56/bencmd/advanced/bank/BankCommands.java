@@ -41,27 +41,27 @@ public class BankCommands implements Commands {
 		} else if (args.length == 1) {
 			if (args[0].equalsIgnoreCase("upgrade")) {
 				if (BenCmd.getBankController().getBank(user.getName()).isUpgraded()) {
-					user.sendMessage(BenCmd.getLocale().getString("command.bank.selfAlreadyUpgraded"));
+					BenCmd.getLocale().sendMessage(user, "command.bank.selfAlreadyUpgraded");
 				} else {
 					if (user.hasPerm("bencmd.bank.admin")) {
 						BenCmd.log(BenCmd.getLocale().getString("log.bank.upgradeSelf", user.getName()));
 						BenCmd.getBankController().upgradeBank(user.getName());
-						user.sendMessage(BenCmd.getLocale().getString("command.bank.selfUpgrade"));
+						BenCmd.getLocale().sendMessage(user, "command.bank.selfUpgrade");
 					} else {
 						if (BuyableItem.hasMoney(user, BenCmd.getMainProperties().getDouble("bankUpgradeCost", 4096), new ArrayList<Material>())) {
 							BuyableItem.remMoney(user, BenCmd.getMainProperties().getDouble("bankUpgradeCost", 4096), new ArrayList<Material>());
 							BenCmd.getBankController().upgradeBank(user.getName());
 							BenCmd.log(BenCmd.getLocale().getString("log.bank.upgradeSelf", user.getName()));
-							user.sendMessage(BenCmd.getLocale().getString("command.bank.selfUpgrade"));
+							BenCmd.getLocale().sendMessage(user, "command.bank.selfUpgrade");
 						} else {
-							user.sendMessage(BenCmd.getLocale().getString("basic.insufficientMoney", BenCmd.getMainProperties().getDouble("bankUpgradeCost", 4096) + ""));
+							BenCmd.getLocale().sendMessage(user, "basic.insufficientMoney", BenCmd.getMainProperties().getDouble("bankUpgradeCost", 4096) + "");
 						}
 					}
 				}
 			} else if (args[0].equalsIgnoreCase("downgrade")) {
 				if (BenCmd.getBankController().getBank(user.getName()).isUpgraded()) {
 					if (!BenCmd.getBankController().canDowngradeBank(user.getName())) {
-						user.sendMessage(BenCmd.getLocale().getString("command.bank.selfCannotDowngrade"));
+						BenCmd.getLocale().sendMessage(user, "command.bank.selfCannotDowngrade");
 						return;
 					}
 					BenCmd.getBankController().downgradeBank(user.getName());
@@ -82,9 +82,9 @@ public class BankCommands implements Commands {
 						}
 					}
 					BenCmd.log(BenCmd.getLocale().getString("log.bank.downgradeSelf", user.getName()));
-					user.sendMessage(BenCmd.getLocale().getString("command.bank.selfDowngrade"));
+					BenCmd.getLocale().sendMessage(user, "command.bank.selfDowngrade");
 				} else {
-					user.sendMessage(BenCmd.getLocale().getString("command.bank.selfAlreadyDowngraded"));
+					BenCmd.getLocale().sendMessage(user, "command.bank.selfAlreadyDowngraded");
 				}
 			} else {
 				if (!user.hasPerm("bencmd.bank.admin")) {
@@ -93,11 +93,11 @@ public class BankCommands implements Commands {
 				}
 				PermissionUser u = PermissionUser.matchUserAllowPartial(args[0]);
 				if (!BenCmd.getBankController().hasBank(u.getName())) {
-					user.sendMessage(BenCmd.getLocale().getString("command.bank.otherNoBank"));
+					BenCmd.getLocale().sendMessage(user, "command.bank.otherNoBank");
 					return;
 				}
 				if (u.hasPerm("bencmd.bank.protect") && !user.hasPerm("bencmd.bank.all")) {
-					user.sendMessage(BenCmd.getLocale().getString("command.bank.protected", u.getName()));
+					BenCmd.getLocale().sendMessage(user, "command.bank.protected", u.getName());
 					return;
 				}
 				BenCmd.log(BenCmd.getLocale().getString("log.bank.openOther", user.getName(), u.getName()));
@@ -110,41 +110,41 @@ public class BankCommands implements Commands {
 			}
 			PermissionUser u = PermissionUser.matchUserAllowPartial(args[0]);
 			if (!BenCmd.getBankController().hasBank(u.getName())) {
-				user.sendMessage(BenCmd.getLocale().getString("command.bank.otherNoBank"));
+				BenCmd.getLocale().sendMessage(user, "command.bank.otherNoBank");
 				return;
 			}
 			if (u.hasPerm("bencmd.bank.protect") && !user.hasPerm("bencmd.bank.all")) {
-				user.sendMessage(BenCmd.getLocale().getString("command.bank.protected", u.getName()));
+				BenCmd.getLocale().sendMessage(user, "command.bank.protected", u.getName());
 				return;
 			}
 			if (args[1].equalsIgnoreCase("upgrade")) {
 				if (BenCmd.getBankController().getBank(u.getName()).isUpgraded()) {
-					user.sendMessage(BenCmd.getLocale().getString("command.bank.otherAlreadyUpgraded", u.getName()));
+					BenCmd.getLocale().sendMessage(user, "command.bank.otherAlreadyUpgraded", u.getName());
 				} else {
 					BenCmd.getBankController().upgradeBank(u.getName());
 					BenCmd.log(BenCmd.getLocale().getString("log.bank.upgradeOther", user.getName(), u.getName()));
-					user.sendMessage(BenCmd.getLocale().getString("command.bank.otherUpgrade", u.getName()));
+					BenCmd.getLocale().sendMessage(user, "command.bank.otherUpgrade", u.getName());
 				}
 			} else if (args[1].equalsIgnoreCase("downgrade")) {
 				if (BenCmd.getBankController().getBank(u.getName()).isUpgraded()) {
 					if (!BenCmd.getBankController().canDowngradeBank(u.getName())) {
-						user.sendMessage(BenCmd.getLocale().getString("command.bank.otherCannotDowngrade", u.getName()));
+						BenCmd.getLocale().sendMessage(user, "command.bank.otherCannotDowngrade", u.getName());
 						return;
 					}
 					BenCmd.getBankController().downgradeBank(u.getName());
 					BenCmd.log(BenCmd.getLocale().getString("log.bank.downgradeOther", user.getName(), u.getName()));
-					user.sendMessage(BenCmd.getLocale().getString("command.bank.otherDowngrade", u.getName()));
+					BenCmd.getLocale().sendMessage(user, "command.bank.otherDowngrade", u.getName());
 				} else {
-					user.sendMessage(BenCmd.getLocale().getString("command.bank.otherAlreadyDowngraded", u.getName()));
+					BenCmd.getLocale().sendMessage(user, "command.bank.otherAlreadyDowngraded", u.getName());
 				}
 			} else {
 				BenCmd.showUse(user, "bank.admin");
 			}
 		} else {
 			if (user.hasPerm("bencmd.bank.admin")) {
-				BenCmd.showUse(user, "bank.admin");
+				BenCmd.showUse(user, "bank", "admin");
 			} else {
-				BenCmd.showUse(user, "bank.normal");
+				BenCmd.showUse(user, "bank", "normal");
 			}
 		}
 	}

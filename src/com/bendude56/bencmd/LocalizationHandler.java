@@ -61,6 +61,26 @@ public class LocalizationHandler {
 		}
 	}
 	
+	public void sendMessage(User user, String identifier, String... args) {
+		user.sendMessage(getString(identifier, args));
+	}
+	
+	public void sendMessage(User user, String identifier) {
+		user.sendMessage(getString(identifier));
+	}
+	
+	public void sendMultilineMessage(User user, String identifier) {
+		for (int i = 0; currentFile.containsKey(identifier + "." + i); i++) {
+			user.sendMessage(getString(identifier + "." + i));
+		}
+	}
+	
+	public void sendMultilineMessage(User user, String identifier, String... args) {
+		for (int i = 0; currentFile.containsKey(identifier + "." + i); i++) {
+			user.sendMessage(getString(identifier + "." + i, args));
+		}
+	}
+	
 	public static String format(String original, String... args) {
 		for (int i = 0; i < args.length; i++) {
 			original = original.replace("%" + (i + 1), args[i]);
@@ -117,8 +137,8 @@ public class LocalizationHandler {
 		p.setProperty("basic.worldNotFound", ChatColor.RED + "Couldn't find world '%1'!");
 		
 		// Command specific messages
-		p.setProperty("command.bank.admin.use", ChatColor.YELLOW + "/bank [{downgrade|upgrade|<name> [{downgrade|upgrade}]}]");
-		p.setProperty("command.bank.normal.use", ChatColor.YELLOW + "/bank [{downgrade|upgrade}]");
+		
+		// BANK
 		p.setProperty("command.bank.otherAlreadyDowngraded", ChatColor.RED + "%1's bank is not currently upgraded!");
 		p.setProperty("command.bank.otherAlreadyUpgraded", ChatColor.RED + "%1's bank is already upgraded!");
 		p.setProperty("command.bank.otherCannotDowngrade", ChatColor.RED + "The bottom half of %1's bank must be empty to proceed!");
@@ -132,26 +152,41 @@ public class LocalizationHandler {
 		p.setProperty("command.bank.selfDowngrade", ChatColor.GREEN + "Your bank has been successfully downgraded!");
 		p.setProperty("command.bank.selfUpgrade", ChatColor.GREEN + "Your bank has been successfully upgraded!");
 		
+		p.setProperty("command.bank.use.admin", ChatColor.YELLOW + "/bank [{downgrade|upgrade|<name> [{downgrade|upgrade}]}]");
+		p.setProperty("command.bank.use.normal", ChatColor.YELLOW + "/bank [{downgrade|upgrade}]");
+		
+		// BENCMD
 		p.setProperty("command.bencmd.noUpdates", ChatColor.RED + "There are no BenCmd updates available... Use /bencmd fupdate to force an update.");
 		p.setProperty("command.bencmd.reloadSuccess", ChatColor.GREEN + "BenCmd config reloaded!");
 		p.setProperty("command.bencmd.version", ChatColor.YELLOW + "This server is running BenCmd v" + ChatColor.GREEN + "%1" + ChatColor.YELLOW + "!");
 		
-		p.setProperty("command.channel.coowner.use", ChatColor.YELLOW + "/channel {join|spy|unspy|list|info|leave|kick|ban|mute|normal|vip|mod|slow|pause|motd|default|alwaysslow|slowdelay}");
-		// p.setProperty("command.channel., value)
-		p.setProperty("command.channel.mod.use", ChatColor.YELLOW + "/channel {join|spy|unspy|list|info|leave|kick|ban|mute|normal|slow|pause}");
-		p.setProperty("command.channel.normal.use", ChatColor.YELLOW + "/channel {join|spy|unspy|list|leave}");
-		p.setProperty("command.channel.outside.use", ChatColor.YELLOW + "/channel {join|spy|unspy|list|add}");
-		p.setProperty("command.channel.owner.use", ChatColor.YELLOW + "/channel {join|spy|unspy|list|info|leave|remove|kick|ban|mute|normal|vip|mod|coown|own|slow|pause|motd|default|rename|alwaysslow|slowdelay}");
+		// CHANNEL
+		p.setProperty("command.channel.channelNotFound", ChatColor.RED + "Couldn't find channel '%1'!");
+		p.setProperty("command.channel.notInChannel", ChatColor.RED + "You must be inside of a channel to do that!");
 		
+		p.setProperty("command.channel.use.add", ChatColor.YELLOW + "/channel add <channel>");
+		p.setProperty("command.channel.use.coowner", ChatColor.YELLOW + "/channel {join|spy|unspy|list|info|leave|kick|ban|mute|normal|vip|mod|slow|pause|motd|default|alwaysslow|slowdelay}");
+		p.setProperty("command.channel.use.info", ChatColor.YELLOW + "/channel info");
+		p.setProperty("command.channel.use.join", ChatColor.YELLOW + "/channel join <channel>");
+		p.setProperty("command.channel.use.mod", ChatColor.YELLOW + "/channel {join|spy|unspy|list|info|leave|kick|ban|mute|normal|slow|pause}");
+		p.setProperty("command.channel.use.normal", ChatColor.YELLOW + "/channel {join|spy|unspy|list|leave}");
+		p.setProperty("command.channel.use.outside", ChatColor.YELLOW + "/channel {join|spy|unspy|list|add}");
+		p.setProperty("command.channel.use.owner", ChatColor.YELLOW + "/channel {join|spy|unspy|list|info|leave|remove|kick|ban|mute|normal|vip|mod|coown|own|slow|pause|motd|default|rename|alwaysslow|slowdelay}");
+		p.setProperty("command.channel.use.spy", ChatColor.YELLOW + "/channel spy <channel>");
+		p.setProperty("command.channel.use.unspy", ChatColor.YELLOW + "/channel unspy <channel>");
+		
+		// CR
 		p.setProperty("command.cr.otherOff", ChatColor.GREEN + "%1 is now in survival mode!");
 		p.setProperty("command.cr.otherOn", ChatColor.GREEN + "%1 is now in creative mode!");
 		p.setProperty("command.cr.selfOff", ChatColor.GREEN + "You are now in survival mode!");
 		p.setProperty("command.cr.selfOn", ChatColor.GREEN + "You are now in creative mode!");
 		
+		// FEED
 		p.setProperty("command.feed.self", ChatColor.GREEN + "You have been fed.");
 		p.setProperty("command.feed.other", ChatColor.GREEN + "You have fed %1.");
 		p.setProperty("command.feed.use", ChatColor.YELLOW + "/feed [player]");
 		
+		// GOD
 		p.setProperty("command.god.otherOff", ChatColor.GREEN + "%1 is no longer in god mode.");
 		p.setProperty("command.god.otherOn", ChatColor.GREEN + "%1 is now in god mode.");
 		p.setProperty("command.god.protected", ChatColor.RED + "%1 is protected from being godded/ungodded!");
@@ -159,28 +194,34 @@ public class LocalizationHandler {
 		p.setProperty("command.god.selfOn", ChatColor.GREEN + "You are now in god mode.");
 		p.setProperty("command.god.use", ChatColor.YELLOW + "/god [player]");
 		
+		// HEAL
 		p.setProperty("command.heal.other", ChatColor.GREEN + "You have healed %1!");
 		p.setProperty("command.heal.self", ChatColor.GREEN + "You have been healed!");
 		p.setProperty("command.heal.use", ChatColor.YELLOW + "/heal [player]");
 		
+		// INV
 		p.setProperty("command.inv.protected", ChatColor.RED + "%1's inventory is protected!");
 		p.setProperty("command.inv.use", ChatColor.YELLOW + "/inv <player>");
 		
+		// KILL
 		p.setProperty("command.kill.otherGod", ChatColor.RED + "You can't kill %1 while they're godded!");
 		p.setProperty("command.kill.protected", ChatColor.RED + "%1 is protected from being killed!");
 		p.setProperty("command.kill.selfGod", ChatColor.RED + "You can't kill yourself while you're godded!");
 		p.setProperty("command.kill.use", ChatColor.YELLOW + "/kill [player]");
 		
+		// KILLMOBS
 		p.setProperty("command.killmobs.noMobs" , ChatColor.RED + "No mobs killed!");
 		p.setProperty("command.killmobs.success", ChatColor.GREEN + "%1 mobs killed!");
 		p.setProperty("command.killmobs.unrecognizedMob", ChatColor.RED + "Unrecognized mob type: %1");
 		p.setProperty("command.killmobs.use", ChatColor.YELLOW + "/killmobs <mob> ... [radius]");
 		
+		// LEVEL
 		p.setProperty("command.level.invalidExp", ChatColor.RED + "Invalid experience inputted!");
 		p.setProperty("command.level.other", ChatColor.GREEN + "You have set %1's total experience to %2.");
 		p.setProperty("command.level.self", ChatColor.GREEN + "Your total experience has been set to %1.");
 		p.setProperty("command.level.use", ChatColor.YELLOW + "/level <exp> [player]");
 		
+		// LEVER
 		p.setProperty("command.lever.notALever", ChatColor.RED + "The block you are pointing at is not a lever!");
 		p.setProperty("command.lever.notTimed", ChatColor.RED + "That lever is not time-controlled!");
 		p.setProperty("command.lever.success.day", ChatColor.GREEN + "That lever will now activate during the day!");
@@ -188,45 +229,56 @@ public class LocalizationHandler {
 		p.setProperty("command.lever.success.none", ChatColor.GREEN + "That lever is no longer time controlled!");
 		p.setProperty("command.lever.use", ChatColor.YELLOW + "/lever {day|night|none}");
 		
+		// NPC
 		p.setProperty("command.npc.banker", "Banker");
 		p.setProperty("command.npc.bankManager", "Bank Manager");
 		p.setProperty("command.npc.blacksmith", "Blacksmith");
 		p.setProperty("command.npc.created", ChatColor.GREEN + "NPC of type '%1' successfully created!");
 		p.setProperty("command.npc.despawnall", ChatColor.GREEN + "All NPCs have been despawned!");
+		p.setProperty("command.npc.npcNotFound", ChatColor.RED + "No NPC with that ID exists!");
+		p.setProperty("command.npc.static", "Static");
+		p.setProperty("command.npc.use", ChatColor.YELLOW + "/npc {bank|bupgrade|blacksmith|static|remove|despawnall|skin|item|name|rep}");
+		p.setProperty("command.npc.useTip", ChatColor.YELLOW + "TIP: Right-click an NPC with a stick to get info about that NPC");
+		
 		p.setProperty("command.npc.item.noItem", ChatColor.RED + "You must be holding an item to do that!");
 		p.setProperty("command.npc.item.notSupported", ChatColor.RED + "That NPC cannot have a custom item!");
 		p.setProperty("command.npc.item.success", ChatColor.GREEN + "That NPC's item has been changed successfully!");
 		p.setProperty("command.npc.item.use", ChatColor.YELLOW + "/npc item <id>");
+		
 		p.setProperty("command.npc.name.notSupported", ChatColor.RED + "That NPC cannot have a custom name!");
 		p.setProperty("command.npc.name.success", ChatColor.GREEN + "That NPC's name has been changed to '%1'!");
 		p.setProperty("command.npc.name.use", ChatColor.YELLOW + "/npc name <id> <name>");
-		p.setProperty("command.npc.npcNotFound", ChatColor.RED + "No NPC with that ID exists!");
+		
 		p.setProperty("command.npc.remove.success", ChatColor.GREEN + "That NPC has been deleted!");
 		p.setProperty("command.npc.remove.use", ChatColor.YELLOW + "/npc remove <id>");
+		
 		p.setProperty("command.npc.rep.invalidPrice", ChatColor.RED + "Invalid price entered!");
 		p.setProperty("command.npc.rep.noItem", ChatColor.RED + "You must be holding an item to do that!");
 		p.setProperty("command.npc.rep.notSupported", ChatColor.RED + "That NPC is not a blacksmith!");
 		p.setProperty("command.npc.rep.success", ChatColor.GREEN + "That item now costs %1 to repair!");
 		p.setProperty("command.npc.rep.use", ChatColor.YELLOW + "/npc rep <id> <cost>");
+		
 		p.setProperty("command.npc.skin.noSpout", ChatColor.RED + "NOTE: To see this change, you must first install SpoutCraft");
 		p.setProperty("command.npc.skin.notSupported", ChatColor.RED + "That NPC cannot be given a custom skin!");
 		p.setProperty("command.npc.skin.success", ChatColor.GREEN + "That NPC's skin has been changed successfully!");
 		p.setProperty("command.npc.skin.use", ChatColor.YELLOW + "/npc skin <id> <skin>");
-		p.setProperty("command.npc.static", "Static");
-		p.setProperty("command.npc.static.use", ChatColor.YELLOW + "/npc static <name> [skin]");
-		p.setProperty("command.npc.use", ChatColor.YELLOW + "/npc {bank|bupgrade|blacksmith|static|remove|despawnall|skin|item|name|rep}");
-		p.setProperty("command.npc.useTip", ChatColor.YELLOW + "TIP: Right-click an NPC with a stick to get info about that NPC");
 		
+		p.setProperty("command.npc.static.use", ChatColor.YELLOW + "/npc static <name> [skin]");
+		
+		// SETSPAWN
 		p.setProperty("command.setspawn.setSuccess", ChatColor.GREEN + "The spawn location for the world '%1' has been set here.");
 		
+		// SPAWNER
 		p.setProperty("command.spawner.invalidMob", ChatColor.RED + "That mob type is not recognized!");
 		p.setProperty("command.spawner.invalidSpawner", ChatColor.RED + "That is not a spawner! Make sure nothing is in the way!");
 		p.setProperty("command.spawner.setSuccess", ChatColor.GREEN + "This spawner now spawns %1s.");
 		
+		// SPAWNMOB
 		p.setProperty("command.spawnmob.invalidAmount", ChatColor.RED + "Invalid amount inputted!");
 		p.setProperty("command.spawnmob.spawnMsg", ChatColor.GREEN + "%1 mobs spawned!");
 		p.setProperty("command.spawnmob.use", ChatColor.YELLOW + "/spawnmob <mob> [amount]");
 		
+		// TIME
 		p.setProperty("command.time.invalidTime", ChatColor.RED + "Invalid time inputted!");
 		p.setProperty("command.time.lock", ChatColor.GREEN + "Time in world '%1' has been locked!");
 		p.setProperty("command.time.lockAll", ChatColor.GREEN + "Time in all worlds has been locked!");
@@ -236,6 +288,7 @@ public class LocalizationHandler {
 		p.setProperty("command.time.unlockAll", ChatColor.GREEN + "Time in all worlds has been unlocked!");
 		p.setProperty("command.time.use", ChatColor.YELLOW + "/time {sunrise|dawn|day|noon|sunset|dusk|night|midnight|set <time>|lock|unlock");
 		
+		// WRITE
 		p.setProperty("command.write.notAllowed", ChatColor.RED + "You're not allowed to do that here!");
 		p.setProperty("command.write.notAShelf", ChatColor.RED + "You're not pointing at a bookshelf!");
 		p.setProperty("command.write.success", ChatColor.GREEN + "That bookshelf has been written to successfully!");

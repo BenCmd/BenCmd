@@ -48,7 +48,7 @@ public class WarpCommands implements Commands {
 			if (args.length != 1) {
 				user.sendMessage(ChatColor.YELLOW + "Proper use is: /tphere <player>");
 			} else if (user.isServer()) {
-				user.sendMessage(BenCmd.getLocale().getString("basic.noServerUse"));
+				BenCmd.getLocale().sendMessage(user, "basic.noServerUse");
 			} else {
 				Bukkit.dispatchCommand(user.getHandle(), "tp " + args[0] + " " + user.getName());
 			}
@@ -74,7 +74,7 @@ public class WarpCommands implements Commands {
 		}
 		if (args.length == 1) {
 			if (user.isServer()) {
-				user.sendMessage(BenCmd.getLocale().getString("basic.noServerUse"));
+				BenCmd.getLocale().sendMessage(user, "basic.noServerUse");
 				return;
 			}
 			Warp warp = BenCmd.getWarps().getWarp(args[0]);
@@ -95,10 +95,10 @@ public class WarpCommands implements Commands {
 			try {
 				warper = User.getUser(Bukkit.matchPlayer(args[1]).get(0));
 			} catch (NullPointerException e) {
-				user.sendMessage(BenCmd.getLocale().getString("basic.userNotFound", args[1]));
+				BenCmd.getLocale().sendMessage(user, "basic.userNotFound", args[1]);
 				return;
 			} catch (IndexOutOfBoundsException e) {
-				user.sendMessage(BenCmd.getLocale().getString("basic.userNotFound", args[1]));
+				BenCmd.getLocale().sendMessage(user, "basic.userNotFound", args[1]);
 				return;
 			}
 			warper.warpTo(warp, user);
@@ -111,7 +111,7 @@ public class WarpCommands implements Commands {
 
 	public void SetWarp(String[] args, User user) {
 		if (user.isServer()) {
-			user.sendMessage(BenCmd.getLocale().getString("basic.noServerUse"));
+			BenCmd.getLocale().sendMessage(user, "basic.noServerUse");
 			return;
 		}
 		if (args.length == 0 || args.length > 2) {
@@ -134,7 +134,7 @@ public class WarpCommands implements Commands {
 			if (args.length == 2) {
 				group = args[1];
 				if (!BenCmd.getPermissionManager().getGroupFile().groupExists(group)) {
-					user.sendMessage(BenCmd.getLocale().getString("basic.groupNotFound", group));
+					BenCmd.getLocale().sendMessage(user, "basic.groupNotFound", group);
 				}
 			}
 			if (!BenCmd.getWarps().addWarp(x, y, z, yaw, pitch, world, args[0], group)) {
@@ -164,7 +164,7 @@ public class WarpCommands implements Commands {
 
 	public void Back(User user) {
 		if (user.isServer()) {
-			user.sendMessage(BenCmd.getLocale().getString("basic.noServerUse"));
+			BenCmd.getLocale().sendMessage(user, "basic.noServerUse");
 			return;
 		}
 		if (!user.lastCheck()) {
@@ -174,7 +174,7 @@ public class WarpCommands implements Commands {
 
 	public void Home(String[] args, User user) {
 		if (user.isServer()) {
-			user.sendMessage(BenCmd.getLocale().getString("basic.noServerUse"));
+			BenCmd.getLocale().sendMessage(user, "basic.noServerUse");
 			return;
 		}
 		if (args.length > 2) {
@@ -213,7 +213,7 @@ public class WarpCommands implements Commands {
 
 	public void SetHome(String[] args, User user) {
 		if (user.isServer()) {
-			user.sendMessage(BenCmd.getLocale().getString("basic.noServerUse"));
+			BenCmd.getLocale().sendMessage(user, "basic.noServerUse");
 			return;
 		}
 		if (args.length > 2) {
@@ -302,7 +302,7 @@ public class WarpCommands implements Commands {
 
 	public void SetJail(User user) {
 		if (user.isServer()) {
-			user.sendMessage(BenCmd.getLocale().getString("basic.noServerUse"));
+			BenCmd.getLocale().sendMessage(user, "basic.noServerUse");
 			return;
 		}
 		BenCmd.getPermissionManager().setJailWarp(((Player) user.getHandle()).getLocation());
@@ -311,7 +311,7 @@ public class WarpCommands implements Commands {
 	public void Tp(String[] args, User user) {
 		if (args.length == 1) {
 			if (!user.hasPerm("bencmd.tp.self")) {
-				user.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
+				BenCmd.getLocale().sendMessage(user, "basic.noPermission");
 				BenCmd.getPlugin().logPermFail();
 				return;
 			}
@@ -334,7 +334,7 @@ public class WarpCommands implements Commands {
 				return;
 			}
 			if (!user.hasPerm("bencmd.tp.other")) {
-				user.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
+				BenCmd.getLocale().sendMessage(user, "basic.noPermission");
 				BenCmd.getPlugin().logPermFail();
 				return;
 			}
@@ -362,7 +362,7 @@ public class WarpCommands implements Commands {
 			if (user.hasPerm("bencmd.tp.self") || user.hasPerm("bencmd.tp.other")) {
 				user.sendMessage(ChatColor.YELLOW + "Proper use is: /tp <player> [player]");
 			} else {
-				user.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
+				BenCmd.getLocale().sendMessage(user, "basic.noPermission");
 				BenCmd.getPlugin().logPermFail();
 			}
 		}

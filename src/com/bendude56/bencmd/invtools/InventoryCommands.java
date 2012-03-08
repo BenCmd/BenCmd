@@ -38,7 +38,7 @@ public class InventoryCommands implements Commands {
 
 	public void Unl(String[] args, User user) {
 		if (user.isServer()) {
-			user.sendMessage(BenCmd.getLocale().getString("basic.noServerUse"));
+			BenCmd.getLocale().sendMessage(user, "basic.noServerUse");
 			return;
 		}
 		if (args.length != 1) {
@@ -66,7 +66,7 @@ public class InventoryCommands implements Commands {
 
 	public void Disp(String[] args, User user) {
 		if (user.isServer()) {
-			user.sendMessage(BenCmd.getLocale().getString("basic.noServerUse"));
+			BenCmd.getLocale().sendMessage(user, "basic.noServerUse");
 			return;
 		}
 		if (args.length != 0) {
@@ -138,7 +138,7 @@ public class InventoryCommands implements Commands {
 			BenCmd.log("BenCmd: " + user.getDisplayName() + " gave " + user2.getDisplayName() + " an item. (id: " + String.valueOf(mat.getId()) + ", amount: " + String.valueOf(fullAmount) + ", damage: " + String.valueOf(ItemDamage) + ")");
 		} else {
 			if (user.isServer()) {
-				user.sendMessage(BenCmd.getLocale().getString("basic.noServerUse"));
+				BenCmd.getLocale().sendMessage(user, "basic.noServerUse");
 				return;
 			}
 			for (Integer amount : splitamount) {
@@ -156,7 +156,7 @@ public class InventoryCommands implements Commands {
 	public void ClearInventory(String[] args, User user) {
 		if (args.length == 0) {
 			if (user.isServer()) {
-				user.sendMessage(BenCmd.getLocale().getString("basic.noServerUse"));
+				BenCmd.getLocale().sendMessage(user, "basic.noServerUse");
 				return;
 			}
 			((Player) user.getHandle()).getInventory().clear(); // Clear the
@@ -165,7 +165,7 @@ public class InventoryCommands implements Commands {
 			BenCmd.log(user.getDisplayName() + " has cleared their own inventory.");
 		} else if (args.length == 1) {
 			if (!user.hasPerm("bencmd.inv.clr.other")) {
-				user.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
+				BenCmd.getLocale().sendMessage(user, "basic.noPermission");
 				BenCmd.getPlugin().logPermFail();
 				return;
 			}
@@ -179,7 +179,7 @@ public class InventoryCommands implements Commands {
 				((Player) user2.getHandle()).getInventory().clear();
 				BenCmd.log(user.getDisplayName() + " has cleared " + args[0] + "'s inventory.");
 			} else {
-				user.sendMessage(BenCmd.getLocale().getString("basic.userNotFound", args[0]));
+				BenCmd.getLocale().sendMessage(user, "basic.userNotFound", args[0]);
 			}
 		} else {
 			user.sendMessage(ChatColor.YELLOW + "Proper use is /clearinventory [player]");
@@ -203,7 +203,7 @@ public class InventoryCommands implements Commands {
 				break;
 			case 1:
 				if (user.isServer()) {
-					user.sendMessage(BenCmd.getLocale().getString("basic.noServerUse"));
+					BenCmd.getLocale().sendMessage(user, "basic.noServerUse");
 					return;
 				}
 				if (BenCmd.getKitList().kitExists(args[0])) {
@@ -223,7 +223,7 @@ public class InventoryCommands implements Commands {
 					if (BenCmd.getKitList().canUseKit(user, args[0])) {
 						User user2;
 						if ((user2 = User.matchUser(args[1])) == null) {
-							user.sendMessage(BenCmd.getLocale().getString("basic.userNotFound", args[1]));
+							BenCmd.getLocale().sendMessage(user, "basic.userNotFound", args[1]);
 							return;
 						}
 						BenCmd.getKitList().giveKit(user, args[1]);

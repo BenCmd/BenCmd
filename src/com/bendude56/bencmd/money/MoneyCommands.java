@@ -127,35 +127,35 @@ public class MoneyCommands implements Commands {
 		}
 		if (args[0].equalsIgnoreCase("currency")) {
 			if (!user.hasPerm("bencmd.market.price")) {
-				user.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
+				BenCmd.getLocale().sendMessage(user, "basic.noPermission");
 				BenCmd.getPlugin().logPermFail();
 				return;
 			}
 			MarketCurrency(args, user);
 		} else if (args[0].equalsIgnoreCase("item")) {
 			if (!user.hasPerm("bencmd.market.price")) {
-				user.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
+				BenCmd.getLocale().sendMessage(user, "basic.noPermission");
 				BenCmd.getPlugin().logPermFail();
 				return;
 			}
 			MarketItem(args, user);
 		} else if (args[0].equalsIgnoreCase("supply")) {
 			if (!user.hasPerm("bencmd.market.supply")) {
-				user.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
+				BenCmd.getLocale().sendMessage(user, "basic.noPermission");
 				BenCmd.getPlugin().logPermFail();
 				return;
 			}
 			MarketSupply(args, user);
 		} else if (args[0].equalsIgnoreCase("update")) {
 			if (!user.hasPerm("bencmd.market.update")) {
-				user.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
+				BenCmd.getLocale().sendMessage(user, "basic.noPermission");
 				BenCmd.getPlugin().logPermFail();
 				return;
 			}
 			MarketUpdate(args, user);
 		} else if (args[0].equalsIgnoreCase("noupdate")) {
 			if (!user.hasPerm("bencmd.market.update")) {
-				user.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
+				BenCmd.getLocale().sendMessage(user, "basic.noPermission");
 				BenCmd.getPlugin().logPermFail();
 				return;
 			}
@@ -169,7 +169,7 @@ public class MoneyCommands implements Commands {
 			BenCmd.getMarketController().unloadTimer();
 		} else if (args[0].equalsIgnoreCase("close")) {
 			if (!user.hasPerm("bencmd.market.close")) {
-				user.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
+				BenCmd.getLocale().sendMessage(user, "basic.noPermission");
 				BenCmd.getPlugin().logPermFail();
 				return;
 			}
@@ -182,7 +182,7 @@ public class MoneyCommands implements Commands {
 			Bukkit.broadcastMessage(ChatColor.RED + "The market is now closed!");
 		} else if (args[0].equalsIgnoreCase("open")) {
 			if (!user.hasPerm("bencmd.market.open")) {
-				user.sendMessage(BenCmd.getLocale().getString("basic.noPermission"));
+				BenCmd.getLocale().sendMessage(user, "basic.noPermission");
 				BenCmd.getPlugin().logPermFail();
 				return;
 			}
