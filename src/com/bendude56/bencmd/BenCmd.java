@@ -269,8 +269,8 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 	}
 	
 	public static void showUse(User user, String command, String subCommand) {
-		user.sendMessage(getLocale().getString("basic.use"));
-		user.sendMessage(getLocale().getString("command." + command + ".use." + subCommand));
+		getLocale().sendMessage(user, "basic.use");
+		getLocale().sendMessage(user, "command." + command + ".use." + subCommand);
 	}
 	
 	public static void showUse(User user, String command) {
@@ -529,7 +529,7 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 		Location l = ((Player) user.getHandle()).getLocation();
 		log(Level.INFO, getLocale().getString("log.basic.permissionFailLocation", l.getX() + "", l.getY() + "", l.getZ() + "", l.getWorld().getName()));
 		if (showMessage)
-			user.sendMessage(getLocale().getString("basic.noPermission"));
+			getLocale().sendMessage(user, "basic.noPermission");
 	}
 
 	public void incStat(String statName) {

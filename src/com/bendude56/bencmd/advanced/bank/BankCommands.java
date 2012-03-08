@@ -138,7 +138,7 @@ public class BankCommands implements Commands {
 					BenCmd.getLocale().sendMessage(user, "command.bank.otherAlreadyDowngraded", u.getName());
 				}
 			} else {
-				BenCmd.showUse(user, "bank.admin");
+				BenCmd.showUse(user, "bank", "admin");
 			}
 		} else {
 			if (user.hasPerm("bencmd.bank.admin")) {

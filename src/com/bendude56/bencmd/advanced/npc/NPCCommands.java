@@ -66,7 +66,7 @@ public class NPCCommands implements Commands {
 				BenCmd.getLocale().sendMessage(user, "command.npc.created", BenCmd.getLocale().getString("command.npc.static"));
 				BenCmd.log(BenCmd.getLocale().getString("log.npc.create.static", user.getName(), BenCmd.getLocale().getString("command.npc.static"), args[1].replace('-', ' '), args[2], id + "", l.getX() + "", l.getY() + "", l.getZ() + "", l.getWorld().getName()));
 			} else {
-				BenCmd.showUse(user, "npc.static");
+				BenCmd.showUse(user, "npc", "static");
 			}
 		} else if (args[0].equalsIgnoreCase("skin")) {
 			if (args.length == 3) {
@@ -88,7 +88,7 @@ public class NPCCommands implements Commands {
 				}
 				BenCmd.log(BenCmd.getLocale().getString("log.npc.skin", user.getName(), Integer.parseInt(args[1]) + "", args[2]));
 			} else {
-				BenCmd.showUse(user, "npc.skin");
+				BenCmd.showUse(user, "npc", "skin");
 			}
 		} else if (args[0].equalsIgnoreCase("item")) {
 			if (args.length == 2) {
@@ -111,7 +111,7 @@ public class NPCCommands implements Commands {
 				BenCmd.getLocale().sendMessage(user, "command.npc.item.success");
 				BenCmd.log(BenCmd.getLocale().getString("log.npc.skin", user.getName(), Integer.parseInt(args[1]) + "", ((Player) user.getHandle()).getInventory().getItemInHand().toString()));
 			} else {
-				BenCmd.showUse(user, "npc.item");
+				BenCmd.showUse(user, "npc", "item");
 			}
 		} else if (args[0].equalsIgnoreCase("name")) {
 			if (args.length == 3) {
@@ -130,11 +130,11 @@ public class NPCCommands implements Commands {
 				BenCmd.getLocale().sendMessage(user, "command.npc.name.success", args[2].replace('-', ' '));
 				BenCmd.log(BenCmd.getLocale().getString("log.npc.name", user.getName(), Integer.parseInt(args[1]) + "", args[2].replace('-', ' ')));
 			} else {
-				BenCmd.showUse(user, "npc.name");
+				BenCmd.showUse(user, "npc", "name");
 			}
 		} else if (args[0].equalsIgnoreCase("rep")) {
 			if (args.length != 2) {
-				BenCmd.showUse(user, "npc.rep");
+				BenCmd.showUse(user, "npc", "rep");
 				return;
 			}
 			NPC npc = null;
@@ -166,7 +166,7 @@ public class NPCCommands implements Commands {
 				return;
 			}
 			if (args.length == 1) {
-				BenCmd.showUse(user, "npc.remove");
+				BenCmd.showUse(user, "npc", "remove");
 				return;
 			}
 			NPC npc = null;

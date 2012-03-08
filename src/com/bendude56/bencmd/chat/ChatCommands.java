@@ -44,16 +44,15 @@ public class ChatCommands implements Commands {
 					message += " " + word;
 				}
 			}
-			BenCmd.log(user2.getName() + " is now imitating " + message + "!");
+			BenCmd.log(BenCmd.getLocale().getString("log.display.success", user2.getName(), message));
 			String origName = ((EntityHuman) ((CraftPlayer) user2.getHandle()).getHandle()).name;
 			((EntityHuman) ((CraftPlayer) user2.getHandle()).getHandle()).name = message;
-			((Player) user2.getHandle()).setDisplayName(message);
 			PlayerLoginEvent el = new PlayerLoginEvent((Player) user2.getHandle());
 			Bukkit.getPluginManager().callEvent(el);
 			((EntityHuman) ((CraftPlayer) user2.getHandle()).getHandle()).name = origName;
 			((Player) user2.getHandle()).setDisplayName(origName);
 			if (el.getResult() != Result.ALLOWED) {
-				user2.sendMessage(ChatColor.RED + "Error changing name: " + el.getKickMessage());
+				BenCmd.getLocale().sendMessage(user, "command.display.error", el.getKickMessage());
 				return true;
 			}
 			PlayerQuitEvent eq = new PlayerQuitEvent((Player) user2.getHandle(), "");
@@ -68,6 +67,7 @@ public class ChatCommands implements Commands {
 			if (ej.getJoinMessage() != "" && ej.getJoinMessage() != null) {
 				Bukkit.broadcastMessage(ej.getJoinMessage());
 			}
+			BenCmd.getLocale().sendMessage(user2, "command.display.success", message);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("ignore") && user.hasPerm("bencmd.chat.ignore")) {
 			if (args.length == 0) {

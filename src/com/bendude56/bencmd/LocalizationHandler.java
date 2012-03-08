@@ -127,6 +127,7 @@ public class LocalizationHandler {
 		p.setProperty("basic.devOnly", ChatColor.RED + "That command is for BenCmd developers only!");
 		p.setProperty("basic.groupNotFound", ChatColor.RED + "Couldn't find group '%1'!");
 		p.setProperty("basic.insufficientMoney", ChatColor.RED + "You don't have enough money to do that! (Required funds: %1)");
+		p.setProperty("basic.no", "No");
 		p.setProperty("basic.noPermission", ChatColor.RED + "You don't have permission to do that!");
 		p.setProperty("basic.noServerUse", ChatColor.RED + "The server can't do that!");
 		p.setProperty("basic.updateFail", ChatColor.RED + "A BenCmd update failed to download properly! Some features may cease to function...");
@@ -135,6 +136,7 @@ public class LocalizationHandler {
 		p.setProperty("basic.use", ChatColor.YELLOW + "Proper usage is:");
 		p.setProperty("basic.userNotFound", ChatColor.RED + "Couldn't find user '%1'!");
 		p.setProperty("basic.worldNotFound", ChatColor.RED + "Couldn't find world '%1'!");
+		p.setProperty("basic.yes", "Yes");
 		
 		// Command specific messages
 		
@@ -162,18 +164,48 @@ public class LocalizationHandler {
 		
 		// CHANNEL
 		p.setProperty("command.channel.channelNotFound", ChatColor.RED + "Couldn't find channel '%1'!");
+		p.setProperty("command.channel.higherRole", ChatColor.RED + "You can't do that because '%1' is higher than or equal to your rank.");
 		p.setProperty("command.channel.notInChannel", ChatColor.RED + "You must be inside of a channel to do that!");
 		
+		p.setProperty("command.channel.info.1", ChatColor.GRAY + "Information for channel '" + ChatColor.GREEN + "%1" + ChatColor.GRAY + "':");
+		p.setProperty("command.channel.info.2", ChatColor.GRAY + "Default level: " + ChatColor.GREEN + "%2");
+		p.setProperty("command.channel.info.3", ChatColor.GRAY + "Always slow: " + ChatColor.GREEN + "%3");
+		p.setProperty("command.channel.info.4", ChatColor.GRAY + "Slow delay: " + ChatColor.GREEN + "%4");
+		p.setProperty("command.channel.info.5", ChatColor.GRAY + "MOTD: " + ChatColor.YELLOW + "%5");
+		p.setProperty("command.channel.info.banned", "Banned");
+		p.setProperty("command.channel.info.muted", "Muted");
+		p.setProperty("command.channel.info.normal", "Normal");
+		
+		p.setProperty("command.channel.remove.danger.1", ChatColor.RED + "WARNING: You are about to permanently delete '" + ChatColor.GREEN + "%1" + ChatColor.RED + "'!");
+		p.setProperty("command.channel.remove.danger.2", ChatColor.RED + "All current users will be kicked from the channel! Repeat this");
+		p.setProperty("command.channel.remove.danger.3", ChatColor.RED + "command within 20 seconds to verify your intention!");
+		p.setProperty("command.channel.remove.success", ChatColor.GREEN + "Channel '%1' has been removed!");
+		
 		p.setProperty("command.channel.use.add", ChatColor.YELLOW + "/channel add <channel>");
-		p.setProperty("command.channel.use.coowner", ChatColor.YELLOW + "/channel {join|spy|unspy|list|info|leave|kick|ban|mute|normal|vip|mod|slow|pause|motd|default|alwaysslow|slowdelay}");
+		p.setProperty("command.channel.use.alwaysSlow", ChatColor.YELLOW + "/channel alwaysslow {true|false}");
+		p.setProperty("command.channel.use.ban", ChatColor.YELLOW + "/channel ban <user>");
+		p.setProperty("command.channel.use.coown", ChatColor.YELLOW + "/channel coown <user>");
+		p.setProperty("command.channel.use.default", ChatColor.YELLOW + "/channel default {ban|mute|normal}");
 		p.setProperty("command.channel.use.info", ChatColor.YELLOW + "/channel info");
 		p.setProperty("command.channel.use.join", ChatColor.YELLOW + "/channel join <channel>");
-		p.setProperty("command.channel.use.mod", ChatColor.YELLOW + "/channel {join|spy|unspy|list|info|leave|kick|ban|mute|normal|slow|pause}");
-		p.setProperty("command.channel.use.normal", ChatColor.YELLOW + "/channel {join|spy|unspy|list|leave}");
-		p.setProperty("command.channel.use.outside", ChatColor.YELLOW + "/channel {join|spy|unspy|list|add}");
-		p.setProperty("command.channel.use.owner", ChatColor.YELLOW + "/channel {join|spy|unspy|list|info|leave|remove|kick|ban|mute|normal|vip|mod|coown|own|slow|pause|motd|default|rename|alwaysslow|slowdelay}");
+		p.setProperty("command.channel.use.mod", ChatColor.YELLOW + "/channel mod <user>");
+		p.setProperty("command.channel.use.motd", ChatColor.YELLOW + "/channel motd <message>");
+		p.setProperty("command.channel.use.mute", ChatColor.YELLOW + "/channel mute <user>");
+		p.setProperty("command.channel.use.normal", ChatColor.YELLOW + "/channel normal <user>");
+		p.setProperty("command.channel.use.own", ChatColor.YELLOW + "/channel own <user>");
+		p.setProperty("command.channel.use.pause", ChatColor.YELLOW + "/channel pause");
+		p.setProperty("command.channel.use.rename", ChatColor.YELLOW + "/channel rename <name>");
+		p.setProperty("command.channel.use.slow", ChatColor.YELLOW + "/channel slow [millis]");
+		p.setProperty("command.channel.use.slowdelay", ChatColor.YELLOW + "/channel slowdelay <millis>");
 		p.setProperty("command.channel.use.spy", ChatColor.YELLOW + "/channel spy <channel>");
 		p.setProperty("command.channel.use.unspy", ChatColor.YELLOW + "/channel unspy <channel>");
+		p.setProperty("command.channel.use.vip", ChatColor.YELLOW + "/channel vip <user>");
+		
+		p.setProperty("command.channel.use.nCoowner", ChatColor.YELLOW + "/channel {join|spy|unspy|list|info|leave|kick|ban|mute|normal|vip|mod|slow|pause|motd|default|alwaysslow|slowdelay}");
+		p.setProperty("command.channel.use.nMod", ChatColor.YELLOW + "/channel {join|spy|unspy|list|info|leave|kick|ban|mute|normal|slow|pause}");
+		p.setProperty("command.channel.use.nNormal", ChatColor.YELLOW + "/channel {join|spy|unspy|list|leave}");
+		p.setProperty("command.channel.use.nOutside", ChatColor.YELLOW + "/channel {join|spy|unspy|list|add}");
+		p.setProperty("command.channel.use.nOwner", ChatColor.YELLOW + "/channel {join|spy|unspy|list|info|leave|remove|kick|ban|mute|normal|vip|mod|coown|own|slow|pause|motd|default|rename|alwaysslow|slowdelay}");
 		
 		// CR
 		p.setProperty("command.cr.otherOff", ChatColor.GREEN + "%1 is now in survival mode!");
@@ -181,10 +213,14 @@ public class LocalizationHandler {
 		p.setProperty("command.cr.selfOff", ChatColor.GREEN + "You are now in survival mode!");
 		p.setProperty("command.cr.selfOn", ChatColor.GREEN + "You are now in creative mode!");
 		
+		// DISPLAY
+		p.setProperty("command.display.error", ChatColor.RED + "Error logging in to new account: %1");
+		p.setProperty("command.display.success", ChatColor.GREEN + "You are now imitating %1!");
+		
 		// FEED
 		p.setProperty("command.feed.self", ChatColor.GREEN + "You have been fed.");
 		p.setProperty("command.feed.other", ChatColor.GREEN + "You have fed %1.");
-		p.setProperty("command.feed.use", ChatColor.YELLOW + "/feed [player]");
+		p.setProperty("command.feed.use", ChatColor.YELLOW + "/feed [user]");
 		
 		// GOD
 		p.setProperty("command.god.otherOff", ChatColor.GREEN + "%1 is no longer in god mode.");
@@ -192,22 +228,22 @@ public class LocalizationHandler {
 		p.setProperty("command.god.protected", ChatColor.RED + "%1 is protected from being godded/ungodded!");
 		p.setProperty("command.god.selfOff", ChatColor.GREEN + "You are no longer in god mode.");
 		p.setProperty("command.god.selfOn", ChatColor.GREEN + "You are now in god mode.");
-		p.setProperty("command.god.use", ChatColor.YELLOW + "/god [player]");
+		p.setProperty("command.god.use", ChatColor.YELLOW + "/god [user]");
 		
 		// HEAL
 		p.setProperty("command.heal.other", ChatColor.GREEN + "You have healed %1!");
 		p.setProperty("command.heal.self", ChatColor.GREEN + "You have been healed!");
-		p.setProperty("command.heal.use", ChatColor.YELLOW + "/heal [player]");
+		p.setProperty("command.heal.use", ChatColor.YELLOW + "/heal [user]");
 		
 		// INV
 		p.setProperty("command.inv.protected", ChatColor.RED + "%1's inventory is protected!");
-		p.setProperty("command.inv.use", ChatColor.YELLOW + "/inv <player>");
+		p.setProperty("command.inv.use", ChatColor.YELLOW + "/inv <user>");
 		
 		// KILL
 		p.setProperty("command.kill.otherGod", ChatColor.RED + "You can't kill %1 while they're godded!");
 		p.setProperty("command.kill.protected", ChatColor.RED + "%1 is protected from being killed!");
 		p.setProperty("command.kill.selfGod", ChatColor.RED + "You can't kill yourself while you're godded!");
-		p.setProperty("command.kill.use", ChatColor.YELLOW + "/kill [player]");
+		p.setProperty("command.kill.use", ChatColor.YELLOW + "/kill [user]");
 		
 		// KILLMOBS
 		p.setProperty("command.killmobs.noMobs" , ChatColor.RED + "No mobs killed!");
@@ -219,7 +255,7 @@ public class LocalizationHandler {
 		p.setProperty("command.level.invalidExp", ChatColor.RED + "Invalid experience inputted!");
 		p.setProperty("command.level.other", ChatColor.GREEN + "You have set %1's total experience to %2.");
 		p.setProperty("command.level.self", ChatColor.GREEN + "Your total experience has been set to %1.");
-		p.setProperty("command.level.use", ChatColor.YELLOW + "/level <exp> [player]");
+		p.setProperty("command.level.use", ChatColor.YELLOW + "/level <exp> [user]");
 		
 		// LEVER
 		p.setProperty("command.lever.notALever", ChatColor.RED + "The block you are pointing at is not a lever!");
@@ -237,33 +273,34 @@ public class LocalizationHandler {
 		p.setProperty("command.npc.despawnall", ChatColor.GREEN + "All NPCs have been despawned!");
 		p.setProperty("command.npc.npcNotFound", ChatColor.RED + "No NPC with that ID exists!");
 		p.setProperty("command.npc.static", "Static");
-		p.setProperty("command.npc.use", ChatColor.YELLOW + "/npc {bank|bupgrade|blacksmith|static|remove|despawnall|skin|item|name|rep}");
 		p.setProperty("command.npc.useTip", ChatColor.YELLOW + "TIP: Right-click an NPC with a stick to get info about that NPC");
 		
 		p.setProperty("command.npc.item.noItem", ChatColor.RED + "You must be holding an item to do that!");
 		p.setProperty("command.npc.item.notSupported", ChatColor.RED + "That NPC cannot have a custom item!");
 		p.setProperty("command.npc.item.success", ChatColor.GREEN + "That NPC's item has been changed successfully!");
-		p.setProperty("command.npc.item.use", ChatColor.YELLOW + "/npc item <id>");
+		
 		
 		p.setProperty("command.npc.name.notSupported", ChatColor.RED + "That NPC cannot have a custom name!");
 		p.setProperty("command.npc.name.success", ChatColor.GREEN + "That NPC's name has been changed to '%1'!");
-		p.setProperty("command.npc.name.use", ChatColor.YELLOW + "/npc name <id> <name>");
 		
 		p.setProperty("command.npc.remove.success", ChatColor.GREEN + "That NPC has been deleted!");
-		p.setProperty("command.npc.remove.use", ChatColor.YELLOW + "/npc remove <id>");
 		
 		p.setProperty("command.npc.rep.invalidPrice", ChatColor.RED + "Invalid price entered!");
 		p.setProperty("command.npc.rep.noItem", ChatColor.RED + "You must be holding an item to do that!");
 		p.setProperty("command.npc.rep.notSupported", ChatColor.RED + "That NPC is not a blacksmith!");
 		p.setProperty("command.npc.rep.success", ChatColor.GREEN + "That item now costs %1 to repair!");
-		p.setProperty("command.npc.rep.use", ChatColor.YELLOW + "/npc rep <id> <cost>");
 		
 		p.setProperty("command.npc.skin.noSpout", ChatColor.RED + "NOTE: To see this change, you must first install SpoutCraft");
 		p.setProperty("command.npc.skin.notSupported", ChatColor.RED + "That NPC cannot be given a custom skin!");
 		p.setProperty("command.npc.skin.success", ChatColor.GREEN + "That NPC's skin has been changed successfully!");
-		p.setProperty("command.npc.skin.use", ChatColor.YELLOW + "/npc skin <id> <skin>");
 		
-		p.setProperty("command.npc.static.use", ChatColor.YELLOW + "/npc static <name> [skin]");
+		p.setProperty("command.npc.use", ChatColor.YELLOW + "/npc {bank|bupgrade|blacksmith|static|remove|despawnall|skin|item|name|rep}");
+		p.setProperty("command.npc.use.item", ChatColor.YELLOW + "/npc item <id>");
+		p.setProperty("command.npc.use.name", ChatColor.YELLOW + "/npc name <id> <name>");
+		p.setProperty("command.npc.use.remove", ChatColor.YELLOW + "/npc remove <id>");
+		p.setProperty("command.npc.use.rep", ChatColor.YELLOW + "/npc rep <id> <cost>");
+		p.setProperty("command.npc.use.skin", ChatColor.YELLOW + "/npc skin <id> <skin>");
+		p.setProperty("command.npc.use.static", ChatColor.YELLOW + "/npc static <name> [skin]");
 		
 		// SETSPAWN
 		p.setProperty("command.setspawn.setSuccess", ChatColor.GREEN + "The spawn location for the world '%1' has been set here.");
@@ -315,6 +352,8 @@ public class LocalizationHandler {
 		p.setProperty("log.cr.otherOn", "%1 has put %2 into creative mode!");
 		p.setProperty("log.cr.selfOff", "%1 has put themself into survival mode!");
 		p.setProperty("log.cr.selfOn", "%1 has put themself into creative mode!");
+		
+		p.setProperty("log.display.success", "%1 is now imitating %2!");
 		
 		p.setProperty("log.feed.self", "%1 has fed themself");
 		p.setProperty("log.feed.other", "%1 has fed %2");
@@ -384,7 +423,7 @@ public class LocalizationHandler {
 		p.setProperty("misc.channel.join", "%1" + ChatColor.YELLOW + " has joined the chat");
 		p.setProperty("misc.channel.kicked", ChatColor.RED + "You have been kicked from '%1'!");
 		p.setProperty("misc.channel.leave", "%2" + ChatColor.YELLOW + " has left the chat");
-		p.setProperty("misc.channel.list", ChatColor.YELLOW + "The following players are on '%1':");
+		p.setProperty("misc.channel.list", ChatColor.YELLOW + "The following users are chatting in '%1':");
 		p.setProperty("misc.channel.motd", ChatColor.YELLOW + "MOTD: %1");
 		p.setProperty("misc.channel.noConnect", ChatColor.RED + "You do not have permission to enter '%1'!");
 		p.setProperty("misc.channel.noConnect.ban", ChatColor.RED + "You are currently banned from '%1'!");

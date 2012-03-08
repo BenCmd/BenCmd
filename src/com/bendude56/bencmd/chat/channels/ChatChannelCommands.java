@@ -3,7 +3,6 @@ package com.bendude56.bencmd.chat.channels;
 import java.util.Date;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -47,21 +46,21 @@ public class ChatChannelCommands implements Commands {
 		if (args.length == 0) {
 			if (user.inChannel()) {
 				if (user.getActiveChannel().canExecuteAllCommands(user)) {
-					BenCmd.showUse(user, "channel.owner");
+					BenCmd.showUse(user, "channel", "nOwner");
 				} else if (user.getActiveChannel().canExecuteAdvancedCommands(user)) {
-					BenCmd.showUse(user, "channel.coowner");
+					BenCmd.showUse(user, "channel", "nCoowner");
 				} else if (user.getActiveChannel().canExecuteBasicCommands(user)) {
-					BenCmd.showUse(user, "channel.mod");
+					BenCmd.showUse(user, "channel", "nMod");
 				} else {
-					BenCmd.showUse(user, "channel.normal");
+					BenCmd.showUse(user, "channel", "nNormal");
 				}
 			} else {
-				BenCmd.showUse(user, "channel.outside");
+				BenCmd.showUse(user, "channel", "nOutside");
 			}
 		} else {
 			if (args[0].equalsIgnoreCase("join")) {
 				if (args.length != 2) {
-					BenCmd.showUse(user, "channel.join");
+					BenCmd.showUse(user, "channel", "join");
 					return;
 				}
 				if (BenCmd.getChatChannels().channelExists(args[1])) {
@@ -71,7 +70,7 @@ public class ChatChannelCommands implements Commands {
 				}
 			} else if (args[0].equalsIgnoreCase("spy")) {
 				if (args.length != 2) {
-					BenCmd.showUse(user, "channel.spy");
+					BenCmd.showUse(user, "channel", "spy");
 					return;
 				}
 				if (BenCmd.getChatChannels().channelExists(args[1])) {
@@ -83,7 +82,7 @@ public class ChatChannelCommands implements Commands {
 				}
 			} else if (args[0].equalsIgnoreCase("unspy")) {
 				if (args.length != 2) {
-					BenCmd.showUse(user, "channel.unspy");
+					BenCmd.showUse(user, "channel", "unspy");
 					return;
 				}
 				if (BenCmd.getChatChannels().channelExists(args[1])) {
@@ -140,32 +139,32 @@ public class ChatChannelCommands implements Commands {
 				}
 				if (user.inChannel()) {
 					if (user.getActiveChannel().canExecuteBasicCommands(user)) {
-						user.sendMessage(ChatColor.GRAY + "Information for channel " + ChatColor.GREEN + user.getActiveChannel().getName() + ChatColor.GRAY + ":");
+						String name = user.getActiveChannel().getName();
+						String level;
 						switch (user.getActiveChannel().getDefaultLevel()) {
 							case BANNED:
-								user.sendMessage(ChatColor.GRAY + "Default level: " + ChatColor.GREEN + "Banned");
+								level = BenCmd.getLocale().getString("command.channel.info.banned");
 								break;
 							case MUTED:
-								user.sendMessage(ChatColor.GRAY + "Default level: " + ChatColor.GREEN + "Muted");
-								break;
-							case NORMAL:
-								user.sendMessage(ChatColor.GRAY + "Default level: " + ChatColor.GREEN + "Normal");
+								level = BenCmd.getLocale().getString("command.channel.info.muted");
 								break;
 							default:
-								user.sendMessage(ChatColor.GRAY + "Default level: " + ChatColor.RED + "UNKNOWN");
+								level = BenCmd.getLocale().getString("command.channel.info.normal");
+								break;
 						}
-						user.sendMessage(ChatColor.GRAY + "Always slow: " + ChatColor.GREEN + ((user.getActiveChannel().isDefaultSlowEnabled()) ? "Yes" : "No"));
-						user.sendMessage(ChatColor.GRAY + "Slow delay: " + ChatColor.GREEN + (user.getActiveChannel().getDefaultSlowDelay() / 1000) + " seconds");
-						user.sendMessage(ChatColor.GRAY + "MOTD: " + ChatColor.GREEN + user.getActiveChannel().getMotd());
+						String alwaysSlow = ((user.getActiveChannel().isDefaultSlowEnabled()) ? BenCmd.getLocale().getString("basic.yes") : BenCmd.getLocale().getString("basic.no"));
+						String defaultDelay = (user.getActiveChannel().getDefaultSlowDelay() / 1000) + " seconds";
+						String motd = user.getActiveChannel().getMotd();
+						BenCmd.getLocale().sendMultilineMessage(user, "command.channel.info", name, level, alwaysSlow, defaultDelay, motd);
 					} else {
-						BenCmd.getLocale().sendMessage(user, "basic.noPermission");
+						BenCmd.getPlugin().logPermFail(user, "channel", args, true);
 					}
 				} else {
-					user.sendMessage(ChatColor.RED + "You're not in a channel!");
+					BenCmd.getLocale().sendMessage(user, "command.channel.notInChannel");
 				}
 			} else if (args[0].equalsIgnoreCase("leave")) {
 				if (!user.inChannel()) {
-					user.sendMessage(ChatColor.RED + "You aren't in a channel!");
+					BenCmd.getLocale().sendMessage(user, "command.channel.notInChannel");
 				} else {
 					user.leaveChannel(true);
 				}
@@ -173,23 +172,21 @@ public class ChatChannelCommands implements Commands {
 				if (user.inChannel()) {
 					if (user.getActiveChannel().canExecuteAllCommands(user)) {
 						if (new Date().getTime() < user.getActiveChannel().getDelDanger()) {
+							BenCmd.getLocale().sendMessage(user, "command.channel.remove.success", user.getActiveChannel().getName());
 							BenCmd.getChatChannels().removeChannel(user.getActiveChannel(), true);
-							user.sendMessage(ChatColor.GREEN + "Channel was successfully removed!");
 						} else {
 							user.getActiveChannel().setDelDanger(new Date().getTime() + 20000);
-							user.sendMessage(ChatColor.RED + "WARNING: You are about to permanently delete this channel!");
-							user.sendMessage(ChatColor.RED + "All current users will be kicked from the channel! Repeat this");
-							user.sendMessage(ChatColor.RED + "command within 20 seconds to verify your intention!");
+							BenCmd.getLocale().sendMultilineMessage(user, "command.channel.remove.danger", user.getActiveChannel().getName());
 						}
 					} else {
-						BenCmd.getLocale().sendMessage(user, "basic.noPermission");
+						BenCmd.getPlugin().logPermFail(user, "channel", args, true);
 					}
 				} else {
-					user.sendMessage(ChatColor.RED + "You're not in a channel!");
+					BenCmd.getLocale().sendMessage(user, "command.channel.notInChannel");
 				}
 			} else if (args[0].equalsIgnoreCase("ban")) {
 				if (args.length != 2) {
-					user.sendMessage(ChatColor.YELLOW + "Proper use is /channel ban <player>");
+					BenCmd.showUse(user, "channel", "ban");
 					return;
 				}
 				if (user.inChannel()) {
@@ -200,19 +197,19 @@ public class ChatChannelCommands implements Commands {
 							return;
 						}
 						if (!user.getActiveChannel().canExecuteAllCommands(user) && user.getActiveChannel().getLevel(user).getLevel() <= user.getActiveChannel().getLevel(toBan).getLevel()) {
-							user.sendMessage(ChatColor.RED + "You can't do that to somebody with a higher rank than you!");
+							BenCmd.getLocale().sendMessage(user, "command.channel.higherRank", toBan.getName());
 							return;
 						}
 						user.getActiveChannel().setRole(toBan.getName(), ChatLevel.BANNED);
 					} else {
-						BenCmd.getLocale().sendMessage(user, "basic.noPermission");
+						BenCmd.getPlugin().logPermFail(user, "channel", args, true);
 					}
 				} else {
-					user.sendMessage(ChatColor.RED + "You're not in a channel!");
+					BenCmd.getLocale().sendMessage(user, "command.channel.notInChannel");
 				}
 			} else if (args[0].equalsIgnoreCase("mute")) {
 				if (args.length != 2) {
-					user.sendMessage(ChatColor.YELLOW + "Proper use is /channel mute <player>");
+					BenCmd.showUse(user, "channel", "mute");
 					return;
 				}
 				if (user.inChannel()) {
@@ -223,19 +220,19 @@ public class ChatChannelCommands implements Commands {
 							return;
 						}
 						if (!user.getActiveChannel().canExecuteAllCommands(user) && user.getActiveChannel().getLevel(user).getLevel() <= user.getActiveChannel().getLevel(toMute).getLevel()) {
-							user.sendMessage(ChatColor.RED + "You can't do that to somebody with a higher rank than you!");
+							BenCmd.getLocale().sendMessage(user, "command.channel.higherRank", toMute.getName());
 							return;
 						}
 						user.getActiveChannel().setRole(toMute.getName(), ChatLevel.MUTED);
 					} else {
-						BenCmd.getLocale().sendMessage(user, "basic.noPermission");
+						BenCmd.getPlugin().logPermFail(user, "channel", args, true);
 					}
 				} else {
-					user.sendMessage(ChatColor.RED + "You're not in a channel!");
+					BenCmd.getLocale().sendMessage(user, "command.channel.notInChannel");
 				}
 			} else if (args[0].equalsIgnoreCase("normal")) {
 				if (args.length != 2) {
-					user.sendMessage(ChatColor.YELLOW + "Proper use is /channel normal <player>");
+					BenCmd.showUse(user, "channel", "normal");
 					return;
 				}
 				if (user.inChannel()) {
@@ -246,19 +243,19 @@ public class ChatChannelCommands implements Commands {
 							return;
 						}
 						if (!user.getActiveChannel().canExecuteAllCommands(user) && user.getActiveChannel().getLevel(user).getLevel() <= user.getActiveChannel().getLevel(toNormal).getLevel()) {
-							user.sendMessage(ChatColor.RED + "You can't do that to somebody with a higher rank than you!");
+							BenCmd.getLocale().sendMessage(user, "command.channel.higherRank", toNormal.getName());
 							return;
 						}
 						user.getActiveChannel().setRole(toNormal.getName(), ChatLevel.NORMAL);
 					} else {
-						BenCmd.getLocale().sendMessage(user, "basic.noPermission");
+						BenCmd.getPlugin().logPermFail(user, "channel", args, true);
 					}
 				} else {
-					user.sendMessage(ChatColor.RED + "You're not in a channel!");
+					BenCmd.getLocale().sendMessage(user, "command.channel.notInChannel");
 				}
 			} else if (args[0].equalsIgnoreCase("vip")) {
 				if (args.length != 2) {
-					user.sendMessage(ChatColor.YELLOW + "Proper use is /channel vip <player>");
+					BenCmd.showUse(user, "channel", "vip");
 					return;
 				}
 				if (user.inChannel()) {
@@ -269,19 +266,19 @@ public class ChatChannelCommands implements Commands {
 							return;
 						}
 						if (!user.getActiveChannel().canExecuteAllCommands(user) && user.getActiveChannel().getLevel(user).getLevel() <= user.getActiveChannel().getLevel(toVip).getLevel()) {
-							user.sendMessage(ChatColor.RED + "You can't do that to somebody with a higher rank than you!");
+							BenCmd.getLocale().sendMessage(user, "command.channel.higherRank", toVip.getName());
 							return;
 						}
 						user.getActiveChannel().setRole(toVip.getName(), ChatLevel.VIP);
 					} else {
-						BenCmd.getLocale().sendMessage(user, "basic.noPermission");
+						BenCmd.getPlugin().logPermFail(user, "channel", args, true);
 					}
 				} else {
-					user.sendMessage(ChatColor.RED + "You're not in a channel!");
+					BenCmd.getLocale().sendMessage(user, "command.channel.notInChannel");
 				}
 			} else if (args[0].equalsIgnoreCase("mod")) {
 				if (args.length != 2) {
-					user.sendMessage(ChatColor.YELLOW + "Proper use is /channel mod <player>");
+					BenCmd.showUse(user, "channel", "mod");
 					return;
 				}
 				if (user.inChannel()) {
@@ -292,19 +289,19 @@ public class ChatChannelCommands implements Commands {
 							return;
 						}
 						if (!user.getActiveChannel().canExecuteAllCommands(user) && user.getActiveChannel().getLevel(user).getLevel() <= user.getActiveChannel().getLevel(toMod).getLevel()) {
-							user.sendMessage(ChatColor.RED + "You can't do that to somebody with a higher rank than you!");
+							BenCmd.getLocale().sendMessage(user, "command.channel.higherRank", toMod.getName());
 							return;
 						}
 						user.getActiveChannel().setRole(toMod.getName(), ChatLevel.MOD);
 					} else {
-						BenCmd.getLocale().sendMessage(user, "basic.noPermission");
+						BenCmd.getPlugin().logPermFail(user, "channel", args, true);
 					}
 				} else {
-					user.sendMessage(ChatColor.RED + "You're not in a channel!");
+					BenCmd.getLocale().sendMessage(user, "command.channel.notInChannel");
 				}
 			} else if (args[0].equalsIgnoreCase("coown")) {
 				if (args.length != 2) {
-					user.sendMessage(ChatColor.YELLOW + "Proper use is /channel coown <player>");
+					BenCmd.showUse(user, "channel", "coown");
 					return;
 				}
 				if (user.inChannel()) {
@@ -316,14 +313,14 @@ public class ChatChannelCommands implements Commands {
 						}
 						user.getActiveChannel().setRole(toOwn.getName(), ChatLevel.COOWNER);
 					} else {
-						user.sendMessage(ChatColor.RED + "You must be the channel owner to do that!");
+						BenCmd.getPlugin().logPermFail(user, "channel", args, true);
 					}
 				} else {
-					user.sendMessage(ChatColor.RED + "You're not in a channel!");
+					BenCmd.getLocale().sendMessage(user, "command.channel.notInChannel");
 				}
 			} else if (args[0].equalsIgnoreCase("own")) {
 				if (args.length != 2) {
-					user.sendMessage(ChatColor.YELLOW + "Proper use is /channel own <player>");
+					BenCmd.showUse(user, "channel", "own");
 					return;
 				}
 				if (user.inChannel()) {
@@ -335,14 +332,14 @@ public class ChatChannelCommands implements Commands {
 						}
 						user.getActiveChannel().setRole(toOwn.getName(), ChatLevel.OWNER);
 					} else {
-						BenCmd.getLocale().sendMessage(user, "basic.noPermission");
+						BenCmd.getPlugin().logPermFail(user, "channel", args, true);
 					}
 				} else {
-					user.sendMessage(ChatColor.RED + "You're not in a channel!");
+					BenCmd.getLocale().sendMessage(user, "command.channel.notInChannel");
 				}
 			} else if (args[0].equalsIgnoreCase("slow")) {
 				if (args.length < 1 || args.length > 2) {
-					user.sendMessage(ChatColor.YELLOW + "Proper use is /channel slow [millis]");
+					BenCmd.showUse(user, "channel", "slow");
 					return;
 				}
 				if (user.inChannel()) {
@@ -354,34 +351,34 @@ public class ChatChannelCommands implements Commands {
 							try {
 								millis = Integer.parseInt(args[1]);
 							} catch (NumberFormatException e) {
-								user.sendMessage(ChatColor.RED + "'" + args[1] + "' isn't a number!");
+								BenCmd.showUse(user, "channel", "slow");
 								return;
 							}
 							user.getActiveChannel().enableSlow(millis);
 						}
 					} else {
-						BenCmd.getLocale().sendMessage(user, "basic.noPermission");
+						BenCmd.getPlugin().logPermFail(user, "channel", args, true);
 					}
 				} else {
-					user.sendMessage(ChatColor.RED + "You're not in a channel!");
+					BenCmd.getLocale().sendMessage(user, "command.channel.notInChannel");
 				}
 			} else if (args[0].equalsIgnoreCase("pause")) {
 				if (args.length != 1) {
-					user.sendMessage(ChatColor.YELLOW + "Proper use is /channel pause");
+					BenCmd.showUse(user, "channel", "pause");
 					return;
 				}
 				if (user.inChannel()) {
 					if (user.getActiveChannel().canExecuteBasicCommands(user)) {
 						user.getActiveChannel().togglePaused();
 					} else {
-						BenCmd.getLocale().sendMessage(user, "basic.noPermission");
+						BenCmd.getPlugin().logPermFail(user, "channel", args, true);
 					}
 				} else {
-					user.sendMessage(ChatColor.RED + "You're not in a channel!");
+					BenCmd.getLocale().sendMessage(user, "command.channel.notInChannel");
 				}
 			} else if (args[0].equalsIgnoreCase("motd")) {
 				if (args.length < 2) {
-					user.sendMessage(ChatColor.YELLOW + "Proper use is /channel motd <message>");
+					BenCmd.showUse(user, "channel", "motd");
 					return;
 				}
 				if (user.inChannel()) {
@@ -396,14 +393,14 @@ public class ChatChannelCommands implements Commands {
 						}
 						user.getActiveChannel().setMotd(motd);
 					} else {
-						BenCmd.getLocale().sendMessage(user, "basic.noPermission");
+						BenCmd.getPlugin().logPermFail(user, "channel", args, true);
 					}
 				} else {
-					user.sendMessage(ChatColor.RED + "You're not in a channel!");
+					BenCmd.getLocale().sendMessage(user, "command.channel.notInChannel");
 				}
 			} else if (args[0].equalsIgnoreCase("default")) {
 				if (args.length != 2) {
-					user.sendMessage(ChatColor.YELLOW + "Proper use is /channel default {ban|mute|normal}");
+					BenCmd.showUse(user, "channel", "default");
 					return;
 				}
 				if (user.inChannel()) {
@@ -416,33 +413,33 @@ public class ChatChannelCommands implements Commands {
 						} else if (args[1].equalsIgnoreCase("normal")) {
 							def = ChatLevel.NORMAL;
 						} else {
-							user.sendMessage(ChatColor.YELLOW + "Proper use is /channel default {ban|mute|normal}");
+							BenCmd.showUse(user, "channel", "default");
 							return;
 						}
 						user.getActiveChannel().setDefaultLevel(def);
 					} else {
-						BenCmd.getLocale().sendMessage(user, "basic.noPermission");
+						BenCmd.getPlugin().logPermFail(user, "channel", args, true);
 					}
 				} else {
-					user.sendMessage(ChatColor.RED + "You're not in a channel!");
+					BenCmd.getLocale().sendMessage(user, "command.channel.notInChannel");
 				}
 			} else if (args[0].equalsIgnoreCase("rename")) {
 				if (args.length != 2) {
-					user.sendMessage(ChatColor.YELLOW + "Proper use is /channel rename <name>");
+					BenCmd.showUse(user, "channel", "rename");
 					return;
 				}
 				if (user.inChannel()) {
 					if (user.getActiveChannel().canExecuteAllCommands(user)) {
 						user.getActiveChannel().setName(args[1]);
 					} else {
-						BenCmd.getLocale().sendMessage(user, "basic.noPermission");
+						BenCmd.getPlugin().logPermFail(user, "channel", args, true);
 					}
 				} else {
-					user.sendMessage(ChatColor.RED + "You're not in a channel!");
+					BenCmd.getLocale().sendMessage(user, "command.channel.notInChannel");
 				}
 			} else if (args[0].equalsIgnoreCase("alwaysslow")) {
 				if (args.length != 2) {
-					user.sendMessage(ChatColor.YELLOW + "Proper use is /channel alwaysslow {true|false}");
+					BenCmd.showUse(user, "channel", "alwaysslow");
 					return;
 				}
 				if (user.inChannel()) {
@@ -453,19 +450,19 @@ public class ChatChannelCommands implements Commands {
 						} else if (args[1].equalsIgnoreCase("false")) {
 							alwaysSlow = false;
 						} else {
-							user.sendMessage(ChatColor.YELLOW + "Proper use is /channel alwaysslow {true|false}");
+							BenCmd.showUse(user, "channel", "alwaysslow");
 							return;
 						}
 						user.getActiveChannel().setDefaultSlowEnabled(alwaysSlow);
 					} else {
-						BenCmd.getLocale().sendMessage(user, "basic.noPermission");
+						BenCmd.getPlugin().logPermFail(user, "channel", args, true);
 					}
 				} else {
-					user.sendMessage(ChatColor.RED + "You're not in a channel!");
+					BenCmd.getLocale().sendMessage(user, "command.channel.notInChannel");
 				}
 			} else if (args[0].equalsIgnoreCase("slowdelay")) {
 				if (args.length != 2) {
-					user.sendMessage(ChatColor.YELLOW + "Proper use is /channel slowdelay <millis>");
+					BenCmd.showUse(user, "channel", "slowdelay");
 					return;
 				}
 				if (user.inChannel()) {
@@ -474,15 +471,15 @@ public class ChatChannelCommands implements Commands {
 						try {
 							delay = Integer.parseInt(args[1]);
 						} catch (NumberFormatException e) {
-							user.sendMessage(ChatColor.YELLOW + "Proper use is /channel slowdelay <millis>");
+							BenCmd.showUse(user, "channel", "slowdelay");
 							return;
 						}
 						user.getActiveChannel().setDefaultSlowDelay(delay);
 					} else {
-						user.sendMessage(ChatColor.RED + "You must be a channel owner/co-owner to do that!");
+						BenCmd.getPlugin().logPermFail(user, "channel", args, true);
 					}
 				} else {
-					user.sendMessage(ChatColor.RED + "You're not in a channel!");
+					BenCmd.getLocale().sendMessage(user, "command.channel.notInChannel");
 				}
 			}
 		}
