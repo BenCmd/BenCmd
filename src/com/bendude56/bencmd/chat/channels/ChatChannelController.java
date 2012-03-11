@@ -3,6 +3,8 @@ package com.bendude56.bencmd.chat.channels;
 import java.util.ArrayList;
 import java.util.List;
 import org.bukkit.ChatColor;
+
+import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.BenCmdFile;
 import com.bendude56.bencmd.User;
 import com.bendude56.bencmd.chat.channels.ChatChannel.ChatLevel;
@@ -59,9 +61,9 @@ public class ChatChannelController extends BenCmdFile {
 			}
 		}
 		if (value.isEmpty()) {
-			user.sendMessage(ChatColor.GRAY + "There are no chat channels that you can join...");
+			BenCmd.getLocale().sendMessage(user, "command.channel.list.none");
 		} else {
-			user.sendMessage(ChatColor.GRAY + "The following chat channels are open to you:");
+			BenCmd.getLocale().sendMessage(user, "command.channel.list.list");
 			user.sendMessage(ChatColor.GRAY + value);
 		}
 	}

@@ -444,4 +444,12 @@ public class User extends PermissionUser {
 		}
 		return sender;
 	}
+	
+	public Player getPlayerHandle() {
+		if (sender instanceof Player) {
+			return (Player) sender;
+		} else {
+			throw new UnsupportedOperationException("Not a player!");
+		}
+	}
 }

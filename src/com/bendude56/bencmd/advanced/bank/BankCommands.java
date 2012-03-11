@@ -33,6 +33,10 @@ public class BankCommands implements Commands {
 
 	public void Bank(String[] args, User user) {
 		if (args.length == 0) {
+			if (user.isServer()) {
+				BenCmd.getLocale().sendMessage(user, "basic.noServerUse");
+				return;
+			}
 			if (!BenCmd.getBankController().hasBank(user.getName())) {
 				BenCmd.getBankController().addBank(new BankInventory(user.getName()));
 			}
@@ -40,6 +44,10 @@ public class BankCommands implements Commands {
 			BenCmd.getBankController().openInventory(((Player) user.getHandle()));
 		} else if (args.length == 1) {
 			if (args[0].equalsIgnoreCase("upgrade")) {
+				if (user.isServer()) {
+					BenCmd.getLocale().sendMessage(user, "basic.noServerUse");
+					return;
+				}
 				if (BenCmd.getBankController().getBank(user.getName()).isUpgraded()) {
 					BenCmd.getLocale().sendMessage(user, "command.bank.selfAlreadyUpgraded");
 				} else {
@@ -59,6 +67,10 @@ public class BankCommands implements Commands {
 					}
 				}
 			} else if (args[0].equalsIgnoreCase("downgrade")) {
+				if (user.isServer()) {
+					BenCmd.getLocale().sendMessage(user, "basic.noServerUse");
+					return;
+				}
 				if (BenCmd.getBankController().getBank(user.getName()).isUpgraded()) {
 					if (!BenCmd.getBankController().canDowngradeBank(user.getName())) {
 						BenCmd.getLocale().sendMessage(user, "command.bank.selfCannotDowngrade");
@@ -87,6 +99,10 @@ public class BankCommands implements Commands {
 					BenCmd.getLocale().sendMessage(user, "command.bank.selfAlreadyDowngraded");
 				}
 			} else {
+				if (user.isServer()) {
+					BenCmd.getLocale().sendMessage(user, "basic.noServerUse");
+					return;
+				}
 				if (!user.hasPerm("bencmd.bank.admin")) {
 					BenCmd.getPlugin().logPermFail(user, "bank", args, true);
 					return;

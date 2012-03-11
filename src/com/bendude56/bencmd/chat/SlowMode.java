@@ -4,9 +4,9 @@ import java.util.Date;
 import java.util.HashMap;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 
 import com.bendude56.bencmd.BenCmd;
+import com.bendude56.bencmd.User;
 
 public class SlowMode {
 
@@ -37,23 +37,27 @@ public class SlowMode {
 		return defTime;
 	}
 
-	public void DisableSlow() {
+	public void disableSlow() {
 		playerList.clear();
 		enabled = false;
 		defTime = origDefTime;
 	}
 
-	public void EnableSlow() {
+	public void enableSlow() {
 		enabled = true;
 	}
 
-	public void EnableSlow(int millis) {
+	public void enableSlow(int millis) {
 		enabled = true;
 		defTime = millis;
-		if (BenCmd.getMainProperties().getBoolean("channelsEnabled", false)) {
-			return;
+	}
+	
+	public void toggleSlow(User user) {
+		if (isEnabled()) {
+			disableSlow();
+		} else {
+			enableSlow();
 		}
-		Bukkit.broadcastMessage(ChatColor.GRAY + "Slow mode has been enabled. You must wait " + (defTime / 1000) + " seconds between each chat message.");
 	}
 
 	public boolean isEnabled() {

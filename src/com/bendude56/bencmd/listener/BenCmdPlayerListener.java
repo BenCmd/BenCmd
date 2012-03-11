@@ -47,7 +47,6 @@ import com.bendude56.bencmd.advanced.npc.Clickable;
 import com.bendude56.bencmd.advanced.npc.EntityNPC;
 import com.bendude56.bencmd.advanced.npc.NPC;
 import com.bendude56.bencmd.advanced.npc.StaticNPC;
-import com.bendude56.bencmd.chat.ChatChecker;
 import com.bendude56.bencmd.chat.SlowMode;
 import com.bendude56.bencmd.invtools.InventoryBackend;
 import com.bendude56.bencmd.lots.Corner;
@@ -133,25 +132,11 @@ public class BenCmdPlayerListener implements Listener, EventExecutor {
 		PlayerMoveEvent.getHandlerList().register(new RegisteredListener(this, this, EventPriority.NORMAL, BenCmd.getPlugin(), false));
 	}
 
-	public void ToggleSlow(User user) {
-		SlowMode slow = SlowMode.getInstance();
-		if (slow.isEnabled()) {
-			slow.DisableSlow();
-			BenCmd.log(user.getDisplayName() + " has disabled slow mode.");
-			Bukkit.broadcastMessage(ChatColor.GRAY + "Slow mode has been disabled.");
-		} else {
-			slow.EnableSlow();
-			BenCmd.log(user.getDisplayName() + " has enabled slow mode.");
-			Bukkit.broadcastMessage(ChatColor.GRAY + "Slow mode has been enabled. You must wait " + (slow.getDefTime() / 1000) + " seconds between each chat message.");
-		}
-	}
-
 	private void chat(PlayerChatEvent event) {
 		// If external chat is enabled, skip this event
 		if (BenCmd.getMainProperties().getBoolean("externalChat", false)) {
 			return;
 		}
-		SlowMode slow = SlowMode.getInstance();
 		String message = event.getMessage();
 		User user = User.getUser(event.getPlayer());
 
@@ -161,50 +146,12 @@ public class BenCmdPlayerListener implements Listener, EventExecutor {
 			user.sendMessage(ChatColor.GRAY + BenCmd.getMainProperties().getString("muteMessage", "You are muted..."));
 			return;
 		}
-
-		// Check for channels and use them if applicable
-		if (BenCmd.getMainProperties().getBoolean("channelsEnabled", false)) {
-			if (user.inChannel()) {
-				user.getActiveChannel().sendChat(user, message);
-			} else {
-				user.sendMessage(ChatColor.RED + "You must be in a chat channel to talk!");
-			}
-			event.setCancelled(true);
-			return;
-		}
-
-		// Check for blocked words
-		boolean blocked = ChatChecker.checkBlocked(message);
-		if (blocked) {
-			event.setCancelled(true);
-			user.sendMessage(ChatColor.GRAY + BenCmd.getMainProperties().getString("blockMessage", "You used a blocked word..."));
-			return;
-		}
-
-		// Check for slow mode
-		long slowTimeLeft = slow.playerBlocked(user.getName());
-		if ((!user.hasPerm("bencmd.chat.noslow")) && slow.isEnabled()) {
-			if (slowTimeLeft > 0) {
-				user.sendMessage(ChatColor.GRAY + "Slow mode is enabled! You must wait " + (int) Math.ceil(slowTimeLeft / 1000) + " more second(s) before you can talk again.");
-				event.setCancelled(true);
-				return;
-			} else {
-				slow.playerAdd(user.getName());
-			}
-		}
-
-		// Format + display message
-		String prefix;
-		BenCmd.log(user.getDisplayName() + ": " + message);
-		if (!(prefix = user.getPrefix()).isEmpty()) {
-			message = user.getColor() + "[" + prefix + "] " + user.getDisplayName() + ": " + ChatColor.WHITE + message;
-			Bukkit.broadcastMessage(message);
-			event.setCancelled(true);
+		if (user.inChannel()) {
+			user.getActiveChannel().sendChat(user, message);
 		} else {
-			message = user.getColor() + user.getDisplayName() + ": " + ChatColor.WHITE + message;
-			Bukkit.broadcastMessage(message);
-			event.setCancelled(true);
+			user.sendMessage(ChatColor.RED + "You must be in a chat channel to talk!");
 		}
+		event.setCancelled(true);
 	}
 
 	private void userInit(PlayerJoinEvent event) {

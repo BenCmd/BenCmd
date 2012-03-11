@@ -15,15 +15,16 @@ import com.bendude56.bencmd.permissions.PermissionUser;
 public class ChatChannelCommands implements Commands {
 	public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
 		User user = User.getUser(sender);
-		if (!BenCmd.getMainProperties().getBoolean("channelsEnabled", true)) {
-			return false;
-		}
 		if (commandLabel.equalsIgnoreCase("channel")) {
 			Channel(args, user);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("pause")) {
 			Bukkit.dispatchCommand(sender, "channel pause");
 		} else if (commandLabel.equalsIgnoreCase("me")) {
+			if (user.isServer()) {
+				BenCmd.getLocale().sendMessage(user, "basic.noServerUse");
+				return true;
+			}
 			String message = "";
 			for (int i = 0; i < args.length; i++) {
 				if (i == 0) {
@@ -43,6 +44,10 @@ public class ChatChannelCommands implements Commands {
 	}
 
 	public void Channel(String[] args, User user) {
+		if (user.isServer()) {
+			BenCmd.getLocale().sendMessage(user, "basic.noServerUse");
+			return;
+		}
 		if (args.length == 0) {
 			if (user.inChannel()) {
 				if (user.getActiveChannel().canExecuteAllCommands(user)) {

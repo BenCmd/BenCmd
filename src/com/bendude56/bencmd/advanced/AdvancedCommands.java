@@ -25,6 +25,10 @@ public class AdvancedCommands implements Commands {
 	}
 
 	public void Write(String[] args, User user) {
+		if (user.isServer()) {
+			BenCmd.getLocale().sendMessage(user, "basic.noServerUse");
+			return;
+		}
 		if (((Player) user.getHandle()).getTargetBlock(null, 4).getType() != Material.BOOKSHELF) {
 			BenCmd.getLocale().sendMessage(user, "command.write.notAShelf");
 			return;
@@ -49,6 +53,10 @@ public class AdvancedCommands implements Commands {
 	}
 
 	public void Inv(String[] args, User user) {
+		if (user.isServer()) {
+			BenCmd.getLocale().sendMessage(user, "basic.noServerUse");
+			return;
+		}
 		if (args.length != 1) {
 			BenCmd.showUse(user, "inv");
 			return;

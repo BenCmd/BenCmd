@@ -23,6 +23,10 @@ public class RedstoneCommands implements Commands {
 	}
 
 	public void Lever(String[] args, User user) {
+		if (user.isServer()) {
+			BenCmd.getLocale().sendMessage(user, "basic.noServerUse");
+			return;
+		}
 		if (((Player) user.getHandle()).getTargetBlock(null, 4).getType() != Material.LEVER) {
 			BenCmd.getLocale().sendMessage(user, "command.lever.notALever");
 			return;

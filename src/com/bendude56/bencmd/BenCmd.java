@@ -710,9 +710,6 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 				}
 			}
 		}
-		if (!BenCmd.getMainProperties().getBoolean("channelsEnabled", true)) {
-			BenCmd.log(Level.WARNING, "Non-channel chat using BenCmd is being phased out... Please move to channel-based chat...");
-		}
 		BenCmd.log("Registering events...");
 		// Register all necessary events
 		try {

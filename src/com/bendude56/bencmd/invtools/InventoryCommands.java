@@ -57,7 +57,7 @@ public class InventoryCommands implements Commands {
 			return;
 		}
 		if (!BenCmd.getPermissionManager().getItemLists().canSpawn(Item.getMaterial(), user.highestLevelGroup().getName())) {
-			user.sendMessage(ChatColor.RED + "You're not allowed to spawn that item!");
+			BenCmd.getLocale().sendMessage(user, "basic.noSpawn");
 			return;
 		}
 		BenCmd.getDispensers().addDispenser(blockToAdd.getLocation(), String.valueOf(Item.getMaterial().getId()) + ":" + String.valueOf(Item.getDamage()));

@@ -76,7 +76,7 @@ public class ChatChannel {
 		spies = new ArrayList<User>();
 		slow = SlowMode.newUnhandledInstance();
 		if (defaultSlowEnabled) {
-			slow.EnableSlow(defaultSlowDelay);
+			slow.enableSlow(defaultSlowDelay);
 		}
 		paused = false;
 		delDanger = 0;
@@ -136,7 +136,7 @@ public class ChatChannel {
 
 	private void sendJoinMsg(User user) {
 		ChatLevel lvl = getLevel(user);
-		BenCmd.getLocale().sendMessage(user, "misc.channel.connect.spy", name);
+		BenCmd.getLocale().sendMessage(user, "misc.channel.connect", name);
 		BenCmd.getLocale().sendMessage(user, "misc.channel.motd", motd);
 		if (lvl == ChatLevel.MUTED) {
 			BenCmd.getLocale().sendMessage(user, "misc.channel.note.muted");
@@ -367,16 +367,16 @@ public class ChatChannel {
 
 	public void toggleSlow() {
 		if (slow.isEnabled()) {
-			slow.DisableSlow();
+			slow.disableSlow();
 			broadcastMessage(BenCmd.getLocale().getString("misc.channel.slow.off"));
 		} else {
-			slow.EnableSlow(defaultSlowDelay);
+			slow.enableSlow(defaultSlowDelay);
 			broadcastMessage(BenCmd.getLocale().getString("misc.channel.slow.on", (defaultSlowDelay / 1000) + ""));
 		}
 	}
 
 	public void enableSlow(int millis) {
-		slow.EnableSlow(millis);
+		slow.enableSlow(millis);
 		broadcastMessage(BenCmd.getLocale().getString("misc.channel.slow.on", (millis / 1000) + ""));
 	}
 

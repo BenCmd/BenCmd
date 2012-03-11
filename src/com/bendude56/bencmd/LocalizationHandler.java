@@ -130,6 +130,7 @@ public class LocalizationHandler {
 		p.setProperty("basic.no", "No");
 		p.setProperty("basic.noPermission", ChatColor.RED + "You don't have permission to do that!");
 		p.setProperty("basic.noServerUse", ChatColor.RED + "The server can't do that!");
+		p.setProperty("basic.noSpawn", ChatColor.RED + "You aren't allowed to spawn that item!");
 		p.setProperty("basic.updateFail", ChatColor.RED + "A BenCmd update failed to download properly! Some features may cease to function...");
 		p.setProperty("basic.updateInProgress", ChatColor.RED + "BenCmd is updating... Some features may reset after it is updated...");
 		p.setProperty("basic.updateNag", ChatColor.RED + "A new BenCmd update was detected! Use \"/bencmd update\" to update your server...");
@@ -139,6 +140,13 @@ public class LocalizationHandler {
 		p.setProperty("basic.yes", "Yes");
 		
 		// Command specific messages
+		
+		// ALLPOOF
+		p.setProperty("command.allpoof.poof", ChatColor.GREEN + "ALLPOOF!");
+		p.setProperty("command.allpoof.poofOther", ChatColor.GREEN + "%1 is now allpoofed!");
+		p.setProperty("command.allpoof.unpoof", ChatColor.GREEN + "REVERSE ALLPOOF! (STILL POOFED!)");
+		p.setProperty("command.allpoof.unpoofOther", ChatColor.GREEN + "%1 is no longer allpoofed!");
+		p.setProperty("command.allpoof.use", ChatColor.YELLOW + "/allpoof [user]");
 		
 		// BANK
 		p.setProperty("command.bank.otherAlreadyDowngraded", ChatColor.RED + "%1's bank is not currently upgraded!");
@@ -175,6 +183,9 @@ public class LocalizationHandler {
 		p.setProperty("command.channel.info.banned", "Banned");
 		p.setProperty("command.channel.info.muted", "Muted");
 		p.setProperty("command.channel.info.normal", "Normal");
+		
+		p.setProperty("command.channel.list.list", ChatColor.GREEN + "You can join the following chat channels:");
+		p.setProperty("command.channel.list.none", ChatColor.RED + "You cannot join any chat channels");
 		
 		p.setProperty("command.channel.remove.danger.1", ChatColor.RED + "WARNING: You are about to permanently delete '" + ChatColor.GREEN + "%1" + ChatColor.RED + "'!");
 		p.setProperty("command.channel.remove.danger.2", ChatColor.RED + "All current users will be kicked from the channel! Repeat this");
@@ -235,6 +246,14 @@ public class LocalizationHandler {
 		p.setProperty("command.heal.self", ChatColor.GREEN + "You have been healed!");
 		p.setProperty("command.heal.use", ChatColor.YELLOW + "/heal [user]");
 		
+		// IGNORE
+		p.setProperty("command.ignore.alreadyIgnoring", ChatColor.RED + "You're already ignoring that user!");
+		p.setProperty("command.ignore.cannotIgnore", ChatColor.RED + "You can't ignore an administrator!");
+		p.setProperty("command.ignore.list", ChatColor.GREEN + "You are ignoring the following users:");
+		p.setProperty("command.ignore.listNone", ChatColor.RED + "You're not ignoring anybody!");
+		p.setProperty("command.ignore.success", ChatColor.GREEN + "You are now ignoring %1!");
+		p.setProperty("command.ignore.use", ChatColor.YELLOW + "/ignore [user]");
+		
 		// INV
 		p.setProperty("command.inv.protected", ChatColor.RED + "%1's inventory is protected!");
 		p.setProperty("command.inv.use", ChatColor.YELLOW + "/inv <user>");
@@ -264,6 +283,21 @@ public class LocalizationHandler {
 		p.setProperty("command.lever.success.night", ChatColor.GREEN + "That lever will now activate during the night!");
 		p.setProperty("command.lever.success.none", ChatColor.GREEN + "That lever is no longer time controlled!");
 		p.setProperty("command.lever.use", ChatColor.YELLOW + "/lever {day|night|none}");
+		
+		// LIST
+		p.setProperty("command.list.empty", ChatColor.GREEN + "The server is empty :(");
+		p.setProperty("command.list.list", ChatColor.GREEN + "The following players are online:");
+		
+		// MONITOR
+		p.setProperty("command.monitor.success", ChatColor.GREEN + "You are now seeing through the eyes of %1!");
+		p.setProperty("command.monitor.use", ChatColor.YELLOW + "/monitor {[user]|none}");
+		
+		// NOPOOF
+		p.setProperty("command.nopoof.poof", ChatColor.GREEN + "NOPOOF!");
+		p.setProperty("command.nopoof.poofOther", ChatColor.GREEN + "%1 is now nopoofed!");
+		p.setProperty("command.nopoof.unpoof", ChatColor.GREEN + "REVERSE NOPOOF!");
+		p.setProperty("command.nopoof.unpoofOther", ChatColor.GREEN + "%1 is no longer nopoofed!");
+		p.setProperty("command.nopoof.use", ChatColor.YELLOW + "/nopoof [user]");
 		
 		// NPC
 		p.setProperty("command.npc.banker", "Banker");
@@ -302,6 +336,31 @@ public class LocalizationHandler {
 		p.setProperty("command.npc.use.skin", ChatColor.YELLOW + "/npc skin <id> <skin>");
 		p.setProperty("command.npc.use.static", ChatColor.YELLOW + "/npc static <name> [skin]");
 		
+		// OFFLINE
+		p.setProperty("command.offline.other", ChatColor.GREEN + "%1 is now in \"offline\" mode.");
+		p.setProperty("command.offline.otherAlready", ChatColor.RED + "%1 is already in \"offline\" mode!");
+		p.setProperty("command.offline.self", ChatColor.GREEN + "You are now in \"offline\" mode.");
+		p.setProperty("command.offline.selfAlready", ChatColor.RED + "You are already in \"offline\" mode!");
+		p.setProperty("command.offline.use", ChatColor.YELLOW + "/offline [user]");
+		
+		// ONLINE
+		p.setProperty("command.online.other", ChatColor.GREEN + "%1 is no longer in \"offline\" mode.");
+		p.setProperty("command.online.otherAlready", ChatColor.RED + "%1 is not in \"offline\" mode!");
+		p.setProperty("command.online.self", ChatColor.GREEN + "You are no longer in \"offline\" mode.");
+		p.setProperty("command.online.selfAlready", ChatColor.RED + "You are not in \"offline\" mode!");
+		p.setProperty("command.online.use", ChatColor.YELLOW + "/online [user]");
+		
+		// POOF
+		p.setProperty("command.poof.otherMonitor", ChatColor.RED + "You can't unpoof another user while they're monitoring a user!");
+		p.setProperty("command.poof.otherOffline", ChatColor.RED + "You can't unpoof another user while they're offline!");
+		p.setProperty("command.poof.poof", ChatColor.GREEN + "POOF!");
+		p.setProperty("command.poof.poofOther", ChatColor.GREEN + "%1 is now poofed!");
+		p.setProperty("command.poof.selfMonitor", ChatColor.RED + "You can't unpoof while you're monitoring a user!");
+		p.setProperty("command.poof.selfOffline", ChatColor.RED + "You can't unpoof while you're offline!");
+		p.setProperty("command.poof.unpoof", ChatColor.GREEN + "REVERSE POOF!");
+		p.setProperty("command.poof.unpoofOther", ChatColor.GREEN + "%1 is no longer poofed!");
+		p.setProperty("command.poof.use", ChatColor.YELLOW + "/poof [user]");
+		
 		// SETSPAWN
 		p.setProperty("command.setspawn.setSuccess", ChatColor.GREEN + "The spawn location for the world '%1' has been set here.");
 		
@@ -315,6 +374,16 @@ public class LocalizationHandler {
 		p.setProperty("command.spawnmob.spawnMsg", ChatColor.GREEN + "%1 mobs spawned!");
 		p.setProperty("command.spawnmob.use", ChatColor.YELLOW + "/spawnmob <mob> [amount]");
 		
+		// TELL
+		p.setProperty("command.tell.message", ChatColor.GRAY + "(%1" + ChatColor.GRAY + " => %2" + ChatColor.GRAY + ") %3");
+		p.setProperty("command.tell.muted", ChatColor.RED + "You cannot use /tell while you are muted!");
+		p.setProperty("command.tell.tellSelf", ChatColor.RED + "Are you trying to talk to yourself? Weirdo...");
+		p.setProperty("command.tell.use", ChatColor.YELLOW + "/tell <player> <message>");
+		p.setProperty("command.tell.you", ChatColor.BLUE + "You");
+		
+		p.setProperty("command.tell.ignore.other", ChatColor.RED + "That user is ignoring you...");
+		p.setProperty("command.tell.ignore.self", ChatColor.RED + "You are ignoring that user...");
+		
 		// TIME
 		p.setProperty("command.time.invalidTime", ChatColor.RED + "Invalid time inputted!");
 		p.setProperty("command.time.lock", ChatColor.GREEN + "Time in world '%1' has been locked!");
@@ -324,6 +393,15 @@ public class LocalizationHandler {
 		p.setProperty("command.time.unlock", ChatColor.GREEN + "Time in world '%1' has been unlocked!");
 		p.setProperty("command.time.unlockAll", ChatColor.GREEN + "Time in all worlds has been unlocked!");
 		p.setProperty("command.time.use", ChatColor.YELLOW + "/time {sunrise|dawn|day|noon|sunset|dusk|night|midnight|set <time>|lock|unlock");
+		
+		// UNIGNORE
+		p.setProperty("command.unignore.notIgnoring", ChatColor.RED + "You aren't ignoring that user!");
+		p.setProperty("command.unignore.success", ChatColor.GREEN + "You are no longer ignoring %1!");
+		
+		// UNL
+		p.setProperty("command.unl.invalid", ChatColor.RED + "Invalid item ID or damage inputted!");
+		p.setProperty("command.unl.notDispenser", ChatColor.RED + "You aren't pointing at a dispenser!");
+		p.setProperty("command.unl.use", ChatColor.YELLOW + "/unl <ID>[:<Damage>]");
 		
 		// WRITE
 		p.setProperty("command.write.notAllowed", ChatColor.RED + "You're not allowed to do that here!");
@@ -395,6 +473,8 @@ public class LocalizationHandler {
 		
 		p.setProperty("log.spawnmob.spawnMsg", "%1 has spawned %2 mobs of type %3 at (%4, %5, %6) in world '%7'");
 		
+		p.setProperty("log.tell.message", "(%1 => %2) %3");
+		
 		p.setProperty("log.time.lock", "%1 has locked time in world '%2'");
 		p.setProperty("log.time.lockAll", "Time in all worlds has been locked");
 		p.setProperty("log.time.set", "%1 has set time in world '%2' to %3");
@@ -415,35 +495,43 @@ public class LocalizationHandler {
 		p.setProperty("log.write.success", "%1 has written on a shelf at (%2, %3, %4) in world '%5'. Message: %6");
 		
 		// Miscellaneous messages
-		p.setProperty("misc.channel.connect", ChatColor.GREEN + "You are now in '%1'");
-		p.setProperty("misc.channel.connect.spy", ChatColor.GREEN + "You are now spying on '%1'!");
 		p.setProperty("misc.channel.defaultMotd", "Change this message using /channel motd <message>");
-		p.setProperty("misc.channel.disconnect", ChatColor.GREEN + "You are no longer in '%1'");
-		p.setProperty("misc.channel.disconnect.spy", ChatColor.GREEN + "You are no longer spying on '%1'!");
 		p.setProperty("misc.channel.join", "%1" + ChatColor.YELLOW + " has joined the chat");
 		p.setProperty("misc.channel.kicked", ChatColor.RED + "You have been kicked from '%1'!");
 		p.setProperty("misc.channel.leave", "%2" + ChatColor.YELLOW + " has left the chat");
 		p.setProperty("misc.channel.list", ChatColor.YELLOW + "The following users are chatting in '%1':");
 		p.setProperty("misc.channel.motd", ChatColor.YELLOW + "MOTD: %1");
 		p.setProperty("misc.channel.noConnect", ChatColor.RED + "You do not have permission to enter '%1'!");
+		
+		p.setProperty("misc.channel.connect", ChatColor.GREEN + "You are now in '%1'");
+		p.setProperty("misc.channel.connect.spy", ChatColor.GREEN + "You are now spying on '%1'!");
+		
+		p.setProperty("misc.channel.disconnect", ChatColor.GREEN + "You are no longer in '%1'");
+		p.setProperty("misc.channel.disconnect.spy", ChatColor.GREEN + "You are no longer spying on '%1'!");
+		
 		p.setProperty("misc.channel.noConnect.ban", ChatColor.RED + "You are currently banned from '%1'!");
 		p.setProperty("misc.channel.noConnect.spy", ChatColor.RED + "You aren't allowed to spy on '%1'!");
+		
 		p.setProperty("misc.channel.note.muted", ChatColor.GRAY + "NOTE: You cannot speak in this channel");
 		p.setProperty("misc.channel.note.paused", ChatColor.GRAY + "NOTE: Pause mode is on in this channel");
 		p.setProperty("misc.channel.note.slow", ChatColor.GRAY + "NOTE: Slow mode is on in this channel");
+		
 		p.setProperty("misc.channel.noTalk.block", ChatColor.RED + "You used a blocked word!");
 		p.setProperty("misc.channel.noTalk.caps", ChatColor.RED + "You cannot send messages in all-caps!");
 		p.setProperty("misc.channel.noTalk.muted", ChatColor.RED + "You cannot speak in this channel!");
 		p.setProperty("misc.channel.noTalk.paused", ChatColor.RED + "You cannot speak while this channel is in slow mode!");
 		p.setProperty("misc.channel.noTalk.slow", ChatColor.RED + "You must wait %1 seconds before you can send another message!");
+		
 		p.setProperty("misc.channel.pause.off", ChatColor.YELLOW + "Pause mode has been disabled");
 		p.setProperty("misc.channel.pause.on", ChatColor.YELLOW + "Pause mode has been enabled");
+		
 		p.setProperty("misc.channel.role.banned", ChatColor.RED + "You are now banned from '%1'");
 		p.setProperty("misc.channel.role.coowner", ChatColor.GREEN + "You are now a co-owner of '%1'");
 		p.setProperty("misc.channel.role.mod", ChatColor.GREEN + "You are now a moderator in '%1'");
 		p.setProperty("misc.channel.role.muted", ChatColor.RED + "You are now muted in '%1'");
 		p.setProperty("misc.channel.role.owner", ChatColor.GREEN + "You are now the owner of '%1'");
 		p.setProperty("misc.channel.role.vip", ChatColor.GREEN + "You are now a VIP in '%1'");
+		
 		p.setProperty("misc.channel.slow.off", ChatColor.YELLOW + "Slow mode has been disabled");
 		p.setProperty("misc.channel.slow.on", ChatColor.YELLOW + "Slow mode has been enabled (%1s)");
 		
@@ -476,6 +564,7 @@ public class LocalizationHandler {
 		p.setProperty("npc.blacksmith.repairSuccess", ChatColor.GREEN + "That item has been repaired!");
 		p.setProperty("npc.blackmsith.updateToolRepair", ChatColor.GREEN + "That tool's price has been updated!");
 		p.setProperty("npc.blackmsith.updateToolRepair", ChatColor.GREEN + "That armor's price has been updated!");
+		
 		p.setProperty("npc.unnamed.name", "Unnamed");
 		
 		try {

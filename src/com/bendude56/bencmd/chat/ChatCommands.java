@@ -16,14 +16,9 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import com.bendude56.bencmd.BenCmd;
 import com.bendude56.bencmd.Commands;
 import com.bendude56.bencmd.User;
-import com.bendude56.bencmd.listener.BenCmdPlayerListener;
 import com.bendude56.bencmd.permissions.PermissionUser;
 
 public class ChatCommands implements Commands {
-
-	public boolean channelsEnabled() {
-		return BenCmd.getMainProperties().getBoolean("channelsEnabled", true);
-	}
 
 	public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
 		User user = User.getUser(sender);
@@ -70,6 +65,10 @@ public class ChatCommands implements Commands {
 			BenCmd.getLocale().sendMessage(user2, "command.display.success", message);
 			return true;
 		} else if (commandLabel.equalsIgnoreCase("ignore") && user.hasPerm("bencmd.chat.ignore")) {
+			if (user.isServer()) {
+				BenCmd.getLocale().sendMessage(user, "basic.noServerUse");
+				return true;
+			}
 			if (args.length == 0) {
 				String ignoring = "";
 				for (String i : user.getIgnoring()) {
@@ -80,10 +79,10 @@ public class ChatCommands implements Commands {
 					}
 				}
 				if (ignoring.isEmpty()) {
-					user.sendMessage(ChatColor.RED + "You're not ignoring anybody!");
+					BenCmd.getLocale().sendMessage(user, "command.ignore.listNone");
 					return true;
 				} else {
-					user.sendMessage(ChatColor.GRAY + "You are ignoring the following users:");
+					BenCmd.getLocale().sendMessage(user, "command.ignore.list");
 					return true;
 				}
 			} else if (args.length == 1) {
@@ -93,20 +92,24 @@ public class ChatCommands implements Commands {
 					return true;
 				}
 				if (user.isIgnoring(u)) {
-					user.sendMessage(ChatColor.RED + "You are already ignoring that user!");
+					BenCmd.getLocale().sendMessage(user, "command.ignore.alreadyIgnoring");
 					return true;
 				}
 				if (u.hasPerm("bencmd.chat.noignore")) {
-					user.sendMessage(ChatColor.RED + "You cannot ignore that user!");
+					BenCmd.getLocale().sendMessage(user, "command.ignore.cannotIgnore");
 					return true;
 				}
 				user.ignore(u);
-				user.sendMessage(ChatColor.GREEN + "You are now ignoring that user!");
+				BenCmd.getLocale().sendMessage(user, "command.ignore.success", u.getName());
 				return true;
 			} else {
-				user.sendMessage(ChatColor.YELLOW + "Proper usage is: /ignore [player]");
+				BenCmd.showUse(user, "ignore");
 			}
 		} else if (commandLabel.equalsIgnoreCase("unignore") && user.hasPerm("bencmd.chat.ignore")) {
+			if (user.isServer()) {
+				BenCmd.getLocale().sendMessage(user, "basic.noServerUse");
+				return true;
+			}
 			if (args.length == 1) {
 				PermissionUser u = PermissionUser.matchUserAllowPartial(args[0]);
 				if (u == null) {
@@ -114,50 +117,23 @@ public class ChatCommands implements Commands {
 					return true;
 				}
 				if (!user.isIgnoring(u)) {
-					user.sendMessage(ChatColor.RED + "You aren't ignoring that user!");
+					BenCmd.getLocale().sendMessage(user, "command.unignore.notIgnoring");
 					return true;
 				}
 				user.unignore(u);
-				user.sendMessage(ChatColor.GREEN + "You are no longer ignoring that user!");
+				BenCmd.getLocale().sendMessage(user, "command.unignore.success", u.getName());
 				return true;
 			} else {
-				user.sendMessage(ChatColor.YELLOW + "Proper usage is: /unignore <player>");
+				BenCmd.showUse(user, "unignore");
 			}
-		}
-		if (channelsEnabled()) {
-			return false;
-		}
-		if (commandLabel.equalsIgnoreCase("slow") && user.hasPerm("bencmd.chat.slow")) {
-			slowMode(args, user);
-			return true;
-		} else if (commandLabel.equalsIgnoreCase("me")) {
-			me(args, user);
-			return true;
 		}
 		return false;
 	}
 
-	public void slowMode(String[] args, User user) {
-		if ((!SlowMode.getInstance().isEnabled()) && args.length > 0) {
-			int millis;
-			try {
-				millis = Integer.parseInt(args[0]);
-			} catch (NumberFormatException e) {
-				user.sendMessage(ChatColor.RED + "Invalid delay!");
-				return;
-			}
-			SlowMode.getInstance().EnableSlow(millis);
-		} else {
-			BenCmdPlayerListener.getInstance().ToggleSlow(user);
-		}
-	}
-
 	public void list(String[] args, User user) {
 		Player[] playerList = Bukkit.getOnlinePlayers();
-		if (playerList.length == 1 && !user.isServer()) {
-			user.sendMessage(ChatColor.GREEN + "You are the only one online. :(");
-		} else if (playerList.length == 0) {
-			user.sendMessage("The server is empty. :(");
+		if ((playerList.length == 1 && !user.isServer()) || playerList.length == 0) {
+			BenCmd.getLocale().sendMessage(user, "command.list.empty");
 		} else {
 			String playerString = "";
 			for (Player player2 : playerList) {
@@ -167,71 +143,37 @@ public class ChatCommands implements Commands {
 				}
 				playerString += user2.getColor() + user2.getName() + ChatColor.WHITE + ", ";
 			}
-			user.sendMessage("The following players are online:(" + playerList.length + ")");
+			BenCmd.getLocale().sendMessage(user, "command.list.list");
 			user.sendMessage(playerString);
 		}
 	}
 
-	public void me(String[] args, User user) {
-		if (args.length == 0) {
-			user.sendMessage(ChatColor.YELLOW + "Proper usage: /me <message>");
-			return;
-		}
-		if (user.isMuted() != null) {
-			user.sendMessage(ChatColor.GRAY + BenCmd.getMainProperties().getString("muteMessage", "You are muted..."));
-			return;
-		}
-		String message = "";
-		for (String word : args) {
-			if (message == "") {
-				message += word;
-			} else {
-				message += " " + word;
-			}
-		}
-		boolean blocked = ChatChecker.checkBlocked(message);
-		if (blocked) {
-			user.sendMessage(ChatColor.GRAY + BenCmd.getMainProperties().getString("blockMessage", "You used a blocked word..."));
-			return;
-		}
-		long slowTimeLeft = SlowMode.getInstance().playerBlocked(user.getName());
-		if (!user.hasPerm("bencmd.chat.noslow") && SlowMode.getInstance().isEnabled()) {
-			if (slowTimeLeft > 0) {
-				user.sendMessage(ChatColor.GRAY + "Slow mode is enabled! You must wait " + (int) Math.ceil(slowTimeLeft / 1000) + " more second(s) before you can talk again.");
-				return;
-			} else {
-				SlowMode.getInstance().playerAdd(user.getName());
-			}
-		}
-		message = ChatColor.WHITE + "*" + user.getColor() + user.getName() + " " + ChatColor.WHITE + message;
-		Bukkit.broadcastMessage(message);
-		BenCmd.log(message);
-	}
-
 	public void tell(String[] args, User user) {
 		if (args.length <= 1) {
-			user.sendMessage(ChatColor.YELLOW + "Proper usage: /tell <player> <message>");
+			BenCmd.showUse(user, "tell");
 			return;
 		}
 		if (user.isMuted() != null) {
-			user.sendMessage(ChatColor.GRAY + BenCmd.getMainProperties().getString("muteMessage", "You are muted..."));
+			BenCmd.getLocale().sendMessage(user, "command.tell.muted");
 			return;
 		}
 		User user2;
-		if ((user2 = User.matchUser(args[0])) == null) {
+		if (args[0].equalsIgnoreCase("server")) {
+			user2 = User.getUser(Bukkit.getServer().getConsoleSender());
+		} else if ((user2 = User.matchUser(args[0])) == null) {
 			BenCmd.getLocale().sendMessage(user, "basic.userNotFound", args[0]);
 			return;
 		}
 		if (user2.getName().equalsIgnoreCase(user.getName())) {
-			user.sendMessage(ChatColor.RED + "Are you trying to talk to yourself? Weirdo...");
+			BenCmd.getLocale().sendMessage(user, "command.tell.tellSpy");
 			return;
 		}
 		if (user2.isIgnoring(user) && !user.hasPerm("bencmd.chat.noignore")) {
-			user.sendMessage(ChatColor.RED + "That user is ignoring you...");
+			BenCmd.getLocale().sendMessage(user, "command.tell.ignore.other");
 			return;
 		}
 		if (user.isIgnoring(user2) && !user2.hasPerm("bencmd.chat.noignore")) {
-			user.sendMessage(ChatColor.RED + "You are ignoring that user...");
+			BenCmd.getLocale().sendMessage(user, "command.tell.ignore.self");
 			return;
 		}
 		String message = "";
@@ -248,26 +190,28 @@ public class ChatCommands implements Commands {
 		}
 		boolean blocked = ChatChecker.checkBlocked(message);
 		if (blocked) {
-			user.sendMessage(ChatColor.GRAY + BenCmd.getMainProperties().getString("blockMessage", "You used a blocked word..."));
+			BenCmd.getLocale().sendMessage(user, "misc.channel.noTalk.block");
 			return;
 		}
 		long slowTimeLeft = SlowMode.getInstance().playerBlocked(user.getName());
 		if (!user.hasPerm("bencmd.chat.noslow") && SlowMode.getInstance().isEnabled()) {
 			if (slowTimeLeft > 0) {
-				user.sendMessage(ChatColor.GRAY + "Slow mode is enabled! You must wait " + (int) Math.ceil(slowTimeLeft / 1000) + " more second(s) before you can talk again.");
+				BenCmd.getLocale().sendMessage(user, "misc.channel.noTalk.slow", ((int) Math.ceil(slowTimeLeft / 1000)) + "");
 				return;
 			} else {
 				SlowMode.getInstance().playerAdd(user.getName());
 			}
 		}
-		user2.sendMessage(ChatColor.GRAY + "(" + ((user.isDev()) ? ChatColor.DARK_GREEN + "*" : "") + user.getColor() + user.getDisplayName() + ChatColor.GRAY + " => You) " + message);
-		user.sendMessage(ChatColor.GRAY + "(You => " + ((user2.isDev()) ? ChatColor.DARK_GREEN + "*" : "") + user2.getColor() + user2.getDisplayName() + ChatColor.GRAY + ") " + message);
+		String name1 = ((user.isDev()) ? ChatColor.DARK_GREEN + "*" : "") + user.getColor() + user.getDisplayName();
+		String name2 = ((user2.isDev()) ? ChatColor.DARK_GREEN + "*" : "") + user2.getColor() + user2.getDisplayName();
+		BenCmd.getLocale().sendMessage(user2, "command.tell.message", name1, BenCmd.getLocale().getString("command.tell.you"), message);
+		BenCmd.getLocale().sendMessage(user, "command.tell.message", BenCmd.getLocale().getString("command.tell.you"), name2, message);
 		for (User spy : BenCmd.getPermissionManager().getUserFile().allWithPerm("bencmd.chat.tellspy")) {
 			if (spy.getName().equals(user.getName()) || spy.getName().equals(user2.getName())) {
 				continue;
 			}
-			spy.sendMessage(ChatColor.GRAY + "(" + ((user.isDev()) ? ChatColor.DARK_GREEN + "*" : "") + user.getColor() + user.getDisplayName() + ChatColor.GRAY + " => " + ((user2.isDev()) ? ChatColor.DARK_GREEN + "*" : "") + user2.getColor() + user2.getDisplayName() + ChatColor.GRAY + ") " + message);
+			BenCmd.getLocale().sendMessage(spy, "command.tell.message", name1, name2, message);
 		}
-		BenCmd.log("(" + user.getDisplayName() + " => " + user2.getDisplayName() + ") " + message);
+		BenCmd.log(BenCmd.getLocale().getString("log.tell.message", user.getName(), user2.getName(), message));
 	}
 }
