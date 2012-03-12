@@ -2,7 +2,6 @@ package com.bendude56.bencmd.listener;
 
 import java.util.Date;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -79,19 +78,19 @@ public class BenCmdBlockListener implements EventExecutor, Listener {
 			return;
 		}
 		Block block = event.getBlock();
-		Player player = event.getPlayer();
+		User user = User.getUser(event.getPlayer());
 		if (block.getType() == Material.DISPENSER && BenCmd.getDispensers().isUnlimitedDispenser(block.getLocation())) {
-			if (!User.getUser(player).hasPerm("bencmd.inv.unlimited.remove")) {
-				player.sendMessage(ChatColor.RED + "You can't destroy unlimited dispensers!");
+			if (!user.hasPerm("bencmd.inv.unlimited.remove")) {
+				BenCmd.getLocale().sendMessage(user, "misc.unl.cannotDestroy");
 				event.setCancelled(true);
 				return;
 			}
 			BenCmd.getDispensers().removeDispenser(block.getLocation());
-			player.sendMessage(ChatColor.RED + "You destroyed an unlimited dispenser!");
+			BenCmd.getLocale().sendMessage(user, "misc.unl.destroy");
 		}
 		if (block.getType() == Material.CHEST && BenCmd.getDisposals().isDisposalChest(block.getLocation())) {
-			if (!User.getUser(player).hasPerm("bencmd.inv.disposal.remove")) {
-				player.sendMessage(ChatColor.RED + "You can't destroy disposal chests!");
+			if (!user.hasPerm("bencmd.inv.disposal.remove")) {
+				BenCmd.getLocale().sendMessage(user, "misc.disp.cannotDestroy");
 				event.setCancelled(true);
 				return;
 			}
@@ -100,7 +99,7 @@ public class BenCmdBlockListener implements EventExecutor, Listener {
 			block.setType(Material.AIR);
 			block.getWorld().dropItemNaturally(block.getLocation(), new ItemStack(Material.CHEST, 1));
 			BenCmd.getDisposals().removeDispenser(block.getLocation());
-			player.sendMessage(ChatColor.RED + "You destroyed a disposal chest!");
+			BenCmd.getLocale().sendMessage(user, "misc.disp.destroy");
 		}
 	}
 
@@ -142,16 +141,17 @@ public class BenCmdBlockListener implements EventExecutor, Listener {
 
 		if (!BenCmd.getLots().canBuildHere(player, event.getBlock().getLocation())) {
 			event.setCancelled(true);
-			player.sendMessage(ChatColor.RED + "You cannot build here.");
+			BenCmd.getLocale().sendMessage(user, "basic.noBuild");
 		}
 	}
 
 	private void lotPlaceCheck(BlockPlaceEvent event) {
 		Player player = event.getPlayer();
+		User user = User.getUser(player);
 
 		if (!BenCmd.getLots().canBuildHere(player, event.getBlock().getLocation())) {
 			event.setCancelled(true);
-			player.sendMessage(ChatColor.RED + "You cannot build here.");
+			BenCmd.getLocale().sendMessage(user, "basic.noBuild");
 		}
 	}
 
@@ -212,7 +212,7 @@ public class BenCmdBlockListener implements EventExecutor, Listener {
 		Location l = event.getBlock().getLocation();
 		Player p = event.getPlayer();
 		String[] ls = event.getLines();
-		BenCmd.log(p.getDisplayName() + " put a sign at (" + l.getBlockX() + ", " + l.getBlockY() + ", " + l.getBlockZ() + ", " + l.getWorld().getName() + "):");
+		BenCmd.log(BenCmd.getLocale().getString("misc.sign.head", p.getName(), l.getBlockX() + "", l.getBlockY() + "", l.getBlockZ() + "", l.getWorld().getName()));
 		int firstLine = -1;
 		for (int i = 0; i < ls.length; i++) {
 			String line = ls[i];
@@ -220,7 +220,7 @@ public class BenCmdBlockListener implements EventExecutor, Listener {
 				if (firstLine == -1) {
 					firstLine = i;
 				}
-				BenCmd.log("Line " + String.valueOf(i) + ": " + line);
+				BenCmd.log(BenCmd.getLocale().getString("misc.sign.line", i + "", line));
 			}
 		}
 		for (User spy : BenCmd.getPermissionManager().getUserFile().allWithPerm("bencmd.signspy")) {
@@ -228,9 +228,9 @@ public class BenCmdBlockListener implements EventExecutor, Listener {
 				continue;
 			}
 			if (BenCmd.isSpoutConnected() && BenCmd.getSpoutConnector().enabled(((Player) spy.getHandle()))) {
-				BenCmd.getSpoutConnector().sendNotification(((Player) spy.getHandle()), "Sign by " + p.getName(), ls[firstLine], Material.SIGN);
+				BenCmd.getSpoutConnector().sendNotification(spy.getPlayerHandle(), BenCmd.getLocale().getString("misc.sign.spy.spTitle", p.getName()), ls[firstLine], Material.SIGN);
 			} else {
-				spy.sendMessage(ChatColor.GRAY + p.getName() + " placed a sign: " + ls[firstLine]);
+				BenCmd.getLocale().sendMessage(spy, "misc.sign.spy.normal", ls[firstLine]);
 			}
 
 		}
@@ -247,16 +247,16 @@ public class BenCmdBlockListener implements EventExecutor, Listener {
 			User user = User.getUser(event.getPlayer());
 			if (!block.canChange(user.getName())) {
 				event.setCancelled(true);
-				user.sendMessage(ChatColor.RED + "That block is protected from use!  Use /protect info for more information...");
+				BenCmd.getLocale().sendMultilineMessage(user, "misc.protect.noDestroy");
 			} else {
 				BenCmd.getProtections().removeProtection(block.getLocation());
 				Location loc = block.getLocation();
 				String w = loc.getWorld().getName();
-				String x = String.valueOf(loc.getX());
-				String y = String.valueOf(loc.getY());
-				String z = String.valueOf(loc.getZ());
-				BenCmd.log(user.getDisplayName() + " removed " + block.getOwner() + "'s protected chest (id: " + String.valueOf(block.GetId()) + ") at position (" + w + "," + x + "," + y + "," + z + ")");
-				user.sendMessage(ChatColor.GREEN + "The protection on that block was removed.");
+				String x = loc.getX() + "";
+				String y = loc.getY() + "";
+				String z = loc.getZ() + "";
+				BenCmd.log(BenCmd.getLocale().getString("misc.protect.destroy.log", user.getName(), block.getOwner(), x, y, z, w));
+				BenCmd.getLocale().sendMessage(user, "misc.protect.destroy.msg");
 			}
 		}
 	}

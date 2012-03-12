@@ -193,15 +193,6 @@ public class ChatCommands implements Commands {
 			BenCmd.getLocale().sendMessage(user, "misc.channel.noTalk.block");
 			return;
 		}
-		long slowTimeLeft = SlowMode.getInstance().playerBlocked(user.getName());
-		if (!user.hasPerm("bencmd.chat.noslow") && SlowMode.getInstance().isEnabled()) {
-			if (slowTimeLeft > 0) {
-				BenCmd.getLocale().sendMessage(user, "misc.channel.noTalk.slow", ((int) Math.ceil(slowTimeLeft / 1000)) + "");
-				return;
-			} else {
-				SlowMode.getInstance().playerAdd(user.getName());
-			}
-		}
 		String name1 = ((user.isDev()) ? ChatColor.DARK_GREEN + "*" : "") + user.getColor() + user.getDisplayName();
 		String name2 = ((user2.isDev()) ? ChatColor.DARK_GREEN + "*" : "") + user2.getColor() + user2.getDisplayName();
 		BenCmd.getLocale().sendMessage(user2, "command.tell.message", name1, BenCmd.getLocale().getString("command.tell.you"), message);

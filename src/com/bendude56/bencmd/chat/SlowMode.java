@@ -10,24 +10,6 @@ import com.bendude56.bencmd.User;
 
 public class SlowMode {
 
-	private static SlowMode	instance	= null;
-
-	public static SlowMode getInstance() {
-		if (instance == null) {
-			return instance = new SlowMode(BenCmd.getMainProperties().getInteger("slowTime", 1000));
-		} else {
-			return instance;
-		}
-	}
-
-	public static SlowMode newUnhandledInstance() {
-		return new SlowMode(BenCmd.getMainProperties().getInteger("slowTime", 1000));
-	}
-
-	public static void destroyInstance() {
-		instance = null;
-	}
-
 	private boolean					enabled;
 	private Integer					defTime;
 	private Integer					origDefTime;
@@ -64,7 +46,7 @@ public class SlowMode {
 		return enabled;
 	}
 
-	private SlowMode(Integer defaultTime) {
+	public SlowMode(Integer defaultTime) {
 		defTime = defaultTime;
 		origDefTime = defaultTime;
 		enabled = false;

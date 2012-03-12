@@ -105,7 +105,7 @@ public class ProtectFile extends BenCmdFile {
 		if (block instanceof ProtectedChest) {
 			String value;
 			String key;
-			key = ((comment) ? "." : "") + String.valueOf(block.GetId());
+			key = ((comment) ? "." : "") + String.valueOf(block.getId());
 			value = "";
 			value += "c/";
 			boolean init = false;
@@ -124,7 +124,7 @@ public class ProtectFile extends BenCmdFile {
 		} else if (block instanceof ProtectedDoor) {
 			String value;
 			String key;
-			key = ((comment) ? "." : "") + String.valueOf(block.GetId());
+			key = ((comment) ? "." : "") + String.valueOf(block.getId());
 			value = "";
 			value += "d/";
 			boolean init = false;
@@ -143,7 +143,7 @@ public class ProtectFile extends BenCmdFile {
 		} else if (block instanceof ProtectedFurnace) {
 			String value;
 			String key;
-			key = ((comment) ? "." : "") + String.valueOf(block.GetId());
+			key = ((comment) ? "." : "") + String.valueOf(block.getId());
 			value = "";
 			value += "f/";
 			boolean init = false;
@@ -162,7 +162,7 @@ public class ProtectFile extends BenCmdFile {
 		} else if (block instanceof ProtectedDispenser) {
 			String value;
 			String key;
-			key = ((comment) ? "." : "") + String.valueOf(block.GetId());
+			key = ((comment) ? "." : "") + String.valueOf(block.getId());
 			value = "";
 			value += "di/";
 			boolean init = false;
@@ -181,7 +181,7 @@ public class ProtectFile extends BenCmdFile {
 		} else if (block instanceof ProtectedGate) {
 			String value;
 			String key;
-			key = ((comment) ? "." : "") + String.valueOf(block.GetId());
+			key = ((comment) ? "." : "") + String.valueOf(block.getId());
 			value = "";
 			value += "g/";
 			boolean init = false;
@@ -200,7 +200,7 @@ public class ProtectFile extends BenCmdFile {
 		} else if (block instanceof PublicChest) {
 			String value;
 			String key;
-			key = ((comment) ? "." : "") + String.valueOf(block.GetId());
+			key = ((comment) ? "." : "") + String.valueOf(block.getId());
 			value = "";
 			value += "pc/";
 			boolean init = false;
@@ -219,7 +219,7 @@ public class ProtectFile extends BenCmdFile {
 		} else if (block instanceof PublicDoor) {
 			String value;
 			String key;
-			key = ((comment) ? "." : "") + String.valueOf(block.GetId());
+			key = ((comment) ? "." : "") + String.valueOf(block.getId());
 			value = "";
 			value += "pd/";
 			boolean init = false;
@@ -238,7 +238,7 @@ public class ProtectFile extends BenCmdFile {
 		} else if (block instanceof PublicFurnace) {
 			String value;
 			String key;
-			key = ((comment) ? "." : "") + String.valueOf(block.GetId());
+			key = ((comment) ? "." : "") + String.valueOf(block.getId());
 			value = "";
 			value += "pf/";
 			boolean init = false;
@@ -257,7 +257,7 @@ public class ProtectFile extends BenCmdFile {
 		} else if (block instanceof PublicDispenser) {
 			String value;
 			String key;
-			key = ((comment) ? "." : "") + String.valueOf(block.GetId());
+			key = ((comment) ? "." : "") + String.valueOf(block.getId());
 			value = "";
 			value += "pdi/";
 			boolean init = false;
@@ -276,7 +276,7 @@ public class ProtectFile extends BenCmdFile {
 		} else if (block instanceof PublicGate) {
 			String value;
 			String key;
-			key = ((comment) ? "." : "") + String.valueOf(block.GetId());
+			key = ((comment) ? "." : "") + String.valueOf(block.getId());
 			value = "";
 			value += "pg/";
 			boolean init = false;
@@ -307,58 +307,58 @@ public class ProtectFile extends BenCmdFile {
 		List<ProtectedBlock> q = new ArrayList<ProtectedBlock>();
 		for (ProtectedBlock block : protectedBlocks) {
 			if (block.getLocation().equals(loc)) {
-				id = block.GetId();
+				id = block.getId();
 				break;
 			}
 			if (block instanceof ProtectedChest) {
 				if (((ProtectedChest) block).isDoubleChest() && ((ProtectedChest) block).getSecondChest().getLocation().equals(loc)) {
-					id = block.GetId();
+					id = block.getId();
 					break;
 				}
 			}
 			if (block instanceof PublicChest) {
 				if (((PublicChest) block).isDoubleChest() && ((PublicChest) block).getSecondChest().getLocation().equals(loc)) {
-					id = block.GetId();
+					id = block.getId();
 					break;
 				}
 			}
 			if (block instanceof ProtectedDoor) {
 				try {
 					if (((ProtectedDoor) block).getSecondBlock().getLocation().equals(loc)) {
-						id = block.GetId();
+						id = block.getId();
 						break;
 					}
 				} catch (NullPointerException e) {
-					BenCmd.log(Level.WARNING, block.GetId() + " has a missing secondary block. It will be quarantined...");
+					BenCmd.log(Level.WARNING, block.getId() + " has a missing secondary block. It will be quarantined...");
 					q.add(block);
 				}
 				try {
 					if (((ProtectedDoor) block).getBelowBlock().getLocation().equals(loc)) {
-						id = block.GetId();
+						id = block.getId();
 						break;
 					}
 				} catch (NullPointerException e) {
-					BenCmd.log(Level.WARNING, block.GetId() + " has a missing secondary block. It will be quarantined...");
+					BenCmd.log(Level.WARNING, block.getId() + " has a missing secondary block. It will be quarantined...");
 					q.add(block);
 				}
 			}
 			if (block instanceof PublicDoor) {
 				try {
 					if (((PublicDoor) block).getSecondBlock().getLocation().equals(loc)) {
-						id = block.GetId();
+						id = block.getId();
 						break;
 					}
 				} catch (NullPointerException e) {
-					BenCmd.log(Level.WARNING, block.GetId() + " has a missing secondary block. It will be quarantined...");
+					BenCmd.log(Level.WARNING, block.getId() + " has a missing secondary block. It will be quarantined...");
 					q.add(block);
 				}
 				try {
 					if (((PublicDoor) block).getBelowBlock().getLocation().equals(loc)) {
-						id = block.GetId();
+						id = block.getId();
 						break;
 					}
 				} catch (NullPointerException e) {
-					BenCmd.log(Level.WARNING, block.GetId() + " has a missing secondary block. It will be quarantined...");
+					BenCmd.log(Level.WARNING, block.getId() + " has a missing secondary block. It will be quarantined...");
 					q.add(block);
 				}
 			}
@@ -372,7 +372,7 @@ public class ProtectFile extends BenCmdFile {
 
 	public int getProtectionIndex(int id) {
 		for (int i = 0; i < protectedBlocks.size(); i++) {
-			if (protectedBlocks.get(i).GetId() == id) {
+			if (protectedBlocks.get(i).getId() == id) {
 				return i;
 			}
 		}
@@ -381,7 +381,7 @@ public class ProtectFile extends BenCmdFile {
 
 	public boolean protectionExists(int id) {
 		for (ProtectedBlock block : protectedBlocks) {
-			if (block.GetId() == id) {
+			if (block.getId() == id) {
 				return true;
 			}
 		}
@@ -449,7 +449,7 @@ public class ProtectFile extends BenCmdFile {
 	public boolean removeProtection(int id) {
 		int ind;
 		try {
-			ind = getProtection(id).GetId();
+			ind = getProtection(id).getId();
 		} catch (NullPointerException e) {
 			return false;
 		}

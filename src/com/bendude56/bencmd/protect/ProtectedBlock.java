@@ -19,7 +19,7 @@ public class ProtectedBlock {
 		blockLocation = loc;
 	}
 
-	public int GetId() {
+	public int getId() {
 		return idNumber;
 	}
 

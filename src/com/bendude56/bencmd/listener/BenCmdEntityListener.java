@@ -93,7 +93,7 @@ public class BenCmdEntityListener implements Listener, EventExecutor {
 		}
 		User user = User.getUser((Player) event.getEntity());
 		PVPArea a;
-		if ((a = inPVP(((Player) user.getHandle()))) != null) {
+		if ((a = inPVP(user.getPlayerHandle())) != null) {
 			HashMap<ItemStack, PVPArea.DropMode> result = a.getDrops(event.getDrops());
 			List<ItemStack> toReturn = new ArrayList<ItemStack>();
 			event.getDrops().clear();
@@ -106,7 +106,7 @@ public class BenCmdEntityListener implements Listener, EventExecutor {
 					toReturn.add(item);
 				}
 			}
-			Grave.returns.put(((Player) user.getHandle()), toReturn);
+			Grave.returns.put(user.getPlayerHandle(), toReturn);
 			return;
 		}
 		if (BenCmd.getMainProperties().getBoolean("gravesEnabled", true)) {
@@ -121,22 +121,22 @@ public class BenCmdEntityListener implements Listener, EventExecutor {
 					}
 				}
 			}
-			Location graveLoc = new Location(((Player) user.getHandle()).getWorld(), ((Player) user.getHandle()).getLocation().getBlockX(), ((Player) user.getHandle()).getLocation().getBlockY(), ((Player) user.getHandle()).getLocation().getBlockZ());
-			Block grave = ((Player) user.getHandle()).getWorld().getBlockAt(graveLoc);
+			Location graveLoc = new Location(user.getPlayerHandle().getWorld(), ((Player) user.getHandle()).getLocation().getBlockX(), ((Player) user.getHandle()).getLocation().getBlockY(), ((Player) user.getHandle()).getLocation().getBlockZ());
+			Block grave = user.getPlayerHandle().getWorld().getBlockAt(graveLoc);
 			while (grave.getType() != Material.AIR) {
 				if (graveLoc.getBlockY() == 1) {
 					return;
 				}
 				graveLoc.setY(graveLoc.getY() + 1);
-				grave = ((Player) user.getHandle()).getWorld().getBlockAt(graveLoc);
+				grave = user.getPlayerHandle().getWorld().getBlockAt(graveLoc);
 			}
 			grave.setType(Material.SIGN_POST);
 			CraftSign graveSign = new CraftSign(grave);
 			graveSign.setLine(1, "R.I.P.");
 			graveSign.setLine(2, user.getDisplayName());
 			graveSign.update();
-			Grave.graves.add(new Grave(grave, (Player) event.getEntity(), event.getDrops(), BenCmd.getMainProperties().getInteger("graveDuration", 180)));
-			((Player) event.getEntity()).sendMessage(ChatColor.RED + "You have died... You can retrieve your items by breaking your gravestone...");
+			Grave.graves.add(new Grave(grave, user.getPlayerHandle(), event.getDrops(), BenCmd.getMainProperties().getInteger("graveDuration", 180)));
+			BenCmd.getLocale().sendMessage(user, "misc.grave.death");
 			event.getDrops().clear();
 		}
 	}
@@ -241,8 +241,8 @@ public class BenCmdEntityListener implements Listener, EventExecutor {
 
 		User user = User.getUser((Player) event.getEntity());
 		if (user.hasPerm("bencmd.warp.back") && user.hasPerm("bencmd.warp.deathback")) {
-			BenCmd.getWarpCheckpoints().SetPreWarp(((Player) user.getHandle()));
-			user.sendMessage(ChatColor.RED + "Use /back to return to your death point...");
+			BenCmd.getWarpCheckpoints().SetPreWarp(user.getPlayerHandle());
+			BenCmd.getLocale().sendMessage(user, "misc.warp.dieBack");
 		}
 	}
 
@@ -304,7 +304,7 @@ public class BenCmdEntityListener implements Listener, EventExecutor {
 
 		if (!BenCmd.getLots().canBuildHere(player, event.getBlock().getLocation())) {
 			event.setCancelled(true);
-			player.sendMessage(ChatColor.RED + "You cannot build here.");
+			BenCmd.getLocale().sendMessage(User.getUser(player), "basic.noBuild");
 		}
 	}
 	
@@ -313,7 +313,7 @@ public class BenCmdEntityListener implements Listener, EventExecutor {
 			Player player = (Player) ((PaintingBreakByEntityEvent)event).getRemover();
 			if (!BenCmd.getLots().canBuildHere(player, event.getPainting().getLocation())) {
 				event.setCancelled(true);
-				player.sendMessage(ChatColor.RED + "You cannot build here.");
+				BenCmd.getLocale().sendMessage(User.getUser(player), "basic.noBuild");
 			}
 		}
 	}

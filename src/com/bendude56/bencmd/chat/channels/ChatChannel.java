@@ -74,7 +74,7 @@ public class ChatChannel {
 		// Initialize temporary variables
 		inChannel = new ArrayList<User>();
 		spies = new ArrayList<User>();
-		slow = SlowMode.newUnhandledInstance();
+		slow = new SlowMode(defaultSlowDelay);
 		if (defaultSlowEnabled) {
 			slow.enableSlow(defaultSlowDelay);
 		}

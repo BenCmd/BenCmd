@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -47,7 +46,6 @@ import com.bendude56.bencmd.advanced.npc.Clickable;
 import com.bendude56.bencmd.advanced.npc.EntityNPC;
 import com.bendude56.bencmd.advanced.npc.NPC;
 import com.bendude56.bencmd.advanced.npc.StaticNPC;
-import com.bendude56.bencmd.chat.SlowMode;
 import com.bendude56.bencmd.invtools.InventoryBackend;
 import com.bendude56.bencmd.lots.Corner;
 import com.bendude56.bencmd.lots.sparea.GroupArea;
@@ -143,20 +141,18 @@ public class BenCmdPlayerListener implements Listener, EventExecutor {
 		// Check if player is muted
 		if (user.isMuted() != null) {
 			event.setCancelled(true);
-			user.sendMessage(ChatColor.GRAY + BenCmd.getMainProperties().getString("muteMessage", "You are muted..."));
+			BenCmd.getLocale().sendMessage(user, "misc.talk.muted");
 			return;
 		}
 		if (user.inChannel()) {
 			user.getActiveChannel().sendChat(user, message);
 		} else {
-			user.sendMessage(ChatColor.RED + "You must be in a chat channel to talk!");
+			BenCmd.getLocale().sendMessage(user, "misc.talk.noChannel");
 		}
 		event.setCancelled(true);
 	}
 
 	private void userInit(PlayerJoinEvent event) {
-		SlowMode slow = SlowMode.getInstance();
-
 		// Prepare the user instance
 		ViewableInventory.replInv((CraftPlayer) event.getPlayer());
 		User user = User.getUser(event.getPlayer());
@@ -187,34 +183,20 @@ public class BenCmdPlayerListener implements Listener, EventExecutor {
 
 		// Announce updates to admins
 		if (BenCmd.updateAvailable && user.hasPerm("bencmd.update")) {
-			user.sendMessage(ChatColor.RED + "A new BenCmd update was detected! Use \"/bencmd update\" to update your server...");
+			BenCmd.getLocale().sendMessage(user, "basic.updateNag");
 		}
 
 		// List players
-		Player[] playerList = Bukkit.getOnlinePlayers();
 		if (user.hasPerm("bencmd.chat.list")) {
-			if (playerList.length == 1) {
-				user.sendMessage(ChatColor.GREEN + "You are the only one online. :(");
-			} else {
-				String playerString = "";
-				for (Player player2 : playerList) {
-					if (User.getUser(player2).isOffline()) {
-						continue;
-					}
-					playerString += User.getUser(player2).getColor() + player2.getDisplayName() + ChatColor.WHITE + ", ";
-				}
-				user.sendMessage("The following players are online: " + playerString);
-			}
+			Bukkit.dispatchCommand(user.getHandle(), "list");
 		}
 
 		// Send chat status notifications
 		if (user.isMuted() != null) {
-			user.sendMessage(ChatColor.RED + "You are currently muted and cannot speak.");
-		} else if (slow.isEnabled()) {
-			user.sendMessage(ChatColor.RED + "Slow mode is currently enabled. You must wait " + (slow.getDefTime() / 1000) + " seconds between each chat message.");
+			BenCmd.getLocale().sendMessage(user, "misc.talk.muted");
 		}
 		if (user.hasPerm("bencmd.ticket.readall") && BenCmd.getReports().unreadTickets()) {
-			user.sendMessage(ChatColor.RED + "There are unread reports! Use /ticket list to see them!");
+			BenCmd.getLocale().sendMessage(user, "basic.unreadTickets");
 		}
 
 		// Join general channel
@@ -223,7 +205,7 @@ public class BenCmdPlayerListener implements Listener, EventExecutor {
 				user.joinChannel(BenCmd.getChatChannels().getChannel(user.getVar("bencmd.chat.defaultchannel", "general")), false);
 			}
 		}
-		event.setJoinMessage(user.getColor() + user.getDisplayName() + ChatColor.YELLOW + " has joined the game.");
+		event.setJoinMessage(BenCmd.getLocale().getString("basic.join", user.getColor() + user.getDisplayName()));
 
 		// Check for jailing/unjailing
 		if (BenCmd.getPermissionManager().getActionFile().isUnjailed(user) != null) {
@@ -236,8 +218,8 @@ public class BenCmdPlayerListener implements Listener, EventExecutor {
 
 		// Special effects for devs
 		if (user.isDev()) {
-			((Player) user.getHandle()).getWorld().strikeLightningEffect(((Player) user.getHandle()).getLocation());
-			Bukkit.broadcastMessage(ChatColor.DARK_GREEN + "A BenCmd developer has joined the game!");
+			user.getPlayerHandle().getWorld().strikeLightningEffect(user.getPlayerHandle().getLocation());
+			Bukkit.broadcastMessage(BenCmd.getLocale().getString("basic.joinDev"));
 		}
 	}
 
@@ -261,7 +243,7 @@ public class BenCmdPlayerListener implements Listener, EventExecutor {
 			user.goOnlineNoMsg();
 			event.setQuitMessage(null);
 		} else {
-			event.setQuitMessage(user.getColor() + user.getDisplayName() + ChatColor.YELLOW + " has left the game.");
+			event.setQuitMessage(BenCmd.getLocale().getString("basic.quit", user.getColor() + user.getDisplayName()));
 		}
 
 		// Remove them from the maximum players lists
@@ -310,7 +292,7 @@ public class BenCmdPlayerListener implements Listener, EventExecutor {
 			user.goOnlineNoMsg();
 			event.setLeaveMessage(null);
 		} else {
-			event.setLeaveMessage(user.getColor() + user.getDisplayName() + ChatColor.YELLOW + " has left the game.");
+			event.setLeaveMessage(BenCmd.getLocale().getString("basic.quit", user.getColor() + user.getDisplayName()));
 		}
 
 		// Remove them from the maximum players lists
@@ -345,10 +327,11 @@ public class BenCmdPlayerListener implements Listener, EventExecutor {
 	private void bookshelfInteract(PlayerInteractEvent event) {
 		if (event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getClickedBlock().getType() == Material.BOOKSHELF) {
 			Shelf shelf;
+			User user = User.getUser(event.getPlayer());
 			if ((shelf = BenCmd.getShelfFile().getShelf(event.getClickedBlock().getLocation())) != null) {
 				event.setCancelled(true);
-				event.getPlayer().sendMessage(ChatColor.YELLOW + "The books on this shelf read:");
-				event.getPlayer().sendMessage(ChatColor.YELLOW + shelf.getText());
+				BenCmd.getLocale().sendMessage(user, "misc.shelf.read");
+				user.sendMessage(ChatColor.YELLOW + shelf.getText());
 			}
 		}
 	}
@@ -372,14 +355,14 @@ public class BenCmdPlayerListener implements Listener, EventExecutor {
 			return;
 		}
 		Block block = event.getClickedBlock();
-		Player player = event.getPlayer();
+		User user = User.getUser(event.getPlayer());
 		if (back.TryDispense(block)) {
 			event.setCancelled(true);
 		}
 		if (block.getType() == Material.CHEST && BenCmd.getDisposals().isDisposalChest(block.getLocation())) {
 			CraftChest chest = new CraftChest(block);
 			chest.getInventory().clear();
-			player.sendMessage(ChatColor.RED + "ALERT: The chest you have opened is a disposal chest! Anything you put inside will disappear FOREVER!");
+			BenCmd.getLocale().sendMessage(user, "misc.disp.alert");
 		}
 	}
 
@@ -395,8 +378,6 @@ public class BenCmdPlayerListener implements Listener, EventExecutor {
 	private void lockInteract(PlayerInteractEvent event) {
 		if (event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getClickedBlock().getType() == Material.BED_BLOCK) {
 			if (event.getPlayer().getWorld().getEnvironment() == Environment.NETHER) {
-				event.getPlayer().sendMessage(ChatColor.RED + "Did you really think that would work!?");
-				BenCmd.log(event.getPlayer().getDisplayName() + " attempted to use a bed in the Nether.");
 				event.setCancelled(true);
 			}
 		}
@@ -410,10 +391,10 @@ public class BenCmdPlayerListener implements Listener, EventExecutor {
 			User user = User.getUser(event.getPlayer());
 			if (!block.canUse(user.getName()) && !user.hasPerm("bencmd.lock.peek")) {
 				event.setCancelled(true);
-				user.sendMessage(ChatColor.RED + "That block is locked! Use /protect info for more information...");
+				BenCmd.getLocale().sendMultilineMessage(user, "misc.protect.noUse");
 			} else {
 				if (!user.getName().equalsIgnoreCase(block.getOwner())) {
-					BenCmd.log(user.getDisplayName() + " has accessed " + block.getOwner() + "'s protected block. (" + block.GetId() + ")");
+					BenCmd.log(BenCmd.getLocale().getString("misc.protect.logUse", user.getName(), block.getOwner(), block.getId() + ""));
 				}
 			}
 		}
@@ -421,58 +402,58 @@ public class BenCmdPlayerListener implements Listener, EventExecutor {
 
 	private void lotSelectInteract(PlayerInteractEvent event) {
 		if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-			Player player = event.getPlayer();
-			if (User.getUser(player).hasPerm("bencmd.lot.select") && player.getItemInHand().getType() == Material.WOOD_SPADE) {
-				checkPlayer(player.getName());
-				if (this.corner.get(player.getName()).corner2set) {
-					if (this.corner.get(player.getName()).getCorner2().equals(event.getClickedBlock().getLocation())) {
+			User user = User.getUser(event.getPlayer());
+			if (user.hasPerm("bencmd.lot.select") && user.getPlayerHandle().getItemInHand().getType() == Material.WOOD_SPADE) {
+				checkPlayer(user.getName());
+				if (this.corner.get(user.getName()).corner2set) {
+					if (this.corner.get(user.getName()).getCorner2().equals(event.getClickedBlock().getLocation())) {
 						return;
 					}
 				}
-				this.corner.get(player.getName()).setCorner2(event.getClickedBlock().getLocation());
-				Location corner2 = this.corner.get(player.getName()).getCorner2();
-				player.sendMessage(ChatColor.LIGHT_PURPLE + "Corner 2 set at [X: " + corner2.getX() + ", Y: " + corner2.getY() + ", Z: " + corner2.getZ() + ", W: " + corner2.getWorld().getName() + "]");
+				this.corner.get(user.getName()).setCorner2(event.getClickedBlock().getLocation());
+				Location corner2 = this.corner.get(user.getName()).getCorner2();
+				BenCmd.getLocale().sendMessage(user, "misc.lot.corner2", corner2.getX() + "", corner2.getY() + "", corner2.getZ() + "");
 			}
 			return;
 		} else if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
-			Player player = event.getPlayer();
-			if (User.getUser(player).hasPerm("bencmd.lot.select") && player.getItemInHand().getType() == Material.WOOD_SPADE) {
-				checkPlayer(player.getName());
-				if (this.corner.get(player.getName()).corner1set) {
-					if (this.corner.get(player.getName()).getCorner1().equals(event.getClickedBlock().getLocation())) {
+			User user = User.getUser(event.getPlayer());
+			if (user.hasPerm("bencmd.lot.select") && user.getPlayerHandle().getItemInHand().getType() == Material.WOOD_SPADE) {
+				checkPlayer(user.getName());
+				if (this.corner.get(user.getName()).corner1set) {
+					if (this.corner.get(user.getName()).getCorner1().equals(event.getClickedBlock().getLocation())) {
 						return;
 					}
 				}
-				this.corner.get(player.getName()).setCorner1(event.getClickedBlock().getLocation());
-				Location corner1 = this.corner.get(player.getName()).getCorner1();
-				player.sendMessage(ChatColor.LIGHT_PURPLE + "Corner 1 set at [X: " + corner1.getX() + ", Y: " + corner1.getY() + ", Z: " + corner1.getZ() + ", W: " + corner1.getWorld().getName() + "]");
+				this.corner.get(user.getName()).setCorner1(event.getClickedBlock().getLocation());
+				Location corner1 = this.corner.get(user.getName()).getCorner1();
+				BenCmd.getLocale().sendMessage(user, "misc.lot.corner1", corner1.getX() + "", corner1.getY() + "", corner1.getZ() + "");
 			}
 			return;
 		}
 	}
 
 	private void lotBucketEmpty(PlayerBucketEmptyEvent event) {
-		Player player = event.getPlayer();
+		User user = User.getUser(event.getPlayer());
 
-		if (!BenCmd.getLots().canBuildHere(player, event.getBlockClicked().getLocation())) {
+		if (!BenCmd.getLots().canBuildHere(user.getPlayerHandle(), event.getBlockClicked().getLocation())) {
 			event.setCancelled(true);
-			player.sendMessage("You cannot build here.");
+			BenCmd.getLocale().sendMessage(user, "basic.noBuild");
 		}
 	}
 
 	private void lotBucketFill(PlayerBucketFillEvent event) {
-		Player player = event.getPlayer();
+		User user = User.getUser(event.getPlayer());
 
-		if (!BenCmd.getLots().canBuildHere(player, event.getBlockClicked().getLocation())) {
+		if (!BenCmd.getLots().canBuildHere(user.getPlayerHandle(), event.getBlockClicked().getLocation())) {
 			event.setCancelled(true);
-			player.sendMessage("You cannot build here.");
+			BenCmd.getLocale().sendMessage(user, "basic.noBuild");
 		}
 	}
 
 	private void jailBucketEmpty(PlayerBucketEmptyEvent event) {
 		Player player = event.getPlayer();
 		
-		if (BenCmd.getPermissionManager().getUserFile().getUser(player.getName()).isJailed() != null) {
+		if (User.getUser(player).isJailed() != null) {
 			event.setCancelled(true);
 		}
 	}
@@ -480,7 +461,7 @@ public class BenCmdPlayerListener implements Listener, EventExecutor {
 	private void jailBucketFill(PlayerBucketFillEvent event) {
 		Player player = event.getPlayer();
 		
-		if (BenCmd.getPermissionManager().getUserFile().getUser(player.getName()).isJailed() != null) {
+		if (User.getUser(player).isJailed() != null) {
 			event.setCancelled(true);
 		}
 	}
@@ -515,7 +496,7 @@ public class BenCmdPlayerListener implements Listener, EventExecutor {
 				}
 				if (money < ((PVPArea) a).getMinimumCurrency()) {
 					ignore.add(p);
-					p.sendMessage(ChatColor.RED + "You must have " + ((PVPArea) a).getMinimumCurrency() + " worth of currency to PVP in this area...");
+					BenCmd.getLocale().sendMessage(User.getUser(p), "basic.insufficientMoney", ((PVPArea) a).getMinimumCurrency() + "");
 					int c = 1;
 					while (true) {
 						Location f = p.getLocation();
@@ -570,7 +551,7 @@ public class BenCmdPlayerListener implements Listener, EventExecutor {
 			if (a instanceof TRArea) {
 				if (a.insideArea(p.getLocation()) && ((TRArea) a).isLocked(p)) {
 					ignore.add(p);
-					p.sendMessage(ChatColor.RED + "You cannot enter this area at this time!");
+					BenCmd.getLocale().sendMessage(User.getUser(p), "misc.area.noEnterTime");
 					int c = 1;
 					while (true) {
 						Location f = p.getLocation();
@@ -644,7 +625,7 @@ public class BenCmdPlayerListener implements Listener, EventExecutor {
 			if (a instanceof GroupArea) {
 				if (a.insideArea(p.getLocation()) && !((GroupArea) a).canEnter(User.getUser(p))) {
 					ignore.add(p);
-					p.sendMessage(ChatColor.RED + "You do not have permission to enter this area!");
+					BenCmd.getLocale().sendMessage(User.getUser(p), "misc.area.noEnterGroup");
 					int c = 1;
 					while (true) {
 						Location f = p.getLocation();
@@ -703,26 +684,27 @@ public class BenCmdPlayerListener implements Listener, EventExecutor {
 		if (!BenCmd.getMainProperties().getBoolean("BenCmdPortals", true)) {
 			return;
 		}
+		User user = User.getUser(event.getPlayer());
 		Portal portal;
 		Location loc = event.getPlayer().getLocation();
 		if ((portal = BenCmd.getPortalFile().getPortalAt(loc)) == null) {
-			event.getPlayer().sendMessage(ChatColor.RED + "That portal doesn't lead anywhere!");
+			BenCmd.getLocale().sendMessage(user, "misc.portal.noEnd");
 			event.setCancelled(true);
 			return;
 		}
-		if (portal.getGroup() != null && !User.getUser(event.getPlayer()).inGroup(portal.getGroup())) {
-			event.getPlayer().sendMessage(ChatColor.RED + "You're not allowed to use that portal!");
+		if (portal.getGroup() != null && !user.inGroup(portal.getGroup())) {
+			BenCmd.getLocale().sendMessage(user, "misc.portal.noPermission");
 			event.setCancelled(true);
 			return;
 		}
 		event.useTravelAgent(false);
 		if (portal instanceof HomePortal) {
 			Warp warp;
-			if ((warp = ((HomePortal) portal).getWarp(User.getUser(event.getPlayer()))) != null) {
+			if ((warp = ((HomePortal) portal).getWarp(user)) != null) {
 				event.setTo(warp.loc);
 			} else {
 				event.setCancelled(true);
-				event.getPlayer().sendMessage(ChatColor.RED + "You haven't set a home #" + ((HomePortal) portal).getHomeNumber() + " yet!");
+				BenCmd.getLocale().sendMessage(user, "misc.portal.noHome");
 			}
 		} else {
 			event.setTo(portal.getWarp().loc);
@@ -754,7 +736,7 @@ public class BenCmdPlayerListener implements Listener, EventExecutor {
 		PermissionUser user;
 		if (!BenCmd.getPermissionManager().getUserFile().userExists(event.getPlayer().getName())) {
 			if (BenCmd.getMainProperties().getBoolean("disallowNewUsers", false)) {
-				event.disallow(Result.KICK_WHITELIST, BenCmd.getMainProperties().getString("newUserKick", "You aren't whitelisted on this server!"));
+				event.disallow(Result.KICK_WHITELIST, BenCmd.getLocale().getString("kick.whitelist"));
 				return;
 			} else {
 				BenCmd.getPermissionManager().getUserFile().addUser(user = PermissionUser.newUser(event.getPlayer().getName(), new ArrayList<String>(), new ArrayList<String>()));
@@ -762,7 +744,6 @@ public class BenCmdPlayerListener implements Listener, EventExecutor {
 		} else {
 			user = PermissionUser.matchUserIgnoreCase(event.getPlayer().getName());
 			if (!user.getName().equals(event.getPlayer().getName())) {
-				BenCmd.log(Level.WARNING, "Correcting users.db name: " + user.getName() + " -> " + event.getPlayer().getName());
 				BenCmd.getPermissionManager().getUserFile().correctCase(user, event.getPlayer().getName());
 			}
 		}
@@ -772,23 +753,23 @@ public class BenCmdPlayerListener implements Listener, EventExecutor {
 		if (user.isBanned() != null) {
 			com.bendude56.bencmd.permissions.Action a = user.isBanned();
 			if (a.getExpiry() == -1) {
-				event.disallow(Result.KICK_BANNED, "You are currently banned from this server! FOREVER!");
+				event.disallow(Result.KICK_BANNED, BenCmd.getLocale().getString("kick.banPerm"));
 			} else {
-				event.disallow(Result.KICK_BANNED, "You are still banned for " + a.formatTimeLeft());
+				event.disallow(Result.KICK_BANNED, BenCmd.getLocale().getString("kick.banTemp", a.formatTimeLeft()));
 			}
 			return;
 		}
 		long timeLeft;
 		if ((timeLeft = BenCmd.getPermissionManager().getKickTracker().isBlocked(event.getPlayer().getName())) > 0) {
-			event.disallow(Result.KICK_OTHER, "You cannot connect for " + String.valueOf((int) Math.ceil(timeLeft / 60000.0)) + " more minutes...");
+			event.disallow(Result.KICK_OTHER, BenCmd.getLocale().getString("kick.kickTimeout", String.valueOf((int) Math.ceil(timeLeft / 60000.0))));
 			return;
 		}
 		switch (BenCmd.getPermissionManager().getMaxPlayerHandler().join(User.getUser(event.getPlayer()))) {
 			case NO_SLOT_NORMAL:
-				event.disallow(Result.KICK_FULL, BenCmd.getMainProperties().getString("noNormal", "There are no normal slots currently available!"));
+				event.disallow(Result.KICK_FULL, BenCmd.getLocale().getString("kick.full"));
 				break;
 			case NO_SLOT_RESERVED:
-				event.disallow(Result.KICK_FULL, BenCmd.getMainProperties().getString("noReserved", "There are no normal slots or reserved slots currently available!"));
+				event.disallow(Result.KICK_FULL, BenCmd.getLocale().getString("kick.full"));
 				break;
 		}
 		User.finalizeUser(User.getUser(event.getPlayer()));
@@ -813,11 +794,11 @@ public class BenCmdPlayerListener implements Listener, EventExecutor {
 			if (((CraftPlayer) event.getRightClicked()).getHandle() instanceof EntityNPC) {
 				NPC npc = BenCmd.getNPCFile().getNPC((EntityNPC) ((CraftPlayer) event.getRightClicked()).getHandle());
 				if (npc == null) {
-					BenCmd.log(Level.WARNING, "Ghost NPC detected... Try restarting the server...");
 					return;
 				}
-				if (event.getPlayer().getItemInHand().getType() == Material.STICK && User.getUser(event.getPlayer()).hasPerm("bencmd.npc.info")) {
-					npcInfo(event.getPlayer(), npc);
+				User user = User.getUser(event.getPlayer());
+				if (event.getPlayer().getItemInHand().getType() == Material.STICK && user.hasPerm("bencmd.npc.info")) {
+					npcInfo(user, npc);
 					return;
 				}
 				if (npc instanceof Clickable) {
@@ -827,24 +808,23 @@ public class BenCmdPlayerListener implements Listener, EventExecutor {
 		}
 	}
 
-	private void npcInfo(Player p, NPC n) {
-		if (BenCmd.isSpoutConnected() && BenCmd.getSpoutConnector().enabled(p)) {
-			BenCmd.getSpoutConnector().showNPCScreen(p, n);
+	private void npcInfo(User u, NPC n) {
+		if (BenCmd.isSpoutConnected() && BenCmd.getSpoutConnector().enabled(u.getPlayerHandle())) {
+			BenCmd.getSpoutConnector().showNPCScreen(u.getPlayerHandle(), n);
 		} else {
-			p.sendMessage(ChatColor.GRAY + "NPC ID: " + n.getID());
+			String type;
 			if (n instanceof BankerNPC) {
-				p.sendMessage(ChatColor.GRAY + "NPC Type: Banker");
+				type = BenCmd.getLocale().getString("command.npc.banker");
 			} else if (n instanceof BankManagerNPC) {
-				p.sendMessage(ChatColor.GRAY + "NPC Type: Bank Manager");
+				type = BenCmd.getLocale().getString("command.npc.bankManager");
 			} else if (n instanceof BlacksmithNPC) {
-				p.sendMessage(ChatColor.GRAY + "NPC Type: Blacksmith");
+				type = BenCmd.getLocale().getString("command.npc.blacksmith");
 			} else if (n instanceof StaticNPC) {
-				p.sendMessage(ChatColor.GRAY + "NPC Type: Static");
+				type = BenCmd.getLocale().getString("command.npc.static");
 			} else {
-				p.sendMessage(ChatColor.GRAY + "NPC Type: Unknown");
-			}
-			p.sendMessage(ChatColor.GRAY + "NPC Name: " + n.getName());
-			p.sendMessage(ChatColor.GRAY + "Skin URL: " + n.getSkinURL());
+				type = "";
+			}			
+			BenCmd.getLocale().sendMultilineMessage(u, "misc.npc.info", n.getID() + "", type, n.getName(), n.getSkinURL());
 		}
 	}
 

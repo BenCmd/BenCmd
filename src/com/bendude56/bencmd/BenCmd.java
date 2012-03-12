@@ -31,7 +31,6 @@ import com.bendude56.bencmd.advanced.redstone.RedstoneFile;
 import com.bendude56.bencmd.chat.ChatCommands;
 import com.bendude56.bencmd.chat.channels.ChatChannelCommands;
 import com.bendude56.bencmd.chat.channels.ChatChannelController;
-// import com.bendude56.bencmd.comms.MainServer;
 import com.bendude56.bencmd.invisible.Invisibility;
 import com.bendude56.bencmd.invisible.InvisibleCommands;
 import com.bendude56.bencmd.invisible.MonitorController;
@@ -46,7 +45,6 @@ import com.bendude56.bencmd.listener.BenCmdPlayerListener;
 import com.bendude56.bencmd.listener.BenCmdScreenListener;
 import com.bendude56.bencmd.listener.BenCmdSpoutListener;
 import com.bendude56.bencmd.listener.BenCmdWorldListener;
-import com.bendude56.bencmd.listener.BenCmdInventoryListener;
 import com.bendude56.bencmd.lots.LotCommands;
 import com.bendude56.bencmd.lots.LotFile;
 import com.bendude56.bencmd.lots.sparea.SPAreaFile;
@@ -580,7 +578,6 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 		if (BenCmd.isSpoutConnected()) {
 			BenCmdScreenListener.destroyInstance();
 			BenCmdSpoutListener.destroyInstance();
-			BenCmdInventoryListener.destroyInstance();
 		}
 		BenCmdWorldListener.destroyInstance();
 		InventoryBackend.destroyInstance();
@@ -740,7 +737,6 @@ public class BenCmd extends JavaPlugin implements PermissionsProvider {
 			try {
 				BenCmdSpoutListener.getInstance();
 				BenCmdScreenListener.getInstance();
-				BenCmdInventoryListener.getInstance();
 			} catch (Exception e) {
 				BenCmd.log(Level.SEVERE, "Failed to register Spout events!");
 				BenCmd.log(e);

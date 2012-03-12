@@ -127,10 +127,15 @@ public class LocalizationHandler {
 		p.setProperty("basic.devOnly", ChatColor.RED + "That command is for BenCmd developers only!");
 		p.setProperty("basic.groupNotFound", ChatColor.RED + "Couldn't find group '%1'!");
 		p.setProperty("basic.insufficientMoney", ChatColor.RED + "You don't have enough money to do that! (Required funds: %1)");
+		p.setProperty("basic.join", "%1" + ChatColor.YELLOW + " has joined the game");
+		p.setProperty("basic.joinDev", ChatColor.DARK_GREEN + "A BenCmd developer has joined the game!");
 		p.setProperty("basic.no", "No");
+		p.setProperty("basic.noBuild", ChatColor.RED + "You cannot build here!");
 		p.setProperty("basic.noPermission", ChatColor.RED + "You don't have permission to do that!");
 		p.setProperty("basic.noServerUse", ChatColor.RED + "The server can't do that!");
 		p.setProperty("basic.noSpawn", ChatColor.RED + "You aren't allowed to spawn that item!");
+		p.setProperty("basic.quit", "%1" + ChatColor.YELLOW + " has left the game");
+		p.setProperty("basic.unreadTickets", ChatColor.RED + "You have unread tickets! Use /tick list to see them...");
 		p.setProperty("basic.updateFail", ChatColor.RED + "A BenCmd update failed to download properly! Some features may cease to function...");
 		p.setProperty("basic.updateInProgress", ChatColor.RED + "BenCmd is updating... Some features may reset after it is updated...");
 		p.setProperty("basic.updateNag", ChatColor.RED + "A new BenCmd update was detected! Use \"/bencmd update\" to update your server...");
@@ -147,6 +152,13 @@ public class LocalizationHandler {
 		p.setProperty("command.allpoof.unpoof", ChatColor.GREEN + "REVERSE ALLPOOF! (STILL POOFED!)");
 		p.setProperty("command.allpoof.unpoofOther", ChatColor.GREEN + "%1 is no longer allpoofed!");
 		p.setProperty("command.allpoof.use", ChatColor.YELLOW + "/allpoof [user]");
+		
+		// AREA
+		p.setProperty("command.area.areaNotFound", ChatColor.RED + "There is no area with that ID!");
+		p.setProperty("command.area.notInArea", ChatColor.RED + "You aren't standing inside an area!");
+		p.setProperty("command.area.use", ChatColor.YELLOW + "/area {new|info|table|delete|emsg|lmsg|addi|remi|die|mtime}");
+		
+		p.setProperty("command.area.use.info", ChatColor.YELLOW + "/area info [id]");
 		
 		// BANK
 		p.setProperty("command.bank.otherAlreadyDowngraded", ChatColor.RED + "%1's bank is not currently upgraded!");
@@ -218,11 +230,20 @@ public class LocalizationHandler {
 		p.setProperty("command.channel.use.nOutside", ChatColor.YELLOW + "/channel {join|spy|unspy|list|add}");
 		p.setProperty("command.channel.use.nOwner", ChatColor.YELLOW + "/channel {join|spy|unspy|list|info|leave|remove|kick|ban|mute|normal|vip|mod|coown|own|slow|pause|motd|default|rename|alwaysslow|slowdelay}");
 		
+		// CLRINV
+		p.setProperty("command.clrinv.protected", ChatColor.RED + "%1's inventory is protected from being cleared!");
+		p.setProperty("command.clrinv.use", ChatColor.YELLOW + "/clrinv [user]");
+		
 		// CR
 		p.setProperty("command.cr.otherOff", ChatColor.GREEN + "%1 is now in survival mode!");
 		p.setProperty("command.cr.otherOn", ChatColor.GREEN + "%1 is now in creative mode!");
 		p.setProperty("command.cr.selfOff", ChatColor.GREEN + "You are now in survival mode!");
 		p.setProperty("command.cr.selfOn", ChatColor.GREEN + "You are now in creative mode!");
+		
+		// DISP
+		p.setProperty("command.disp.notChest", ChatColor.RED + "You aren't pointing at a chest!");
+		p.setProperty("command.disp.success", ChatColor.GREEN + "That chest is now a disposal chest!");
+		p.setProperty("command.disp.use", ChatColor.YELLOW + "/disp");
 		
 		// DISPLAY
 		p.setProperty("command.display.error", ChatColor.RED + "Error logging in to new account: %1");
@@ -258,6 +279,14 @@ public class LocalizationHandler {
 		p.setProperty("command.inv.protected", ChatColor.RED + "%1's inventory is protected!");
 		p.setProperty("command.inv.use", ChatColor.YELLOW + "/inv <user>");
 		
+		// ITEM
+		p.setProperty("command.item.giftReceive", ChatColor.GREEN + "You have received a gift from %1.");
+		p.setProperty("command.item.giftSend", ChatColor.GREEN + "Your gift has been sent to %1.");
+		p.setProperty("command.item.invalidAmount", ChatColor.RED + "Invalid amount inputted!");
+		p.setProperty("command.item.invalidId", ChatColor.RED + "Invalid item ID or damage inputted!");
+		p.setProperty("command.item.success", ChatColor.GREEN + "Enjoy, %1!");
+		p.setProperty("command.item.use", ChatColor.YELLOW + "/item <id>[:<damage>] [amount] [player]");
+		
 		// KILL
 		p.setProperty("command.kill.otherGod", ChatColor.RED + "You can't kill %1 while they're godded!");
 		p.setProperty("command.kill.protected", ChatColor.RED + "%1 is protected from being killed!");
@@ -269,6 +298,15 @@ public class LocalizationHandler {
 		p.setProperty("command.killmobs.success", ChatColor.GREEN + "%1 mobs killed!");
 		p.setProperty("command.killmobs.unrecognizedMob", ChatColor.RED + "Unrecognized mob type: %1");
 		p.setProperty("command.killmobs.use", ChatColor.YELLOW + "/killmobs <mob> ... [radius]");
+		
+		// KIT
+		p.setProperty("command.kit.giftReceive", ChatColor.GREEN + "You have received a gift from %1.");
+		p.setProperty("command.kit.giftSend", ChatColor.GREEN + "Your gift has been sent to %1.");
+		p.setProperty("command.kit.invalid", ChatColor.RED + "That kit doesn't exist or you don't have permission to spawn it!");
+		p.setProperty("command.kit.list", ChatColor.GRAY + "You can spawn the following kits:");
+		p.setProperty("command.kit.listNone", ChatColor.RED + "You cannot access any kits!");
+		p.setProperty("command.kit.success", ChatColor.GREEN + "Enjoy, %1!");
+		p.setProperty("command.kit.use", ChatColor.YELLOW + "/kit [kit] [user]");
 		
 		// LEVEL
 		p.setProperty("command.level.invalidExp", ChatColor.RED + "Invalid experience inputted!");
@@ -308,6 +346,11 @@ public class LocalizationHandler {
 		p.setProperty("command.npc.npcNotFound", ChatColor.RED + "No NPC with that ID exists!");
 		p.setProperty("command.npc.static", "Static");
 		p.setProperty("command.npc.useTip", ChatColor.YELLOW + "TIP: Right-click an NPC with a stick to get info about that NPC");
+		
+		p.setProperty("command.npc.info.1", ChatColor.GRAY + "NPC Item: %1");
+		p.setProperty("command.npc.info.2", ChatColor.GRAY + "NPC Type: %2");
+		p.setProperty("command.npc.info.3", ChatColor.GRAY + "NPC Name: %3");
+		p.setProperty("command.npc.info.4", ChatColor.GRAY + "Skin URL: %4");
 		
 		p.setProperty("command.npc.item.noItem", ChatColor.RED + "You must be holding an item to do that!");
 		p.setProperty("command.npc.item.notSupported", ChatColor.RED + "That NPC cannot have a custom item!");
@@ -401,7 +444,8 @@ public class LocalizationHandler {
 		// UNL
 		p.setProperty("command.unl.invalid", ChatColor.RED + "Invalid item ID or damage inputted!");
 		p.setProperty("command.unl.notDispenser", ChatColor.RED + "You aren't pointing at a dispenser!");
-		p.setProperty("command.unl.use", ChatColor.YELLOW + "/unl <ID>[:<Damage>]");
+		p.setProperty("command.unl.success", ChatColor.GREEN + "That dispenser is now an unlimited dispenser!");
+		p.setProperty("command.unl.use", ChatColor.YELLOW + "/unl <id>[:<damage>]");
 		
 		// WRITE
 		p.setProperty("command.write.notAllowed", ChatColor.RED + "You're not allowed to do that here!");
@@ -409,7 +453,12 @@ public class LocalizationHandler {
 		p.setProperty("command.write.success", ChatColor.GREEN + "That bookshelf has been written to successfully!");
 		
 		// Kick messages
+		p.setProperty("kick.banPerm", "You are banned from this server... FOREVER!");
+		p.setProperty("kick.banTemp", "You are still banned from this server for %1");
+		p.setProperty("kick.full", "The server is full!");
+		p.setProperty("kick.kickTimeout", "You cannot connect for %1 more minutes");
 		p.setProperty("kick.reloadFull", "The server ran out of user slots when reloading... :(");
+		p.setProperty("kick.whitelist", "You aren't whitelisted on this server!");
 		
 		// Logging messages
 		p.setProperty("log.bank.downgradeOther", "%1 has downgraded %2's bank");
@@ -422,16 +471,19 @@ public class LocalizationHandler {
 		p.setProperty("log.basic.permissionFail", "%1 attempted to use command: %2");
 		p.setProperty("log.basic.permissionFailLocation", "at (%1, %2, %3) in world '%4'");
 		
-		p.setProperty("log.bencmd.fupdate", "%1 is forcing the server to update...");
-		p.setProperty("log.bencmd.reload", "%1 has reloaded the BenCmd configuration!");
-		p.setProperty("log.bencmd.update", "%1 is attempting to update the server...");
+		p.setProperty("log.bencmd.fupdate", "%1 is forcing the server to update");
+		p.setProperty("log.bencmd.reload", "%1 has reloaded the BenCmd configuration");
+		p.setProperty("log.bencmd.update", "%1 is attempting to update the server");
 		
-		p.setProperty("log.cr.otherOff", "%1 has put %2 into survival mode!");
-		p.setProperty("log.cr.otherOn", "%1 has put %2 into creative mode!");
-		p.setProperty("log.cr.selfOff", "%1 has put themself into survival mode!");
-		p.setProperty("log.cr.selfOn", "%1 has put themself into creative mode!");
+		p.setProperty("log.clrinv.self", "%1 has cleared their inventory");
+		p.setProperty("log.clrinv.other", "%1 has cleared %2's inventory");
 		
-		p.setProperty("log.display.success", "%1 is now imitating %2!");
+		p.setProperty("log.cr.otherOff", "%1 has put %2 into survival mode");
+		p.setProperty("log.cr.otherOn", "%1 has put %2 into creative mode");
+		p.setProperty("log.cr.selfOff", "%1 has put themself into survival mode");
+		p.setProperty("log.cr.selfOn", "%1 has put themself into creative mode");
+		
+		p.setProperty("log.display.success", "%1 is now imitating %2");
 		
 		p.setProperty("log.feed.self", "%1 has fed themself");
 		p.setProperty("log.feed.other", "%1 has fed %2");
@@ -446,10 +498,16 @@ public class LocalizationHandler {
 		
 		p.setProperty("log.inv.look", "%1 is looking at %2's inventory");
 		
+		p.setProperty("log.item.other", "%1 sent %2 an item (Item: %3:%4, Amount: %5)");
+		p.setProperty("log.item.self", "%1 spawned an item (Item: %2:%3, Amount: %4)");
+		
 		p.setProperty("log.kill.self", "%1 has killed themself");
 		p.setProperty("log.kill.other", "%1 has killed %2");
 		
 		p.setProperty("log.killmobs.success", "%1 has killed %2 mobs in world '%3'");
+		
+		p.setProperty("log.kit.other", "%1 sent %2 a kit (%3)");
+		p.setProperty("log.kit.self", "%1 spawned a kit (%2)");
 		
 		p.setProperty("log.level.self", "%1 has set their total experience to %2");
 		p.setProperty("log.level.other", "%1 has set %2's total experience to %3");
@@ -495,6 +553,9 @@ public class LocalizationHandler {
 		p.setProperty("log.write.success", "%1 has written on a shelf at (%2, %3, %4) in world '%5'. Message: %6");
 		
 		// Miscellaneous messages
+		p.setProperty("misc.area.noEnterGroup", ChatColor.RED + "You do not have permission to enter this area!");
+		p.setProperty("misc.area.noEnterTime", ChatColor.RED + "You must wait before you can re-enter this area!");
+		
 		p.setProperty("misc.channel.defaultMotd", "Change this message using /channel motd <message>");
 		p.setProperty("misc.channel.join", "%1" + ChatColor.YELLOW + " has joined the chat");
 		p.setProperty("misc.channel.kicked", ChatColor.RED + "You have been kicked from '%1'!");
@@ -535,15 +596,51 @@ public class LocalizationHandler {
 		p.setProperty("misc.channel.slow.off", ChatColor.YELLOW + "Slow mode has been disabled");
 		p.setProperty("misc.channel.slow.on", ChatColor.YELLOW + "Slow mode has been enabled (%1s)");
 		
+		p.setProperty("misc.disp.alert", ChatColor.RED + "ALERT: The chest you have opened is a disposal chest! Anything you put inside will be lost FOREVER!");
+		p.setProperty("misc.disp.cannotDestroy", ChatColor.RED + "You're not allowed to destory disposal chests!");
+		p.setProperty("misc.disp.destroy", ChatColor.GREEN + "You destroyed a disposal chest!");
+		
 		p.setProperty("misc.grave.adminSmash", ChatColor.RED + "Your grave has been crushed by an admin, taking your items along with it...");
 		p.setProperty("misc.grave.cannotDestroy", ChatColor.RED + "You cannot destroy another user's grave!");
 		p.setProperty("misc.grave.crumble", ChatColor.RED + "Your grave has crumbled into dust, taking your items along with it...");
 		p.setProperty("misc.grave.crumbleWarning", ChatColor.RED + "Your grave will crumble in %1");
+		p.setProperty("misc.grave.death", ChatColor.RED + "You have died... You can retrieve your items by breaking your gravestone.");
 		p.setProperty("misc.grave.finalSeconds", ChatColor.RED + "%1...");
 		p.setProperty("misc.grave.minute", "one minute");
 		p.setProperty("misc.grave.minutes", "%1 minutes");
 		p.setProperty("misc.grave.seconds", "%1 seconds");
 		p.setProperty("misc.grave.success", ChatColor.GREEN + "You've reached your grave in time and your items are safe!");
+		
+		p.setProperty("misc.lot.corner1", ChatColor.LIGHT_PURPLE + "Corner 1 set at (%1, %2, %3)");
+		p.setProperty("misc.lot.corner2", ChatColor.LIGHT_PURPLE + "Corner 2 set at (%1, %2, %3)");
+		
+		p.setProperty("misc.portal.noEnd", ChatColor.RED + "That portal doesn't lead anywhere!");
+		p.setProperty("misc.portal.noHome", ChatColor.RED + "This portal leads to your home #%1, but you haven't set it!");
+		p.setProperty("misc.portal.noPermission", ChatColor.RED + "You don't have permission to use this portal!");
+		
+		p.setProperty("misc.protect.destroy.log", "%1 destroyed %2's protected block at (%3, %4, %5) in world '%6'");
+		p.setProperty("misc.protect.destroy.msg", ChatColor.GREEN + "The protection on that block has been removed!");
+		p.setProperty("misc.protect.logUse", "%1 has used %2's protected block. (ID: %3)");
+		p.setProperty("misc.protect.noDestroy.1", ChatColor.RED + "That block is protected from being destroyed!");
+		p.setProperty("misc.protect.noDestroy.2", ChatColor.RED + "For more information, use /protect info!");
+		p.setProperty("misc.protect.noUse.1", ChatColor.RED + "That block is protected from being used!");
+		p.setProperty("misc.protect.noUse.2", ChatColor.RED + "For more information, use /protect info!");
+		
+		p.setProperty("misc.shelf.read", ChatColor.YELLOW + "The books on this shelf read:");
+		
+		p.setProperty("misc.sign.head", "%1 has placed a sign at (%2, %3, %4) in world '%5'");
+		p.setProperty("misc.sign.line", "Line %1: %2");
+		
+		p.setProperty("misc.sign.spy.normal", ChatColor.GRAY + "%1 has placed a sign: %2");
+		p.setProperty("misc.sign.spy.spTitle", "Sign by %1");
+		
+		p.setProperty("misc.talk.muted", ChatColor.RED + "You cannot talk because you are globally muted!");
+		p.setProperty("misc.talk.noChannel", ChatColor.RED + "You must be in a channel to talk!");
+		
+		p.setProperty("misc.unl.cannotDestroy", ChatColor.RED + "You're not allowed to destory unlimited dispensers!");
+		p.setProperty("misc.unl.destroy", ChatColor.GREEN + "You destroyed an unlimited dispenser!");
+		
+		p.setProperty("misc.warp.dieBack", ChatColor.RED + "Use /back to return to your death point...");
 		
 		// NPC Messages
 		p.setProperty("npc.bank.adminNoUse", ChatColor.RED + "Admins cannot use this NPC to upgrade banks, use /bank upgrade instead!");
