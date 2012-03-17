@@ -101,7 +101,7 @@ public class NPC {
 			return null;
 		}
 		EntityHuman entityhuman = enpc.world.findNearbyPlayer(enpc, range);
-		return entityhuman != null && enpc.g(entityhuman) ? entityhuman : null;
+		return entityhuman != null && enpc.h(entityhuman) ? entityhuman : null;
 	}
 
 	public void tick() {

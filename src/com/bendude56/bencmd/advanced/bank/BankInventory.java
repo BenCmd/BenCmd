@@ -21,7 +21,7 @@ public class BankInventory {
 	}
 
 	public void open(Player p) {
-		((CraftPlayer) p).getHandle().a(chest);
+		((CraftPlayer) p).getHandle().openContainer(chest);
 	}
 
 	public void setItem(int index, net.minecraft.server.ItemStack items) {

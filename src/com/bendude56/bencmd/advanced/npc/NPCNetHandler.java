@@ -36,7 +36,7 @@ public class NPCNetHandler extends NetServerHandler {
 	public void a(String s, Object[] aobject) {}
 
 	@Override
-	public void a(Packet packet) {}
+	public void onUnhandledPacket(Packet packet) { }
 
 	@Override
 	public void sendPacket(Packet packet) {}
@@ -66,7 +66,7 @@ public class NPCNetHandler extends NetServerHandler {
 	public void a(Packet16BlockItemSwitch packet16blockitemswitch) {}
 
 	@Override
-	public void a(Packet101CloseWindow packet101closewindow) {}
+	public void handleContainerClose(Packet101CloseWindow packet101closewindow) { }
 
 	@Override
 	public void a(Packet102WindowClick packet102windowclick) {}

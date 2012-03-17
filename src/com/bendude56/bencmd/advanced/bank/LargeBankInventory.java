@@ -63,7 +63,7 @@ public class LargeBankInventory extends BankInventory {
 
 	@Override
 	public void open(Player p) {
-		((CraftPlayer) p).getHandle().a(lc);
+		((CraftPlayer) p).getHandle().openContainer(lc);
 	}
 
 	@Override

@@ -53,7 +53,7 @@ public class EntityNPC extends EntityPlayer {
 	}
 
 	public float checkYawDiff(float diff) {
-		for (this.aB = this.aK; diff < -180.0F; diff += 360.0F) {}
+		for (this.aB = this.aJ; diff < -180.0F; diff += 360.0F) {}
 		while (diff >= 180.0F) {
 			diff -= 360.0F;
 		}

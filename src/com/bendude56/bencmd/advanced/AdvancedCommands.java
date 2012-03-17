@@ -74,6 +74,6 @@ public class AdvancedCommands implements Commands {
 			ViewableInventory.replInv((CraftPlayer) target.getHandle());
 		}
 		BenCmd.log(BenCmd.getLocale().getString("log.inv.look", user.getName(), target.getName()));
-		((CraftPlayer) user.getHandle()).getHandle().a(((CraftPlayer) target.getHandle()).getHandle().inventory);
+		((CraftPlayer) user.getHandle()).getHandle().openContainer(((CraftPlayer) target.getHandle()).getHandle().inventory);
 	}
 }

@@ -58,7 +58,7 @@ public class PathableNPC extends NPC {
 	}
 
 	public void moveTo(int x, int y, int z) {
-		this.path = enpc.world.a(enpc, x, y, z, 16.0F);
+		this.path = enpc.world.a(enpc, x, y, z, 16.0F, true, true, true, true);
 		cPatrol = 0;
 	}
 
@@ -131,7 +131,7 @@ public class PathableNPC extends NPC {
 				cPatrol = 0;
 			}
 			Location l = patrol.get(cPatrol);
-			path = enpc.world.a(enpc, l.getBlockX(), l.getBlockY(), l.getBlockZ(), 16);
+			path = enpc.world.a(enpc, l.getBlockX(), l.getBlockY(), l.getBlockZ(), 16, true, true, true, true);
 			move();
 		} else if (faceNearestPlayer) {
 			this.faceNearest();

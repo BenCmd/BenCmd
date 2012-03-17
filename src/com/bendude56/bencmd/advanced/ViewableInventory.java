@@ -18,18 +18,18 @@ public class ViewableInventory extends PlayerInventory {
 	}
 
 	public ViewableInventory(PlayerInventory inv) {
-		super(inv.d);
+		super(inv.player);
 		this.armor = inv.armor;
 		this.items = inv.items;
 		this.itemInHandIndex = inv.itemInHandIndex;
 		this.e = inv.e;
-		this.b(inv.l());
-		inv.d.defaultContainer = new ContainerPlayer(this, !inv.d.world.isStatic);
-		inv.d.activeContainer = inv.d.defaultContainer;
+		this.setCarried(inv.getCarried());
+		inv.player.defaultContainer = new ContainerPlayer(this, !inv.player.world.isStatic);
+		inv.player.activeContainer = inv.player.defaultContainer;
 	}
 
 	public String getName() {
-		return ((EntityPlayer) this.d).name;
+		return ((EntityPlayer) this.player).name;
 	}
 
 	public boolean a(EntityHuman entityHuman) {

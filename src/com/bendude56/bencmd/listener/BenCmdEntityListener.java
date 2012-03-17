@@ -326,21 +326,21 @@ public class BenCmdEntityListener implements Listener, EventExecutor {
 		if (world == null) {
 			return; // World is not under BenCmd control
 		}
-		if (!world.getAllowSpawnPassive() && isPassive(event.getCreatureType())) {
+		if (!world.getAllowSpawnPassive() && isPassive(event.getEntityType())) {
 			event.setCancelled(true);
 			return;
 		}
-		if (!world.getAllowSpawnNeutral() && isNeutral(event.getCreatureType())) {
+		if (!world.getAllowSpawnNeutral() && isNeutral(event.getEntityType())) {
 			event.setCancelled(true);
 			return;
 		}
-		if (!world.getAllowSpawnAggressive() && isAggressive(event.getCreatureType())) {
+		if (!world.getAllowSpawnAggressive() && isAggressive(event.getEntityType())) {
 			event.setCancelled(true);
 			return;
 		}
 	}
 	
-	private boolean isPassive(CreatureType type) {
+	private boolean isPassive(EntityType type) {
 		switch (type) {
 			case CHICKEN:
 				return true;
@@ -361,7 +361,7 @@ public class BenCmdEntityListener implements Listener, EventExecutor {
 		}
 	}
 	
-	private boolean isNeutral(CreatureType type) {
+	private boolean isNeutral(EntityType type) {
 		switch (type) {
 			case GIANT:
 				return true;
@@ -376,7 +376,7 @@ public class BenCmdEntityListener implements Listener, EventExecutor {
 		}
 	}
 	
-	private boolean isAggressive(CreatureType type) {
+	private boolean isAggressive(EntityType type) {
 		switch (type) {
 			case BLAZE:
 				return true;
