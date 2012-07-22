@@ -27,10 +27,10 @@ public class TimeManager {
 				continue;
 			}
 			if (timeRunning.get(w)) {
-				if (w.getTime() >= 0 && w.getTime() < 12000) {
-					w.setFullTime(lastTime.get(w) + BenCmd.getMainProperties().getInteger("daySpeed", 100));
+				if (w.getTime() >= 23000 && w.getTime() < 13000) {
+					w.setFullTime(w.getFullTime() - 100 + BenCmd.getMainProperties().getInteger("daySpeed", 100));
 				} else {
-					w.setFullTime(lastTime.get(w) + BenCmd.getMainProperties().getInteger("nightSpeed", 100));
+					w.setFullTime(w.getFullTime() - 100 + BenCmd.getMainProperties().getInteger("nightSpeed", 100));
 				}
 				lastTime.put(w, w.getFullTime());
 			} else {
